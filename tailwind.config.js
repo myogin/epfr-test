@@ -1,18 +1,35 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
+      fontFamily: {
+        sans: ['DM Sans', 'sans-serif']
+      }
     },
+    colors: {
+      'blue-midnight': '#003566',
+      'blue-deep': "#0D72D7",
+      'blue-soft': "#D7E5F4",
+      'blue-bubble': '#3977F1',
+      'gray-light': '#333333',
+      'gray-soft-light': '#EDEDED',
+      'gray-soft-thin': '#DDDDDD',
+      'gray-soft-strong': '#CCCCCC',
+      'gray-soft-white': '#FCFCFC',
+      'white': '#FFFFFF',
+      'white-bone': '#FAFAFA',
+      'green-deep': '#2BB673',
+      'green-soft': '#F4FCF3',
+      'green-light': '#DAF5D6',
+      'green-soft-light': '#D6F5E6',
+      'pink-light': '#FCCFD1',
+      'red': '#E61B00',
+      'black': '#000000',
+      'yellow-deep': '#FEBE01',
+      'yellow-light': '#FFF2CC'
+    }
   },
-  plugins: [],
+  
+  plugins: [require("@tailwindcss/forms")],
 }

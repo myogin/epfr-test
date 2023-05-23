@@ -1,7 +1,5 @@
 import Head from 'next/head'
 import React, { ReactNode } from 'react'
-import PfrNavigation from '../Modules/Epfrs/CreateData/PfrNavigation'
-import SubmissionNavigation from '../Modules/Submissions/CreateData/SubmissionNavigation'
 import Sidebar from './Sidebar/Sidebar'
 
 
