@@ -1,0 +1,248 @@
+import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
+import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
+import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
+import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
+import HeadingSecondarySectionDoubleGrid from "@/components/Attributes/Sections/HeadingSecondarySectionDoubleGrid";
+import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import Checkbox from "@/components/Forms/Checkbox";
+import Input from "@/components/Forms/Input";
+import Select from "@/components/Forms/Select";
+import TextArea from "@/components/Forms/TextArea";
+import Toggle from "@/components/Forms/Toggle";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import React, { useState } from "react";
+import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
+import CpfPortofolio from "./Cpf/CpfPortofolio";
+import InsurancePortofolio from "./Insurance/InsurancePortofolio";
+import InvestmentPortofolio from "./Investment/InvestmentPortofolio";
+import LoanPortofolio from "./Loan/LoanPortofolio";
+import PropertyPortofolio from "./Property/PropertyPortofolio";
+import SavingPortofolio from "./Saving/SavingPortofolio";
+import SrsPortofolio from "./Srs/SrsPortofolio";
+import VehiclesPortofolio from "./Vehicles/VehiclesPortofolio";
+import { useNavigationSection } from "@/store/epfrPage/navigationSection";
+import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
+import { useScrollPosition } from "@/hooks/useScrollPosition";
+
+interface Props {
+  id?: any;
+}
+
+const ExistingPortofolio = (props: Props) => {
+  let fillInformation = [
+    { id: 0, name: "Nil" },
+    { id: 1, name: "Review" },
+  ];
+
+  let {
+    showDetailProperty,
+    showDetailCpf,
+    showDetailInsurance,
+    showDetailInvestment,
+    showDetailLoan,
+    showDetailSaving,
+    showDetailSrs,
+    cpf,
+    insurance,
+    investment,
+    loan,
+    property,
+    saving,
+    srs,
+  } = useExistingPortofolio();
+
+  let { showDetailData } = useNavigationSection();
+
+  const saveData = (params: any) => {
+    showDetailData(params);
+  };
+
+  const setDetailProperty = () => {
+    showDetailProperty(!property);
+  };
+
+  const setDetailInvestment = () => {
+    showDetailInvestment(!investment);
+  };
+
+  const setDetailSeving = () => {
+    showDetailSaving(!saving);
+  };
+
+  const setDetailCpf = () => {
+    showDetailCpf(!cpf);
+  };
+
+  const setDetailInsurance = () => {
+    showDetailInsurance(!insurance);
+  };
+
+  const setDetailSrs = () => {
+    showDetailSrs(!srs);
+  };
+
+  const setDetailLoan = () => {
+    showDetailLoan(!loan);
+  };
+
+  const [notReviewAll, setNotReviewAll] = useState(false);
+
+  const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
+
+  const scrollPosition = useScrollPosition(2)
+
+  // console.log("Test logic scroll " +scrollPosition);
+
+  return (
+    <div id={props.id}>
+      <div id="section-header-2" className={`sticky top-0 z-10 ${scrollPosition === "okSec2" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
+        <HeadingPrimarySection className={`mx-8 2xl:mx-60 ${scrollPosition === "okSec2" ? "text-gray-light text-xl font-bold mb-5 mt-5" : "text-2xl font-bold mb-10 mt-10"}`}>
+          Section 2. Existing Portfolio
+        </HeadingPrimarySection>
+      </div>
+      {!notReviewAll ? (
+        <>
+          <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
+            <h2 className="text-xl font-bold">
+              2.1 Summary of Property(ies)
+            </h2>
+            <Toggle
+              isChecked={property}
+              toggleName={property ? "Review":"Not Review"}
+              onChange={setDetailProperty}
+            />
+            {/* <Toggle /> */}
+          </HeadingSecondarySectionDoubleGrid>
+
+          {property ? <PropertyPortofolio /> : null}
+
+          <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
+            <h2 className="text-xl font-bold">
+              2.2 Summary of Investment(s)
+            </h2>
+            <Toggle
+              isChecked={investment}
+              toggleName={investment ? "Review":"Not Review"}
+              onChange={setDetailInvestment}
+            />
+          </HeadingSecondarySectionDoubleGrid>
+
+          {investment ? <InvestmentPortofolio /> : ""}
+
+          <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
+            <h2 className="text-xl font-bold">2.3 Summary of Saving(s)</h2>
+            <Toggle
+              isChecked={saving}
+              toggleName={saving ? "Review":"Not Review"}
+              onChange={setDetailSeving}
+            />
+          </HeadingSecondarySectionDoubleGrid>
+
+          {saving ? <SavingPortofolio /> : ""}
+
+          <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
+            <h2 className="text-xl font-bold">2.4 Summary of CPF</h2>
+            <Toggle
+              isChecked={cpf}
+              toggleName={cpf ? "Review":"Not Review"}
+              onChange={setDetailCpf}
+            />
+          </HeadingSecondarySectionDoubleGrid>
+
+          {cpf ? <CpfPortofolio /> : ""}
+
+          <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
+            <h2 className="text-xl font-bold">2.5 Summary of Insurance(s)</h2>
+            <Toggle
+              isChecked={insurance}
+              toggleName={insurance ? "Review":"Not Review"}
+              onChange={setDetailInsurance}
+            />
+          </HeadingSecondarySectionDoubleGrid>
+
+          {insurance ? <InsurancePortofolio /> : ""}
+
+          <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
+            <h2 className="text-xl font-bold">
+              2.6 Supplementary Retirement Scheme (SRS)
+            </h2>
+            <Toggle
+              isChecked={srs}
+              toggleName={srs ? "Review":"Not Review"}
+              onChange={setDetailSrs}
+            />
+          </HeadingSecondarySectionDoubleGrid>
+
+          {srs ? <SrsPortofolio /> : ""}
+
+          <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
+            <h2 className="text-xl font-bold">
+              2.7 Summary of Loan (Excluding Property Loan)
+            </h2>
+            <Toggle
+              isChecked={loan}
+              toggleName={loan ? "Review":"Not Review"}
+              onChange={setDetailLoan}
+            />
+          </HeadingSecondarySectionDoubleGrid>
+
+          {loan ? <LoanPortofolio /> : ""}
+        </>
+      ) : (
+        ""
+      )}
+
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowSingle>
+          <Checkbox
+            onChange={() => setNotReviewAll(!notReviewAll)}
+            lableStyle="text-sm font-normal text-gray-light"
+            label="The Client would not like their assets and liabilities to be taken
+            into consideration for the needs analysis and recommendations"
+          />
+        </RowSingle>
+        {notReviewAll ? (
+          <>
+            <RowSingle className="my-10">
+              <TextArea label="The Reason" defaultValue="test text area" />
+            </RowSingle>
+            <RowDoubleGrid>
+              <div>
+                <Input
+                  value={totalNetWorth}
+                  handleChange={(event) => setTotalNetWorth(event.target.value)}
+                  label="Total Net Worth"
+                  className="my-4"
+                />
+              </div>
+
+              {totalNetWorth == 0 ? (
+                <div>
+                  <TextArea
+                    className="my-4"
+                    label="Reason is needed if Net Worth ≤ $0"
+                    rows={1}
+                    defaultValue="text the reason"
+                  />
+                </div>
+              ) : (
+                ""
+              )}
+            </RowDoubleGrid>
+          </>
+        ) : (
+          ""
+        )}
+      </SectionCardSingleGrid>
+      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
+      {/* <SectionCardFooter>
+        <ButtonGreenMedium onClick={() => saveData(3)}>
+          Continue <ArrowRightLineIcon size={20} />
+        </ButtonGreenMedium>
+      </SectionCardFooter> */}
+    </div>
+  );
+};
+
+export default ExistingPortofolio;
