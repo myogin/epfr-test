@@ -15,41 +15,35 @@ const EpfrPage: Page = () => {
       <Head>
         <title>Epfr Apps</title>
       </Head>
-      <main className="flex-1 bg-white md:ml-64">
-        <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
-          <GlobalCard className="min-h-screen pt-16">
-            <div className="flex flex-row items-center justify-between mx-8">
-              <TitleMedium>EPFR Documents</TitleMedium>
-            </div>
-            <div className="mt-2">
-              <div className="flex justify-between gap-10">
-                <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
-                  <Link href="/epfrs/create/single">
-                    <button>
-                      <File3FillIcon className="text-green-deep" size={30} />
-                    </button>
-                    <h2>Single EPFR Document</h2>
-                    <span className="text-sm text-gray-light">
-                      This EPFR for one person
-                    </span>
-                  </Link>
-                </div>
-                <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
-                  <Link href="/epfrs/create/join">
-                    <button>
-                      <File3FillIcon className="text-green-deep" size={30} />
-                    </button>
-                    <h2>Joint EPFR Document</h2>
-                    <span className="text-sm text-gray-light">
-                      This EPFR for two persons
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </GlobalCard>
-        </section>
-      </main>
+      <GlobalCard className="flex flex-col items-center justify-center w-full min-h-screen pt-16">
+        <div className="mb-10">
+          <TitleMedium>Please choose EPFR type</TitleMedium>
+        </div>
+        <div className="flex justify-between gap-10">
+          <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
+            <Link href="create/single">
+              <button className="mb-3">
+                <File3FillIcon className="text-green-deep" size={50} />
+              </button>
+              <h2 className="text-md">Single EPFR Document</h2>
+              <span className="text-sm text-gray-light">
+                This EPFR for one person
+              </span>
+            </Link>
+          </div>
+          <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
+            <Link href="create/join">
+              <button className="mb-3">
+                <File3FillIcon className="text-green-deep" size={50} />
+              </button>
+              <h2 className="text-md">Joint EPFR Document</h2>
+              <span className="text-sm text-gray-light">
+                This EPFR for two persons
+              </span>
+            </Link>
+          </div>
+        </div>
+      </GlobalCard>
     </>
   );
 };

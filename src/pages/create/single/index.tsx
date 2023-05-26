@@ -25,6 +25,7 @@ import AddPlanRecommendation from "@/components/Modules/Epfrs/CreateData/Section
 import ScrollSpy from "react-ui-scrollspy";
 import PrioritiesNeedAnalysisMenu from "@/components/Modules/Epfrs/CreateData/Sections/PrioritiesNeedAnalysis/PrioritiesNeedAnalysisMenu";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 
 const EpfrCreateSingle: Page = () => {
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
@@ -148,8 +149,11 @@ const EpfrCreateSingle: Page = () => {
         <title>New EPFR Document - Unicorn Project</title>
       </Head>
       <aside
-        className={`fixed top-0 z-10 w-56 min-h-screen ml-24 px-6 py-16 bg-blue-midnight text-sm`}
+        className={`fixed top-0 z-10 w-56 min-h-screen px-6 py-16 bg-blue-midnight text-sm`}
       >
+        <div className="mb-4">
+          <SidebarLogo />
+        </div>
         <div className="space-y-8">
           {menuNavigation.map((val, index) => (
             <a
@@ -173,7 +177,7 @@ const EpfrCreateSingle: Page = () => {
           ))}
         </div>
       </aside>
-      <main className="flex-1 md:ml-80">
+      <main className="flex-1 md:ml-56">
         <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
           <GlobalCard className="min-h-screen pt-16">
             <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60 mb-14">
