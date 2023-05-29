@@ -8,6 +8,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useRouter } from "next/router";
 import React from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
@@ -17,7 +18,13 @@ interface Props {
 
 const RepresentativeDeclaration = (props: Props) => {
 
+  const {push} = useRouter();
+
   const scrollPosition = useScrollPosition(12)
+
+  const finish = () => {
+    push('/create/finish')
+  }
 
   return (
     <div id={props.id}>
@@ -75,7 +82,7 @@ const RepresentativeDeclaration = (props: Props) => {
 
       <SectionCardFooter className="mx-8 2xl:mx-60">
         <ButtonGreenMedium>Review</ButtonGreenMedium>
-        <ButtonGreenMedium>
+        <ButtonGreenMedium onClick={finish}>
           Sign Now <ArrowRightLineIcon size={20} />
         </ButtonGreenMedium>
       </SectionCardFooter>
