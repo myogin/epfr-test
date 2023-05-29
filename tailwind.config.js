@@ -17,6 +17,7 @@ module.exports = {
       'gray-soft-thin': '#DDDDDD',
       'gray-soft-strong': '#CCCCCC',
       'gray-soft-white': '#FCFCFC',
+      'gray-soft-white-soft': '#F5F5F5',
       'white': '#FFFFFF',
       'white-bone': '#FAFAFA',
       'green-deep': '#2BB673',
