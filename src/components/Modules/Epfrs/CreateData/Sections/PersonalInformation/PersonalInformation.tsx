@@ -18,6 +18,7 @@ import Toggle from "@/components/Forms/Toggle";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { PersonalInformation as PersonalInformationModel } from "@/models/SectionOne";
 
 interface Props {
   id?: any;
@@ -131,9 +132,48 @@ const PersonalInformation = (props: Props) => {
   };
 
   console.log(addInfoDependent.length);
-  
 
-  const scrollPosition = useScrollPosition(1)
+  const scrollPosition = useScrollPosition(1);
+
+  const [personalInformation, setPersonalInformation] =
+    useState<PersonalInformationModel>({
+      id: "",
+      title: "",
+      nric: "",
+      sex: "",
+      dob: "",
+      nationality: "",
+      passType: "",
+      employmentStatus: "",
+      employmentSector: "",
+      companyName: "",
+      contactDetailHome: "",
+      registeredAddress: "",
+      smoker: "",
+      principalName: "",
+      emailAddress: "",
+      race: "",
+      countryOfBirth: "",
+      residencyStatus: "",
+      maritalStatus: "",
+      occupation: "",
+      cpfEmployee: "",
+      annualIncome: "",
+      mobileNumber: "",
+      mailingAddress: "",
+    });
+
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+    setPersonalInformation((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }))
+  };
+
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('datas', JSON.stringify(personalInformation))
+  }
 
   return (
     <div id={props.id}>
@@ -151,107 +191,136 @@ const PersonalInformation = (props: Props) => {
           </span>
         </button>
       </div>
-      <div id="section-header-1" className={`sticky top-0 z-10 ${scrollPosition === "okSec1" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
-        <HeadingPrimarySection className={`mx-8 2xl:mx-60 ${scrollPosition === "okSec1" ? "text-gray-light text-xl font-bold mb-5 mt-5" : "text-2xl font-bold mb-10 mt-10"}`}>
+      <div
+        id="section-header-1"
+        className={`sticky top-0 z-10 ${
+          scrollPosition === "okSec1" ? "bg-white py-1 ease-in shadow-lg" : ""
+        }`}
+      >
+        <HeadingPrimarySection
+          className={`mx-8 2xl:mx-60 ${
+            scrollPosition === "okSec1"
+              ? "text-gray-light text-xl font-bold mb-5 mt-5"
+              : "text-2xl font-bold mb-10 mt-10"
+          }`}
+        >
           Section 1. Personal Information
         </HeadingPrimarySection>
       </div>
 
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">1.1 Client Details</HeadingSecondarySection>
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        1.1 Client Details
+      </HeadingSecondarySection>
       <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
         <div>
           {/* Selected Form */}
           <Select
             className="mb-10"
             label="Title"
-            value=""
+            name="title"
+            value={personalInformation.title}
             datas={clientTitle}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="NRIC / FIN"
             type="text"
+            name="nric"
+            value={personalInformation.nric}
             placeholder="12981289129"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           {/* Selected Form */}
           <Select
             className="mb-10"
             label="Sex"
-            value=""
+            name="sex"
+            value={personalInformation.sex}
             datas={clientSex}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="Date of Birth"
-            type="text"
+            type="date"
+            name="dob"
+            value={personalInformation.dob}
             placeholder="01 January 1998"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           {/* Selected Form */}
           <Select
             className="mb-10"
             label="Nationality"
-            value=""
+            name="nationality"
+            value={personalInformation.nationality}
             datas={country}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           {/* Selected Form */}
           <Select
             className="mb-10"
             label="Pass Type"
-            value=""
+            name="passType"
+            value={personalInformation.passType}
             datas={country}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           {/* Selected Form */}
           <Select
             className="mb-10"
+            name="employmentStatus"
             label="Employment Status"
-            value=""
+            value={personalInformation.employmentStatus}
             datas={employment}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           {/* Selected Form */}
           <Select
             className="mb-10"
             label="Employment Sector"
-            value=""
+            name="employmentSector"
+            value={personalInformation.employmentSector}
             datas={employmentSector}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           {/* Selected Form */}
           <Select
             className="mb-10"
+            name="companyName"
             label="Company Name"
-            value=""
+            value={personalInformation.companyName}
             datas={companyMaster}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="Contact Detail [Home]"
             type="text"
+            name="contactDetailHome"
+            value={personalInformation.contactDetailHome}
             placeholder="981271291"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="Registered Address"
             type="text"
+            name="registeredAddress"
+            value={personalInformation.registeredAddress}
             placeholder="Singapore"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           {/* Selected Form */}
 
           <Select
             className="mb-10"
             label="Smoker"
-            value=""
+            name="smoker"
+            value={personalInformation.smoker}
             datas={clientSmoker}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
         </div>
         <div>
@@ -259,78 +328,96 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Principal Name"
             type="text"
+            name="principalName"
+            value={personalInformation.principalName}
             placeholder="Margo Madison"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="Email Address"
             type="text"
+            name="emailAddress"
+            value={personalInformation.emailAddress}
             placeholder="margomadison@gmail.com"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="Race"
             type="text"
+            name="race"
+            value={personalInformation.race}
             placeholder="Chinesse"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           <Select
             className="mb-10"
             label="Country of Birth"
-            value=""
+            name="countryOfBirth"
+            value={personalInformation.countryOfBirth}
             datas={country}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           <Select
             className="mb-10"
             label="Residency Status"
-            value=""
+            name="residencyStatus"
+            value={personalInformation.residencyStatus}
             datas={recidence}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           <Select
             className="mb-10"
             label="Marital Status"
-            value=""
+            name="maritalStatus"
+            value={personalInformation.maritalStatus}
             datas={marital}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="Occupation"
             type="text"
+            name="occupation"
+            value={personalInformation.occupation}
             placeholder="Manager"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
-            label="CPF Employe"
+            label="CPF Employee"
             type="text"
+            name="cpfEmployee"
             placeholder="-"
-            handleChange={(event) => setData(event.target.value)}
+            value={personalInformation.cpfEmployee}
+            handleChange={handleInputChange}
           />
           <Select
             className="mb-10"
             label="Annual Income"
-            value=""
+            name="annualIncome"
+            value={personalInformation.annualIncome}
             datas={annualIncome}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="Mobile Number"
             type="text"
+            name="mobileNumber"
+            value={personalInformation.mobileNumber}
             placeholder="2121921298"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
           <Input
             className="mb-10"
             label="Mailing Address"
             type="text"
+            name="mailingAddress"
+            value={personalInformation.mailingAddress}
             placeholder="Set as same like registered address"
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
           />
         </div>
       </SectionCardDoubleGrid>
@@ -396,7 +483,9 @@ const PersonalInformation = (props: Props) => {
         </div>
       </SectionCardDoubleGrid>
       {/* Sec 4 */}
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">1.4 Trusted Individual</HeadingSecondarySection>
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        1.4 Trusted Individual
+      </HeadingSecondarySection>
       <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
         <div>
           <Toggle toggleName="Two of Following Profiles" />
@@ -462,12 +551,15 @@ const PersonalInformation = (props: Props) => {
       </HeadingSecondarySection>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
-          <Checkbox lableStyle="text-sm font-normal text-gray-light" label="I have conveyed and/or translated the recommendation(s) and all
+          <Checkbox
+            lableStyle="text-sm font-normal text-gray-light"
+            label="I have conveyed and/or translated the recommendation(s) and all
             relevant disclosures into a language which the client can
             understand. By providing my contact details a. signing this seaion
             in this 'Personal Financial IlecorcP, I have gjven my consent mallow
             Lega, FP Pte Ltd to contact me tor verification oldie contents in
-            this 'Personal Financial Record• and not tor any other purposes." />
+            this 'Personal Financial Record• and not tor any other purposes."
+          />
         </RowSingle>
       </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
