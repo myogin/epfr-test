@@ -113,7 +113,7 @@ const EpfrCreateSingle: Page = () => {
       id: 12,
       name: "Representative Declaration",
       url: "section-12",
-    },
+    }
   ];
 
   let elementActive = null;
@@ -149,33 +149,31 @@ const EpfrCreateSingle: Page = () => {
         <title>New EPFR Document - Unicorn Project</title>
       </Head>
       <aside
-        className={`fixed top-0 z-10 w-56 min-h-screen px-6 py-16 bg-blue-midnight text-sm`}
+        className={`fixed top-0 z-10 w-56 min-h-screen px-6 py-16 bg-blue-midnight text-sm overflow-hidden`}
       >
-        <div className="mb-4">
-          <SidebarLogo />
-        </div>
-        <div className="space-y-8">
-          {menuNavigation.map((val, index) => (
-            <a
-              key={"epfr-menu" + val.id}
-              className={`flex flex-row cursor-pointer`}
-              onClick={(e) => onPress(e)}
-              href={"#" + val.url}
-            >
-              <div
-                data-to-scrollspy-id={val.url}
-                className="flex flex-row items-center justify-start gap-2 sub-menu-epfr"
+          <div className="mb-7">
+            <SidebarLogo />
+          </div>
+          <div className="space-y-8">
+            {menuNavigation.map((val, index) => (
+              <a
+                key={"epfr-menu" + val.id}
+                className={`flex flex-row cursor-pointer`}
+                onClick={(e) => onPress(e)}
+                href={"#" + val.url}
               >
-                <span
-                  className="w-6 h-6 px-2 py-1 text-xs text-center bg-white rounded-md text-blue-midnight"
+                <div
+                  data-to-scrollspy-id={val.url}
+                  className="flex flex-row items-center justify-start gap-2 sub-menu-epfr"
                 >
-                  {val.id}
-                </span>
-                <span>{val.name}</span>
-              </div>
-            </a>
-          ))}
-        </div>
+                  <span className="w-6 h-6 px-2 py-1 text-xs text-center bg-white rounded-md text-blue-midnight">
+                    {val.id}
+                  </span>
+                  <span>{val.name}</span>
+                </div>
+              </a>
+            ))}
+          </div>
       </aside>
       <main className="flex-1 md:ml-56">
         <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>

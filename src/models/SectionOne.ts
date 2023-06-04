@@ -1,48 +1,74 @@
-export interface PersonalInformation {
-  id: string;
-  title: string;
-  nric: string;
-  sex: string;
-  dob: string;
+interface PersonalInformation {
+  id?: string;
+  clientTitle: string;
+  clientName: string;
+  otherName: string;
+  relationship: string;
+  gender: string;
+  passportNo: string;
   nationality: string;
-  passType: string;
-  employmentStatus: string;
-  employmentSector: string;
-  companyName: string;
-  contactDetailHome: string;
-  registeredAddress: string;
+  residency: string;
+  residencyTwo: string;
+  residencyOther: string;
+  dateOfBirth: string;
+  marital: string;
   smoker: string;
-  principalName: string;
-  emailAddress: string;
-  race: string;
-  countryOfBirth: string;
-  residencyStatus: string;
-  maritalStatus: string;
+  employmentStatus: string;
   occupation: string;
-  cpfEmployee: string;
+  companyName: string;
+  businessNature: string;
   annualIncome: string;
-  mobileNumber: string;
-  mailingAddress: string;
-}
-
-export interface DependantInformation {
-  id: string;
-  relationship: string;
-  nric: string;
-  datOfBirth: string;
-  sex: string;
-  name: string;
-  birthCertNumber: string;
-  age: string;
-  yearsToSupport: string;
-}
-
-export interface TrustedIndividual {
-  id: string;
-  name: string;
-  nric: string;
-  languageUsed: string;
+  contactHome: string;
+  contactMobile: string;
+  contactOffice: string;
+  contactFax: string;
   email: string;
+  residentialAddr: string;
+  mailingAddr: string;
+}
+interface DependantInformation {
+  id?: string;
+  name: string;
   relationship: string;
-  mobileNumber: string;
+  dateOfBirth: string;
+  age: number;
+  gender: string;
+  year: number;
+}
+
+interface Accompaniment {
+  age: number;
+  english_spoken: string;
+  english_written: string;
+  education_level: string;
+}
+
+interface TrustedIndividual {
+  id?: string;
+  condition1: boolean;
+  condition2: boolean;
+  trustedEmail: string;
+  nameOfTrustedIndividual: string;
+  passportNo: string;
+  relationship: string;
+  languageUsed: string;
+  contactNumber: string;
+  englishLevel1: number;
+  englishLevel2: number;
+  educationLevel: number;
+  ageLevel: number;
+  declaration: number;
+}
+
+export interface SectionOne {
+  ownerId: number;
+  type: number;
+  id: number;
+  clientInfo: PersonalInformation[];
+  dependant: DependantInformation[];
+  accompaniment: Accompaniment[];
+  trustedIndividuals: TrustedIndividual[];
+  issues: [];
+  reviewDate: string;
+  status: number;
 }

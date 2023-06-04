@@ -18,7 +18,7 @@ import Toggle from "@/components/Forms/Toggle";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { PersonalInformation as PersonalInformationModel } from "@/models/SectionOne";
+import { SectionOne } from "@/models/SectionOne";
 
 interface Props {
   id?: any;
@@ -135,44 +135,92 @@ const PersonalInformation = (props: Props) => {
 
   const scrollPosition = useScrollPosition(1);
 
-  const [personalInformation, setPersonalInformation] =
-    useState<PersonalInformationModel>({
-      id: "",
-      title: "",
-      nric: "",
-      sex: "",
-      dob: "",
-      nationality: "",
-      passType: "",
-      employmentStatus: "",
-      employmentSector: "",
-      companyName: "",
-      contactDetailHome: "",
-      registeredAddress: "",
-      smoker: "",
-      principalName: "",
-      emailAddress: "",
-      race: "",
-      countryOfBirth: "",
-      residencyStatus: "",
-      maritalStatus: "",
-      occupation: "",
-      cpfEmployee: "",
-      annualIncome: "",
-      mobileNumber: "",
-      mailingAddress: "",
-    });
+  const [sectionOne, setSectionOne] = useState<SectionOne>({
+    ownerId: 0,
+    type: 0,
+    id: 0,
+    clientInfo: [
+      {
+        clientTitle: "",
+        clientName: "",
+        otherName: "",
+        relationship: "",
+        gender: "",
+        passportNo: "",
+        nationality: "",
+        residency: "",
+        residencyTwo: "",
+        residencyOther: "",
+        dateOfBirth: "",
+        marital: "",
+        smoker: "",
+        employmentStatus: "",
+        occupation: "",
+        companyName: "",
+        businessNature: "",
+        annualIncome: "",
+        contactHome: "",
+        contactMobile: "",
+        contactOffice: "",
+        contactFax: "",
+        email: "",
+        residentialAddr: "",
+        mailingAddr: "",
+      },
+    ],
+    dependant: [
+      {
+        name: "",
+        relationship: "",
+        dateOfBirth: "",
+        age: 0,
+        gender: "",
+        year: 0,
+      },
+    ],
+    accompaniment: [
+      {
+        age: 0,
+        english_spoken: "",
+        english_written: "",
+        education_level: "",
+      },
+    ],
+    trustedIndividuals: [
+      {
+        condition1: false,
+        condition2: false,
+        trustedEmail: "",
+        nameOfTrustedIndividual: "",
+        passportNo: "",
+        relationship: "",
+        languageUsed: "",
+        contactNumber: "",
+        englishLevel1: 0,
+        englishLevel2: 0,
+        educationLevel: 0,
+        ageLevel: 0,
+        declaration: 0,
+      },
+    ],
+    issues: [],
+    reviewDate: "",
+    status: 0,
+  });
 
   const handleInputChange = (event: any) => {
+    console.log(event.target.name);
+    console.log(event.target.value);
+
     const { name, value } = event.target;
-    setPersonalInformation((prevState) => ({
+    setSectionOne((prevState) => ({
       ...prevState,
       [name]: value,
-    }))
+    }));
   };
 
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('datas', JSON.stringify(personalInformation))
+  if (typeof window !== "undefined") {
+    localStorage.setItem("section1", JSON.stringify(sectionOne));
   }
 
   return (
@@ -217,8 +265,8 @@ const PersonalInformation = (props: Props) => {
           <Select
             className="mb-10"
             label="Title"
-            name="title"
-            value={personalInformation.title}
+            name="clientTitle"
+            value={sectionOne.clientInfo[0].clientTitle}
             datas={clientTitle}
             handleChange={handleInputChange}
           />
@@ -226,8 +274,8 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="NRIC / FIN"
             type="text"
-            name="nric"
-            value={personalInformation.nric}
+            name="passportNo"
+            value={sectionOne.clientInfo[0].passportNo}
             placeholder="12981289129"
             handleChange={handleInputChange}
           />
@@ -235,8 +283,8 @@ const PersonalInformation = (props: Props) => {
           <Select
             className="mb-10"
             label="Sex"
-            name="sex"
-            value={personalInformation.sex}
+            name="gender"
+            value={sectionOne.clientInfo[0].gender}
             datas={clientSex}
             handleChange={handleInputChange}
           />
@@ -244,8 +292,8 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Date of Birth"
             type="date"
-            name="dob"
-            value={personalInformation.dob}
+            name="dateOfBirth"
+            value={sectionOne.clientInfo[0].dateOfBirth}
             placeholder="01 January 1998"
             handleChange={handleInputChange}
           />
@@ -254,25 +302,25 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Nationality"
             name="nationality"
-            value={personalInformation.nationality}
+            value={sectionOne.clientInfo[0].nationality}
             datas={country}
             handleChange={handleInputChange}
           />
           {/* Selected Form */}
-          <Select
+          {/* <Select
             className="mb-10"
             label="Pass Type"
             name="passType"
-            value={personalInformation.passType}
+            value={sectionOne.clientInfo[0].passType}
             datas={country}
             handleChange={handleInputChange}
-          />
+          /> */}
           {/* Selected Form */}
           <Select
             className="mb-10"
             name="employmentStatus"
             label="Employment Status"
-            value={personalInformation.employmentStatus}
+            value={sectionOne.clientInfo[0].employmentStatus}
             datas={employment}
             handleChange={handleInputChange}
           />
@@ -281,7 +329,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Employment Sector"
             name="employmentSector"
-            value={personalInformation.employmentSector}
+            value={sectionOne.clientInfo[0].businessNature}
             datas={employmentSector}
             handleChange={handleInputChange}
           />
@@ -290,7 +338,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             name="companyName"
             label="Company Name"
-            value={personalInformation.companyName}
+            value={sectionOne.clientInfo[0].companyName}
             datas={companyMaster}
             handleChange={handleInputChange}
           />
@@ -298,8 +346,8 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Contact Detail [Home]"
             type="text"
-            name="contactDetailHome"
-            value={personalInformation.contactDetailHome}
+            name="contactHome"
+            value={sectionOne.clientInfo[0].contactHome}
             placeholder="981271291"
             handleChange={handleInputChange}
           />
@@ -307,29 +355,22 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Registered Address"
             type="text"
-            name="registeredAddress"
-            value={personalInformation.registeredAddress}
+            name="residentialAddr"
+            value={sectionOne.clientInfo[0].residentialAddr}
             placeholder="Singapore"
             handleChange={handleInputChange}
           />
           {/* Selected Form */}
 
-          <Select
-            className="mb-10"
-            label="Smoker"
-            name="smoker"
-            value={personalInformation.smoker}
-            datas={clientSmoker}
-            handleChange={handleInputChange}
-          />
+          
         </div>
         <div>
           <Input
             className="mb-10"
             label="Principal Name"
             type="text"
-            name="principalName"
-            value={personalInformation.principalName}
+            name="otherName"
+            value={sectionOne.clientInfo[0].otherName}
             placeholder="Margo Madison"
             handleChange={handleInputChange}
           />
@@ -337,41 +378,41 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Email Address"
             type="text"
-            name="emailAddress"
-            value={personalInformation.emailAddress}
+            name="email"
+            value={sectionOne.clientInfo[0].email}
             placeholder="margomadison@gmail.com"
             handleChange={handleInputChange}
           />
-          <Input
+          {/* <Input
             className="mb-10"
             label="Race"
             type="text"
             name="race"
-            value={personalInformation.race}
+            value={sectionOne.clientInfo[0].race}
             placeholder="Chinesse"
             handleChange={handleInputChange}
-          />
-          <Select
+          /> */}
+          {/* <Select
             className="mb-10"
             label="Country of Birth"
             name="countryOfBirth"
-            value={personalInformation.countryOfBirth}
+            value={personalInformation[0].countryOfBirth}
             datas={country}
             handleChange={handleInputChange}
-          />
+          /> */}
           <Select
             className="mb-10"
             label="Residency Status"
-            name="residencyStatus"
-            value={personalInformation.residencyStatus}
+            name="residency"
+            value={sectionOne.clientInfo[0].residency}
             datas={recidence}
             handleChange={handleInputChange}
           />
           <Select
             className="mb-10"
             label="Marital Status"
-            name="maritalStatus"
-            value={personalInformation.maritalStatus}
+            name="marital"
+            value={sectionOne.clientInfo[0].marital}
             datas={marital}
             handleChange={handleInputChange}
           />
@@ -380,24 +421,24 @@ const PersonalInformation = (props: Props) => {
             label="Occupation"
             type="text"
             name="occupation"
-            value={personalInformation.occupation}
+            value={sectionOne.clientInfo[0].occupation}
             placeholder="Manager"
             handleChange={handleInputChange}
           />
-          <Input
+          {/* <Input
             className="mb-10"
             label="CPF Employee"
             type="text"
             name="cpfEmployee"
             placeholder="-"
-            value={personalInformation.cpfEmployee}
+            value={personalInformation[0].cpfEmployee}
             handleChange={handleInputChange}
-          />
+          /> */}
           <Select
             className="mb-10"
             label="Annual Income"
             name="annualIncome"
-            value={personalInformation.annualIncome}
+            value={sectionOne.clientInfo[0].annualIncome}
             datas={annualIncome}
             handleChange={handleInputChange}
           />
@@ -405,8 +446,8 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Mobile Number"
             type="text"
-            name="mobileNumber"
-            value={personalInformation.mobileNumber}
+            name="contactMobile"
+            value={sectionOne.clientInfo[0].contactMobile}
             placeholder="2121921298"
             handleChange={handleInputChange}
           />
@@ -414,9 +455,17 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Mailing Address"
             type="text"
-            name="mailingAddress"
-            value={personalInformation.mailingAddress}
+            name="mailingAddr"
+            value={sectionOne.clientInfo[0].mailingAddr}
             placeholder="Set as same like registered address"
+            handleChange={handleInputChange}
+          />
+          <Select
+            className="mb-10"
+            label="Smoker"
+            name="smoker"
+            value={sectionOne.clientInfo[0].smoker}
+            datas={clientSmoker}
             handleChange={handleInputChange}
           />
         </div>
