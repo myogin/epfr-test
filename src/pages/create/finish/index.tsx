@@ -7,6 +7,7 @@ import TitleMedium from "@/components/Attributes/Typography/TitleMedium";
 import { useRouter } from "next/router";
 import CheckboxCircleFillIcon from 'remixicon-react/CheckboxCircleFillIcon'
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 
 const EpfrCreateFinish: Page = () => {
   const { push } = useRouter();
@@ -32,8 +33,10 @@ const EpfrCreateFinish: Page = () => {
             Now you will be redirected to old system. Click proceed to continue
             this action.
           </div>
-          <div className="mt-4">
+          <div className="flex items-center gap-4 mt-4">
             <ButtonGreenMedium onClick={back}>Proceed</ButtonGreenMedium>
+            or
+            <ButtonBorderMedium className="font-semibold text-green-deep border-green-deep" onClick={back}>Create Other EPFR</ButtonBorderMedium>
           </div>
         </div>
       </GlobalCard>

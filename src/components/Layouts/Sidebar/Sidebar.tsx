@@ -24,6 +24,7 @@ const Sidebar = () => {
       <div className="flex flex-row items-center p-1 mb-10">
         <SidebarLogo sidebarIcon={changeSidebar} />
       </div>
+      
       <div className="space-y-20">
         <SidebarTopMenu router={router} sidebarIcon={changeSidebar} />
         <SidebarBottomMenu router={router} sidebarIcon={changeSidebar} />
