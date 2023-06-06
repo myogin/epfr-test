@@ -26,8 +26,10 @@ import ScrollSpy from "react-ui-scrollspy";
 import PrioritiesNeedAnalysisMenu from "@/components/Modules/Epfrs/CreateData/Sections/PrioritiesNeedAnalysis/PrioritiesNeedAnalysisMenu";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
+import { useRouter } from "next/router";
 
 const EpfrCreateSingle: Page = () => {
+
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);

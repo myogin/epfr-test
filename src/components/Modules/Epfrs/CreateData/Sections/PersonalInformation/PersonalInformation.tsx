@@ -217,6 +217,7 @@ const PersonalInformation = (props: Props) => {
 
     const { name, value } = event.target;
     const { groupdata } = event.target.dataset;
+    
 
     if (groupdata === "generalInfo") {
       console.log("Masuk sini nggak general info");
@@ -228,9 +229,9 @@ const PersonalInformation = (props: Props) => {
     if (groupdata === "clientInfo") {
       console.log("Masuk sini nggak client info");
       setSectionOne(prevPfr => {
-        const clientInfo = [...prevPfr.clientInfo];
+        const clientInfo = [...prevPfr.clientInfo, {}];
         clientInfo[name] = value;
-        return { ...prevPfr, clientInfo };
+        return { clientInfo:  [...prevPfr.clientInfo: {[name]: value}]};
       });
     }
 
