@@ -209,58 +209,27 @@ const PersonalInformation = (props: Props) => {
   });
 
   const handleInputChange = (event: any) => {
-    
-    // console.log(event.target);
-    // console.log(event.target.dataset.groupdata);
-    // console.log(event.target.name);
-    // console.log(event.target.value);
-
     const { name, value } = event.target;
     const { groupdata } = event.target.dataset;
-    
 
     if (groupdata === "generalInfo") {
-      console.log("Masuk sini nggak general info");
-      setSectionOne(prevPfr => {
-        return { ...prevPfr, [name]: value };
+      setSectionOne(prevState => {
+        return { ...prevState, [name]: value };
       });
     }
 
     if (groupdata === "clientInfo") {
-      console.log("Masuk sini nggak client info");
-      setSectionOne(prevPfr => {
-        const clientInfo = {...prevPfr.clientInfo};
-        clientInfo[name] = value;
-        return { ...prevPfr,  clientInfo};
+      setSectionOne(prevState => {
+        const clientInfoData = [...prevState.clientInfo]
+        const clientInfo = clientInfoData.map(client => {
+          return {...client, [name]: value};
+        });
+  
+        return {...prevState, clientInfo}
       });
     }
 
-    if (groupdata === "dependantInfo") {
-      console.log("Masuk sini nggak dependant info");
-      setSectionOne((prevPfr) => {
-        const newDependant = [...prevPfr.dependant];
-        newDependant[name] = value;
-        return { ...prevPfr, newDependant };
-      });
-    }
-
-    if (groupdata === "accompanimentInfo") {
-      console.log("Masuk sini nggak accompainment info");
-      setSectionOne((prevPfr) => {
-        const newDependant = { ...prevPfr };
-        newDependant.accompaniment[name] = value;
-        return newDependant;
-      });
-    }
-
-    if (groupdata === "trustedIndividualInfo") {
-      console.log("Masuk sini nggak trusted individual info");
-      setSectionOne((prevPfr) => {
-        const newDependant = { ...prevPfr };
-        newDependant.trustedIndividuals[name] = value;
-        return newDependant;
-      });
-    }
+    
   };
 
   console.log("APa ini");
@@ -324,7 +293,7 @@ const PersonalInformation = (props: Props) => {
             label="NRIC / FIN"
             type="text"
             name="passportNo"
-            value=""
+            value={sectionOne.clientInfo[0].passportNo}
             placeholder="12981289129"
             handleChange={handleInputChange}
           />
@@ -426,7 +395,7 @@ const PersonalInformation = (props: Props) => {
             label="Principal Name"
             type="text"
             name="clientName"
-            value=""
+            value={sectionOne.clientInfo[0].clientName}
             placeholder="Margo Madison"
             handleChange={handleInputChange}
           />
@@ -532,8 +501,18 @@ const PersonalInformation = (props: Props) => {
             datas={clientSmoker}
             handleChange={handleInputChange}
           />
-          <Input
+          {/* <Input
             dataType="clientInfo"
+            className="mb-10"
+            label="Review Date"
+            type="date"
+            name="reviewDate"
+            value={sectionOne.reviewDate}
+            placeholder="01 January 1998"
+            handleChange={handleInputChange}
+          /> */}
+          <Input
+            dataType="generalInfo"
             className="mb-10"
             label="Review Date"
             type="date"
