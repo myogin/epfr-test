@@ -159,7 +159,7 @@ const EpfrCreateSingle: Page = () => {
         <div className="mb-7">
           {" "}
           <Link href="/" className="flex text-white">
-            <ArrowLeftSLineIcon /> Back to old system
+            <ArrowLeftSLineIcon /> Back to EPFR list
           </Link>
         </div>
         <div className="space-y-8">

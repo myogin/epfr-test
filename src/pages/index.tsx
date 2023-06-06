@@ -19,7 +19,7 @@ const EpfrPage: Page = () => {
       <GlobalCard className="flex flex-col w-full min-h-screen">
         <div className="fixed pt-14 pl-14">
           <Link href="/" className="flex text-green-deep">
-            <ArrowLeftSLineIcon /> Back to old system
+            <ArrowLeftSLineIcon /> Back to EPFR list
           </Link>
         </div>
         <div className="flex flex-col items-center justify-center w-full min-h-screen">

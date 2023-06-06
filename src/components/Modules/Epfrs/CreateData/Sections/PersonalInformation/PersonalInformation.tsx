@@ -49,7 +49,7 @@ const PersonalInformation = (props: Props) => {
   const changeData = (params: any) => {};
 
   // Variable Select Box
-  let clientTitle: Array<any> = [
+  let clientTitles: Array<any> = [
     { id: 1, name: "Dr" },
     { id: 2, name: "Mdm" },
     { id: 3, name: "Mr" },
@@ -229,9 +229,9 @@ const PersonalInformation = (props: Props) => {
     if (groupdata === "clientInfo") {
       console.log("Masuk sini nggak client info");
       setSectionOne(prevPfr => {
-        const clientInfo = [...prevPfr.clientInfo, {}];
+        const clientInfo = {...prevPfr.clientInfo};
         clientInfo[name] = value;
-        return { clientInfo:  [...prevPfr.clientInfo: {[name]: value}]};
+        return { ...prevPfr,  clientInfo};
       });
     }
 
@@ -315,7 +315,7 @@ const PersonalInformation = (props: Props) => {
             label="Title"
             name="clientTitle"
             value={sectionOne.clientInfo[0].clientTitle}
-            datas={clientTitle}
+            datas={clientTitles}
             handleChange={handleInputChange}
           />
           <Input
