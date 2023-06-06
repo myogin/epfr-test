@@ -11,6 +11,7 @@ interface Props {
 const Toggle = (prop: Props) => {
   return (
     <div className="flex items-center justify-start gap-4">
+      {prop.toggleName ? (<span className="text-sm font-bold text-gray-light">{prop.toggleName}</span>) : ""}
       <Switch
         checked={prop.isChecked}
         onChange={prop.onChange}
@@ -29,7 +30,7 @@ const Toggle = (prop: Props) => {
           } pointer-events-none inline-block h-[19px] w-[19px] transform rounded-full shadow-lg ring-0 transition duration-200 ease-in-out`}
         />
       </Switch>
-      {prop.toggleName ? (<span className="text-sm font-bold text-gray-light">{prop.toggleName}</span>) : ""}
+      
     </div>
   );
 };

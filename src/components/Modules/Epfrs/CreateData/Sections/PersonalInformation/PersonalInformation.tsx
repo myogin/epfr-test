@@ -209,15 +209,61 @@ const PersonalInformation = (props: Props) => {
   });
 
   const handleInputChange = (event: any) => {
-    console.log(event.target.name);
-    console.log(event.target.value);
+    
+    // console.log(event.target);
+    // console.log(event.target.dataset.groupdata);
+    // console.log(event.target.name);
+    // console.log(event.target.value);
 
     const { name, value } = event.target;
-    setSectionOne((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    const { groupdata } = event.target.dataset;
+
+    if (groupdata === "generalInfo") {
+      console.log("Masuk sini nggak general info");
+      setSectionOne(prevPfr => {
+        return { ...prevPfr, [name]: value };
+      });
+    }
+
+    if (groupdata === "clientInfo") {
+      console.log("Masuk sini nggak client info");
+      setSectionOne(prevPfr => {
+        const clientInfo = [...prevPfr.clientInfo];
+        clientInfo[name] = value;
+        return { ...prevPfr, clientInfo };
+      });
+    }
+
+    if (groupdata === "dependantInfo") {
+      console.log("Masuk sini nggak dependant info");
+      setSectionOne((prevPfr) => {
+        const newDependant = [...prevPfr.dependant];
+        newDependant[name] = value;
+        return { ...prevPfr, newDependant };
+      });
+    }
+
+    if (groupdata === "accompanimentInfo") {
+      console.log("Masuk sini nggak accompainment info");
+      setSectionOne((prevPfr) => {
+        const newDependant = { ...prevPfr };
+        newDependant.accompaniment[name] = value;
+        return newDependant;
+      });
+    }
+
+    if (groupdata === "trustedIndividualInfo") {
+      console.log("Masuk sini nggak trusted individual info");
+      setSectionOne((prevPfr) => {
+        const newDependant = { ...prevPfr };
+        newDependant.trustedIndividuals[name] = value;
+        return newDependant;
+      });
+    }
   };
+
+  console.log("APa ini");
+  console.log(sectionOne);
 
   if (typeof window !== "undefined") {
     localStorage.setItem("section1", JSON.stringify(sectionOne));
@@ -263,6 +309,7 @@ const PersonalInformation = (props: Props) => {
         <div>
           {/* Selected Form */}
           <Select
+            dataType="clientInfo"
             className="mb-10"
             label="Title"
             name="clientTitle"
@@ -271,16 +318,18 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="NRIC / FIN"
             type="text"
             name="passportNo"
-            value={sectionOne.clientInfo[0].passportNo}
+            value=""
             placeholder="12981289129"
             handleChange={handleInputChange}
           />
           {/* Selected Form */}
           <Select
+            dataType="clientInfo"
             className="mb-10"
             label="Sex"
             name="gender"
@@ -289,6 +338,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="Date of Birth"
             type="date"
@@ -299,6 +349,7 @@ const PersonalInformation = (props: Props) => {
           />
           {/* Selected Form */}
           <Select
+            dataType="clientInfo"
             className="mb-10"
             label="Nationality"
             name="nationality"
@@ -317,6 +368,7 @@ const PersonalInformation = (props: Props) => {
           /> */}
           {/* Selected Form */}
           <Select
+            dataType="clientInfo"
             className="mb-10"
             name="employmentStatus"
             label="Employment Status"
@@ -326,6 +378,7 @@ const PersonalInformation = (props: Props) => {
           />
           {/* Selected Form */}
           <Select
+            dataType="clientInfo"
             className="mb-10"
             label="Employment Sector"
             name="employmentSector"
@@ -335,6 +388,7 @@ const PersonalInformation = (props: Props) => {
           />
           {/* Selected Form */}
           <Select
+            dataType="clientInfo"
             className="mb-10"
             name="companyName"
             label="Company Name"
@@ -343,6 +397,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="Contact Detail [Home]"
             type="text"
@@ -352,6 +407,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="Registered Address"
             type="text"
@@ -361,20 +417,20 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           {/* Selected Form */}
-
-          
         </div>
         <div>
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="Principal Name"
             type="text"
-            name="otherName"
-            value={sectionOne.clientInfo[0].otherName}
+            name="clientName"
+            value=""
             placeholder="Margo Madison"
             handleChange={handleInputChange}
           />
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="Email Address"
             type="text"
@@ -401,6 +457,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           /> */}
           <Select
+            dataType="clientInfo"
             className="mb-10"
             label="Residency Status"
             name="residency"
@@ -409,6 +466,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Select
+            dataType="clientInfo"
             className="mb-10"
             label="Marital Status"
             name="marital"
@@ -417,6 +475,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="Occupation"
             type="text"
@@ -435,6 +494,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           /> */}
           <Select
+            dataType="clientInfo"
             className="mb-10"
             label="Annual Income"
             name="annualIncome"
@@ -443,6 +503,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="Mobile Number"
             type="text"
@@ -452,6 +513,7 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Input
+            dataType="clientInfo"
             className="mb-10"
             label="Mailing Address"
             type="text"
@@ -461,11 +523,22 @@ const PersonalInformation = (props: Props) => {
             handleChange={handleInputChange}
           />
           <Select
+            dataType="clientInfo"
             className="mb-10"
             label="Smoker"
             name="smoker"
             value={sectionOne.clientInfo[0].smoker}
             datas={clientSmoker}
+            handleChange={handleInputChange}
+          />
+          <Input
+            dataType="clientInfo"
+            className="mb-10"
+            label="Review Date"
+            type="date"
+            name="reviewDate"
+            value={sectionOne.reviewDate}
+            placeholder="01 January 1998"
             handleChange={handleInputChange}
           />
         </div>

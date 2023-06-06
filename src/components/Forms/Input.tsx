@@ -11,6 +11,7 @@ interface Props {
   handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   readonly?: boolean;
   name?: string;
+  dataType?:string;
 }
 
 const Input = (props: Props) => {
@@ -24,6 +25,7 @@ const Input = (props: Props) => {
         ""
       )}
       <input
+        data-groupdata={props.dataType}
         name={props.name}
         type={props.type}
         readOnly={props.readonly}

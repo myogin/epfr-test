@@ -7,7 +7,8 @@ interface Props {
   name?: any,
   handleChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   datas?: Array<any>;
-  className?: string
+  className?: string;
+  dataType?: string;
 }
 
 const Select = (props: Props) => {
@@ -28,6 +29,7 @@ const Select = (props: Props) => {
       )}
 
       <select
+        data-groupdata={props.dataType}
         placeholder={props.placeholder}
         value={props.value}
         name={props.name}
