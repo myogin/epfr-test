@@ -665,11 +665,6 @@ const PersonalInformation = (props: Props) => {
         </RowSingle>
       </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
-      {/* <SectionCardFooter>
-        <ButtonGreenMedium onClick={() => saveData(2)}>
-          Continue <ArrowRightLineIcon size={20} />
-        </ButtonGreenMedium>
-      </SectionCardFooter> */}
     </div>
   );
 };

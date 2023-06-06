@@ -24,6 +24,7 @@ import VehiclesPortofolio from "./Vehicles/VehiclesPortofolio";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { SectionTwo } from "@/models/SectionTwo";
 
 interface Props {
   id?: any;
@@ -90,26 +91,162 @@ const ExistingPortofolio = (props: Props) => {
 
   const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
 
-  const scrollPosition = useScrollPosition(2)
+  const scrollPosition = useScrollPosition(2);
 
   // console.log("Test logic scroll " +scrollPosition);
 
+  const [sectionTwo, setSectionTwo] = useState<SectionTwo>({
+    id: 0,
+    need: false,
+    declineToReview: [],
+    reason: "",
+    summaryOfProperty: [
+      {
+        editting: false,
+        client: "",
+        category: 0,
+        typeOfProperty: "",
+        yearPurchased: 0,
+        purchasePrice: 0,
+        loanAmount: 0,
+        currentOutstanding: 0,
+        monthlyLoanRepaymentCash: 0,
+        monthlyLoanRepaymentCPF: 0,
+        currentMarketValue: 0,
+      },
+    ],
+    summaryOfInvestment: [
+      {
+        editting: false,
+        client: "",
+        typeOfInvestment: "",
+        typeOfInvestmentOther: "",
+        company: "",
+        yearInvested: 0,
+        investmentAmount: 0,
+        currentvalue: "",
+        sourceOfInvestment: "",
+      },
+    ],
+    summaryOfSavings: [
+      {
+        editting: false,
+        client: "",
+        typeOfDeposit: 0,
+        bank: "",
+        yearDeposit: 0,
+        savingAmount: 0,
+      },
+    ],
+    summaryOfInsurance: [
+      {
+        editting: false,
+        client: "",
+        insured: "",
+        status: "",
+        insurer: "",
+        policyType: "",
+        policyTypeOther: "",
+        policyTerm: "",
+        death: 0,
+        tpd: 0,
+        ci: 0,
+        earlyCI: 0,
+        acc: 0,
+        purchaseYear: 0,
+        premiumFrequency: "",
+        premium: 0,
+        cash: 0,
+        medisave: 0,
+        sourceOfFund: 0,
+      },
+    ],
+    summaryOfInsurance2: [
+      {
+        editting: false,
+        client: "",
+        insured: "",
+        insurer: "",
+        policyType: "",
+        policyTerm: "",
+        existingHosPlan: "",
+        typeOfHosCovered: "",
+        classOfWardCovered: "",
+        purchaseYear: 0,
+        premium: 0,
+        medisave: 0,
+        frequency: "",
+        sourceOfFund: 0,
+      },
+    ],
+    summaryOfLoans: [
+      {
+        editting: false,
+        client: "",
+        typeOfLoan: "",
+        loanTerm: "",
+        yearOfLoanTaken: 0,
+        amountBorrowed: 0,
+        loanStatus: "",
+        typeOfVehicle: "",
+        currentOutstandingLoan: 0,
+        lender: "",
+        interestRate: 0,
+        monthlyLoanRepayment: 0,
+      },
+    ],
+    summaryOfCPF: [
+      {
+        editting: false,
+        client: "",
+        ordinaryAccount: 0,
+        specialAccount: 0,
+        medisaveAccount: 0,
+        retirementAccount: 0,
+      },
+    ],
+    summaryOfSRS: [
+      {
+        editting: false,
+        client: "",
+        amount: 0,
+      },
+    ],
+    issues: [],
+    totalNetWorth: [],
+    networthReason: [],
+    status: 0,
+  });
+
+  if (typeof window !== "undefined") {
+    localStorage.setItem("section2", JSON.stringify(sectionTwo));
+  }
+
   return (
     <div id={props.id}>
-      <div id="section-header-2" className={`sticky top-0 z-10 ${scrollPosition === "okSec2" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
-        <HeadingPrimarySection className={`mx-8 2xl:mx-60 ${scrollPosition === "okSec2" ? "text-gray-light text-xl font-bold mb-5 mt-5" : "text-2xl font-bold mb-10 mt-10"}`}>
+      <div
+        id="section-header-2"
+        className={`sticky top-0 z-10 ${
+          scrollPosition === "okSec2" ? "bg-white py-1 ease-in shadow-lg" : ""
+        }`}
+      >
+        <HeadingPrimarySection
+          className={`mx-8 2xl:mx-60 ${
+            scrollPosition === "okSec2"
+              ? "text-gray-light text-xl font-bold mb-5 mt-5"
+              : "text-2xl font-bold mb-10 mt-10"
+          }`}
+        >
           Section 2. Existing Portfolio
         </HeadingPrimarySection>
       </div>
       {!notReviewAll ? (
         <>
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
-            <h2 className="text-xl font-bold">
-              2.1 Summary of Property(ies)
-            </h2>
+            <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
             <Toggle
               isChecked={property}
-              toggleName={property ? "Review":"Not Review"}
+              toggleName={property ? "Review" : "Not Review"}
               onChange={setDetailProperty}
             />
             {/* <Toggle /> */}
@@ -118,12 +255,10 @@ const ExistingPortofolio = (props: Props) => {
           {property ? <PropertyPortofolio /> : null}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
-            <h2 className="text-xl font-bold">
-              2.2 Summary of Investment(s)
-            </h2>
+            <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>
             <Toggle
               isChecked={investment}
-              toggleName={investment ? "Review":"Not Review"}
+              toggleName={investment ? "Review" : "Not Review"}
               onChange={setDetailInvestment}
             />
           </HeadingSecondarySectionDoubleGrid>
@@ -134,7 +269,7 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.3 Summary of Saving(s)</h2>
             <Toggle
               isChecked={saving}
-              toggleName={saving ? "Review":"Not Review"}
+              toggleName={saving ? "Review" : "Not Review"}
               onChange={setDetailSeving}
             />
           </HeadingSecondarySectionDoubleGrid>
@@ -145,7 +280,7 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.4 Summary of CPF</h2>
             <Toggle
               isChecked={cpf}
-              toggleName={cpf ? "Review":"Not Review"}
+              toggleName={cpf ? "Review" : "Not Review"}
               onChange={setDetailCpf}
             />
           </HeadingSecondarySectionDoubleGrid>
@@ -156,7 +291,7 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.5 Summary of Insurance(s)</h2>
             <Toggle
               isChecked={insurance}
-              toggleName={insurance ? "Review":"Not Review"}
+              toggleName={insurance ? "Review" : "Not Review"}
               onChange={setDetailInsurance}
             />
           </HeadingSecondarySectionDoubleGrid>
@@ -169,7 +304,7 @@ const ExistingPortofolio = (props: Props) => {
             </h2>
             <Toggle
               isChecked={srs}
-              toggleName={srs ? "Review":"Not Review"}
+              toggleName={srs ? "Review" : "Not Review"}
               onChange={setDetailSrs}
             />
           </HeadingSecondarySectionDoubleGrid>
@@ -182,7 +317,7 @@ const ExistingPortofolio = (props: Props) => {
             </h2>
             <Toggle
               isChecked={loan}
-              toggleName={loan ? "Review":"Not Review"}
+              toggleName={loan ? "Review" : "Not Review"}
               onChange={setDetailLoan}
             />
           </HeadingSecondarySectionDoubleGrid>
