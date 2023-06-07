@@ -11,7 +11,7 @@ import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 interface Props {
-  datas?: [];
+  datas?: Array<any>;
 }
 
 const Dependent = (props: Props) => {
@@ -40,9 +40,8 @@ const Dependent = (props: Props) => {
     console.log(params);
   };
 
-  const saveData = (event : any) => {
-
-    console.log("Masuk Save")
+  const saveData = (event: any) => {
+    console.log("Masuk Save");
 
     event.preventDefault();
     let name = event.target.elements.nameDependent.value;
@@ -52,9 +51,9 @@ const Dependent = (props: Props) => {
     let gender = event.target.elements.gender.value;
     let year = event.target.elements.year.value;
 
-    let newData = {name,relationship,dateOfBirth,age,gender,year}
+    let newData = { name, relationship, dateOfBirth, age, gender, year };
 
-    setNewDependent(prevArray => [...prevArray, newData])
+    setDependentData((prevArray: any) => [...prevArray, newData]);
     event.target.reset();
     setShowModal(false);
   };
@@ -87,9 +86,8 @@ const Dependent = (props: Props) => {
     { id: 2, name: "FEMALE" },
   ];
 
-
-  console.log("Cek Data Baru")
-  console.log(newDependent)
+  console.log("Cek Data Baru");
+  console.log(newDependent);
   return (
     <>
       <div className="w-full">
