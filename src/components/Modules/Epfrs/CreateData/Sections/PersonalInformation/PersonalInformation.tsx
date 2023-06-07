@@ -19,6 +19,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionOne } from "@/models/SectionOne";
+import Dependent from "./Dependent";
 
 interface Props {
   id?: any;
@@ -170,12 +171,12 @@ const PersonalInformation = (props: Props) => {
     ],
     dependant: [
       {
-        name: "",
-        relationship: "",
-        dateOfBirth: "",
-        age: 0,
-        gender: "",
-        year: 0,
+        name: "test",
+        relationship: "SON",
+        dateOfBirth: "10 June 2010",
+        age: 13,
+        gender: "1",
+        year: 2,
       },
     ],
     accompaniment: [
@@ -213,23 +214,21 @@ const PersonalInformation = (props: Props) => {
     const { groupdata } = event.target.dataset;
 
     if (groupdata === "generalInfo") {
-      setSectionOne(prevState => {
+      setSectionOne((prevState) => {
         return { ...prevState, [name]: value };
       });
     }
 
     if (groupdata === "clientInfo") {
-      setSectionOne(prevState => {
-        const clientInfoData = [...prevState.clientInfo]
-        const clientInfo = clientInfoData.map(client => {
-          return {...client, [name]: value};
+      setSectionOne((prevState) => {
+        const clientInfoData = [...prevState.clientInfo];
+        const clientInfo = clientInfoData.map((client) => {
+          return { ...client, [name]: value };
         });
-  
-        return {...prevState, clientInfo}
+
+        return { ...prevState, clientInfo };
       });
     }
-
-    
   };
 
   console.log("APa ini");
@@ -534,16 +533,7 @@ const PersonalInformation = (props: Props) => {
         />
       </HeadingSecondarySectionDoubleGrid>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        {showAddDependent ? (
-          <>
-            <ButtonBox className="text-green-deep">
-              <AddLineIcon size={14} />
-            </ButtonBox>
-            <AddDependent />
-          </>
-        ) : (
-          ""
-        )}
+        {showAddDependent ? <Dependent datas={sectionOne.dependant} /> : ""}
       </SectionCardSingleGrid>
 
       {/* Sec 3 */}
