@@ -10,7 +10,7 @@ import React from 'react'
 const IncomeProtection = () => {
 
   const setData = (params: any) => {
-    console.log(params);
+    console.log('params', params);
   };
   return (
     <>
@@ -103,23 +103,35 @@ const IncomeProtection = () => {
           </div>
         </RowDoubleGrid>
         <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">Mortgage ($)</TextSmall>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-end-1">
+              <TextSmall className="text-gray-light">
+                Mortgage ($)
+              </TextSmall>
+            </div>
+            <div className="col-span-1 mt-2">
+              <Checkbox/>
+            </div>
           </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
+            <div className="col-span-1">
+              <Input
+                className="mb-4"
+                type="text"
+                placeholder="1,000,000"
+                handleChange={(event) => setData(event.target.value)}
+              />
+            </div>
         </RowDoubleGrid>
         <RowDoubleGrid>
-          <div>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-end-1">
             <TextSmall className="text-gray-light">
               Personal Debts ($)
             </TextSmall>
+            </div>
+            <div className="col-span-1 mt-2">
+              <Checkbox/>
+            </div>
           </div>
           <div>
             <Input
@@ -131,8 +143,13 @@ const IncomeProtection = () => {
           </div>
         </RowDoubleGrid>
         <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">Others ($)</TextSmall>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-end-1">
+              <TextSmall className="text-gray-light">Others ($)</TextSmall>
+            </div>
+            <div className="col-span-1 mt-2">
+              <Checkbox/>
+            </div>
           </div>
           <div>
             <Input
@@ -178,10 +195,15 @@ const IncomeProtection = () => {
 
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowDoubleGrid>
-          <div>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-end-1">
             <TextSmall className="text-gray-light">
               Less: existing insurance coverage on death ($)
             </TextSmall>
+            </div>
+            <div className="col-span-1 mt-2">
+              <Checkbox/>
+            </div>
           </div>
           <div>
             <Input
@@ -253,7 +275,7 @@ const IncomeProtection = () => {
             <Input
               className="mb-4"
               type="text"
-              placeholder="1,000,000"
+              placeholder="Additional Notes"
               handleChange={(event) => setData(event.target.value)}
             />
           </div>
