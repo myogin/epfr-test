@@ -9,9 +9,19 @@ import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
+import moment from 'moment';
 
 interface Props {
   datas?: Array<any>;
+}
+
+interface DependantState {
+  name: string;
+  relationships: string;
+  dateOfBirth: string;
+  age: number;
+  gender: string;
+  year: string;
 }
 
 const Dependent = (props: Props) => {
@@ -19,7 +29,22 @@ const Dependent = (props: Props) => {
   const [dependentData, setDependentData] = useState(props.datas);
 
   // handle new data dependent
-  const [newDependent, setNewDependent] = useState<Array<any>>([]);
+  const [newDependent, setNewDependent] = useState<DependantState>({
+    name: "",
+    relationships: "",
+    dateOfBirth: "",
+    age: 0,
+    gender: "",
+    year: "",
+  });
+
+  const saveData = (event: any) => {
+    console.log("Masuk Save");
+
+    setDependentData((prevArray: any) => [...prevArray, newDependent]);
+    event.target.reset();
+    setShowModal(false);
+  };
 
   let localStorageSectionOne: any = [];
   let localStorageSectionOneNormal: any = [];
@@ -38,24 +63,6 @@ const Dependent = (props: Props) => {
 
   const setData = (params: any) => {
     console.log(params);
-  };
-
-  const saveData = (event: any) => {
-    console.log("Masuk Save");
-
-    event.preventDefault();
-    let name = event.target.elements.nameDependent.value;
-    let relationship = event.target.elements.relationship.value;
-    let dateOfBirth = event.target.elements.dateOfBirth.value;
-    let age = event.target.elements.age.value;
-    let gender = event.target.elements.gender.value;
-    let year = event.target.elements.year.value;
-
-    let newData = { name, relationship, dateOfBirth, age, gender, year };
-
-    setDependentData((prevArray: any) => [...prevArray, newData]);
-    event.target.reset();
-    setShowModal(false);
   };
 
   const openModal = () => {
@@ -85,6 +92,42 @@ const Dependent = (props: Props) => {
     { id: 1, name: "MALE" },
     { id: 2, name: "FEMALE" },
   ];
+
+  const checkRelationship = (params: any) => {
+    setNewDependent({ ...newDependent, relationships: params });
+    switch (params) {
+      case "SON":
+        setNewDependent({ ...newDependent, gender: "1" });
+        break;
+      case "DAUGHTER":
+        setNewDependent({ ...newDependent, gender: "2" });
+        break;
+      default:
+        setNewDependent({ ...newDependent, gender: "1" });
+        break;
+    }
+  };
+
+  const checkBirthDate = (params: any) => {
+    setNewDependent({...newDependent, dateOfBirth: moment(params.timeStamp).format('mm/dd/yyyy')});
+
+    let currentDate = new Date();
+    let dependentBirthDate = new Date(params);
+
+    if (!isNaN(dependentBirthDate.getTime())) {
+      const yearsDiff = currentDate.getFullYear() - dependentBirthDate.getFullYear();
+      const monthsDiff = currentDate.getMonth() - dependentBirthDate.getMonth();
+
+      let calculatedAge = yearsDiff;
+
+      if (monthsDiff < 0 || (monthsDiff === 0 && currentDate.getDate() < dependentBirthDate.getDate())) {
+        calculatedAge--;
+      }
+
+      setNewDependent({...newDependent, age: calculatedAge});
+    }
+    
+  };
 
   console.log("Cek Data Baru");
   console.log(newDependent);
@@ -127,65 +170,93 @@ const Dependent = (props: Props) => {
                     >
                       Add Dependent
                     </Dialog.Title>
-                    <form onSubmit={saveData}>
-                      <div className="mt-2">
-                        <div className="flex">
+                    <div className="mt-2">
+                      <div className="flex">
+                        <Input
+                          className="my-4"
+                          label="Name"
+                          name="nameDependent"
+                          type="text"
+                          value={newDependent.name}
+                          placeholder="Dependent name"
+                          handleChange={(event) =>
+                            setNewDependent({
+                              ...newDependent,
+                              name: event.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="flex justify-between gap-8">
+                        <div>
+                          <Select
+                            className="my-4"
+                            label="Relationship"
+                            name="relationships"
+                            datas={relationships}
+                            value={newDependent.relationships}
+                            handleChange={(event) =>
+                              checkRelationship(event.target.value)
+                            }
+                          />
                           <Input
                             className="my-4"
-                            label="Name"
-                            name="nameDependent"
-                            type="text"
-                            placeholder="Dependent name"
+                            label="Date Of Birth"
+                            type="date"
+                            name="dateOfBirth"
+                            value={newDependent.dateOfBirth}
+                            handleChange={(event) =>
+                              checkBirthDate(event.target.value)
+                            }
+                          />
+                          <Input
+                            readonly
+                            className="my-4"
+                            label="Age"
+                            type="number"
+                            name="age"
+                            value={newDependent.age}
                           />
                         </div>
-                        <div className="flex justify-between gap-8">
-                          <div>
-                            <Select
-                              className="my-4"
-                              label="Relationship"
-                              name="relationship"
-                              datas={relationships}
-                            />
-                            <Input
-                              className="my-4"
-                              label="Date Of Birth"
-                              type="date"
-                              name="dateOfBirth"
-                            />
-                            <Input
-                              className="my-4"
-                              label="Age"
-                              type="number"
-                              name="age"
-                              placeholder="1,000,000"
-                            />
-                          </div>
-                          <div>
-                            <Select
-                              className="my-4"
-                              label="Sex"
-                              name="gender"
-                              datas={genders}
-                            />
-                            <Input
-                              className="my-4"
-                              label="Years To Support"
-                              type="number"
-                              name="year"
-                              placeholder="Years To Support"
-                            />
-                          </div>
+                        <div>
+                          <Select
+                            className="my-4"
+                            label="Sex"
+                            name="gender"
+                            value={newDependent.gender}
+                            datas={genders}
+                            handleChange={(event) =>
+                              setNewDependent({
+                                ...newDependent,
+                                gender: event.target.value,
+                              })
+                            }
+                          />
+                          <Input
+                            className="my-4"
+                            label="Years To Support"
+                            type="number"
+                            name="year"
+                            value={newDependent.year}
+                            placeholder="Years To Support"
+                            handleChange={(event) =>
+                              setNewDependent({
+                                ...newDependent,
+                                year: event.target.value,
+                              })
+                            }
+                          />
                         </div>
                       </div>
-                      <div className="flex gap-4 mt-4">
-                        <ButtonGreenMedium type="submit">
-                          Save
-                        </ButtonGreenMedium>
-                        <ButtonTransparentMedium onClick={closeModal}>
-                          Cancel
-                        </ButtonTransparentMedium>
-                      </div>
-                    </form>
+                    </div>
+                    <div className="flex gap-4 mt-4">
+                      <ButtonGreenMedium onClick={saveData}>
+                        Save
+                      </ButtonGreenMedium>
+                      <ButtonTransparentMedium onClick={closeModal}>
+                        Cancel
+                      </ButtonTransparentMedium>
+                    </div>
                   </Dialog.Panel>
                 </Transition.Child>
               </div>
