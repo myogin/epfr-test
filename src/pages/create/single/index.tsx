@@ -211,7 +211,6 @@ const EpfrCreateSingle: Page = () => {
                     <RiskProfile id="section-5" />
                     <CustomerKnowledgeAssesment id="section-6" />
                     <PrioritiesNeedAnalysis id="section-7" />
-                    {/* <PrioritiesNeedAnalysisMenu id="section-7" /> */}
                     <Affordability id="section-8" />
                     <AnalysisRecommendation id="section-9" />
                     <SwitchingReplacement id="section-10" />
