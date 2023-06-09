@@ -14,12 +14,7 @@ interface Props {
   datas?: Array<any>;
 }
 
-<<<<<<< HEAD
-const Dependent = (props : Props) => {
-  console.log('props.datas',props.datas)
-=======
 const Dependent = (props: Props) => {
->>>>>>> ccfe24b9fda6dc0f51321b646b814d21f73ef05f
   const [showModal, setShowModal] = useState(false);
   const [dependentData, setDependentData] = useState(props.datas);
 
