@@ -7,7 +7,13 @@ import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
 import React from 'react'
 
-const IncomeProtection = () => {
+interface Props {
+  datas?: Array<any>;
+}
+
+
+const IncomeProtection = (props : Props) => {
+  console.log('props.datas',props.datas)
 
   const setData = (params: any) => {
     console.log('params', params);

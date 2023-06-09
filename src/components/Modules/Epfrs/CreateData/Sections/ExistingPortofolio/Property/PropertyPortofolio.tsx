@@ -13,7 +13,7 @@ const PropertyPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
   const setData = (params: any) => {
-    console.log(params);
+    console.log('params', params);
   };
 
   const saveData = () => {

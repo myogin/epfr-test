@@ -15,6 +15,7 @@ interface Props {
 }
 
 const Dependent = (props : Props) => {
+  console.log('props.datas',props.datas)
   const [showModal, setShowModal] = useState(false);
   const [dependentData, setDependentData] = useState(props.datas);
 

@@ -30,6 +30,12 @@ const MaternityPlan = () => {
     setInputFields([...inputFields, newfield])
   }
 
+  const rmColumn = (index) => {
+    let data = [...inputFields];
+    data.splice(index, 1)
+    setInputFields(data)
+  }
+
   const setData = (params: any) => {
     console.log('params', params);
   };
@@ -94,7 +100,7 @@ const MaternityPlan = () => {
                   <RowDoubleGrid>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="col-end-1">
-                        <ButtonBox className="text-red">
+                        <ButtonBox className="text-red" onClick={() => rmColumn(index)}>
                           <CloseLineIcon size={14} />
                         </ButtonBox>
                       </div>

@@ -18,6 +18,7 @@ import MaternityPlan from "./MaternityPlan/MaternityPlan";
 import EstatePlanning from "./EstatePlanning/EstatePlanning";
 import OtherInsurance from "./OtherInsurance/OtherInsurance";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
+import { SectionSeven } from "@/models/SectionSeven";
 
 interface Props {
   id?: any;
@@ -60,6 +61,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   const setIncomeProtection = () => {
     showIncomeProtection(!incomeProtection);
+    console.log('incomeProtection',incomeProtection)
   };
 
   const setFundDisability = () => {
@@ -107,6 +109,140 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(7);
+
+  const [sectionSeven, setSectionSeven] = useState<SectionSeven>({
+    pfrId: 0,
+    answer: {
+      pfrId: 0,
+      clientData: [
+        {
+            clientId: 0,
+            dependantId: 0,
+            incomeProtectionUponDeath: {
+                annualAmountNeeded: 1,
+                numberOfYearsNeed: 0,
+                netRateOfReture: 0,
+                capitalSumRequired: 0,
+                finalExpense: 0,
+                emergencyFund: 0,
+                mortgage: 0,
+                personalDebts: 0,
+                others: 0,
+                totalCashFlow: 0,
+                total: 0,
+                existingInsuranceCoverageOnDeath: 0,
+                existingResources: 0,
+                netAmountRequired: 0
+            },
+            fundDisabilityIncomeExpense: {
+                annualAmountNeeded: 0,
+                numberOfYearsNeed: 0,
+                netRateOfReture: 0,
+                capitalSumRequired: 0,
+                medicalExpense: 0,
+                mortgage: 0,
+                loans: 0,
+                totalCashOutflow: 0,
+                total: 0,
+                existingInsuranceCoverageOnDisability: 0,
+                existingResources: 0,
+                netAmountRequired: 0
+            },
+            fundCriticalIllnessExpense: {
+                annualAmountNeeded: 0,
+                numberOfYearsNeed: 0,
+                netRateOfReture: 0,
+                capitalSumRequired: 0,
+                medicalExpense: 0,
+                mortgage: 0,
+                loans: 0,
+                totalCashOutflow: 0,
+                total: 0,
+                existingInsuranceCoverageOnCI: 0,
+                existingResources: 0,
+                netAmountRequired: 0
+            },
+            fundMediumToLongTerm: {
+                objective: 0,
+                goalDescription: null,
+                yearsToReachGoal: 0,
+                less: 0,
+                netAmountRequired: 0
+            },
+            fundRetirementLifeStyle: {
+                age: 0,
+                expectedRetirementAge: 0,
+                yearsToRetirement: 0,
+                selectedMethod: 0,
+                annualIncome: 0,
+                rateOfIncomeIncrement: 0,
+                incomeAtRetirementAge: 0,
+                percentOfIncomeRequiredAtRetirement: 0,
+                incomeRequiredAtRetirement: 0,
+                retirementExpense: 0,
+                inflationRate: 0,
+                expenseATRetirement: 0,
+                yearsToReceiveRetirementIncome: 0,
+                netRateOfReture: 0,
+                amountNeededAtRetirementAge: 0,
+                less: 0,
+                netAmountRequired: 0
+            },
+            coverForPersonalAccident: {
+                amountNeeded: 0,
+                less: 0,
+                netAmountRequired: 0
+            },
+            fundLongTermCare: {
+                desiredMonthlyCashPayout: 0,
+                nameOfExistingLongTermCareInsurance: null,
+                less: 0,
+                netAmountRequired: 0
+            },
+            fundHospitalExpense: {
+                disiredChoiceOfHospitalType: null,
+                disiredChoiceOfWardClass: null,
+                desiredTypeOfCover: null,
+                nameOfExistingHospitalizationPlan: null,
+                existingTypeOfHospitalCovered:null,
+                existingClassOfWardCovered:null,
+                existingTypeOfCover:null
+            },
+            estatePlaning: {
+                willWritten: null,
+                lastUpdated: null,
+                anyProvision: null,
+                haveLastingPowerOfAttorney: null,
+                doneYourCPFNomination: null,
+                anyBenefit: null
+            },
+            otherInsures: {
+                frequencyOfTravel: null,
+                typeOfTravelInsuranceCovered: null,
+                companyName: null,
+                renewalDate: null,
+                mortgageInsurance: null,
+                groupInsurance: null
+            },
+            maternity: {
+                amountNeeded: 0,
+                less: 0,
+                netAmountRequired: 0
+            }
+        }
+      ],
+      need: {
+        client: [
+          [
+            1
+          ]
+        ],
+        dependant: [
+        ]
+      }
+    },
+    status: 0,
+  });
 
   return (
     <div id={props.id}>
