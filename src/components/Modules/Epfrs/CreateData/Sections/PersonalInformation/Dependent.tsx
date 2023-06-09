@@ -9,7 +9,9 @@ import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
-import moment from 'moment';
+import moment from "moment";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface Props {
   datas?: Array<any>;
@@ -17,7 +19,7 @@ interface Props {
 
 interface DependantState {
   name: string;
-  relationships: string;
+  relationship: string;
   dateOfBirth: string;
   age: number;
   gender: string;
@@ -31,7 +33,7 @@ const Dependent = (props: Props) => {
   // handle new data dependent
   const [newDependent, setNewDependent] = useState<DependantState>({
     name: "",
-    relationships: "",
+    relationship: "",
     dateOfBirth: "",
     age: 0,
     gender: "",
@@ -42,7 +44,6 @@ const Dependent = (props: Props) => {
     console.log("Masuk Save");
 
     setDependentData((prevArray: any) => [...prevArray, newDependent]);
-    event.target.reset();
     setShowModal(false);
   };
 
@@ -56,10 +57,6 @@ const Dependent = (props: Props) => {
       : [];
     localStorageSectionOneNormal = JSON.parse(localStorageSectionOne);
   }
-
-  console.log(props.datas);
-  console.log("check local storage");
-  console.log(localStorageSectionOneNormal);
 
   const setData = (params: any) => {
     console.log(params);
@@ -94,39 +91,55 @@ const Dependent = (props: Props) => {
   ];
 
   const checkRelationship = (params: any) => {
-    setNewDependent({ ...newDependent, relationships: params });
+    // setNewDependent({ ...newDependent, relationships: params });
     switch (params) {
       case "SON":
-        setNewDependent({ ...newDependent, gender: "1" });
+        setNewDependent({
+          ...newDependent,
+          gender: "1",
+          relationship: params,
+        });
         break;
       case "DAUGHTER":
-        setNewDependent({ ...newDependent, gender: "2" });
+        setNewDependent({
+          ...newDependent,
+          gender: "2",
+          relationship: params,
+        });
         break;
       default:
-        setNewDependent({ ...newDependent, gender: "1" });
+        setNewDependent({
+          ...newDependent,
+          gender: "1",
+          relationship: params,
+        });
         break;
     }
   };
 
   const checkBirthDate = (params: any) => {
-    setNewDependent({...newDependent, dateOfBirth: moment(params.timeStamp).format('mm/dd/yyyy')});
+    // setNewDependent({ ...newDependent, dateOfBirth: params });
 
     let currentDate = new Date();
     let dependentBirthDate = new Date(params);
 
     if (!isNaN(dependentBirthDate.getTime())) {
-      const yearsDiff = currentDate.getFullYear() - dependentBirthDate.getFullYear();
+      const yearsDiff =
+        currentDate.getFullYear() - dependentBirthDate.getFullYear();
       const monthsDiff = currentDate.getMonth() - dependentBirthDate.getMonth();
 
       let calculatedAge = yearsDiff;
 
-      if (monthsDiff < 0 || (monthsDiff === 0 && currentDate.getDate() < dependentBirthDate.getDate())) {
+      if (
+        monthsDiff < 0 ||
+        (monthsDiff === 0 &&
+          currentDate.getDate() < dependentBirthDate.getDate())
+      ) {
         calculatedAge--;
       }
 
-      setNewDependent({...newDependent, age: calculatedAge});
+      setNewDependent({ ...newDependent, age: calculatedAge, dateOfBirth: params });
     }
-    
   };
 
   console.log("Cek Data Baru");
@@ -192,13 +205,14 @@ const Dependent = (props: Props) => {
                           <Select
                             className="my-4"
                             label="Relationship"
-                            name="relationships"
+                            name="relationship"
                             datas={relationships}
-                            value={newDependent.relationships}
+                            value={newDependent.relationship}
                             handleChange={(event) =>
                               checkRelationship(event.target.value)
                             }
                           />
+                          {/* <DatePicker className="w-full px-0 py-2 my-4 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong" selected={newDependent.dateOfBirth} onChange={(date) => checkBirthDate(date)} /> */}
                           <Input
                             className="my-4"
                             label="Date Of Birth"

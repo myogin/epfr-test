@@ -225,9 +225,6 @@ const PersonalInformation = (props: Props) => {
     }
   };
 
-  console.log("APa ini");
-  console.log(sectionOne);
-
   if (typeof window !== "undefined") {
     localStorage.setItem("section1", JSON.stringify(sectionOne));
   }
