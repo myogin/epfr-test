@@ -40,43 +40,6 @@ const Dependent = (props: Props) => {
     year: "",
   });
 
-  const saveData = (event: any) => {
-    console.log("Masuk Save");
-
-    setDependentData((prevArray: any) => [...prevArray, newDependent]);
-    setShowModal(false);
-  };
-
-  let localStorageSectionOne: any = [];
-  let localStorageSectionOneNormal: any = [];
-
-  // get if existing data from local storage
-  if (typeof window !== "undefined") {
-    localStorageSectionOne = localStorage.getItem("section1")
-      ? localStorage.getItem("section1")
-      : [];
-    localStorageSectionOneNormal = JSON.parse(localStorageSectionOne);
-  }
-
-  const setData = (params: any) => {
-    console.log(params);
-  };
-
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  const openModalEdit = (params: any) => {
-    console.log(params);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
-  const changeData = (params: any) => {};
-
   // Variable Select Box
   let relationships: Array<any> = [
     { id: "SON", name: "SON" },
@@ -86,9 +49,20 @@ const Dependent = (props: Props) => {
   ];
 
   let genders: Array<any> = [
-    { id: 1, name: "MALE" },
-    { id: 2, name: "FEMALE" },
+    { id: "1", name: "MALE" },
+    { id: "2", name: "FEMALE" },
   ];
+
+  const genderStatus = (params: any) => {
+    switch (params) {
+      case "1":
+        return "MALE";
+      case "2":
+        return "FEMALE";
+      default:
+        return "MALE";
+    }
+  };
 
   const checkRelationship = (params: any) => {
     // setNewDependent({ ...newDependent, relationships: params });
@@ -138,12 +112,53 @@ const Dependent = (props: Props) => {
         calculatedAge--;
       }
 
-      setNewDependent({ ...newDependent, age: calculatedAge, dateOfBirth: params });
+      setNewDependent({
+        ...newDependent,
+        age: calculatedAge,
+        dateOfBirth: params,
+      });
     }
   };
 
-  console.log("Cek Data Baru");
-  console.log(newDependent);
+  const saveData = (event: any) => {
+    console.log("Masuk Save");
+
+    setDependentData((prevArray: any) => [...prevArray, newDependent]);
+    setNewDependent({
+      name: "",
+      relationship: "",
+      dateOfBirth: "",
+      age: 0,
+      gender: "",
+      year: "",
+    });
+    setShowModal(false);
+  };
+
+  let localStorageSectionOne: any = [];
+  let localStorageSectionOneNormal: any = [];
+
+  // get if existing data from local storage
+  if (typeof window !== "undefined") {
+    localStorageSectionOne = localStorage.getItem("section1")
+      ? localStorage.getItem("section1")
+      : [];
+    localStorageSectionOneNormal = JSON.parse(localStorageSectionOne);
+  }
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const openModalEdit = (params: any) => {
+    console.log(params);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <>
       <div className="w-full">
@@ -301,7 +316,7 @@ const Dependent = (props: Props) => {
                   <td className="px-2 py-5">{data.relationship}</td>
                   <td className="px-2 py-5">{data.dateOfBirth}</td>
                   <td className="px-2 py-5">{data.age}</td>
-                  <td className="px-2 py-5">{data.gender}</td>
+                  <td className="px-2 py-5">{genderStatus(data.gender)}</td>
                   <td className="px-2 py-5">{data.year}</td>
                   <td className="w-1/12 px-2 py-5">
                     <div className="flex w-full gap-2">
