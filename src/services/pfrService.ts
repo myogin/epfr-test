@@ -1,17 +1,13 @@
-export const getAllPfrData = async () => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/getAllPfr`);
-  const data = await response.json();
+import http from "@/httpSetting";
+import authHeader from "./authHeader";
 
-  return data;
+export const getAllPfrData = async (params: any) => {
+
+  return await http.get(`pfr/get-general-data/${params}`, { headers: authHeader() });
 };
 
 export const getPfrSection = async (params: any) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/getPfr/${params}`
-  );
-  const data = await response.json();
-
-  return data;
+  return await http.get(`pfr/get-general-data/${params}`, { headers: authHeader() });
 };
 
 export const postPfr = async () => {

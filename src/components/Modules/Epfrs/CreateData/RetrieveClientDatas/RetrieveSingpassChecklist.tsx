@@ -63,8 +63,8 @@ const RetrieveSingpassChecklist = (props: Props) => {
                           as="h3"
                           className="text-base font-bold leading-6 text-gray-light"
                         >
-                          PLEASE CLICK "PROCEED" IF YOU AGREE WITH THE RETRIEVAL
-                          OF THE FOLLOWING DATA FROM SINGPASS.
+                          {`PLEASE CLICK "PROCEED" IF YOU AGREE WITH THE RETRIEVAL
+                          OF THE FOLLOWING DATA FROM SINGPASS.`}
                         </Dialog.Title>
                       </div>
                       <div className="basis-1/2">
