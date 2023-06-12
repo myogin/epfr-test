@@ -112,6 +112,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   const [sectionSeven, setSectionSeven] = useState<SectionSeven>({
     pfrId: 0,
+    typeClient: 2,
+    totalDependant:3,
     answer: {
       pfrId: 0,
       clientData: [
@@ -232,14 +234,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         }
       ],
       need: {
-        client: [
-          [
-            true
-          ]
-        ],
-        dependant: [
-          
-        ]
+        client: [],
+        dependant: []
       }
     },
     status: 0,
@@ -276,7 +272,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           {/* <Toggle /> */}
         </HeadingSecondarySectionDoubleGrid>
 
-        {incomeProtection ? <IncomeProtection datas={sectionSeven.answer}/> : null}
+        {incomeProtection ? <IncomeProtection datas={sectionSeven}/> : null}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">

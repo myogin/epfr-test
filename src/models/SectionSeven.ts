@@ -184,6 +184,8 @@ interface IncomeProtectionUponDeath {
 export interface SectionSeven {
     answer: Answer;
     pfrId: number;
+    typeClient: number;
+    totalDependant: number;
     additionalNote: AdditionalNote[];
     status: number;
   }

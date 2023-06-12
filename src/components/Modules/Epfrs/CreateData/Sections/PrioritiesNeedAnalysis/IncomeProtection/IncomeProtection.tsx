@@ -20,26 +20,53 @@ interface Need {
 const IncomeProtection = (props : Props) => {
   // console.log('props.datas',props.datas)
   const [incomeProtection, setIncomeProtection] = useState(props.datas);
-  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState<Need>({
-    client: 0,
-    dependant: 0,
-  });
+  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState<Need>(new Array(incomeProtection.typeClient).fill(false).map(() => {return new Array(14).fill(false);}));
+  const [newIncomeProtectionNeedDependant, setIncomeProtectionNeedDependant] = useState<Need>(new Array(incomeProtection.totalDependant).fill(false).map(() => {return new Array(14).fill(false);}));
 
-  const [isChecked, setIsChecked] = useState(
-    (incomeProtection.need.client.length > 0) ? incomeProtection.need.client[0][0] : false
-  );
-
-  const handleReview = () => {
-    setIsChecked(!isChecked);
-    console.log('incomeProtectionNeedClient',newIncomeProtectionNeedClient)
-    setIncomeProtectionNeedClient({
-      ...newIncomeProtectionNeedClient[0],
-      client: 1,
+  const handleClient = (i) => {
+    console.log('u',i)
+    const updatedClient = newIncomeProtectionNeedClient.map((item, index) => {
+      if(index === i){
+        if(item[0] === true){
+          item[0] = false;
+        }else{
+          item[0] = true;
+        }
+      } 
+      return item;
     });
-
-    console.log('asdasdasd', newIncomeProtectionNeedClient)
-
+    setIncomeProtectionNeedClient(updatedClient);
   }
+
+  const handleDependant = (i) => {
+    const updatedDependant = newIncomeProtectionNeedDependant.map((item, index) => {
+      if(index === i){
+        if(item[0] === true){
+          item[0] = false;
+        }else{
+          item[0] = true;
+        }
+      } 
+      return item;
+    });
+    setIncomeProtectionNeedDependant(updatedDependant);
+  }
+
+  // Total Data Client & Deoendants
+    let total = incomeProtection.typeClient + incomeProtection.totalDependant + 1;
+    var totalClient = [];
+    var totalDependant = [];
+    for (var i = 0; i < incomeProtection.typeClient; i++) {
+      totalClient.push(i);
+    }
+
+    for (var i = 0; i < incomeProtection.totalDependant; i++) {
+      totalDependant.push(i);
+    }
+
+    console.log('newIncomeProtectionNeedClient',newIncomeProtectionNeedClient)
+
+  // End
 
   const setData = (params: any) => {
     console.log('params', params);
@@ -47,272 +74,599 @@ const IncomeProtection = (props : Props) => {
   return (
     <>
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowDoubleGrid>
-          <div className="col-auto">
-            <TextSmall className="uppercase text-gray-light">
-              Income Protection Upon Death
-            </TextSmall>
-          </div>
-          <div className="col-span-1">
-            <div className="flex text-green-deep">Client 1 </div>
-            <div className="flex items-center justify-start gap-2">
-              <Checkbox isChecked={isChecked} onChange={handleReview}/> <TextThin>Review</TextThin>
-            </div>
-          </div>
-        </RowDoubleGrid>
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">
-              Annual Amount Needed ($)
-            </TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">
+      <div className={`grid grid-cols-1 gap-3 mb-10`}>
+        <div className={`grid-span-1`}>
+          <TextSmall className="uppercase text-gray-light">
+            Income Protection Upon Death
+          </TextSmall>
+        </div>
+      </div>
+
+      <table className="table-auto">
+        <tbody className="">
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="uppercase text-gray-light">
+                Income Protection Upon Death
+              </TextSmall>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <div className="flex text-green-deep">Client {i+1} </div>
+                  <div className="flex items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`} name={i} value="true">
+                    <Checkbox isChecked={newIncomeProtectionNeedClient[i][0]} onChange={(event) => handleClient(i) }/> <TextThin>Review</TextThin>
+                  </div>
+                </td>
+              );
+            })}
+
+            {totalDependant.map(function (i) {
+              return (
+                <td className={``}>
+                  <div className="flex text-green-deep">Dependant {i+1} </div>
+                  <div className="flex items-center justify-start gap-2 mb-10">
+                    <Checkbox isChecked={newIncomeProtectionNeedDependant[i][0]} onChange={() => handleDependant(i)}/> <TextThin>Review</TextThin>
+                  </div>
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className=' align-top'>
+              <TextSmall className="text-gray-light align-top">
+                Annual Amount Needed ($)
+              </TextSmall>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+
+            {totalDependant.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="text-gray-light">
+                Number of Years Needed
+              </TextSmall>
+            </td>
+              {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="text-gray-light">
+                Annual Amount Needed ($)
+              </TextSmall>
+            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="text-gray-light">
               Number of Years Needed
-            </TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">
+              </TextSmall>
+            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="text-gray-light">
               Net Rate of Return (adjusted for inflation)
-            </TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-        <RowDoubleGrid>
-          <div>
+              </TextSmall>
+            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td className='align-top'>
             <TextSmall className="uppercase text-green-deep">
               A. CAPITAN SUM REQUIRED
             </TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
 
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">Final Expense ($)</TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-        <RowDoubleGrid>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-end-1">
-              <TextSmall className="text-gray-light">
-                Mortgage ($)
+            {totalDependant.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="text-gray-light">Final Expense ($)</TextSmall>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+
+            {totalDependant.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-end-1">
+                <TextSmall className="text-gray-light">
+                  Mortgage ($)
+                </TextSmall>
+              </div>
+              <div className="col-span-1 mt-2">
+                <Checkbox/>
+              </div>
+            </div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+
+            {totalDependant.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-end-1">
+                <TextSmall className="text-gray-light">
+                  Personal Debts ($)
+                </TextSmall>
+                </div>
+                <div className="col-span-1 mt-2">
+                  <Checkbox/>
+                </div>
+              </div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+
+            {totalDependant.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-end-1">
+                  <TextSmall className="text-gray-light">Others ($)</TextSmall>
+                </div>
+                <div className="col-span-1 mt-2">
+                  <Checkbox/>
+                </div>
+              </div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+
+            {totalDependant.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="text-green-deep">
+                B. TOTAL CASH OUT FLOW ($)
               </TextSmall>
-            </div>
-            <div className="col-span-1 mt-2">
-              <Checkbox/>
-            </div>
-          </div>
-            <div className="col-span-1">
-              <Input
-                className="mb-4"
-                type="text"
-                placeholder="1,000,000"
-                handleChange={(event) => setData(event.target.value)}
-              />
-            </div>
-        </RowDoubleGrid>
-        <RowDoubleGrid>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-end-1">
-            <TextSmall className="text-gray-light">
-              Personal Debts ($)
-            </TextSmall>
-            </div>
-            <div className="col-span-1 mt-2">
-              <Checkbox/>
-            </div>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-        <RowDoubleGrid>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-end-1">
-              <TextSmall className="text-gray-light">Others ($)</TextSmall>
-            </div>
-            <div className="col-span-1 mt-2">
-              <Checkbox/>
-            </div>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-green-deep">
-              B. TOTAL CASH OUT FLOW ($)
-            </TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-      </SectionCardSingleGrid>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
 
-      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-green-deep">TOTAL A + B ($)</TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-      </SectionCardSingleGrid>
+            {totalDependant.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="text-green-deep">TOTAL A + B ($)</TextSmall>  
+            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
 
-      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowDoubleGrid>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-end-1">
-            <TextSmall className="text-gray-light">
-              Less: existing insurance coverage on death ($)
-            </TextSmall>
-            </div>
-            <div className="col-span-1 mt-2">
-              <Checkbox/>
-            </div>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-end-1">
+                <TextSmall className="text-gray-light">
+                  Less: existing insurance coverage on death ($)
+                </TextSmall>
+                </div>
+                <div className="col-span-1 mt-2">
+                  <Checkbox/>
+                </div>
+              </div>
+            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
 
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">
-              Less: existing resource ($) (if any)
-            </TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-      </SectionCardSingleGrid>
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="text-gray-light">
+                Less: existing resource ($) (if any)
+              </TextSmall>
+            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
 
-      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowDoubleGrid>
-          <div>
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td className='align-top'>
             <TextSmall className="uppercase text-green-deep">
               NET AMPUNT REQUIRED ($)
             </TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-      </SectionCardSingleGrid>
+            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
 
-      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowDoubleGrid>
-          <div>
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td className='align-top'>
             <TextSmall className="text-gray-light">
               Less: existing insurance coverage on death ($)
             </TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="1,000,000"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
+            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
 
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">Additional Notes</TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="Additional Notes"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
-      </SectionCardSingleGrid>
+              {totalDependant.map(function (i) {
+                return (
+                  <td className={``}>
+                    <Input
+                      className="mb-10"
+                      type="text"
+                      placeholder="1,000,000"
+                      handleChange={(event) => setData(event.target.value)}
+                    />
+                  </td>
+                );
+              })}
+          </tr>
+          <tr>
+            <td colSpan={total}>
+              <TextSmall className="text-gray-light">Additional Notes</TextSmall>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={total}>
+              <Input
+                className="mb-10"
+                type="text"
+                placeholder="Additional Notes"
+                handleChange={(event) => setData(event.target.value)}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+    </SectionCardSingleGrid>
+
+
 
       {/* <SectionCardFooter>
         <ButtonGreenMedium>
