@@ -112,8 +112,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   const [sectionSeven, setSectionSeven] = useState<SectionSeven>({
     pfrId: 0,
-    typeClient: 2,
-    totalDependant:3,
+    typeClient: 1,
+    totalDependant:0,
     answer: {
       pfrId: 0,
       clientData: [
@@ -241,6 +241,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     status: 0,
   });
 
+  sectionSeven.answer.need.client = new Array(sectionSeven.typeClient).fill(false).map(() => {return new Array(14).fill(false);})
+  sectionSeven.answer.need.dependant =  new Array(sectionSeven.totalDependant).fill(false).map(() => {return new Array(14).fill(false);})
+
+  console.log('sectionSeven', sectionSeven)
+  
   return (
     <div id={props.id}>
       <div

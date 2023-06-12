@@ -18,11 +18,24 @@ interface Need {
 }
 
 const IncomeProtection = (props : Props) => {
-  // console.log('props.datas',props.datas)
-  const [incomeProtection, setIncomeProtection] = useState(props.datas);
-  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState<Need>(new Array(incomeProtection.typeClient).fill(false).map(() => {return new Array(14).fill(false);}));
-  const [newIncomeProtectionNeedDependant, setIncomeProtectionNeedDependant] = useState<Need>(new Array(incomeProtection.totalDependant).fill(false).map(() => {return new Array(14).fill(false);}));
+  const [sectionSeven, setSectionSeven] = useState(props.datas);
+  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState(sectionSeven.answer.need.client); //
+  const [newIncomeProtectionNeedDependant, setIncomeProtectionNeedDependant] = useState(sectionSeven.answer.need.dependant);
+  const [newIncomeProtection, setIncomeProtection] = useState(sectionSeven.answer.clientData)
 
+  // Total Data Client & Deoendants
+    let total = sectionSeven.typeClient + sectionSeven.totalDependant + 1;
+    var totalClient = [];
+    var totalDependant = [];
+    for (var i = 0; i < sectionSeven.typeClient; i++) {
+      totalClient.push(i);
+    }
+
+    for (var i = 0; i < sectionSeven.totalDependant; i++) {
+      totalDependant.push(i);
+    }
+
+  // End
   const handleClient = (i) => {
     console.log('u',i)
     const updatedClient = newIncomeProtectionNeedClient.map((item, index) => {
@@ -36,6 +49,10 @@ const IncomeProtection = (props : Props) => {
       return item;
     });
     setIncomeProtectionNeedClient(updatedClient);
+    console.log('updatedClient', updatedClient)
+    console.log('dataIncome', sectionSeven)
+    console.log('props.datas',props.datas)
+
   }
 
   const handleDependant = (i) => {
@@ -50,27 +67,20 @@ const IncomeProtection = (props : Props) => {
       return item;
     });
     setIncomeProtectionNeedDependant(updatedDependant);
+    console.log('dataIncome', sectionSeven)
+    console.log('props.datas',props.datas)
   }
 
-  // Total Data Client & Deoendants
-    let total = incomeProtection.typeClient + incomeProtection.totalDependant + 1;
-    var totalClient = [];
-    var totalDependant = [];
-    for (var i = 0; i < incomeProtection.typeClient; i++) {
-      totalClient.push(i);
-    }
-
-    for (var i = 0; i < incomeProtection.totalDependant; i++) {
-      totalDependant.push(i);
-    }
-
-    console.log('newIncomeProtectionNeedClient',newIncomeProtectionNeedClient)
-
-  // End
-
-  const setData = (params: any) => {
-    console.log('params', params);
+  const setDataClient = (event: any) => {
+    const { groupdata } = event.target.dataset;
+    const { name, value } = event.target;
+    const dataIncome = [...newIncomeProtection];
+    dataIncome[groupdata].incomeProtectionUponDeath[name] = value;
+    setIncomeProtection(dataIncome);
+    console.log('dataIncome', sectionSeven)
+    console.log('props.datas',props.datas)
   };
+
   return (
     <>
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -125,7 +135,10 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    name="annualAmountNeeded"
+                    dataType={i}
+                    value={newIncomeProtection[i].incomeProtectionUponDeath.annualAmountNeeded}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -138,7 +151,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -157,7 +170,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -170,7 +183,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -189,7 +202,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -202,7 +215,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -221,7 +234,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -234,7 +247,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -253,7 +266,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -266,7 +279,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -285,7 +298,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -298,7 +311,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -315,7 +328,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -328,7 +341,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -354,7 +367,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -367,7 +380,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -393,7 +406,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -406,7 +419,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -430,7 +443,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -443,7 +456,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -462,7 +475,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -475,7 +488,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
-                    handleChange={(event) => setData(event.target.value)}
+                    handleChange={setDataClient}
                   />
                 </td>
               );
@@ -492,7 +505,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -505,7 +518,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -531,7 +544,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -544,7 +557,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -563,7 +576,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -576,7 +589,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -595,7 +608,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -608,7 +621,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -627,7 +640,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -640,7 +653,7 @@ const IncomeProtection = (props : Props) => {
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
-                      handleChange={(event) => setData(event.target.value)}
+                      handleChange={setDataClient}
                     />
                   </td>
                 );
@@ -657,7 +670,7 @@ const IncomeProtection = (props : Props) => {
                 className="mb-10"
                 type="text"
                 placeholder="Additional Notes"
-                handleChange={(event) => setData(event.target.value)}
+                handleChange={setDataClient}
               />
             </td>
           </tr>
