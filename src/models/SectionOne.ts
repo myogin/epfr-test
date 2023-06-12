@@ -67,7 +67,7 @@ export interface SectionOne {
   clientInfo: PersonalInformation[];
   dependant: DependantInformation[];
   accompaniment: Accompaniment[];
-  trustedIndividuals: TrustedIndividual[];
+  trustedIndividuals: TrustedIndividual;
   issues: [];
   reviewDate: string;
   status: number;

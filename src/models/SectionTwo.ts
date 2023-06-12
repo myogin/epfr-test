@@ -1,4 +1,4 @@
-interface SummaryOfProperty {
+export interface SummaryOfProperty {
   editting: boolean;
   client: string;
   category: number;
@@ -12,7 +12,7 @@ interface SummaryOfProperty {
   currentMarketValue: number;
 }
 
-interface SummaryOfInvestment {
+export interface SummaryOfInvestment {
   editting: boolean;
   client: string;
   typeOfInvestment: string;
@@ -24,7 +24,7 @@ interface SummaryOfInvestment {
   sourceOfInvestment: string;
 }
 
-interface SummaryOfSavings {
+export interface SummaryOfSavings {
   editting: boolean;
   client: string;
   typeOfDeposit: number;
@@ -33,7 +33,7 @@ interface SummaryOfSavings {
   savingAmount: number;
 }
 
-interface SummaryOfInsurance {
+export interface SummaryOfInsurance {
   editting: boolean;
   client: string;
   insured: string;
@@ -55,7 +55,7 @@ interface SummaryOfInsurance {
   sourceOfFund: number;
 }
 
-interface SummaryOfInsurance2 {
+export interface SummaryOfInsurance2 {
   editting: boolean;
   client: string;
   insured: string;
@@ -72,7 +72,7 @@ interface SummaryOfInsurance2 {
   sourceOfFund: number;
 }
 
-interface SummaryOfLoans {
+export interface SummaryOfLoans {
   editting: boolean;
   client: string;
   typeOfLoan: string;
@@ -87,7 +87,7 @@ interface SummaryOfLoans {
   monthlyLoanRepayment: number;
 }
 
-interface SummaryOfCPF {
+export interface SummaryOfCPF {
   editting: boolean;
   client: string;
   ordinaryAccount: number;
@@ -96,7 +96,7 @@ interface SummaryOfCPF {
   retirementAccount: number;
 }
 
-interface SummaryOfSRS {
+export interface SummaryOfSRS {
   editting: boolean;
   client: string;
   amount: number;

@@ -97,6 +97,14 @@ const PersonalInformation = (props: Props) => {
     { id: 3, name: "Fgh Company" },
   ];
 
+  let languages: Array<any> = [
+    { id: 1, name: "English" },
+    { id: 2, name: "Mandarin" },
+    { id: 3, name: "Malay" },
+    { id: 4, name: "Tamil" },
+    { id: 5, name: "Others" },
+  ];
+
   let annualIncome: Array<any> = [
     { id: 1, name: "0 - 29,000" },
     { id: 2, name: "29,000 - 49,000" },
@@ -181,23 +189,21 @@ const PersonalInformation = (props: Props) => {
         education_level: "",
       },
     ],
-    trustedIndividuals: [
-      {
-        condition1: false,
-        condition2: false,
-        trustedEmail: "",
-        nameOfTrustedIndividual: "",
-        passportNo: "",
-        relationship: "",
-        languageUsed: "",
-        contactNumber: "",
-        englishLevel1: 0,
-        englishLevel2: 0,
-        educationLevel: 0,
-        ageLevel: 0,
-        declaration: 0,
-      },
-    ],
+    trustedIndividuals: {
+      condition1: false,
+      condition2: false,
+      trustedEmail: "",
+      nameOfTrustedIndividual: "",
+      passportNo: "",
+      relationship: "",
+      languageUsed: "",
+      contactNumber: "",
+      englishLevel1: 0,
+      englishLevel2: 0,
+      educationLevel: 0,
+      ageLevel: 0,
+      declaration: 0,
+    },
     issues: [],
     reviewDate: "",
     status: 0,
@@ -572,7 +578,7 @@ const PersonalInformation = (props: Props) => {
       </HeadingSecondarySection>
       <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
         <div>
-          <Toggle toggleName="Two of Following Profiles" />
+          <Toggle isChecked={sectionOne.trustedIndividuals.condition1} toggleName="Two of Following Profiles" />
           <div className="h-24 mt-2 text-sm text-gray-light">
             (i) Aged 62 or above
             <br />
@@ -584,6 +590,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Name of Trusted Individual"
             type="text"
+            value={sectionOne.trustedIndividuals.nameOfTrustedIndividual}
             placeholder="-"
             handleChange={(event) => setData(event.target.value)}
           />
@@ -592,18 +599,19 @@ const PersonalInformation = (props: Props) => {
             label="NRIC/Passport No. of Trusted Individual"
             type="text"
             placeholder="-"
+            value={sectionOne.trustedIndividuals.passportNo}
             handleChange={(event) => setData(event.target.value)}
           />
-          <Input
+          <Select
             className="mb-10"
             label="Language Used"
-            type="text"
-            placeholder="-"
-            handleChange={(event) => setData(event.target.value)}
+            value={sectionOne.trustedIndividuals.languageUsed}
+            datas={languages}
+            handleChange={(event) => changeData(eval(event.target.value))}
           />
         </div>
         <div>
-          <Toggle toggleName="The Following Profile" />
+          <Toggle isChecked={sectionOne.trustedIndividuals.condition2} toggleName="The Following Profile" />
           <div className="h-24 mt-2 text-sm text-gray-light">
             (i) Are not proficient in spoken or written English
           </div>
@@ -612,6 +620,7 @@ const PersonalInformation = (props: Props) => {
             label="Trusted Individual Email Address"
             type="text"
             placeholder="-"
+            value={sectionOne.trustedIndividuals.trustedEmail}
             handleChange={(event) => setData(event.target.value)}
           />
           <Input
@@ -619,6 +628,7 @@ const PersonalInformation = (props: Props) => {
             label="Relationship to Client"
             type="text"
             placeholder="-"
+            value={sectionOne.trustedIndividuals.relationship}
             handleChange={(event) => setData(event.target.value)}
           />
           <Input
@@ -626,6 +636,7 @@ const PersonalInformation = (props: Props) => {
             label="Mobile Number"
             type="text"
             placeholder="-"
+            value={sectionOne.trustedIndividuals.contactNumber}
             handleChange={(event) => setData(event.target.value)}
           />
         </div>

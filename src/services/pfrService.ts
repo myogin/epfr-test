@@ -1,5 +1,5 @@
-import http from "@/httpSetting";
-import authHeader from "./authHeader";
+import http from "@/libs/httpSetting";
+import authHeader from "@/libs/authHeader";
 
 export const getAllPfrData = async (params: any) => {
 
