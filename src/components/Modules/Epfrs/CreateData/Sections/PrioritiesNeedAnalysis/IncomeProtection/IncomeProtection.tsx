@@ -5,15 +5,41 @@ import TextThin from '@/components/Attributes/Typography/TextThin'
 import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
-import React from 'react'
+import React, {useState} from 'react'
+import Dependent from '../../PersonalInformation/Dependent'
 
 interface Props {
   datas?: Array<any>;
 }
 
+interface Need {
+  client: boolean[][];
+  dependant: boolean[][];
+}
 
 const IncomeProtection = (props : Props) => {
-  console.log('props.datas',props.datas)
+  // console.log('props.datas',props.datas)
+  const [incomeProtection, setIncomeProtection] = useState(props.datas);
+  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState<Need>({
+    client: 0,
+    dependant: 0,
+  });
+
+  const [isChecked, setIsChecked] = useState(
+    (incomeProtection.need.client.length > 0) ? incomeProtection.need.client[0][0] : false
+  );
+
+  const handleReview = () => {
+    setIsChecked(!isChecked);
+    console.log('incomeProtectionNeedClient',newIncomeProtectionNeedClient)
+    setIncomeProtectionNeedClient({
+      ...newIncomeProtectionNeedClient[0],
+      client: 1,
+    });
+
+    console.log('asdasdasd', newIncomeProtectionNeedClient)
+
+  }
 
   const setData = (params: any) => {
     console.log('params', params);
@@ -28,9 +54,9 @@ const IncomeProtection = (props : Props) => {
             </TextSmall>
           </div>
           <div className="col-span-1">
-            <div className="flex text-green-deep">Client 1</div>
+            <div className="flex text-green-deep">Client 1 </div>
             <div className="flex items-center justify-start gap-2">
-              <Checkbox /> <TextThin>Review</TextThin>
+              <Checkbox isChecked={isChecked} onChange={handleReview}/> <TextThin>Review</TextThin>
             </div>
           </div>
         </RowDoubleGrid>

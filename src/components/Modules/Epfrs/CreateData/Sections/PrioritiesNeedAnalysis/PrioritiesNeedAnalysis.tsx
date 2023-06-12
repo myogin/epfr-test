@@ -59,10 +59,9 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
 
-  const setIncomeProtection = (params: boolean) => {
-    console.log('params',params)
-    // showIncomeProtection(!incomeProtection);
-    // console.log('incomeProtection',incomeProtection)
+  const setIncomeProtection = () => {
+    showIncomeProtection(!incomeProtection);
+    console.log('incomeProtection',incomeProtection)
   };
 
   const setFundDisability = () => {
@@ -110,8 +109,6 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(7);
-  const [addincomeProtectionUponDeath, setAddincomeProtectionUponDeath] = useState([{}]);
-  const [showincomeProtectionUponDeath, setShowincomeProtectionUponDeath] = useState(false);
 
   const [sectionSeven, setSectionSeven] = useState<SectionSeven>({
     pfrId: 0,
@@ -237,10 +234,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       need: {
         client: [
           [
-            1
+            true
           ]
         ],
         dependant: [
+          
         ]
       }
     },
@@ -278,7 +276,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           {/* <Toggle /> */}
         </HeadingSecondarySectionDoubleGrid>
 
-        {incomeProtection ? <IncomeProtection /> : null}
+        {incomeProtection ? <IncomeProtection datas={sectionSeven.answer}/> : null}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
