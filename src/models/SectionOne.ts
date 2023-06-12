@@ -1,4 +1,4 @@
-interface PersonalInformation {
+export interface PersonalInformation {
   id?: string;
   clientTitle: string;
   clientName: string;
@@ -26,24 +26,24 @@ interface PersonalInformation {
   residentialAddr: string;
   mailingAddr: string;
 }
-interface DependantInformation {
+export interface DependantInformation {
   id?: string;
   name: string;
   relationship: string;
   dateOfBirth: string;
   age: number;
   gender: string;
-  year: number;
+  year: string;
 }
 
-interface Accompaniment {
+export interface Accompaniment {
   age: number;
   english_spoken: string;
   english_written: string;
   education_level: string;
 }
 
-interface TrustedIndividual {
+export interface TrustedIndividual {
   id?: string;
   condition1: boolean;
   condition2: boolean;

@@ -170,7 +170,7 @@ const PersonalInformation = (props: Props) => {
         dateOfBirth: "10 June 2010",
         age: 13,
         gender: "1",
-        year: 2,
+        year: "2",
       },
     ],
     accompaniment: [
@@ -538,12 +538,13 @@ const PersonalInformation = (props: Props) => {
             label="Age"
             type="text"
             placeholder="Below 62"
+            value={sectionOne.accompaniment[0].age}
             handleChange={(event) => setData(event.target.value)}
           />
           <Select
             className="mb-10"
             label="Spoken English Language Proficiency"
-            value=""
+            value={sectionOne.accompaniment[0].english_spoken}
             datas={englishLevel}
             handleChange={(event) => changeData(eval(event.target.value))}
           />
@@ -552,14 +553,14 @@ const PersonalInformation = (props: Props) => {
           <Select
             className="mb-10"
             label="Education Level"
-            value=""
+            value={sectionOne.accompaniment[0].education_level}
             datas={educationLevel}
             handleChange={(event) => changeData(eval(event.target.value))}
           />
           <Select
             className="mb-10"
             label="Written English Language Proficiency"
-            value=""
+            value={sectionOne.accompaniment[0].english_written}
             datas={englishLevel}
             handleChange={(event) => changeData(eval(event.target.value))}
           />

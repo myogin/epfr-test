@@ -12,18 +12,10 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { DependantInformation } from "@/models/SectionOne";
 
 interface Props {
   datas?: Array<any>;
-}
-
-interface DependantState {
-  name: string;
-  relationship: string;
-  dateOfBirth: string;
-  age: number;
-  gender: string;
-  year: string;
 }
 
 const Dependent = (props: Props) => {
@@ -31,7 +23,7 @@ const Dependent = (props: Props) => {
   const [dependentData, setDependentData] = useState(props.datas);
 
   // handle new data dependent
-  const [newDependent, setNewDependent] = useState<DependantState>({
+  const [newDependent, setNewDependent] = useState<DependantInformation>({
     name: "",
     relationship: "",
     dateOfBirth: "",
