@@ -4,13 +4,9 @@ import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
-import React from "react";
+import React, { useState } from "react";
 
 const EducationalQualifications = () => {
-  const setData = (params: any) => {
-    console.log(params);
-  };
-
   let qa: Array<any> = [
     {
       id: 1,

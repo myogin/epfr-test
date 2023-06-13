@@ -13,6 +13,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { SectionFive } from "@/models/SectionFive";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import React, { useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
@@ -22,12 +23,6 @@ interface Props {
 }
 
 const RiskProfile = (props: Props) => {
-  let { showDetailData } = useNavigationSection();
-
-  const saveData = (params: any) => {
-    showDetailData(params);
-  };
-
   let qa: Array<any> = [
     {
       id: 1,
@@ -188,6 +183,36 @@ const RiskProfile = (props: Props) => {
 
   const scrollPosition = useScrollPosition(5);
 
+  const [sectionFive, setSectionFive] = useState<SectionFive>({
+    id: 0,
+    need: [],
+    reason: [],
+    answers: [],
+    riskCapacity: [],
+    riskAttitude: [],
+    issues: [],
+    status: 0,
+  });
+
+  if (typeof window !== "undefined") {
+    localStorage.setItem("section5", JSON.stringify(sectionFive));
+  }
+
+  // handle input change / state change
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    setSectionFive((prevState) => {
+      return { ...prevState, [name]: value };
+    });
+  };
+
+  const checkboxChange = (event: any) => {
+    setNotReviewAll(!notReviewAll);
+    setSectionFive((prevState) => {
+      return { ...prevState, ["need"]: [!notReviewAll] };
+    });
+  };
   return (
     <div id={props.id}>
       <div
@@ -221,7 +246,9 @@ const RiskProfile = (props: Props) => {
                     </TitleSmall>
                   </RowSingle>
                   <RowSingle className="py-6">
-                    <span className="text-xs font-normal text-red">Required</span>
+                    <span className="text-xs font-normal text-red">
+                      Required
+                    </span>
                   </RowSingle>
                   {qs.answers.map((answer: any, indexB: any) => (
                     <RowSingle key={answer.id}>
@@ -259,25 +286,26 @@ const RiskProfile = (props: Props) => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <div className="mb-4">
           <Checkbox
-            onChange={() => setNotReviewAll(!notReviewAll)}
+            isChecked={notReviewAll}
+            onChange={checkboxChange}
             lableStyle="text-sm font-normal text-gray-light"
             label="Not applicable"
           />
         </div>
         {notReviewAll ? (
           <div>
-            <TextArea label="The Reason" />
+            <TextArea
+              handleChange={handleInputChange}
+              className="my-4"
+              label="The Reason"
+              name="reason"
+            />
           </div>
         ) : (
           ""
         )}
       </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
-      {/* <SectionCardFooter>
-        <ButtonGreenMedium onClick={() => saveData(6)}>
-          Continue <ArrowRightLineIcon size={20} />
-        </ButtonGreenMedium>
-      </SectionCardFooter> */}
     </div>
   );
 };

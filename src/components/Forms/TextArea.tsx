@@ -6,6 +6,7 @@ interface Props {
   defaultValue?: any;
   className?: string;
   rows?: number;
+  name?: string;
   handleChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
@@ -24,6 +25,7 @@ const TextArea = (prop: Props) => {
         rows={prop.rows}
         className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong"
         placeholder={prop.placeholder}
+        name={prop.name}
         onChange={prop.handleChange}
       ></textarea>
     </div>
