@@ -11,6 +11,7 @@ const AssetBalance = () => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+      
       <RowDoubleGrid>
         <div>
           <TextSmall className="text-gray-light">Property</TextSmall>
