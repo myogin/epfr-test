@@ -3,6 +3,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import { SummaryOfCPF } from "@/models/SectionTwo";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -11,6 +12,15 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const CpfPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const [newDataInput, setNewDataInput] = useState<SummaryOfCPF>({
+    editting: false,
+    client: "",
+    ordinaryAccount: 0,
+    specialAccount: 0,
+    medisaveAccount: 0,
+    retirementAccount: 0,
+  });
 
   const setData = (params: any) => {
     console.log(params);
@@ -74,36 +84,48 @@ const CpfPortofolio = () => {
                             className="my-4"
                             label="Client"
                             type="text"
-                            placeholder="Margo Madison"
+                            value={newDataInput.client}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                client: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Ordinary Account"
                             type="text"
-                            placeholder="Private"
+                            value={newDataInput.ordinaryAccount}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                ordinaryAccount: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Special Account"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.specialAccount}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                specialAccount: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Medisave Account"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.medisaveAccount}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                medisaveAccount: Number(event.target.value),
+                              })
                             }
                           />
                         </div>
@@ -112,9 +134,12 @@ const CpfPortofolio = () => {
                             className="my-4"
                             label="Retirement Account"
                             type="text"
-                            placeholder="Residence"
+                            value={newDataInput.retirementAccount}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                retirementAccount: Number(event.target.value),
+                              })
                             }
                           />
                         </div>
