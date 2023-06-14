@@ -273,9 +273,22 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       need: {
         client: [],
         dependant: []
+      },
+      defaultCheck: {
+        income_protection_upon_death_mortgage: false,
+        income_protection_upon_death_debt: false,
+        income_protection_upon_death_other: false,
+        income_protection_upon_death_death: false,
+        fund_disability_income_expense_mortgage: false,
+        fund_disability_income_expense_disability: false,
+        fund_critical_illness_expense_mortgage: false,
+        fund_critical_illness_expense_ci: false,
+        cover_for_personal_accident_benefit: false,
+        maternity_other: false
       }
     },
-    status: 0,
+    additionalNote: [],
+    status: 0
   });
 
 
@@ -512,6 +525,9 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           less: 0,
           netAmountRequired: 0
       }
+  });
+  sectionSeven.additionalNote = new Array(14).fill({
+    note: ""
   });
   sectionSeven.answer.need.client = new Array(sectionSeven.typeClient).fill(false).map(() => {return new Array(14).fill(false);})
   sectionSeven.answer.need.dependant =  new Array(sectionSeven.totalDependant).fill(false).map(() => {return new Array(14).fill(false);})

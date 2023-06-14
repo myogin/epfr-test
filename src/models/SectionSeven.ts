@@ -1,5 +1,5 @@
 interface AdditionalNote {
-  note?: any;
+  note: string;
 }
 
 interface Answer {

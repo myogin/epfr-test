@@ -24,6 +24,11 @@ const IncomeProtection = (props : Props) => {
   const [newIncomeProtectionNeedDependant, setIncomeProtectionNeedDependant] = useState(sectionSeven.answer.need.dependant);
   const [newIncomeProtection, setIncomeProtection] = useState(sectionSeven.answer.clientData)
   const [newIncomeProtectionDep, setIncomeProtectionDep] = useState(sectionSeven.answer.dependantData)
+  const [newIncomDefaultCheck, setIncomDefaultCheck] = useState(sectionSeven.answer.defaultCheck)
+  const [newIncomAdditionalNote, setIncomAdditionalNote] = useState(sectionSeven.additionalNote)
+
+  console.log('newIncomAdditionalNote', newIncomAdditionalNote)
+  console.log('sectionSeven', sectionSeven)
 
   // Total Data Client & Deoendants
     let total = sectionSeven.typeClient + sectionSeven.totalDependant;
@@ -115,16 +120,60 @@ const IncomeProtection = (props : Props) => {
     setIncomeProtectionDep(dataIncome);
   };
 
+  const handleDefaultCheck = (e: any) => {
+    const { name, checked, value } = e.target;
+    setSectionSeven((prevState: any) => {
+      const newDefault = {...prevState}
+      newDefault.answer.defaultCheck[name] = checked
+      return newDefault
+    });
+  }
+  
+  const handleAdditional = (e: any) => {
+    const {value} = e.target;
+    console.log('value', value)
+
+    // setSectionSeven((prevState) => {
+    //   // return { ...prevState, result }
+    // });
+
+    // setSectionSeven((prevState: any) => {
+    //   const resData = [...prevState.additionalNote];
+    //   const resultAdditional = resData
+    //   resultAdditional[0].note = value;
+    //   return resultAdditional;
+    // });
+    
+    const dataNewIncomAdditionalNote = [...newIncomAdditionalNote];
+    dataNewIncomAdditionalNote[0]['note'] = value;
+    setIncomAdditionalNote(dataNewIncomAdditionalNote);
+    
+    ///
+    // const updatedClient = newIncomAdditionalNote.map((item: any, index: any) => {
+    //   if(index === 0){
+    //     item['note'] = value
+    //   }
+    //   return item;
+    // });
+
+    // var res = {
+    //   additionalNote: updatedClient
+    // }
+    
+    // console.log('updatedClient', updatedClient)
+    // setIncomAdditionalNote(res);
+  }
+
+  // Rumus
   const getPV = (fv:any, rate:any, n: any) =>{
     var sum = 0;
     for (var i = 0; i < n; i++) {
       sum += fv / Math.pow(1 + rate, i);
-      console.log('sum', sum);
     }
     return sum.toFixed(2);
   }
 
-  // Rumus
+
   const capitalSumRequired = (res: any) => {
     var result = getPV(
       res.annualAmountNeeded,
@@ -132,7 +181,7 @@ const IncomeProtection = (props : Props) => {
       res.numberOfYearsNeed
     );
 
-    return isNaN(result) ? 0 : result;
+    return isNaN(parseFloat(result)) ? 0 : parseFloat(result);
   }
 
   const totalCashOutflow = (res:any) => {
@@ -409,7 +458,7 @@ const IncomeProtection = (props : Props) => {
                 </TextSmall>
               </div>
               <div className="col-span-1 mt-2">
-                <Checkbox/>
+                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_mortgage" checked={sectionSeven.answer.defaultCheck.income_protection_upon_death_mortgage}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
               </div>
             </div>
             </td>
@@ -452,7 +501,7 @@ const IncomeProtection = (props : Props) => {
                 </TextSmall>
                 </div>
                 <div className="col-span-1 mt-2">
-                  <Checkbox/>
+                  <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_debt" checked={sectionSeven.answer.defaultCheck.income_protection_upon_death_debt}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                 </div>
               </div>
             </td>
@@ -493,7 +542,7 @@ const IncomeProtection = (props : Props) => {
                   <TextSmall className="text-gray-light">Others ($)</TextSmall>
                 </div>
                 <div className="col-span-1 mt-2">
-                  <Checkbox/>
+                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_other" checked={sectionSeven.answer.defaultCheck.income_protection_upon_death_other}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                 </div>
               </div>
             </td>
@@ -584,7 +633,7 @@ const IncomeProtection = (props : Props) => {
                 </TextSmall>
                 </div>
                 <div className="col-span-1 mt-2">
-                  <Checkbox/>
+                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_death" checked={sectionSeven.answer.defaultCheck.income_protection_upon_death_death}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                 </div>
               </div>
             </td>
@@ -690,6 +739,8 @@ const IncomeProtection = (props : Props) => {
                 className="mb-10"
                 type="text"
                 placeholder="Additional Notes"
+                value={newIncomAdditionalNote[0].note}
+                handleChange={handleAdditional}
               />
             </td>
           </tr>
