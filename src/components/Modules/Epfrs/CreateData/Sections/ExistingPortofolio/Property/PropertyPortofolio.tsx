@@ -18,7 +18,7 @@ interface Props {
 const PropertyPortofolio = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
 
-  const [newProperty, setNewProperty] = useState<SummaryOfProperty>({
+  const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>({
     editting: false,
     client: "",
     category: 0,
@@ -95,10 +95,10 @@ const PropertyPortofolio = (props: Props) => {
                             label="Client"
                             type="text"
                             placeholder="Margo Madison"
-                            value={newProperty.client}
+                            value={newDataInput.client}
                             handleChange={(event) =>
-                              setNewProperty({
-                                ...newProperty,
+                              setNewDataInput({
+                                ...newDataInput,
                                 client: event.target.value,
                               })
                             }
@@ -107,10 +107,10 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Type Of Property"
                             type="text"
-                            value={newProperty.typeOfProperty}
+                            value={newDataInput.typeOfProperty}
                             handleChange={(event) =>
-                              setNewProperty({
-                                ...newProperty,
+                              setNewDataInput({
+                                ...newDataInput,
                                 typeOfProperty: event.target.value,
                               })
                             }
@@ -119,10 +119,10 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Category"
                             type="text"
-                            value={newProperty.category}
+                            value={newDataInput.category}
                             handleChange={(event) =>
-                              setNewProperty({
-                                ...newProperty,
+                              setNewDataInput({
+                                ...newDataInput,
                                 category: Number(event.target.value),
                               })
                             }
@@ -131,10 +131,10 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Year Purchashed"
                             type="text"
-                            value={newProperty.yearPurchased}
+                            value={newDataInput.yearPurchased}
                             handleChange={(event) =>
-                              setNewProperty({
-                                ...newProperty,
+                              setNewDataInput({
+                                ...newDataInput,
                                 yearPurchased: Number(event.target.value),
                               })
                             }
@@ -145,10 +145,10 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Purchase Price ($)"
                             type="text"
-                            value={newProperty.purchasePrice}
+                            value={newDataInput.purchasePrice}
                             handleChange={(event) =>
-                              setNewProperty({
-                                ...newProperty,
+                              setNewDataInput({
+                                ...newDataInput,
                                 purchasePrice: Number(event.target.value),
                               })
                             }
@@ -157,10 +157,10 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Current Outstanding Loan ($)"
                             type="text"
-                            value={newProperty.currentOutstanding}
+                            value={newDataInput.currentOutstanding}
                             handleChange={(event) =>
-                              setNewProperty({
-                                ...newProperty,
+                              setNewDataInput({
+                                ...newDataInput,
                                 currentOutstanding: Number(event.target.value),
                               })
                             }
@@ -169,10 +169,10 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Loan Amount Taken ($)"
                             type="text"
-                            value={newProperty.loanAmount}
+                            value={newDataInput.loanAmount}
                             handleChange={(event) =>
-                              setNewProperty({
-                                ...newProperty,
+                              setNewDataInput({
+                                ...newDataInput,
                                 loanAmount: Number(event.target.value),
                               })
                             }
@@ -181,10 +181,10 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Current Market Value ($)"
                             type="text"
-                            value={newProperty.currentMarketValue}
+                            value={newDataInput.currentMarketValue}
                             handleChange={(event) =>
-                              setNewProperty({
-                                ...newProperty,
+                              setNewDataInput({
+                                ...newDataInput,
                                 currentMarketValue: Number(event.target.value),
                               })
                             }

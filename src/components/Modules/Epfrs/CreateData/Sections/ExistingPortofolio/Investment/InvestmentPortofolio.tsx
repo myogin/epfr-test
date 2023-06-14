@@ -13,7 +13,7 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 const InvestmentPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
-  const [newInvestment, setNewInvestment] = useState<SummaryOfInvestment>({
+  const [newDataInput, setNewDataInput] = useState<SummaryOfInvestment>({
     editting: false,
     client: "",
     typeOfInvestment: "",
@@ -87,10 +87,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Client"
                             type="text"
-                            value={newInvestment.client}
+                            value={newDataInput.client}
                             handleChange={(event) =>
-                              setNewInvestment({
-                                ...newInvestment,
+                              setNewDataInput({
+                                ...newDataInput,
                                 client: event.target.value,
                               })
                             }
@@ -99,10 +99,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Type Of Investment"
                             type="text"
-                            value={newInvestment.typeOfInvestment}
+                            value={newDataInput.typeOfInvestment}
                             handleChange={(event) =>
-                              setNewInvestment({
-                                ...newInvestment,
+                              setNewDataInput({
+                                ...newDataInput,
                                 typeOfInvestment: event.target.value,
                               })
                             }
@@ -111,10 +111,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Company"
                             type="text"
-                            value={newInvestment.company}
+                            value={newDataInput.company}
                             handleChange={(event) =>
-                              setNewInvestment({
-                                ...newInvestment,
+                              setNewDataInput({
+                                ...newDataInput,
                                 company: event.target.value,
                               })
                             }
@@ -123,10 +123,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Year Invested"
                             type="text"
-                            value={newInvestment.yearInvested}
+                            value={newDataInput.yearInvested}
                             handleChange={(event) =>
-                              setNewInvestment({
-                                ...newInvestment,
+                              setNewDataInput({
+                                ...newDataInput,
                                 yearInvested: Number(event.target.value),
                               })
                             }
@@ -137,10 +137,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Investment Amount"
                             type="text"
-                            value={newInvestment.investmentAmount}
+                            value={newDataInput.investmentAmount}
                             handleChange={(event) =>
-                              setNewInvestment({
-                                ...newInvestment,
+                              setNewDataInput({
+                                ...newDataInput,
                                 investmentAmount: Number(event.target.value),
                               })
                             }
@@ -149,10 +149,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Current Value"
                             type="text"
-                            value={newInvestment.currentvalue}
+                            value={newDataInput.currentvalue}
                             handleChange={(event) =>
-                              setNewInvestment({
-                                ...newInvestment,
+                              setNewDataInput({
+                                ...newDataInput,
                                 currentvalue: Number(event.target.value),
                               })
                             }
@@ -161,10 +161,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Source Of Investment"
                             type="text"
-                            value={newInvestment.sourceOfInvestment}
+                            value={newDataInput.sourceOfInvestment}
                             handleChange={(event) =>
-                              setNewInvestment({
-                                ...newInvestment,
+                              setNewDataInput({
+                                ...newDataInput,
                                 sourceOfInvestment: event.target.value,
                               })
                             }
