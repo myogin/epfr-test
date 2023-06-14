@@ -548,8 +548,6 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   let { showDetailData } = useNavigationSection();
 
   const setIncomeProtection = (data: any, i: any) => {
-    console.log('data',data)
-    console.log('i',i)
     if(resTotal == 1){
       const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
         if(index === i){
@@ -561,12 +559,10 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         } 
         return item;
       });
-      console.log('updatedClient',updatedClient)
       setIncomeProtectionNeedClient(updatedClient);
     }else{
       showIncomeProtection(!incomeProtection);      
     }
-    // console.log('incomeProtection',incomeProtection)
   };
 
   const setFundDisability = () => {
@@ -616,13 +612,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   const scrollPosition = useScrollPosition(7);
   let toggleInProtect = false;
   if(resTotal == 1){
-    console.log('toggleInProtectasdasdas', newIncomeProtectionNeedClient[0])
     toggleInProtect = newIncomeProtectionNeedClient[0][0];
     incomeProtection = toggleInProtect;
   }else{
     toggleInProtect = incomeProtection;
   }
-  console.log('toggleInProtect', toggleInProtect)
   return (
     <div id={props.id}>
       <div

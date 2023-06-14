@@ -72,9 +72,25 @@ const IncomeProtection = (props : Props) => {
     const groupdata = i;
     const { name, value } = event.target;
     const dataIncome = [...newIncomeProtection];
+
     dataIncome[groupdata].clientId = groupdata+1;
     dataIncome[groupdata].incomeProtectionUponDeath[name] = value;
+
+    const resCapitalSum = capitalSumRequired(dataIncome[groupdata].incomeProtectionUponDeath);    
+    dataIncome[groupdata].incomeProtectionUponDeath['capitalSumRequired'] = resCapitalSum;
+
+    const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].incomeProtectionUponDeath);
+    dataIncome[groupdata].incomeProtectionUponDeath['totalCashFlow'] = resTotalCashOutflow;
+
+    const resTotal = totalAB(dataIncome[groupdata].incomeProtectionUponDeath);
+    dataIncome[groupdata].incomeProtectionUponDeath['total'] = resTotal;
+
+    const totalNetAmount = totalNetAmmount(dataIncome[groupdata].incomeProtectionUponDeath);
+    dataIncome[groupdata].incomeProtectionUponDeath['netAmountRequired'] = totalNetAmount;
+
     setIncomeProtection(dataIncome);
+
+    // console.log('sectionseven', sectionSeven)
   };
 
   const setDataDependant = (event: any, i: any) => {
@@ -83,9 +99,57 @@ const IncomeProtection = (props : Props) => {
     const dataIncome = [...newIncomeProtectionDep];
     dataIncome[groupdata].dependantId = groupdata+1;
     dataIncome[groupdata].incomeProtectionUponDeath[name] = value;
+    
+    const resCapitalSum = capitalSumRequired(dataIncome[groupdata].incomeProtectionUponDeath);
+    dataIncome[groupdata].incomeProtectionUponDeath['capitalSumRequired'] = resCapitalSum;
+
+    const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].incomeProtectionUponDeath);
+    dataIncome[groupdata].incomeProtectionUponDeath['totalCashFlow'] = resTotalCashOutflow;
+
+    const resTotal = totalAB(dataIncome[groupdata].incomeProtectionUponDeath);
+    dataIncome[groupdata].incomeProtectionUponDeath['total'] = resTotal;
+
+    const totalNetAmount = totalNetAmmount(dataIncome[groupdata].incomeProtectionUponDeath);
+    dataIncome[groupdata].incomeProtectionUponDeath['netAmountRequired'] = totalNetAmount;
+
     setIncomeProtectionDep(dataIncome);
   };
 
+  const getPV = (fv:any, rate:any, n: any) =>{
+    var sum = 0;
+    for (var i = 0; i < n; i++) {
+      sum += fv / Math.pow(1 + rate, i);
+      console.log('sum', sum);
+    }
+    return sum.toFixed(2);
+  }
+
+  // Rumus
+  const capitalSumRequired = (res: any) => {
+    var result = getPV(
+      res.annualAmountNeeded,
+      res.netRateOfReture / 100,
+      res.numberOfYearsNeed
+    );
+
+    return isNaN(result) ? 0 : result;
+  }
+
+  const totalCashOutflow = (res:any) => {
+    var result = parseFloat(res.finalExpense) + parseFloat(res.emergencyFund) + parseFloat(res.mortgage) + parseFloat(res.personalDebts) + parseFloat(res.others);
+    return isNaN(result) ? 0 : result.toFixed(2);
+  }
+
+  const totalAB = (res: any) => {
+    var result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashFlow);
+    return isNaN(result) ? 0 : result.toFixed(2);
+  }
+
+  const totalNetAmmount = (res: any) => {
+    var result = res.total - res.existingResources - res.existingInsuranceCoverageOnDeath;
+    return isNaN(result) ? 0 : result.toFixed(2);
+  }
+  
   return (
     <>
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -253,7 +317,7 @@ const IncomeProtection = (props : Props) => {
               {
                 (totalClient.length > 0) ? 
                   <TextSmall className="text-right uppercase text-green-deep">
-                    $0.00
+                    ${newIncomeProtection[i].incomeProtectionUponDeath.capitalSumRequired}
                   </TextSmall>
                 :
                 null
@@ -263,7 +327,7 @@ const IncomeProtection = (props : Props) => {
               {
                 (totalDependant.length > 0) ? 
                 <TextSmall className="text-right uppercase text-green-deep">
-                  $0.00
+                  ${newIncomeProtectionDep[i].incomeProtectionUponDeath.capitalSumRequired}
                 </TextSmall> : null
               }
             </td>
@@ -473,7 +537,7 @@ const IncomeProtection = (props : Props) => {
               {
                 (totalClient.length > 0) ? 
                   <TextSmall className="text-right uppercase text-green-deep">
-                    $0.00
+                    ${newIncomeProtection[i].incomeProtectionUponDeath.totalCashFlow}
                   </TextSmall>
                 :
                 null
@@ -483,7 +547,7 @@ const IncomeProtection = (props : Props) => {
               {
                 (totalDependant.length > 0) ? 
                 <TextSmall className="text-right uppercase text-green-deep">
-                  $0.00
+                  ${newIncomeProtectionDep[i].incomeProtectionUponDeath.totalCashFlow}
                 </TextSmall> : null
               }
             </td>
@@ -496,7 +560,7 @@ const IncomeProtection = (props : Props) => {
               {
                 (totalClient.length > 0) ? 
                   <TextSmall className="text-right uppercase text-green-deep">
-                    $0.00
+                  ${newIncomeProtection[i].incomeProtectionUponDeath.total}
                   </TextSmall>
                 :
                 null
@@ -506,7 +570,7 @@ const IncomeProtection = (props : Props) => {
               {
                 (totalDependant.length > 0) ? 
                 <TextSmall className="text-right uppercase text-green-deep">
-                  $0.00
+                  ${newIncomeProtectionDep[i].incomeProtectionUponDeath.total}
                 </TextSmall> : null
               }
             </td>
@@ -593,14 +657,14 @@ const IncomeProtection = (props : Props) => {
           <tr>
             <td className='align-top'>
             <TextSmall className="uppercase text-green-deep">
-              NET AMPUNT REQUIRED ($)
+              NET AMOUNT REQUIRED ($)
             </TextSmall>
             </td>
             <td>
               {
                 (totalClient.length > 0) ? 
                   <TextSmall className="text-right uppercase text-green-deep">
-                    $0.00
+                    ${newIncomeProtection[i].incomeProtectionUponDeath.netAmountRequired}
                   </TextSmall>
                 :
                 null
@@ -610,7 +674,7 @@ const IncomeProtection = (props : Props) => {
               {
                 (totalDependant.length > 0) ? 
                 <TextSmall className="text-right uppercase text-green-deep">
-                  $0.00
+                  ${newIncomeProtectionDep[i].incomeProtectionUponDeath.netAmountRequired}
                 </TextSmall> : null
               }
             </td>
