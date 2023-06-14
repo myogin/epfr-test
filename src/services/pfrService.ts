@@ -10,8 +10,8 @@ export const getPfrSection = async (params: any) => {
   return await http.get(`pfr/get-general-data/${params}`, { headers: authHeader() });
 };
 
-export const postPfr = async (section : any, data : any) => {
-  return await http.post(`/create-pfr-lite/${section}`, data, { headers: authHeader() });
+export const postPfr = async (group : any, data : any) => {
+  return await http.post(`/create-pfr-lite/${group}`, data, { headers: authHeader() });
 }
 
 // export const updatePfr = async (id : any, data : any) => {

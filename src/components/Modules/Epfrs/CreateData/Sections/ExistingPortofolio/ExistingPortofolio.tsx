@@ -252,7 +252,7 @@ const ExistingPortofolio = (props: Props) => {
             {/* <Toggle /> */}
           </HeadingSecondarySectionDoubleGrid>
 
-          {property ? <PropertyPortofolio /> : null}
+          {property ? <PropertyPortofolio id={sectionTwo.id} datas={sectionTwo.summaryOfProperty} /> : null}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>

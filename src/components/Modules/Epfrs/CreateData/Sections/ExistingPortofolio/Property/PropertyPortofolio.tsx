@@ -3,17 +3,37 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import { SummaryOfProperty } from "@/models/SectionTwo";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
-const PropertyPortofolio = () => {
+interface Props {
+  datas?: any;
+  id?: any;
+}
+
+const PropertyPortofolio = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
 
+  const [newProperty, setNewProperty] = useState<SummaryOfProperty>({
+    editting: false,
+    client: "",
+    category: 0,
+    typeOfProperty: "",
+    yearPurchased: 0,
+    purchasePrice: 0,
+    loanAmount: 0,
+    currentOutstanding: 0,
+    monthlyLoanRepaymentCash: 0,
+    monthlyLoanRepaymentCPF: 0,
+    currentMarketValue: 0,
+  });
+
   const setData = (params: any) => {
-    console.log('params', params);
+    console.log("params", params);
   };
 
   const saveData = () => {
