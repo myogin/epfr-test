@@ -3,6 +3,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import { SummaryOfInvestment } from "@/models/SectionTwo";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -11,6 +12,18 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const InvestmentPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const [newInvestment, setNewInvestment] = useState<SummaryOfInvestment>({
+    editting: false,
+    client: "",
+    typeOfInvestment: "",
+    typeOfInvestmentOther: "",
+    company: "",
+    yearInvested: 0,
+    investmentAmount: 0,
+    currentvalue: 0,
+    sourceOfInvestment: "",
+  });
 
   const setData = (params: any) => {
     console.log(params);
@@ -74,36 +87,48 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Client"
                             type="text"
-                            placeholder="Margo Madison"
+                            value={newInvestment.client}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewInvestment({
+                                ...newInvestment,
+                                client: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Type Of Investment"
                             type="text"
-                            placeholder="Private"
+                            value={newInvestment.typeOfInvestment}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewInvestment({
+                                ...newInvestment,
+                                typeOfInvestment: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Company"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newInvestment.company}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewInvestment({
+                                ...newInvestment,
+                                company: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Year Invested"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newInvestment.yearInvested}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewInvestment({
+                                ...newInvestment,
+                                yearInvested: Number(event.target.value),
+                              })
                             }
                           />
                         </div>
@@ -112,27 +137,36 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Investment Amount"
                             type="text"
-                            placeholder="Residence"
+                            value={newInvestment.investmentAmount}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewInvestment({
+                                ...newInvestment,
+                                investmentAmount: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Current Value"
                             type="text"
-                            placeholder="2012"
+                            value={newInvestment.currentvalue}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewInvestment({
+                                ...newInvestment,
+                                currentvalue: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Source Of Investment"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newInvestment.sourceOfInvestment}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewInvestment({
+                                ...newInvestment,
+                                sourceOfInvestment: event.target.value,
+                              })
                             }
                           />
                         </div>

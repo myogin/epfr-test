@@ -59,8 +59,10 @@ const ExistingPortofolio = (props: Props) => {
     showDetailData(params);
   };
 
-  const setDetailProperty = () => {
-    showDetailProperty(!property);
+  const setDetailProperty = (setParam : boolean) => {
+
+    console.log("test " + setParam)
+    setSectionTwo({...sectionTwo}, )
   };
 
   const setDetailInvestment = () => {
@@ -124,7 +126,7 @@ const ExistingPortofolio = (props: Props) => {
         company: "",
         yearInvested: 0,
         investmentAmount: 0,
-        currentvalue: "",
+        currentvalue: 0,
         sourceOfInvestment: "",
       },
     ],
@@ -245,14 +247,14 @@ const ExistingPortofolio = (props: Props) => {
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
             <Toggle
-              isChecked={property}
-              toggleName={property ? "Review" : "Not Review"}
-              onChange={setDetailProperty}
+              isChecked={sectionTwo.summaryOfProperty[0].editting}
+              toggleName={sectionTwo.summaryOfProperty[0].editting ? "Review" : "Not Review"}
+              onChange={() => setDetailProperty(!sectionTwo.summaryOfProperty[0].editting)}
             />
             {/* <Toggle /> */}
           </HeadingSecondarySectionDoubleGrid>
 
-          {property ? <PropertyPortofolio id={sectionTwo.id} datas={sectionTwo.summaryOfProperty} /> : null}
+          {sectionTwo.summaryOfProperty[0].editting ? <PropertyPortofolio id={sectionTwo.id} datas={sectionTwo.summaryOfProperty} /> : null}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>

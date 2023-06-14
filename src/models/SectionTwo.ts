@@ -20,7 +20,7 @@ export interface SummaryOfInvestment {
   company: string;
   yearInvested: number;
   investmentAmount: number;
-  currentvalue: string;
+  currentvalue: number;
   sourceOfInvestment: string;
 }
 
