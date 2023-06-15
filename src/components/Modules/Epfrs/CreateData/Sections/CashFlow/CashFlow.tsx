@@ -15,6 +15,7 @@ import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { postPfr } from "@/services/pfrService";
+import { SectionThree } from "@/models/SectionThree";
 
 interface Props {
   id?: any;
@@ -38,6 +39,57 @@ const CashFlow = (props: Props) => {
 
   const [notReviewAll, setNotReviewAll] = useState(false);
 
+  const [sectionThree, setSectionThree] = useState<SectionThree>({
+    id:0,
+    need: [],
+    reason: [],
+    others: {
+      annualExpense: [
+        {
+          editting: false,
+          key: "",
+          values: []
+        }
+      ],
+      annualIncome: [
+        {
+          editting: false,
+          key: "",
+          values: []
+        }
+      ]
+    },
+    data: [
+      {
+        annualIncome: {
+          annualGrossIncome: 0,
+          additionalWages: 0,
+          less: 0,
+          others: 0,
+        },
+        annualSurplus: {
+          annualSurplus: 0
+        },
+        answer: {
+          state: "",
+          answer: ""
+        },
+        reasonForSurplus: ""
+      }
+    ],
+    annualExpense: [
+      {
+        key: "",
+        title: "",
+        selected: false,
+        values: []
+      }
+    ],
+    issues: [],
+    totalNetSurplus: [],
+    status: 0
+  })
+
   const scrollPosition = useScrollPosition(3)
 
   // let post = postPfr(1)
@@ -54,7 +106,7 @@ const CashFlow = (props: Props) => {
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             3.1 Annual Income
           </HeadingSecondarySection>
-          <AnnualIncomeCashFlow />
+          <AnnualIncomeCashFlow data={sectionThree.data[0]} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             3.2 Annual Expense
           </HeadingSecondarySection>

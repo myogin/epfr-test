@@ -2,12 +2,19 @@ import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSing
 import RowTripleGrid from "@/components/Attributes/Rows/Grids/RowTripleGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import Input from "@/components/Forms/Input";
+import { Datas } from "@/models/SectionThree";
 import React, { useState } from "react";
 
-const AnnualIncomeCashFlow = () => {
+interface Props {
+  data?: any
+}
+
+const AnnualIncomeCashFlow = (props: Props) => {
   const setData = (params: any) => {
     console.log(params);
   };
+
+  const [dataAnnualIncome, setdataAnnualIncome] = useState<Datas>(props.data)
 
   const [annualGrossIncome, setAnnualGrossIncome] = useState<any>(0);
   const [additionalWages, setAdditionalWages] = useState<any>(0);
@@ -29,7 +36,7 @@ const AnnualIncomeCashFlow = () => {
             className="my-4"
             formStyle="text-right"
             type="text"
-            value={annualGrossIncome}
+            value={dataAnnualIncome.annualIncome.annualGrossIncome / 12}
             handleChange={(event) => setAnnualGrossIncome(event.target.value)}
           />
         </div>
@@ -38,7 +45,7 @@ const AnnualIncomeCashFlow = () => {
             className="my-4"
             formStyle="text-right"
             type="text"
-            value={annualGrossIncome}
+            value={dataAnnualIncome.annualIncome.annualGrossIncome * 12}
             handleChange={(event) => setAnnualGrossIncome(event.target.value)}
           />
         </div>
@@ -52,7 +59,7 @@ const AnnualIncomeCashFlow = () => {
             className="my-4"
             type="text"
             formStyle="text-right"
-            value={additionalWages}
+            value={dataAnnualIncome.annualIncome.additionalWages / 12}
             handleChange={(event) => setAdditionalWages(event.target.value)}
           />
         </div>
@@ -61,7 +68,7 @@ const AnnualIncomeCashFlow = () => {
             className="my-4"
             type="text"
             formStyle="text-right"
-            value={additionalWages}
+            value={dataAnnualIncome.annualIncome.additionalWages * 12}
             handleChange={(event) => setAdditionalWages(event.target.value)}
           />
         </div>
