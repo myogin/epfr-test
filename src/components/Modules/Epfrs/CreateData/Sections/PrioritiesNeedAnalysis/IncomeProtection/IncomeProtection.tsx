@@ -5,7 +5,7 @@ import TextThin from '@/components/Attributes/Typography/TextThin'
 import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
 
@@ -27,8 +27,11 @@ const IncomeProtection = (props : Props) => {
   const [newIncomDefaultCheck, setIncomDefaultCheck] = useState(sectionSeven.answer.defaultCheck)
   const [newIncomAdditionalNote, setIncomAdditionalNote] = useState(sectionSeven.additionalNote)
 
-  console.log('newIncomAdditionalNote', newIncomAdditionalNote)
-  console.log('sectionSeven', sectionSeven)
+  // console.log('sectionSeven', sectionSeven)
+
+  useEffect(() => {    
+    console.log('useEffect - newIncomeProtection', newIncomeProtection)
+  }, [newIncomeProtection]);
 
   // Total Data Client & Deoendants
     let total = sectionSeven.typeClient + sectionSeven.totalDependant;
@@ -45,13 +48,11 @@ const IncomeProtection = (props : Props) => {
   // End
   const handleClient = (i: any) => {
     const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-      if(index === i){
-        if(item[0] === true){
-          item[0] = false;
-        }else{
-          item[0] = true;
-        }
-      } 
+      if(item[i] === true){
+        item[i] = false;
+      }else{
+        item[i] = true;
+      }
       return item;
     });
     setIncomeProtectionNeedClient(updatedClient);
@@ -59,13 +60,11 @@ const IncomeProtection = (props : Props) => {
 
   const handleDependant = (i: any) => {
     const updatedDependant = newIncomeProtectionNeedDependant.map((item: any, index: any) => {
-      if(index === i){
-        if(item[0] === true){
-          item[0] = false;
-        }else{
-          item[0] = true;
-        }
-      } 
+      if(item[i] === true){
+        item[i] = false;
+      }else{
+        item[i] = true;
+      }
       return item;
     });
     setIncomeProtectionNeedDependant(updatedDependant);
@@ -95,7 +94,20 @@ const IncomeProtection = (props : Props) => {
 
     setIncomeProtection(dataIncome);
 
-    // console.log('sectionseven', sectionSeven)
+    // setSectionSeven({
+    //   ...sectionSeven,
+    //   answer: {
+    //     ...sectionSeven.answer,
+    //     clientData: [...sectionSeven.answer.clientData.slice(0,1)]
+    //   }
+    // });
+
+    // console.log('newIncomeProtection', newIncomeProtection)
+    // setSectionSeven(() => {
+    //   const resData = [...]
+    // })
+    // console.log('sectionSeven', sectionSeven)
+
   };
 
   const setDataDependant = (event: any, i: any) => {
@@ -130,38 +142,21 @@ const IncomeProtection = (props : Props) => {
   }
   
   const handleAdditional = (e: any) => {
-    const {value} = e.target;
-    console.log('value', value)
+    const {name, value} = e.target;
 
-    // setSectionSeven((prevState) => {
-    //   // return { ...prevState, result }
-    // });
+    setSectionSeven((prevState: any) => {
+      const resData = [...prevState.additionalNote];
+      const additionalNote = resData.map((valueData, index) => {
+        var res = valueData
+        if(index === 0) {
+          res = { ...valueData, [name]: value };
+        }
 
-    // setSectionSeven((prevState: any) => {
-    //   const resData = [...prevState.additionalNote];
-    //   const resultAdditional = resData
-    //   resultAdditional[0].note = value;
-    //   return resultAdditional;
-    // });
+        return res;
+      });
+      return { ...prevState, additionalNote };
+    });
     
-    const dataNewIncomAdditionalNote = [...newIncomAdditionalNote];
-    dataNewIncomAdditionalNote[0]['note'] = value;
-    setIncomAdditionalNote(dataNewIncomAdditionalNote);
-    
-    ///
-    // const updatedClient = newIncomAdditionalNote.map((item: any, index: any) => {
-    //   if(index === 0){
-    //     item['note'] = value
-    //   }
-    //   return item;
-    // });
-
-    // var res = {
-    //   additionalNote: updatedClient
-    // }
-    
-    // console.log('updatedClient', updatedClient)
-    // setIncomAdditionalNote(res);
   }
 
   // Rumus
@@ -199,6 +194,7 @@ const IncomeProtection = (props : Props) => {
     return isNaN(result) ? 0 : result.toFixed(2);
   }
   
+  console.log('7.1', sectionSeven)
   return (
     <>
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -277,6 +273,7 @@ const IncomeProtection = (props : Props) => {
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
+                    name="annualAmountNeeded"
                     value={newIncomeProtectionDep[i].incomeProtectionUponDeath.annualAmountNeeded}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
@@ -739,7 +736,8 @@ const IncomeProtection = (props : Props) => {
                 className="mb-10"
                 type="text"
                 placeholder="Additional Notes"
-                value={newIncomAdditionalNote[0].note}
+                name="note"
+                value={sectionSeven.additionalNote[0].note}
                 handleChange={handleAdditional}
               />
             </td>

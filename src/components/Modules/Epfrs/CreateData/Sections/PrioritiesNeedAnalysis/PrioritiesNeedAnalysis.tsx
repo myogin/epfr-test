@@ -533,7 +533,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   sectionSeven.answer.need.dependant =  new Array(sectionSeven.totalDependant).fill(false).map(() => {return new Array(14).fill(false);})
 
   const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState(sectionSeven.answer.need.client); //
-
+  console.log('firstSet', sectionSeven)
   let {
     showIncomeProtection,
     showFundDisability,
@@ -566,13 +566,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   const setIncomeProtection = (data: any, i: any) => {
     if(resTotal == 1){
       const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-        if(index === i){
-          if(item[0] === true){
-            item[0] = false;
-          }else{
-            item[0] = true;
-          }
-        } 
+        if(item[i] === true){
+          item[i] = false;
+        }else{
+          item[i] = true;
+        }
         return item;
       });
       setIncomeProtectionNeedClient(updatedClient);
@@ -581,12 +579,37 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     }
   };
 
-  const setFundDisability = () => {
-    showFundDisability(!fundDisability);
+  const setFundDisability = (data: any, i: any) => {
+    if(resTotal == 1){
+      const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
+        if(item[i] === true){
+          item[i] = false;
+        }else{
+          item[i] = true;
+        }
+        return item;
+      });
+      setIncomeProtectionNeedClient(updatedClient);
+    }else{
+      showFundDisability(!fundDisability);
+    }
   };
 
-  const setFundCritical = () => {
-    showFundCritical(!fundCritical);
+  const setFundCritical = (data: any, i: any) => {
+    if(resTotal == 1){
+      const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
+        if(item[i] === true){
+          item[i] = false;
+        }else{
+          item[i] = true;
+        }
+        return item;
+      });
+      console.log('updatedClient', updatedClient)
+      setIncomeProtectionNeedClient(updatedClient);
+    }else{
+      showFundCritical(!fundCritical);
+    }
   };
 
   const setFundChildren = () => {
@@ -626,12 +649,32 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(7);
+  
+  // Section 7.1 Toggle
   let toggleInProtect = false;
   if(resTotal == 1){
     toggleInProtect = newIncomeProtectionNeedClient[0][0];
     incomeProtection = toggleInProtect;
   }else{
     toggleInProtect = incomeProtection;
+  }
+
+  // Section 7.2 Toggle
+  let toggleInFundDisability = false;
+  if(resTotal == 1){
+    toggleInFundDisability = newIncomeProtectionNeedClient[0][1];
+    fundDisability = toggleInFundDisability;
+  }else{
+    toggleInFundDisability = fundDisability;
+  }
+
+  // Section 7.3 Toggle
+  let toggleInFundCritical = false;
+  if(resTotal == 1){
+    toggleInFundCritical = newIncomeProtectionNeedClient[0][2];
+    fundCritical = toggleInFundCritical;
+  }else{
+    toggleInFundCritical = fundCritical;
   }
   return (
     <div id={props.id}>
@@ -670,13 +713,13 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             7.2 Protection (Fund Disability Income / Expense)
           </h2>
           <Toggle
-            isChecked={fundDisability}
-            toggleName={fundDisability ? "Review" : "Not Review"}
-            onChange={setFundDisability}
+            isChecked={toggleInFundDisability}
+            toggleName={toggleInFundDisability ? "Review" : "Not Review"}
+            onChange={() => setFundDisability(!toggleInFundDisability, 1)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundDisability ? <FundDisability /> : ""}
+        {fundDisability ? <FundDisability  datas={sectionSeven}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -685,11 +728,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={fundCritical}
             toggleName={fundCritical ? "Review" : "Not Review"}
-            onChange={setFundCritical}
+            onChange={() => setFundCritical(!toggleInFundCritical, 2)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundCritical ? <FundCritical /> : ""}
+        {fundCritical ? <FundCritical datas={sectionSeven}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
