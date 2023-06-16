@@ -10,6 +10,7 @@ import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
+
 const CpfPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
@@ -21,6 +22,8 @@ const CpfPortofolio = () => {
     medisaveAccount: 0,
     retirementAccount: 0,
   });
+
+
 
   const setData = (params: any) => {
     console.log(params);

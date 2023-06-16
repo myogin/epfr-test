@@ -13,24 +13,32 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 interface Props {
   datas?: any;
   id?: any;
+  changeState: (props: any) => void
 }
 
 const PropertyPortofolio = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
 
-  const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>({
-    editting: false,
-    client: "",
-    category: 0,
-    typeOfProperty: "",
-    yearPurchased: 0,
-    purchasePrice: 0,
-    loanAmount: 0,
-    currentOutstanding: 0,
-    monthlyLoanRepaymentCash: 0,
-    monthlyLoanRepaymentCPF: 0,
-    currentMarketValue: 0,
-  });
+  // const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>({
+  //   editting: false,
+  //   client: "",
+  //   category: 0,
+  //   typeOfProperty: "",
+  //   yearPurchased: 0,
+  //   purchasePrice: 0,
+  //   loanAmount: 0,
+  //   currentOutstanding: 0,
+  //   monthlyLoanRepaymentCash: 0,
+  //   monthlyLoanRepaymentCPF: 0,
+  //   currentMarketValue: 0,
+  // });
+
+  const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>(props.datas);
+
+  const changeApa = () => {
+
+    props.changeState(newDataInput)
+  }
 
   const setData = (params: any) => {
     console.log("params", params);

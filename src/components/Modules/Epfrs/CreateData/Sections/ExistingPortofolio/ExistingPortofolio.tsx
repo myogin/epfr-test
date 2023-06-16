@@ -11,7 +11,7 @@ import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import Toggle from "@/components/Forms/Toggle";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import CpfPortofolio from "./Cpf/CpfPortofolio";
 import InsurancePortofolio from "./Insurance/InsurancePortofolio";
@@ -178,6 +178,15 @@ const ExistingPortofolio = (props: Props) => {
     status: 0,
   });
 
+
+  const changeSection = (params) => {
+
+    setSectionTwo((prevState = {
+
+    }))
+
+  }
+
   const saveData = (params: any) => {
     showDetailData(params);
   };
@@ -241,9 +250,15 @@ const ExistingPortofolio = (props: Props) => {
 
   // console.log("Test logic scroll " +scrollPosition);
 
-  if (typeof window !== "undefined") {
+  // if (typeof window !== "undefined") {
+  //   localStorage.setItem("section2", JSON.stringify(sectionTwo));
+  // }
+
+  useEffect(() => {
     localStorage.setItem("section2", JSON.stringify(sectionTwo));
-  }
+
+  }, [])
+  
 
   return (
     <div id={props.id}>
@@ -275,7 +290,7 @@ const ExistingPortofolio = (props: Props) => {
             {/* <Toggle /> */}
           </HeadingSecondarySectionDoubleGrid>
 
-          {sectionTwo.summaryOfProperty[0].editting ? <PropertyPortofolio id={sectionTwo.id} datas={sectionTwo.summaryOfProperty} /> : null}
+          {sectionTwo.summaryOfProperty[0].editting ? <PropertyPortofolio changeState={() => changeSection()} id={sectionTwo.id} datas={sectionTwo.summaryOfProperty[0]} /> : null}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>
