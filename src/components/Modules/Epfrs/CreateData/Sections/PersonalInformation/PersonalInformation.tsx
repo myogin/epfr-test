@@ -134,7 +134,7 @@ const PersonalInformation = (props: Props) => {
     showDetailData(params);
   };
 
-  console.log(addInfoDependent.length);
+  // console.log(addInfoDependent.length);
 
   const scrollPosition = useScrollPosition(1);
 

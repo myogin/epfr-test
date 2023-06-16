@@ -64,10 +64,10 @@ export interface SectionOne {
   ownerId?: number;
   type?: number;
   id?: number;
-  clientInfo?: PersonalInformation[];
-  dependant?: DependantInformation[];
-  accompaniment?: Accompaniment[];
-  trustedIndividuals?: TrustedIndividual;
+  clientInfo: PersonalInformation[];
+  dependant: DependantInformation[];
+  accompaniment: Accompaniment[];
+  trustedIndividuals: TrustedIndividual;
   issues?: [];
   reviewDate?: string;
   status?: number;
