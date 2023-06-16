@@ -45,7 +45,7 @@ export interface SectionThree {
   reason?: Array<any>;
   others?: Others;
   data: Datas[];
-  annualExpense?: AnnualExpanse[];
+  annualExpense: AnnualExpanse[];
   issues?: Array<any>;
   totalNetSurplus?: Array<any>;
   status?: number;

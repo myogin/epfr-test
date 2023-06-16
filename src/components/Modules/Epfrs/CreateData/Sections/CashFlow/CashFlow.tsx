@@ -40,7 +40,7 @@ const CashFlow = (props: Props) => {
   const [notReviewAll, setNotReviewAll] = useState(false);
 
   const [sectionThree, setSectionThree] = useState<SectionThree>({
-    id:0,
+    id: 0,
     need: [],
     reason: [],
     others: {
@@ -48,16 +48,16 @@ const CashFlow = (props: Props) => {
         {
           editting: false,
           key: "",
-          values: []
-        }
+          values: [],
+        },
       ],
       annualIncome: [
         {
           editting: false,
           key: "",
-          values: []
-        }
-      ]
+          values: [],
+        },
+      ],
     },
     data: [
       {
@@ -68,36 +68,89 @@ const CashFlow = (props: Props) => {
           others: 0,
         },
         annualSurplus: {
-          annualSurplus: 0
+          annualSurplus: 0,
         },
         answer: {
           state: "",
-          answer: ""
+          answer: "",
         },
-        reasonForSurplus: ""
-      }
+        reasonForSurplus: "",
+      },
     ],
     annualExpense: [
       {
-        key: "",
-        title: "",
+        key: "household",
+        title: "household",
         selected: false,
-        values: []
-      }
+        values: [1200, 0, 0, 0],
+      },
+      {
+        key: "transportation",
+        title: "transportation",
+        selected: false,
+        values: [2400, 0, 0, 0],
+      },
+      {
+        key: "telco",
+        title: "telco",
+        selected: false,
+        values: [3600, 0, 0, 0],
+      },
+      {
+        key: "dependents",
+        title: "dependents",
+        selected: false,
+        values: [4800, 0, 0, 0],
+      },
+      {
+        key: "personal",
+        title: "personal",
+        selected: false,
+        values: [6000, 0, 0, 0],
+      },
+      {
+        key: "luxury",
+        title: "luxury",
+        selected: false,
+        values: [7200, 0, 0, 0],
+      },
+      {
+        key: "insurancePremiums",
+        title: "Insurance Premiums",
+        selected: false,
+        values: [1200, 0, 0, 0],
+      },
+      {
+        key: "loanRepayments",
+        title: "Loan Repayments",
+        selected: false,
+        values: [12000, 0, 0, 0],
+      },
     ],
     issues: [],
-    totalNetSurplus: [],
-    status: 0
-  })
+    totalNetSurplus: [230,345],
+    status: 0,
+  });
 
-  const scrollPosition = useScrollPosition(3)
+  const scrollPosition = useScrollPosition(3);
 
   // let post = postPfr(1)
 
   return (
     <div id={props.id}>
-      <div id="section-header-3" className={`sticky top-0 z-10 ${scrollPosition === "okSec3" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
-        <HeadingPrimarySection className={`mx-8 2xl:mx-60 ${scrollPosition === "okSec3" ? "text-gray-light text-xl font-bold mb-5 mt-5" : "text-2xl font-bold mb-10 mt-10"}`}>
+      <div
+        id="section-header-3"
+        className={`sticky top-0 z-10 ${
+          scrollPosition === "okSec3" ? "bg-white py-1 ease-in shadow-lg" : ""
+        }`}
+      >
+        <HeadingPrimarySection
+          className={`mx-8 2xl:mx-60 ${
+            scrollPosition === "okSec3"
+              ? "text-gray-light text-xl font-bold mb-5 mt-5"
+              : "text-2xl font-bold mb-10 mt-10"
+          }`}
+        >
           Section 3. Cash Flow
         </HeadingPrimarySection>
       </div>
@@ -110,7 +163,7 @@ const CashFlow = (props: Props) => {
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             3.2 Annual Expense
           </HeadingSecondarySection>
-          <AnnualExpenseCashFlow />
+          <AnnualExpenseCashFlow data={sectionThree.annualExpense} />
         </>
       ) : (
         ""
@@ -142,7 +195,7 @@ const CashFlow = (props: Props) => {
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         3.3 Annual Net Cash Flow
       </HeadingSecondarySection>
-      <AnnualNetCashFlow />
+      <AnnualNetCashFlow data={sectionThree.totalNetSurplus} />
       {!notReviewAll ? (
         <>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
