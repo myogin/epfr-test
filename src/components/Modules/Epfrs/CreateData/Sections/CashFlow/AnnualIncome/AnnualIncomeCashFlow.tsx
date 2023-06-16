@@ -1,12 +1,16 @@
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowTripleGrid from "@/components/Attributes/Rows/Grids/RowTripleGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
+import ButtonBorder from "@/components/Forms/Buttons/ButtonBorder";
+import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
+import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import Input from "@/components/Forms/Input";
 import { Datas } from "@/models/SectionThree";
 import React, { useState } from "react";
+import AddLineIcon from "remixicon-react/AddLineIcon";
 
 interface Props {
-  data?: any
+  data?: any;
 }
 
 const AnnualIncomeCashFlow = (props: Props) => {
@@ -14,7 +18,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
     console.log(params);
   };
 
-  const [dataAnnualIncome, setdataAnnualIncome] = useState<Datas>(props.data)
+  const [dataAnnualIncome, setdataAnnualIncome] = useState<Datas>(props.data);
 
   const [annualGrossIncome, setAnnualGrossIncome] = useState<any>(0);
   const [additionalWages, setAdditionalWages] = useState<any>(0);
@@ -74,8 +78,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
       </RowTripleGrid>
       <RowTripleGrid className="items-center">
-        <div>
+        <div className="flex items-center justify-start">
           <TextSmall className="text-gray-light">Others</TextSmall>
+          <ButtonBox className="text-green-deep">
+            <AddLineIcon size={14} />
+          </ButtonBox>
         </div>
         <div>
           <Input

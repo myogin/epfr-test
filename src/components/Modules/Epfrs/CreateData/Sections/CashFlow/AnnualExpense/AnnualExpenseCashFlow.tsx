@@ -1,9 +1,11 @@
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowTripleGrid from "@/components/Attributes/Rows/Grids/RowTripleGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
+import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import Input from "@/components/Forms/Input";
 import { AnnualExpanse } from "@/models/SectionThree";
 import React, { useState } from "react";
+import AddLineIcon from "remixicon-react/AddLineIcon";
 
 interface Props {
   data?: any
@@ -49,6 +51,32 @@ const AnnualExpenseCashFlow = (props: Props) => {
         </div>
       </RowTripleGrid>
       ))}
+      <RowTripleGrid className="items-center">
+      <div className="flex items-center justify-start">
+          <TextSmall className="text-gray-light">Others</TextSmall>
+          <ButtonBox className="text-green-deep">
+            <AddLineIcon size={14} />
+          </ButtonBox>
+        </div>
+        <div>
+          <Input
+            className="my-4"
+            formStyle="text-right"
+            type="text"
+            value=""
+            handleChange={(event) => setData(event.target.value)}
+          />
+        </div>
+        <div>
+          <Input
+            className="my-4"
+            formStyle="text-right"
+            type="text"
+            value=""
+            handleChange={(event) => setData(event.target.value)}
+          />
+        </div>
+      </RowTripleGrid>
       <RowTripleGrid className="items-center">
         <div>
           <TextSmall className="text-green-deep">ANNUAL NET EXPENSE</TextSmall>

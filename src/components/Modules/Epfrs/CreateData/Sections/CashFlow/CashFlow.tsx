@@ -132,6 +132,10 @@ const CashFlow = (props: Props) => {
     status: 0,
   });
 
+  if (typeof window !== "undefined") {
+    localStorage.setItem("section3", JSON.stringify(sectionThree));
+  }
+
   const scrollPosition = useScrollPosition(3);
 
   // let post = postPfr(1)
