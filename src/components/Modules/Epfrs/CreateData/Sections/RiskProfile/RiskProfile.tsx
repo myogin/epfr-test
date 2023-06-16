@@ -187,9 +187,14 @@ const RiskProfile = (props: Props) => {
     id: 0,
     need: [],
     reason: [],
-    answers: [],
-    riskCapacity: [],
-    riskAttitude: [],
+    answers: [
+      [-100, -100, -100, -100, -100, -100, -100, -100, -100],
+      [-100, -100, -100, -100, -100, -100, -100, -100, -100],
+      [-100, -100, -100, -100, -100, -100, -100, -100, -100],
+      [-100, -100, -100, -100, -100, -100, -100, -100, -100],
+    ],
+    riskCapacity: [0, 0, 0, 0],
+    riskAttitude: [0, 0, 0, 0],
     issues: [],
     status: 0,
   });
@@ -239,7 +244,7 @@ const RiskProfile = (props: Props) => {
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
             {qa?.length &&
               qa.map((qs, index) => (
-                <div className="mb-4" key={qs.id}>
+                <div className="mb-4" key={index}>
                   <RowSingle>
                     <TitleSmall className="text-gray-light">
                       {qs.question}
@@ -251,7 +256,7 @@ const RiskProfile = (props: Props) => {
                     </span>
                   </RowSingle>
                   {qs.answers.map((answer: any, indexB: any) => (
-                    <RowSingle key={answer.id}>
+                    <RowSingle key={index + indexB}>
                       <Checkbox />
                       <TextThin className="text-gray-light">
                         {answer.answer}
