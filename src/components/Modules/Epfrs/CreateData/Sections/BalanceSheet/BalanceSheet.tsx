@@ -16,7 +16,7 @@ import NetWorthBalance from "./NetWorthBalance/NetWorthBalance";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { SectionFour } from "@/models/SectionFour";
+import { SectionFour, assetInterface } from "@/models/SectionFour";
 import { log } from "console";
 
 interface Props {
@@ -60,6 +60,60 @@ const BalanceSheet = (props: Props) => {
     });
   };
 
+  function updateAssets(assets: assetInterface) {
+    setSectionFour((prevState) => {
+      return {
+        ...prevState,
+        others: {
+          ...prevState.others,
+          asset: [...prevState.others.asset, assets],
+        },
+      };
+    });
+  }
+
+  function deleteAssets(index: number) {
+    setSectionFour((prevState) => {
+      let newAsset = prevState.others.asset;
+      newAsset.splice(index, 1);
+
+      return {
+        ...prevState,
+        others: {
+          ...prevState.others,
+          asset: newAsset,
+        },
+      };
+    });
+  }
+
+  function updateLiabilities(assets: assetInterface) {
+    setSectionFour((prevState) => {
+      return {
+        ...prevState,
+        others: {
+          ...prevState.others,
+          asset: [...prevState.others.asset, assets],
+        },
+      };
+    });
+  }
+
+  function deleteLiabilities(index: number) {
+    setSectionFour((prevState) => {
+      let newAsset = prevState.others.asset;
+      newAsset.splice(index, 1);
+
+      return {
+        ...prevState,
+        others: {
+          ...prevState.others,
+          asset: newAsset,
+        },
+      };
+    });
+  }
+
   return (
     <div id={props.id}>
       <div
@@ -84,7 +138,11 @@ const BalanceSheet = (props: Props) => {
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.1 Assets
           </HeadingSecondarySection>
-          <AssetBalance />
+          <AssetBalance
+            updateassets={updateAssets}
+            assetDatas={sectionFour.others.asset}
+            deleteAssets={deleteAssets}
+          />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.2 Liabilities
           </HeadingSecondarySection>

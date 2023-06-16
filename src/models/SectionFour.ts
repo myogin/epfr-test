@@ -8,6 +8,11 @@ export interface SectionFour {
 }
 
 export interface Others {
-  asset: any[];
-  liability: any[];
+  asset: assetInterface[];
+  liability: assetInterface[];
+}
+
+export interface assetInterface {
+  key?: string;
+  otherValue?: number[];
 }
