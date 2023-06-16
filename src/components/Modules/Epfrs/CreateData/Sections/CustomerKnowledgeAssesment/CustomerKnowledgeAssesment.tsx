@@ -12,25 +12,68 @@ import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import TextArea from "@/components/Forms/TextArea";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { SectionSix } from "@/models/SectionSix";
 
 interface Props {
   id?: any;
 }
 
 const CustomerKnowledgeAssesment = (props: Props) => {
-  let { showDetailData } = useNavigationSection();
-
   const [isReview, setIsReview] = useState(true);
 
-  const saveData = (params: any) => {
-    showDetailData(params);
+  const scrollPosition = useScrollPosition(6);
+
+  const [sectionSix, setSectionSix] = useState<SectionSix>({
+    id: 0,
+    need: [],
+    reason: [],
+    answers: [
+      {
+        education: [],
+        investment: [],
+        work: [],
+      },
+    ],
+    outcome: [],
+    outcomeChanged: true,
+    issues: [],
+    status: 0,
+  });
+
+  if (typeof window !== "undefined") {
+    localStorage.setItem("section6", JSON.stringify(sectionSix));
+  }
+
+  // handle input change / state change
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    setSectionSix((prevState) => {
+      return { ...prevState, [name]: value };
+    });
   };
 
-  const scrollPosition = useScrollPosition(6)
+  const checkboxChange = (event: any) => {
+    setIsReview(!isReview);
+    setSectionSix((prevState) => {
+      return { ...prevState, ["need"]: [!isReview] };
+    });
+  };
   return (
     <div id={props.id}>
-      <div id="section-header-6" className={`sticky top-0 z-10 ${scrollPosition === "okSec6" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
-        <HeadingPrimarySection className={`mx-8 2xl:mx-60 ${scrollPosition === "okSec6" ? "text-gray-light text-xl font-bold mb-5 mt-5" : "text-2xl font-bold mb-10 mt-10"}`}>
+      <div
+        id="section-header-6"
+        className={`sticky top-0 z-10 ${
+          scrollPosition === "okSec6" ? "bg-white py-1 ease-in shadow-lg" : ""
+        }`}
+      >
+        <HeadingPrimarySection
+          className={`mx-8 2xl:mx-60 ${
+            scrollPosition === "okSec6"
+              ? "text-gray-light text-xl font-bold mb-5 mt-5"
+              : "text-2xl font-bold mb-10 mt-10"
+          }`}
+        >
           Section 6. Customer Knowledge Assesment
         </HeadingPrimarySection>
       </div>
@@ -77,18 +120,19 @@ const CustomerKnowledgeAssesment = (props: Props) => {
         </div>
         {!isReview ? (
           <div>
-            <TextArea label="The Reason" rows={3} />
+            <TextArea
+              handleChange={handleInputChange}
+              className="my-4"
+              label="The Reason"
+              name="reason"
+              rows={3}
+            />
           </div>
         ) : (
           ""
         )}
       </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
-      {/* <SectionCardFooter>
-        <ButtonGreenMedium onClick={() => saveData(7)}>
-          Continue <ArrowRightLineIcon size={20} />
-        </ButtonGreenMedium>
-      </SectionCardFooter> */}
     </div>
   );
 };
