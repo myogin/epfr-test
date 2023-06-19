@@ -4,12 +4,16 @@ import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import Input from "@/components/Forms/Input";
 import React, { useState } from "react";
 
-const AnnualNetCashFlow = () => {
+interface Props {
+  data?: any
+}
+
+const AnnualNetCashFlow = (props: Props) => {
   const setData = (params: any) => {
     console.log(params);
   };
 
-  const [annualGrossIncome, setAnnualGrossIncome] = useState<any>(0);
+  const [dataAnnualNet, setDataAnnualNet] = useState<Array<any>>(props.data);
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -29,7 +33,7 @@ const AnnualNetCashFlow = () => {
             className="my-4"
             formStyle="text-right"
             type="text"
-            value={annualGrossIncome}
+            value={dataAnnualNet[0]}
             handleChange={(event) => setData(event.target.value)}
           />
         </div>
@@ -38,7 +42,7 @@ const AnnualNetCashFlow = () => {
             className="my-4"
             formStyle="text-right"
             type="text"
-            value={annualGrossIncome}
+            value={dataAnnualNet[1]}
             handleChange={(event) => setData(event.target.value)}
           />
         </div>
