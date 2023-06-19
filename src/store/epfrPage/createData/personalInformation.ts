@@ -8,6 +8,7 @@ type Actions = {
   setDependent: (clientType: number, name: string, value: any) => any;
   setAccompaniment: (clientType: number, name: string, value: any) => any;
   setTrustedIndividuals: (clientType: number, name: string, value: any) => any;
+  setGlobal: (name: string, value: any) => any;
 };
 
 const initialState: SectionOne = {
@@ -107,6 +108,12 @@ const personalInformation = create(
       ),
     setTrustedIndividuals: (clientType: number, name: string, value: any) =>
       set(produce((draft) => {})),
+    setGlobal: (name: string, value: any) =>
+      set(
+        produce((draft) => {
+          draft[name] = value;
+        })
+      ),
   }))
 );
 

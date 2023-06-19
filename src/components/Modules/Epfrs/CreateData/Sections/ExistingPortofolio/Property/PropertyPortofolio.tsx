@@ -4,6 +4,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import { SummaryOfProperty } from "@/models/SectionTwo";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -18,28 +19,13 @@ interface Props {
 const PropertyPortofolio = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
 
-  
+  let { summaryOfProperty, setProperty } = useExistingPortofolio();
 
-  // const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>({
-  //   editting: false,
-  //   client: "",
-  //   category: 0,
-  //   typeOfProperty: "",
-  //   yearPurchased: 0,
-  //   purchasePrice: 0,
-  //   loanAmount: 0,
-  //   currentOutstanding: 0,
-  //   monthlyLoanRepaymentCash: 0,
-  //   monthlyLoanRepaymentCPF: 0,
-  //   currentMarketValue: 0,
-  // });
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
 
-  const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>(props.datas);
-
-  const changeApa = () => {
-
-    props.changeState(newDataInput)
-  }
+    setProperty(0, name, value);
+  };
 
   const setData = (params: any) => {
     console.log("params", params);
@@ -103,50 +89,34 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Client"
                             type="text"
+                            name="client"
                             placeholder="Margo Madison"
-                            value={newDataInput.client}
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                client: event.target.value,
-                              })
-                            }
+                            value={summaryOfProperty[0].client}
+                            handleChange={handleInputChange}
                           />
                           <Input
                             className="my-4"
                             label="Type Of Property"
                             type="text"
-                            value={newDataInput.typeOfProperty}
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                typeOfProperty: event.target.value,
-                              })
-                            }
+                            name="typeOfProperty"
+                            value={summaryOfProperty[0].typeOfProperty}
+                            handleChange={handleInputChange}
                           />
                           <Input
                             className="my-4"
                             label="Category"
                             type="text"
-                            value={newDataInput.category}
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                category: Number(event.target.value),
-                              })
-                            }
+                            name="category"
+                            value={summaryOfProperty[0].category}
+                            handleChange={handleInputChange}
                           />
                           <Input
                             className="my-4"
                             label="Year Purchashed"
                             type="text"
-                            value={newDataInput.yearPurchased}
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                yearPurchased: Number(event.target.value),
-                              })
-                            }
+                            name="yearPurchased"
+                            value={summaryOfProperty[0].yearPurchased}
+                            handleChange={handleInputChange}
                           />
                         </div>
                         <div>
@@ -154,49 +124,33 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Purchase Price ($)"
                             type="text"
-                            value={newDataInput.purchasePrice}
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                purchasePrice: Number(event.target.value),
-                              })
-                            }
+                            name="purchasePrice"
+                            value={summaryOfProperty[0].purchasePrice}
+                            handleChange={handleInputChange}
                           />
                           <Input
                             className="my-4"
                             label="Current Outstanding Loan ($)"
                             type="text"
-                            value={newDataInput.currentOutstanding}
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                currentOutstanding: Number(event.target.value),
-                              })
-                            }
+                            name="currentOutstanding"
+                            value={summaryOfProperty[0].currentOutstanding}
+                            handleChange={handleInputChange}
                           />
                           <Input
                             className="my-4"
                             label="Loan Amount Taken ($)"
                             type="text"
-                            value={newDataInput.loanAmount}
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                loanAmount: Number(event.target.value),
-                              })
-                            }
+                            name="loanAmount"
+                            value={summaryOfProperty[0].loanAmount}
+                            handleChange={handleInputChange}
                           />
                           <Input
                             className="my-4"
                             label="Current Market Value ($)"
                             type="text"
-                            value={newDataInput.currentMarketValue}
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                currentMarketValue: Number(event.target.value),
-                              })
-                            }
+                            name="currentMarketValue"
+                            value={summaryOfProperty[0].currentMarketValue}
+                            handleChange={handleInputChange}
                           />
                         </div>
                       </div>
