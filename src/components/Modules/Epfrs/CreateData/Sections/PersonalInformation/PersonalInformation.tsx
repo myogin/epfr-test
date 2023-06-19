@@ -14,6 +14,7 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionOne } from "@/models/SectionOne";
 import Dependent from "./Dependent";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 interface Props {
   id?: any;
@@ -134,106 +135,40 @@ const PersonalInformation = (props: Props) => {
     showDetailData(params);
   };
 
-  console.log(addInfoDependent.length);
+  // console.log(addInfoDependent.length);
 
   const scrollPosition = useScrollPosition(1);
 
-  const [sectionOne, setSectionOne] = useState<SectionOne>({
-    ownerId: 0,
-    type: 0,
-    id: 0,
-    clientInfo: [
-      {
-        clientTitle: "",
-        clientName: "",
-        otherName: "",
-        relationship: "",
-        gender: "",
-        passportNo: "",
-        nationality: "",
-        residency: "",
-        residencyTwo: "",
-        residencyOther: "",
-        dateOfBirth: "",
-        marital: "",
-        smoker: "",
-        employmentStatus: "",
-        occupation: "",
-        companyName: "",
-        businessNature: "",
-        annualIncome: "",
-        contactHome: "",
-        contactMobile: "",
-        contactOffice: "",
-        contactFax: "",
-        email: "",
-        residentialAddr: "",
-        mailingAddr: "",
-      },
-    ],
-    dependant: [
-      {
-        name: "test",
-        relationship: "SON",
-        dateOfBirth: "10 June 2010",
-        age: 13,
-        gender: "1",
-        year: "2",
-      },
-    ],
-    accompaniment: [
-      {
-        age: 0,
-        english_spoken: "",
-        english_written: "",
-        education_level: "",
-      },
-    ],
-    trustedIndividuals: {
-      condition1: false,
-      condition2: false,
-      trustedEmail: "",
-      nameOfTrustedIndividual: "",
-      passportNo: "",
-      relationship: "",
-      languageUsed: "",
-      contactNumber: "",
-      englishLevel1: 0,
-      englishLevel2: 0,
-      educationLevel: 0,
-      ageLevel: 0,
-      declaration: 0,
-    },
-    issues: [],
-    reviewDate: "",
-    status: 0,
-  });
+  // let clientInfo = usePersonalInformation((state: { clientInfo : any }) => state.clientInfo[0]);
+  let {
+    ownerId,
+    type,
+    id,
+    clientInfo,
+    dependant,
+    accompaniment,
+    trustedIndividuals,
+    issues,
+    reviewDate,
+    status,
+    setClient,
+  } = usePersonalInformation();
+
+  console.log("apakah ada isinya: ");
+  console.log(clientInfo[0]);
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     const { groupdata } = event.target.dataset;
 
-    if (groupdata === "generalInfo") {
-      setSectionOne((prevState) => {
-        return { ...prevState, [name]: value };
-      });
-    }
-
     if (groupdata === "clientInfo") {
-      setSectionOne((prevState) => {
-        const clientInfoData = [...prevState.clientInfo];
-        const clientInfo = clientInfoData.map((client) => {
-          return { ...client, [name]: value };
-        });
-
-        return { ...prevState, clientInfo };
-      });
+      setClient(0, name, value);
     }
   };
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem("section1", JSON.stringify(sectionOne));
-  }
+  // if (typeof window !== "undefined") {
+  //   localStorage.setItem("section1", JSON.stringify(sectionOne));
+  // }
 
   return (
     <div id={props.id}>
@@ -279,7 +214,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Title"
             name="clientTitle"
-            value={sectionOne.clientInfo[0].clientTitle}
+            value={clientInfo[0].clientTitle}
             datas={clientTitles}
             handleChange={handleInputChange}
           />
@@ -289,7 +224,7 @@ const PersonalInformation = (props: Props) => {
             label="NRIC / FIN"
             type="text"
             name="passportNo"
-            value={sectionOne.clientInfo[0].passportNo}
+            value={clientInfo[0].passportNo}
             placeholder="12981289129"
             handleChange={handleInputChange}
           />
@@ -299,7 +234,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Sex"
             name="gender"
-            value={sectionOne.clientInfo[0].gender}
+            value={clientInfo[0].gender}
             datas={clientSex}
             handleChange={handleInputChange}
           />
@@ -309,7 +244,7 @@ const PersonalInformation = (props: Props) => {
             label="Date of Birth"
             type="date"
             name="dateOfBirth"
-            value={sectionOne.clientInfo[0].dateOfBirth}
+            value={clientInfo[0].dateOfBirth}
             placeholder="01 January 1998"
             handleChange={handleInputChange}
           />
@@ -319,7 +254,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Nationality"
             name="nationality"
-            value={sectionOne.clientInfo[0].nationality}
+            value={clientInfo[0].nationality}
             datas={country}
             handleChange={handleInputChange}
           />
@@ -328,7 +263,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Pass Type"
             name="passType"
-            value={sectionOne.clientInfo[0].passType}
+            value={clientInfo[0].passType}
             datas={country}
             handleChange={handleInputChange}
           /> */}
@@ -338,7 +273,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             name="employmentStatus"
             label="Employment Status"
-            value={sectionOne.clientInfo[0].employmentStatus}
+            value={clientInfo[0].employmentStatus}
             datas={employment}
             handleChange={handleInputChange}
           />
@@ -348,7 +283,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Employment Sector"
             name="employmentSector"
-            value={sectionOne.clientInfo[0].businessNature}
+            value={clientInfo[0].businessNature}
             datas={employmentSector}
             handleChange={handleInputChange}
           />
@@ -358,7 +293,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             name="companyName"
             label="Company Name"
-            value={sectionOne.clientInfo[0].companyName}
+            value={clientInfo[0].companyName}
             datas={companyMaster}
             handleChange={handleInputChange}
           />
@@ -368,7 +303,7 @@ const PersonalInformation = (props: Props) => {
             label="Contact Detail [Home]"
             type="text"
             name="contactHome"
-            value={sectionOne.clientInfo[0].contactHome}
+            value={clientInfo[0].contactHome}
             placeholder="981271291"
             handleChange={handleInputChange}
           />
@@ -378,7 +313,7 @@ const PersonalInformation = (props: Props) => {
             label="Registered Address"
             type="text"
             name="residentialAddr"
-            value={sectionOne.clientInfo[0].residentialAddr}
+            value={clientInfo[0].residentialAddr}
             placeholder="Singapore"
             handleChange={handleInputChange}
           />
@@ -391,7 +326,7 @@ const PersonalInformation = (props: Props) => {
             label="Principal Name"
             type="text"
             name="clientName"
-            value={sectionOne.clientInfo[0].clientName}
+            value={clientInfo[0].clientName}
             placeholder="Margo Madison"
             handleChange={handleInputChange}
           />
@@ -401,7 +336,7 @@ const PersonalInformation = (props: Props) => {
             label="Email Address"
             type="text"
             name="email"
-            value={sectionOne.clientInfo[0].email}
+            value={clientInfo[0].email}
             placeholder="margomadison@gmail.com"
             handleChange={handleInputChange}
           />
@@ -410,7 +345,7 @@ const PersonalInformation = (props: Props) => {
             label="Race"
             type="text"
             name="race"
-            value={sectionOne.clientInfo[0].race}
+            value={clientInfo[0].race}
             placeholder="Chinesse"
             handleChange={handleInputChange}
           /> */}
@@ -427,7 +362,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Residency Status"
             name="residency"
-            value={sectionOne.clientInfo[0].residency}
+            value={clientInfo[0].residency}
             datas={recidence}
             handleChange={handleInputChange}
           />
@@ -436,7 +371,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Marital Status"
             name="marital"
-            value={sectionOne.clientInfo[0].marital}
+            value={clientInfo[0].marital}
             datas={marital}
             handleChange={handleInputChange}
           />
@@ -446,7 +381,7 @@ const PersonalInformation = (props: Props) => {
             label="Occupation"
             type="text"
             name="occupation"
-            value={sectionOne.clientInfo[0].occupation}
+            value={clientInfo[0].occupation}
             placeholder="Manager"
             handleChange={handleInputChange}
           />
@@ -464,7 +399,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Annual Income"
             name="annualIncome"
-            value={sectionOne.clientInfo[0].annualIncome}
+            value={clientInfo[0].annualIncome}
             datas={annualIncome}
             handleChange={handleInputChange}
           />
@@ -474,7 +409,7 @@ const PersonalInformation = (props: Props) => {
             label="Mobile Number"
             type="text"
             name="contactMobile"
-            value={sectionOne.clientInfo[0].contactMobile}
+            value={clientInfo[0].contactMobile}
             placeholder="2121921298"
             handleChange={handleInputChange}
           />
@@ -484,7 +419,7 @@ const PersonalInformation = (props: Props) => {
             label="Mailing Address"
             type="text"
             name="mailingAddr"
-            value={sectionOne.clientInfo[0].mailingAddr}
+            value={clientInfo[0].mailingAddr}
             placeholder="Set as same like registered address"
             handleChange={handleInputChange}
           />
@@ -493,7 +428,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Smoker"
             name="smoker"
-            value={sectionOne.clientInfo[0].smoker}
+            value={clientInfo[0].smoker}
             datas={clientSmoker}
             handleChange={handleInputChange}
           />
@@ -513,7 +448,7 @@ const PersonalInformation = (props: Props) => {
             label="Review Date"
             type="date"
             name="reviewDate"
-            value={sectionOne.reviewDate}
+            value={reviewDate}
             placeholder="01 January 1998"
             handleChange={handleInputChange}
           />
@@ -530,7 +465,7 @@ const PersonalInformation = (props: Props) => {
         />
       </HeadingSecondarySectionDoubleGrid>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        {showAddDependent ? <Dependent datas={sectionOne.dependant} /> : ""}
+        {showAddDependent ? <Dependent datas={dependant} /> : ""}
       </SectionCardSingleGrid>
 
       {/* Sec 3 */}
@@ -544,13 +479,13 @@ const PersonalInformation = (props: Props) => {
             label="Age"
             type="text"
             placeholder="Below 62"
-            value={sectionOne.accompaniment[0].age}
+            value={accompaniment[0].age}
             handleChange={(event) => setData(event.target.value)}
           />
           <Select
             className="mb-10"
             label="Spoken English Language Proficiency"
-            value={sectionOne.accompaniment[0].english_spoken}
+            value={accompaniment[0].english_spoken}
             datas={englishLevel}
             handleChange={(event) => changeData(eval(event.target.value))}
           />
@@ -559,14 +494,14 @@ const PersonalInformation = (props: Props) => {
           <Select
             className="mb-10"
             label="Education Level"
-            value={sectionOne.accompaniment[0].education_level}
+            value={accompaniment[0].education_level}
             datas={educationLevel}
             handleChange={(event) => changeData(eval(event.target.value))}
           />
           <Select
             className="mb-10"
             label="Written English Language Proficiency"
-            value={sectionOne.accompaniment[0].english_written}
+            value={accompaniment[0].english_written}
             datas={englishLevel}
             handleChange={(event) => changeData(eval(event.target.value))}
           />
@@ -578,7 +513,10 @@ const PersonalInformation = (props: Props) => {
       </HeadingSecondarySection>
       <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
         <div>
-          <Toggle isChecked={sectionOne.trustedIndividuals.condition1} toggleName="Two of Following Profiles" />
+          <Toggle
+            isChecked={trustedIndividuals.condition1}
+            toggleName="Two of Following Profiles"
+          />
           <div className="h-24 mt-2 text-sm text-gray-light">
             (i) Aged 62 or above
             <br />
@@ -590,7 +528,7 @@ const PersonalInformation = (props: Props) => {
             className="mb-10"
             label="Name of Trusted Individual"
             type="text"
-            value={sectionOne.trustedIndividuals.nameOfTrustedIndividual}
+            value={trustedIndividuals.nameOfTrustedIndividual}
             placeholder="-"
             handleChange={(event) => setData(event.target.value)}
           />
@@ -599,19 +537,22 @@ const PersonalInformation = (props: Props) => {
             label="NRIC/Passport No. of Trusted Individual"
             type="text"
             placeholder="-"
-            value={sectionOne.trustedIndividuals.passportNo}
+            value={trustedIndividuals.passportNo}
             handleChange={(event) => setData(event.target.value)}
           />
           <Select
             className="mb-10"
             label="Language Used"
-            value={sectionOne.trustedIndividuals.languageUsed}
+            value={trustedIndividuals.languageUsed}
             datas={languages}
             handleChange={(event) => changeData(eval(event.target.value))}
           />
         </div>
         <div>
-          <Toggle isChecked={sectionOne.trustedIndividuals.condition2} toggleName="The Following Profile" />
+          <Toggle
+            isChecked={trustedIndividuals.condition2}
+            toggleName="The Following Profile"
+          />
           <div className="h-24 mt-2 text-sm text-gray-light">
             (i) Are not proficient in spoken or written English
           </div>
@@ -620,7 +561,7 @@ const PersonalInformation = (props: Props) => {
             label="Trusted Individual Email Address"
             type="text"
             placeholder="-"
-            value={sectionOne.trustedIndividuals.trustedEmail}
+            value={trustedIndividuals.trustedEmail}
             handleChange={(event) => setData(event.target.value)}
           />
           <Input
@@ -628,7 +569,7 @@ const PersonalInformation = (props: Props) => {
             label="Relationship to Client"
             type="text"
             placeholder="-"
-            value={sectionOne.trustedIndividuals.relationship}
+            value={trustedIndividuals.relationship}
             handleChange={(event) => setData(event.target.value)}
           />
           <Input
@@ -636,7 +577,7 @@ const PersonalInformation = (props: Props) => {
             label="Mobile Number"
             type="text"
             placeholder="-"
-            value={sectionOne.trustedIndividuals.contactNumber}
+            value={trustedIndividuals.contactNumber}
             handleChange={(event) => setData(event.target.value)}
           />
         </div>

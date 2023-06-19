@@ -13,24 +13,32 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 interface Props {
   datas?: any;
   id?: any;
+  changeState: (props: any) => void
 }
 
 const PropertyPortofolio = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
 
-  const [newProperty, setNewProperty] = useState<SummaryOfProperty>({
-    editting: false,
-    client: "",
-    category: 0,
-    typeOfProperty: "",
-    yearPurchased: 0,
-    purchasePrice: 0,
-    loanAmount: 0,
-    currentOutstanding: 0,
-    monthlyLoanRepaymentCash: 0,
-    monthlyLoanRepaymentCPF: 0,
-    currentMarketValue: 0,
-  });
+  // const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>({
+  //   editting: false,
+  //   client: "",
+  //   category: 0,
+  //   typeOfProperty: "",
+  //   yearPurchased: 0,
+  //   purchasePrice: 0,
+  //   loanAmount: 0,
+  //   currentOutstanding: 0,
+  //   monthlyLoanRepaymentCash: 0,
+  //   monthlyLoanRepaymentCPF: 0,
+  //   currentMarketValue: 0,
+  // });
+
+  const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>(props.datas);
+
+  const changeApa = () => {
+
+    props.changeState(newDataInput)
+  }
 
   const setData = (params: any) => {
     console.log("params", params);
@@ -95,35 +103,48 @@ const PropertyPortofolio = (props: Props) => {
                             label="Client"
                             type="text"
                             placeholder="Margo Madison"
+                            value={newDataInput.client}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                client: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Type Of Property"
                             type="text"
-                            placeholder="Private"
+                            value={newDataInput.typeOfProperty}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                typeOfProperty: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Category"
                             type="text"
-                            placeholder="Residence"
+                            value={newDataInput.category}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                category: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Year Purchashed"
                             type="text"
-                            placeholder="2012"
+                            value={newDataInput.yearPurchased}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                yearPurchased: Number(event.target.value),
+                              })
                             }
                           />
                         </div>
@@ -132,36 +153,48 @@ const PropertyPortofolio = (props: Props) => {
                             className="my-4"
                             label="Purchase Price ($)"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.purchasePrice}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                purchasePrice: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Current Outstanding Loan ($)"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.currentOutstanding}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                currentOutstanding: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Loan Amount Taken ($)"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.loanAmount}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                loanAmount: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Current Market Value ($)"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.currentMarketValue}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                currentMarketValue: Number(event.target.value),
+                              })
                             }
                           />
                         </div>

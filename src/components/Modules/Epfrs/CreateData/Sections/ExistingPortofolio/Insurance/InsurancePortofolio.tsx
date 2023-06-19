@@ -3,6 +3,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import { SummaryOfInsurance, SummaryOfInsurance2 } from "@/models/SectionTwo";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -11,6 +12,45 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const InsurancePortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const [newDataInput, setNewDataInput] = useState<SummaryOfInsurance>({
+    editting: false,
+    client: "",
+    insured: "",
+    status: "",
+    insurer: "",
+    policyType: "",
+    policyTypeOther: "",
+    policyTerm: "",
+    death: 0,
+    tpd: 0,
+    ci: 0,
+    earlyCI: 0,
+    acc: 0,
+    purchaseYear: 0,
+    premiumFrequency: "",
+    premium: 0,
+    cash: 0,
+    medisave: 0,
+    sourceOfFund: 0,
+  });
+
+  const [newDataInput2, setNewDataInput2] = useState<SummaryOfInsurance2>({
+    editting: false,
+    client: "",
+    insured: "",
+    insurer: "",
+    policyType: "",
+    policyTerm: "",
+    existingHosPlan: "",
+    typeOfHosCovered: "",
+    classOfWardCovered: "",
+    purchaseYear: 0,
+    premium: 0,
+    medisave: 0,
+    frequency: "",
+    sourceOfFund: 0,
+  });
 
   const setData = (params: any) => {
     console.log(params);
@@ -74,236 +114,315 @@ const InsurancePortofolio = () => {
                             className="my-4"
                             label="Client"
                             type="text"
-                            placeholder="Margo Madison"
+                            value={newDataInput.client}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                client: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Insured"
                             type="text"
-                            placeholder="Private"
+                            value={newDataInput.insured}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                insured: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Insurer"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.insurer}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                insurer: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Policy Type"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.policyType}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                policyType: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Policy Term"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.policyTerm}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                policyTerm: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Sum Assured Death"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.death}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                death: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Sum Assured TPD"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.tpd}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                tpd: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Sum Assured CI"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.ci}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                ci: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Sum Assured Early CI"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.earlyCI}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                earlyCI: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Sum Assured Acc"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.acc}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                acc: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Year Of Purchase"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.purchaseYear}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                purchaseYear: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Premium"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.premium}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                premium: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Premium Frequency"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.premiumFrequency}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                premiumFrequency: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Source Of Fund"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.sourceOfFund}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                sourceOfFund: Number(event.target.value),
+                              })
                             }
                           />
                         </div>
+                        {/* End Of Insurance */}
                         <div>
                           <Input
                             className="my-4"
                             label="Client"
                             type="text"
-                            placeholder="Margo Madison"
+                            value={newDataInput2.client}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                client: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Insured"
                             type="text"
-                            placeholder="Private"
+                            value={newDataInput2.insured}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                insured: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Insurer"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.insurer}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                insurer: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Policy Type"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.policyType}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                policyType: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Policy Term"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.policyTerm}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                policyTerm: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Existing Hospitalization Plan (If Any)"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.existingHosPlan}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                existingHosPlan: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Type Of Hospital Covered"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.typeOfHosCovered}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                typeOfHosCovered: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Class Of Ward Covered"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.classOfWardCovered}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                classOfWardCovered: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Year Of Purchase"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.purchaseYear}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                purchaseYear: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Premium Cash"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.premium}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                premium: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Premium Medisave"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.medisave}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                medisave: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Frequency"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput2.frequency}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput2({
+                                ...newDataInput2,
+                                frequency: event.target.value,
+                              })
                             }
                           />
                         </div>

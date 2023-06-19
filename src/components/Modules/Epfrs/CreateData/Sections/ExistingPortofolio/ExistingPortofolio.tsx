@@ -11,7 +11,7 @@ import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import Toggle from "@/components/Forms/Toggle";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import CpfPortofolio from "./Cpf/CpfPortofolio";
 import InsurancePortofolio from "./Insurance/InsurancePortofolio";
@@ -55,46 +55,6 @@ const ExistingPortofolio = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
 
-  const saveData = (params: any) => {
-    showDetailData(params);
-  };
-
-  const setDetailProperty = () => {
-    showDetailProperty(!property);
-  };
-
-  const setDetailInvestment = () => {
-    showDetailInvestment(!investment);
-  };
-
-  const setDetailSeving = () => {
-    showDetailSaving(!saving);
-  };
-
-  const setDetailCpf = () => {
-    showDetailCpf(!cpf);
-  };
-
-  const setDetailInsurance = () => {
-    showDetailInsurance(!insurance);
-  };
-
-  const setDetailSrs = () => {
-    showDetailSrs(!srs);
-  };
-
-  const setDetailLoan = () => {
-    showDetailLoan(!loan);
-  };
-
-  const [notReviewAll, setNotReviewAll] = useState(false);
-
-  const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
-
-  const scrollPosition = useScrollPosition(2);
-
-  // console.log("Test logic scroll " +scrollPosition);
-
   const [sectionTwo, setSectionTwo] = useState<SectionTwo>({
     id: 0,
     need: false,
@@ -124,7 +84,7 @@ const ExistingPortofolio = (props: Props) => {
         company: "",
         yearInvested: 0,
         investmentAmount: 0,
-        currentvalue: "",
+        currentvalue: 0,
         sourceOfInvestment: "",
       },
     ],
@@ -218,9 +178,87 @@ const ExistingPortofolio = (props: Props) => {
     status: 0,
   });
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem("section2", JSON.stringify(sectionTwo));
+
+  const changeSection = (params) => {
+
+    setSectionTwo((prevState = {
+
+    }))
+
   }
+
+  const saveData = (params: any) => {
+    showDetailData(params);
+  };
+
+  const setDetailProperty = (setParam : boolean) => {
+
+    console.log("test " + setParam)
+
+    setSectionTwo((prevState) => {
+      const propertyData = [...prevState.summaryOfProperty];
+
+      console.log(propertyData);
+      console.log("proper " + setParam);
+      
+      const properties = propertyData.map((property) => {
+
+        console.log(property)
+        console.log(setParam)
+
+        return { ...property, editting: setParam };
+      });
+
+      console.log(properties);
+
+      return { ...prevState, properties };
+    });
+  };
+
+  console.log("Test")
+  console.log(sectionTwo)
+
+  const setDetailInvestment = () => {
+    showDetailInvestment(!investment);
+  };
+
+  const setDetailSeving = () => {
+    showDetailSaving(!saving);
+  };
+
+  const setDetailCpf = () => {
+    showDetailCpf(!cpf);
+  };
+
+  const setDetailInsurance = () => {
+    showDetailInsurance(!insurance);
+  };
+
+  const setDetailSrs = () => {
+    showDetailSrs(!srs);
+  };
+
+  const setDetailLoan = () => {
+    showDetailLoan(!loan);
+  };
+
+  const [notReviewAll, setNotReviewAll] = useState(false);
+
+  const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
+
+  const scrollPosition = useScrollPosition(2);
+
+  // console.log("Test logic scroll " +scrollPosition);
+
+  // if (typeof window !== "undefined") {
+  //   localStorage.setItem("section2", JSON.stringify(sectionTwo));
+  // }
+
+  useEffect(() => {
+    localStorage.setItem("section2", JSON.stringify(sectionTwo));
+
+  }, [])
+  
 
   return (
     <div id={props.id}>
@@ -240,19 +278,19 @@ const ExistingPortofolio = (props: Props) => {
           Section 2. Existing Portfolio
         </HeadingPrimarySection>
       </div>
-      {!notReviewAll ? (
+      {!sectionTwo.need ? (
         <>
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
-            <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
+            <h2 className="text-xl font-bold">2.1 Summary of Property(ies) test {sectionTwo.summaryOfProperty[0].editting}</h2>
             <Toggle
-              isChecked={property}
-              toggleName={property ? "Review" : "Not Review"}
-              onChange={setDetailProperty}
+              isChecked={sectionTwo.summaryOfProperty[0].editting}
+              toggleName={sectionTwo.summaryOfProperty[0].editting ? "Review" : "Not Review"}
+              onChange={() => setDetailProperty(!sectionTwo.summaryOfProperty[0].editting)}
             />
             {/* <Toggle /> */}
           </HeadingSecondarySectionDoubleGrid>
 
-          {property ? <PropertyPortofolio id={sectionTwo.id} datas={sectionTwo.summaryOfProperty} /> : null}
+          {sectionTwo.summaryOfProperty[0].editting ? <PropertyPortofolio changeState={() => changeSection()} id={sectionTwo.id} datas={sectionTwo.summaryOfProperty[0]} /> : null}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>
@@ -331,13 +369,16 @@ const ExistingPortofolio = (props: Props) => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
           <Checkbox
-            onChange={() => setNotReviewAll(!notReviewAll)}
+            onChange={() => setSectionTwo({
+              ...sectionTwo,
+              need: !sectionTwo.need,
+            })}
             lableStyle="text-sm font-normal text-gray-light"
             label="The Client would not like their assets and liabilities to be taken
             into consideration for the needs analysis and recommendations"
           />
         </RowSingle>
-        {notReviewAll ? (
+        {sectionTwo.need ? (
           <>
             <RowSingle className="my-10">
               <TextArea label="The Reason" defaultValue="test text area" />

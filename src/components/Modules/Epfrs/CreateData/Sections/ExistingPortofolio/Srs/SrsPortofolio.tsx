@@ -3,6 +3,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import { SummaryOfSRS } from "@/models/SectionTwo";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -11,6 +12,12 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const SrsPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const [newDataInput, setNewDataInput] = useState<SummaryOfSRS>({
+    editting: false,
+    client: "",
+    amount: 0,
+  });
 
   const setData = (params: any) => {
     console.log(params);
@@ -73,15 +80,25 @@ const SrsPortofolio = () => {
                           className="my-4"
                           label="Client"
                           type="text"
-                          placeholder="Margo Madison"
-                          handleChange={(event) => setData(event.target.value)}
+                          value={newDataInput.client}
+                          handleChange={(event) =>
+                            setNewDataInput({
+                              ...newDataInput,
+                              client: event.target.value,
+                            })
+                          }
                         />
                         <Input
                           className="my-4"
                           label="Amount"
                           type="text"
-                          placeholder="Private"
-                          handleChange={(event) => setData(event.target.value)}
+                          value={newDataInput.amount}
+                          handleChange={(event) =>
+                            setNewDataInput({
+                              ...newDataInput,
+                              amount: Number(event.target.value),
+                            })
+                          }
                         />
                       </div>
                     </div>

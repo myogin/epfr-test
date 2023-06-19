@@ -20,7 +20,7 @@ export interface SummaryOfInvestment {
   company: string;
   yearInvested: number;
   investmentAmount: number;
-  currentvalue: string;
+  currentvalue: number;
   sourceOfInvestment: string;
 }
 
@@ -103,10 +103,10 @@ export interface SummaryOfSRS {
 }
 
 export interface SectionTwo {
-  id: number;
-  need: boolean;
-  declineToReview: Array<any>;
-  reason: string;
+  id?: number;
+  need?: boolean;
+  declineToReview?: Array<any>;
+  reason?: string;
   summaryOfProperty: SummaryOfProperty[];
   summaryOfInvestment: SummaryOfInvestment[];
   summaryOfSavings: SummaryOfSavings[];
@@ -115,8 +115,8 @@ export interface SectionTwo {
   summaryOfLoans: SummaryOfLoans[];
   summaryOfCPF: SummaryOfCPF[];
   summaryOfSRS: SummaryOfSRS[];
-  issues: [];
-  totalNetWorth: Array<any>;
-  networthReason: Array<any>;
-  status: number;
+  issues?: [];
+  totalNetWorth?: Array<any>;
+  networthReason?: Array<any>;
+  status?: number;
 }
