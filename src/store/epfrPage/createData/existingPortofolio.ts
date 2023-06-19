@@ -139,7 +139,7 @@ const initialState: SectionTwo = {
 };
 
 const existingPortofolio = create(
-  devtools<State & Actions>((set, get) => ({
+  devtools<SectionTwo & Actions>((set, get) => ({
     ...initialState,
     showDetailProperty: (params: boolean) => set(() => ({ property: params })),
     showDetailVehicle: (params: boolean) => set(() => ({ vehicles: params })),
