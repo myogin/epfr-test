@@ -1,7 +1,7 @@
 import { SectionTwo } from "@/models/SectionTwo";
 import { produce } from "immer";
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
   setProperty: (clientType: number, name: string, value: any) => any;
@@ -145,83 +145,90 @@ const initialState: SectionTwo = {
 };
 
 const existingPortofolio = create(
-  devtools<SectionTwo & Actions>((set, get) => ({
-    ...initialState,
-    setProperty: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let data = draft.summaryOfProperty[clientType];
-          data[name] = value;
-        })
-      ),
-    setInvestment: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let data = draft.summaryOfInvestment[clientType];
-          data[name] = value;
-        })
-      ),
-    setSaving: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let data = draft.summaryOfSavings[clientType];
-          data[name] = value;
-        })
-      ),
-    setCpf: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let data = draft.summaryOfCPF[clientType];
-          data[name] = value;
-        })
-      ),
-    setInsurance: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let data = draft.summaryOfInsurance[clientType];
-          data[name] = value;
-        })
-      ),
-    setInsurance2: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let data = draft.summaryOfInsurance2[clientType];
-          data[name] = value;
-        })
-      ),
-    setSrs: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let data = draft.summaryOfSRS[clientType];
-          data[name] = value;
-        })
-      ),
-    setLoan: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let data = draft.summaryOfLoans[clientType];
-          data[name] = value;
-        })
-      ),
-    setGlobal: (name: string, value: any) =>
-      set(
-        produce((draft) => {
-          draft[name] = value;
-        })
-      ),
-    setToggle: (
-      object: string,
-      clientType: number,
-      name: string,
-      value: boolean
-    ) =>
-      set(
-        produce((draft) => {
-          let getObject  = draft[object][clientType]
-          getObject[name] = value;
-        })
-      ),
-  }))
+  devtools(
+    persist<SectionTwo & Actions>(
+      (set, get) => ({
+        ...initialState,
+        setProperty: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.summaryOfProperty[clientType];
+              data[name] = value;
+            })
+          ),
+        setInvestment: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.summaryOfInvestment[clientType];
+              data[name] = value;
+            })
+          ),
+        setSaving: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.summaryOfSavings[clientType];
+              data[name] = value;
+            })
+          ),
+        setCpf: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.summaryOfCPF[clientType];
+              data[name] = value;
+            })
+          ),
+        setInsurance: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.summaryOfInsurance[clientType];
+              data[name] = value;
+            })
+          ),
+        setInsurance2: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.summaryOfInsurance2[clientType];
+              data[name] = value;
+            })
+          ),
+        setSrs: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.summaryOfSRS[clientType];
+              data[name] = value;
+            })
+          ),
+        setLoan: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.summaryOfLoans[clientType];
+              data[name] = value;
+            })
+          ),
+        setGlobal: (name: string, value: any) =>
+          set(
+            produce((draft) => {
+              draft[name] = value;
+            })
+          ),
+        setToggle: (
+          object: string,
+          clientType: number,
+          name: string,
+          value: boolean
+        ) =>
+          set(
+            produce((draft) => {
+              let getObject = draft[object][clientType];
+              getObject[name] = value;
+            })
+          ),
+      }),
+      {
+        name: "section2",
+      }
+    )
+  )
 );
 
 export const useExistingPortofolio = existingPortofolio;

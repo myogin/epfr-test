@@ -1,6 +1,6 @@
 import { SectionOne } from "@/models/SectionOne";
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
 
 type Actions = {
@@ -83,38 +83,45 @@ const initialState: SectionOne = {
 };
 
 const personalInformation = create(
-  devtools<SectionOne & Actions>((set, get) => ({
-    ...initialState,
-    setClient: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let client = draft.clientInfo[clientType];
-          client[name] = value;
-        })
-      ),
-    setDependent: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let dependant = draft.dependant[clientType];
-          dependant[name] = value;
-        })
-      ),
-    setAccompaniment: (clientType: number, name: string, value: any) =>
-      set(
-        produce((draft) => {
-          let dependant = draft.dependant[clientType];
-          dependant[name] = value;
-        })
-      ),
-    setTrustedIndividuals: (clientType: number, name: string, value: any) =>
-      set(produce((draft) => {})),
-    setGlobal: (name: string, value: any) =>
-      set(
-        produce((draft) => {
-          draft[name] = value;
-        })
-      ),
-  }))
+  devtools(
+    persist<SectionOne & Actions>(
+      (set, get) => ({
+        ...initialState,
+        setClient: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let client = draft.clientInfo[clientType];
+              client[name] = value;
+            })
+          ),
+        setDependent: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let dependant = draft.dependant[clientType];
+              dependant[name] = value;
+            })
+          ),
+        setAccompaniment: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let dependant = draft.dependant[clientType];
+              dependant[name] = value;
+            })
+          ),
+        setTrustedIndividuals: (clientType: number, name: string, value: any) =>
+          set(produce((draft) => {})),
+        setGlobal: (name: string, value: any) =>
+          set(
+            produce((draft) => {
+              draft[name] = value;
+            })
+          ),
+      }),
+      {
+        name: "section1",
+      }
+    )
+  )
 );
 
 export const usePersonalInformation = personalInformation;
