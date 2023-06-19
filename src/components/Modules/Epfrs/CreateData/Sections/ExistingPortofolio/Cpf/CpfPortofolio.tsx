@@ -13,6 +13,7 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const CpfPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+  
 
   const [newDataInput, setNewDataInput] = useState<SummaryOfCPF>({
     editting: false,
