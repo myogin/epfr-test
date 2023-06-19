@@ -10,7 +10,7 @@ import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
 
 interface Props {
-  datas?: Array<any>;
+  datas?: Array<any>
 }
 
 interface Need {
@@ -20,7 +20,7 @@ interface Need {
 
 const IncomeProtection = (props : Props) => {
   const [sectionSeven, setSectionSeven] = useState<any>(props.datas);
-  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState(sectionSeven.answer.need.client); //
+  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState<any>(sectionSeven.answer.need.client); //
   const [newIncomeProtectionNeedDependant, setIncomeProtectionNeedDependant] = useState(sectionSeven.answer.need.dependant);
   const [newIncomeProtection, setIncomeProtection] = useState(sectionSeven.answer.clientData)
   const [newIncomeProtectionDep, setIncomeProtectionDep] = useState(sectionSeven.answer.dependantData)
@@ -28,10 +28,6 @@ const IncomeProtection = (props : Props) => {
   const [newIncomAdditionalNote, setIncomAdditionalNote] = useState(sectionSeven.additionalNote)
 
   // console.log('sectionSeven', sectionSeven)
-
-  useEffect(() => {    
-    console.log('useEffect - newIncomeProtection', newIncomeProtection)
-  }, [newIncomeProtection]);
 
   // Total Data Client & Deoendants
     let total = sectionSeven.typeClient + sectionSeven.totalDependant;
@@ -46,14 +42,16 @@ const IncomeProtection = (props : Props) => {
     }
 
   // End
-  const handleClient = (i: any) => {
+  const handleClient = (i: any, dataI:any) => {
     const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-      if(item[i] === true){
-        item[i] = false;
-      }else{
-        item[i] = true;
+      if(i === index){
+        if(item[dataI] === true){
+          item[dataI] = false;
+        }else{
+          item[dataI] = true;
+        }
+        return item;
       }
-      return item;
     });
     setIncomeProtectionNeedClient(updatedClient);
   }
@@ -215,7 +213,7 @@ const IncomeProtection = (props : Props) => {
                     <div className="text-right text-green-deep">Client {i+1} </div>
                     <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input type="checkbox" checked={newIncomeProtectionNeedClient[i][0]} onChange={(event) => handleClient(i) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input type="checkbox" checked={newIncomeProtectionNeedClient[i][0]} onChange={(event) => handleClient(i, 0) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:rin, dataI:g-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>

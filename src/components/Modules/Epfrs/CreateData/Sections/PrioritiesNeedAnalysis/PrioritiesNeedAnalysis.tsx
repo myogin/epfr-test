@@ -4,7 +4,7 @@ import HeadingSecondarySectionDoubleGrid from "@/components/Attributes/Sections/
 import Toggle from "@/components/Forms/Toggle";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React, { useState } from "react";
+import React, {useState, useEffect} from 'react'
 import IncomeProtection from "./IncomeProtection/IncomeProtection";
 import FundDisability from "./FundDisability/FundDisability";
 import FundCritical from "./FundCritical/FundCritical";
@@ -19,7 +19,6 @@ import EstatePlanning from "./EstatePlanning/EstatePlanning";
 import OtherInsurance from "./OtherInsurance/OtherInsurance";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import { SectionSeven } from "@/models/SectionSeven";
-
 interface Props {
   id?: any;
 }
@@ -34,6 +33,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     pfrId: 0,
     typeClient: 1,
     totalDependant:0,
+    status: 0,
     answer: {
       pfrId: 0,
       clientData: [
@@ -287,8 +287,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         maternity_other: false
       }
     },
-    additionalNote: [],
-    status: 0
+    additionalNote: []
   });
 
 
@@ -532,8 +531,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   sectionSeven.answer.need.client = new Array(sectionSeven.typeClient).fill(false).map(() => {return new Array(14).fill(false);})
   sectionSeven.answer.need.dependant =  new Array(sectionSeven.totalDependant).fill(false).map(() => {return new Array(14).fill(false);})
 
-  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState(sectionSeven.answer.need.client); //
-  console.log('firstSet', sectionSeven)
+  // const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState(sectionSeven.answer.need.client); //
+  // console.log('firstSet', sectionSeven)
   let {
     showIncomeProtection,
     showFundDisability,
@@ -565,31 +564,88 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   const setIncomeProtection = (data: any, i: any) => {
     if(resTotal == 1){
-      const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-        if(item[i] === true){
-          item[i] = false;
-        }else{
-          item[i] = true;
-        }
-        return item;
+      
+      // const updatedClient = sectionSeven.answer.need.client.map((item: any, index: any) => {
+      //   if(index === i){
+      //     if(item[0] === true){
+      //       item[0] = false;
+      //     }else{
+      //       item[0] = true;
+      //     }
+      //   }
+      //   return item;
+      // });
+      
+      // setSectionSeven(prev => ({
+      //   ...prev,
+      //   answer: {
+      //     ...prev.answer,
+      //     need:{
+      //       ...prev.answer.need,
+      //       client: [[true, true]]
+      //     }
+      //   },
+      //   client: [[true, true]]
+      // }))
+
+      setSectionSeven((prevState: any) => {
+        return { 
+          ...prevState,
+          answer: {
+            ...prevState.answer,
+            need: {
+              ...prevState.answer.need,
+              client:[
+                [true, true]
+              ]
+            }  
+          }
+        };
       });
-      setIncomeProtectionNeedClient(updatedClient);
+
+      // var dataRes = {
+      //   ...sectionSeven,
+      //   answer: {
+      //     ...sectionSeven.answer,
+      //     need:{
+      //       ...sectionSeven.answer.need,
+      //       client: [[true]]
+      //     }
+      //   }
+      // }
+      // console.log('dataRes', dataRes)
+      // setSectionSeven(dataRes);
+
+      // const updatedClient2 = newIncomeProtectionNeedClient.map((item: any, index: any) => {
+      //   if(item[i] === true){
+      //     item[i] = false;
+      //   }else{
+      //     item[i] = true;
+      //   }
+      //   return item;
+      // });
+      // console.log('updatedClient',updatedClient)
+      // setIncomeProtectionNeedClient(updatedClient);
     }else{
       showIncomeProtection(!incomeProtection);      
     }
   };
 
+  useEffect(() => {    
+    console.log('useEffect - sectionSeven', sectionSeven)
+  }, [sectionSeven]);
+
   const setFundDisability = (data: any, i: any) => {
     if(resTotal == 1){
-      const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-        if(item[i] === true){
-          item[i] = false;
-        }else{
-          item[i] = true;
-        }
-        return item;
-      });
-      setIncomeProtectionNeedClient(updatedClient);
+      // const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
+      //   if(item[i] === true){
+      //     item[i] = false;
+      //   }else{
+      //     item[i] = true;
+      //   }
+      //   return item;
+      // });
+      // setIncomeProtectionNeedClient(updatedClient);
     }else{
       showFundDisability(!fundDisability);
     }
@@ -597,16 +653,16 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   const setFundCritical = (data: any, i: any) => {
     if(resTotal == 1){
-      const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-        if(item[i] === true){
-          item[i] = false;
-        }else{
-          item[i] = true;
-        }
-        return item;
-      });
-      console.log('updatedClient', updatedClient)
-      setIncomeProtectionNeedClient(updatedClient);
+      // const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
+      //   if(item[i] === true){
+      //     item[i] = false;
+      //   }else{
+      //     item[i] = true;
+      //   }
+      //   return item;
+      // });
+      // console.log('updatedClient', updatedClient)
+      // setIncomeProtectionNeedClient(updatedClient);
     }else{
       showFundCritical(!fundCritical);
     }
@@ -653,7 +709,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   // Section 7.1 Toggle
   let toggleInProtect = false;
   if(resTotal == 1){
-    toggleInProtect = newIncomeProtectionNeedClient[0][0];
+    toggleInProtect = sectionSeven.answer.need.client[0][0];
     incomeProtection = toggleInProtect;
   }else{
     toggleInProtect = incomeProtection;
@@ -662,7 +718,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   // Section 7.2 Toggle
   let toggleInFundDisability = false;
   if(resTotal == 1){
-    toggleInFundDisability = newIncomeProtectionNeedClient[0][1];
+    toggleInFundDisability = sectionSeven.answer.need.client[0][1];
     fundDisability = toggleInFundDisability;
   }else{
     toggleInFundDisability = fundDisability;
@@ -671,7 +727,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   // Section 7.3 Toggle
   let toggleInFundCritical = false;
   if(resTotal == 1){
-    toggleInFundCritical = newIncomeProtectionNeedClient[0][2];
+    toggleInFundCritical = sectionSeven.answer.need.client[0][2];
     fundCritical = toggleInFundCritical;
   }else{
     toggleInFundCritical = fundCritical;
