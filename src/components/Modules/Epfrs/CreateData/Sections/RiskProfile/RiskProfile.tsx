@@ -24,6 +24,7 @@ import {
   calcRiskAttitude,
   getStatusRiskCapacity,
   getStatusRiskAttitude,
+  getResultStatus,
 } from "./data/questions";
 interface Props {
   id?: any;
@@ -113,6 +114,7 @@ const RiskProfile = (props: Props) => {
     "Capital Preservation",
     "Capital Preservation",
   ]);
+
   const [statusRiskAttitude, setStatusRiskAttitude] = useState<string[]>([
     "Capital Preservation",
     "Capital Preservation",
@@ -144,6 +146,8 @@ const RiskProfile = (props: Props) => {
     });
     setStatusRiskCapacity(getStatusRiskCapacity(riskCapacity));
     setStatusRiskAttitude(getStatusRiskAttitude(riskAttitude));
+
+    setResultAttitude(getResultStatus(riskCapacity, riskAttitude));
   }, [riskCapacity, riskAttitude]);
 
   // end handle q1-9state

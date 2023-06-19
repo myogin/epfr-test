@@ -283,4 +283,55 @@ export const getResultStatus = (
   riskAttitude: Array<number>
 ) => {
   let resultStatus = ["Capital Preservation", "Capital Preservation"];
+  resultStatus = resultStatus.map((e, i) => {
+    return (e = calcResult(
+      capacityLevel(riskCapacity[i]),
+      attitudeLevel(riskAttitude[i])
+    ));
+  });
+
+  return resultStatus;
+};
+
+const capacityLevel = (capacity: number) => {
+  if (capacity <= 3) {
+    return 0;
+  } else if (capacity >= 4 && capacity <= 7) {
+    return 1;
+  } else if (capacity >= 8 && capacity <= 10) {
+    return 2;
+  } else if (capacity >= 11 && capacity <= 14) {
+    return 3;
+  } else {
+    return 4;
+  }
+};
+
+const attitudeLevel = (attitude: number) => {
+  if (attitude <= 0) {
+    return 0;
+  } else if (attitude >= 1 && attitude <= 5) {
+    return 1;
+  } else if (attitude >= 6 && attitude <= 10) {
+    return 2;
+  } else if (attitude >= 11 && attitude <= 14) {
+    return 3;
+  } else {
+    return 4;
+  }
+};
+
+const calcResult = (riskCapacity: number, riskAttitude: number) => {
+  let min = Math.min(riskCapacity, riskAttitude);
+  if (min === 0) {
+    return "Capital Preservation";
+  } else if (min === 1) {
+    return "Conservative";
+  } else if (min === 2) {
+    return "Balanced";
+  } else if (min === 3) {
+    return "Growth";
+  } else {
+    return "Aggresive";
+  }
 };
