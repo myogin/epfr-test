@@ -3,6 +3,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import { SummaryOfSavings } from "@/models/SectionTwo";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -11,6 +12,15 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const SavingPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const [newDataInput, setNewDataInput] = useState<SummaryOfSavings>({
+    editting: false,
+    client: "",
+    typeOfDeposit: 0,
+    bank: "",
+    yearDeposit: 0,
+    savingAmount: 0,
+  });
 
   const setData = (params: any) => {
     console.log(params);
@@ -74,18 +84,24 @@ const SavingPortofolio = () => {
                             className="my-4"
                             label="Client"
                             type="text"
-                            placeholder="Margo Madison"
+                            value={newDataInput.client}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                client: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Type Of Deposit"
                             type="text"
-                            placeholder="Private"
+                            value={newDataInput.typeOfDeposit}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                typeOfDeposit: Number(event.target.value),
+                              })
                             }
                           />
                         </div>
@@ -94,18 +110,24 @@ const SavingPortofolio = () => {
                             className="my-4"
                             label="Bank"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.bank}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                bank: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Savings Amount"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.savingAmount}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                savingAmount: Number(event.target.value),
+                              })
                             }
                           />
                         </div>

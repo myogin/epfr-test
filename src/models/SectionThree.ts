@@ -1,38 +1,38 @@
-interface AnnualGeneral {
+export interface AnnualGeneral {
   editting: boolean;
   key: string;
   values: Array<any>;
 }
 
-interface AnnualIncome {
+export interface AnnualIncome {
   annualGrossIncome: number;
   additionalWages: number;
   less: number;
   others: number;
 }
 
-interface AnnualExpanse {
+export interface AnnualExpanse {
   key: string;
   title: string;
   selected: boolean;
   values: Array<any>;
 }
 
-interface AnnualSurplus {
+export interface AnnualSurplus {
   annualSurplus: number;
 }
 
-interface Answers {
+export interface Answers {
   state: string;
   answer: string;
 }
 
-interface Others {
+export interface Others {
   annualIncome: AnnualGeneral[];
   annualExpense: AnnualGeneral[];
 }
 
-interface Datas {
+export interface Datas {
   annualIncome: AnnualIncome;
   annualSurplus: AnnualSurplus;
   answer: Answers;
@@ -40,13 +40,13 @@ interface Datas {
 }
 
 export interface SectionThree {
-  id: number;
-  need: Array<any>;
-  reason: Array<any>;
-  others: Others;
+  id?: number;
+  need?: Array<any>;
+  reason?: Array<any>;
+  others?: Others;
   data: Datas[];
   annualExpense: AnnualExpanse[];
-  issues: Array<any>;
-  totalNetSurplus: Array<any>;
-  status: number;
+  issues?: Array<any>;
+  totalNetSurplus?: Array<any>;
+  status?: number;
 }

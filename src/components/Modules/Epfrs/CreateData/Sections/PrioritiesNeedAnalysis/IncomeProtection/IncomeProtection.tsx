@@ -8,153 +8,68 @@ import Input from '@/components/Forms/Input'
 import React, {useState, useEffect} from 'react'
 import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
+import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 
 interface Props {
   datas?: Array<any>
 }
 
-interface Need {
-  client: boolean[][];
-  dependant: boolean[][];
-}
-
 const IncomeProtection = (props : Props) => {
-  const [sectionSeven, setSectionSeven] = useState<any>(props.datas);
-  const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState<any>(sectionSeven.answer.need.client); //
-  const [newIncomeProtectionNeedDependant, setIncomeProtectionNeedDependant] = useState(sectionSeven.answer.need.dependant);
-  const [newIncomeProtection, setIncomeProtection] = useState(sectionSeven.answer.clientData)
-  const [newIncomeProtectionDep, setIncomeProtectionDep] = useState(sectionSeven.answer.dependantData)
-  const [newIncomDefaultCheck, setIncomDefaultCheck] = useState(sectionSeven.answer.defaultCheck)
-  const [newIncomAdditionalNote, setIncomAdditionalNote] = useState(sectionSeven.additionalNote)
-
-  // console.log('sectionSeven', sectionSeven)
+  let {
+    section7,
+    setClient,
+    setDependant,
+    setNeed,
+    setNeedDependant,
+    setAnswerDefaultCheck,
+    setAdditional,
+  } = usePrioritiesNeedAnalysis();
 
   // Total Data Client & Deoendants
-    let total = sectionSeven.typeClient + sectionSeven.totalDependant;
+    let total = section7.typeClient + section7.totalDependant;
     var totalClient = [];
     var totalDependant = [];
-    for (var i = 0; i < sectionSeven.typeClient; i++) {
+    for (var i = 0; i < section7.typeClient; i++) {
       totalClient.push(i);
     }
 
-    for (var i = 0; i < sectionSeven.totalDependant; i++) {
+    for (var i = 0; i < section7.totalDependant; i++) {
       totalDependant.push(i);
     }
 
   // End
-  const handleClient = (i: any, dataI:any) => {
-    const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-      if(i === index){
-        if(item[dataI] === true){
-          item[dataI] = false;
-        }else{
-          item[dataI] = true;
-        }
-        return item;
-      }
-    });
-    setIncomeProtectionNeedClient(updatedClient);
+  const handleClient = (value:any, i: any, dataI:any) => {
+    setNeed(value, i, dataI);
   }
 
-  const handleDependant = (i: any) => {
-    const updatedDependant = newIncomeProtectionNeedDependant.map((item: any, index: any) => {
-      if(item[i] === true){
-        item[i] = false;
-      }else{
-        item[i] = true;
-      }
-      return item;
-    });
-    setIncomeProtectionNeedDependant(updatedDependant);
-    
-    
+  const handleDependant = (value: any, i: any, dataI: any) => {
+    setNeedDependant(value, i, dataI);
   }
 
   const setDataClient = (event: any, i: any) => {
-    const groupdata = i;
+    const { groupdata } = event.target.dataset;
     const { name, value } = event.target;
-    const dataIncome = [...newIncomeProtection];
+    const resData = section7.answer.clientData[i];
 
-    dataIncome[groupdata].clientId = groupdata+1;
-    dataIncome[groupdata].incomeProtectionUponDeath[name] = value;
-
-    const resCapitalSum = capitalSumRequired(dataIncome[groupdata].incomeProtectionUponDeath);    
-    dataIncome[groupdata].incomeProtectionUponDeath['capitalSumRequired'] = resCapitalSum;
-
-    const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].incomeProtectionUponDeath);
-    dataIncome[groupdata].incomeProtectionUponDeath['totalCashFlow'] = resTotalCashOutflow;
-
-    const resTotal = totalAB(dataIncome[groupdata].incomeProtectionUponDeath);
-    dataIncome[groupdata].incomeProtectionUponDeath['total'] = resTotal;
-
-    const totalNetAmount = totalNetAmmount(dataIncome[groupdata].incomeProtectionUponDeath);
-    dataIncome[groupdata].incomeProtectionUponDeath['netAmountRequired'] = totalNetAmount;
-
-    setIncomeProtection(dataIncome);
-
-    // setSectionSeven({
-    //   ...sectionSeven,
-    //   answer: {
-    //     ...sectionSeven.answer,
-    //     clientData: [...sectionSeven.answer.clientData.slice(0,1)]
-    //   }
-    // });
-
-    // console.log('newIncomeProtection', newIncomeProtection)
-    // setSectionSeven(() => {
-    //   const resData = [...]
-    // })
-    // console.log('sectionSeven', sectionSeven)
-
+    setClient(value, i, name, groupdata);
   };
 
   const setDataDependant = (event: any, i: any) => {
-    const groupdata = i;
+    const { groupdata } = event.target.dataset;
     const { name, value } = event.target;
-    const dataIncome = [...newIncomeProtectionDep];
-    dataIncome[groupdata].dependantId = groupdata+1;
-    dataIncome[groupdata].incomeProtectionUponDeath[name] = value;
-    
-    const resCapitalSum = capitalSumRequired(dataIncome[groupdata].incomeProtectionUponDeath);
-    dataIncome[groupdata].incomeProtectionUponDeath['capitalSumRequired'] = resCapitalSum;
+    const resData = section7.answer.clientData[i];
 
-    const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].incomeProtectionUponDeath);
-    dataIncome[groupdata].incomeProtectionUponDeath['totalCashFlow'] = resTotalCashOutflow;
-
-    const resTotal = totalAB(dataIncome[groupdata].incomeProtectionUponDeath);
-    dataIncome[groupdata].incomeProtectionUponDeath['total'] = resTotal;
-
-    const totalNetAmount = totalNetAmmount(dataIncome[groupdata].incomeProtectionUponDeath);
-    dataIncome[groupdata].incomeProtectionUponDeath['netAmountRequired'] = totalNetAmount;
-
-    setIncomeProtectionDep(dataIncome);
+    setDependant(value, i, name, groupdata);
   };
 
   const handleDefaultCheck = (e: any) => {
     const { name, checked, value } = e.target;
-    setSectionSeven((prevState: any) => {
-      const newDefault = {...prevState}
-      newDefault.answer.defaultCheck[name] = checked
-      return newDefault
-    });
+    setAnswerDefaultCheck(checked, '', name)
   }
   
   const handleAdditional = (e: any) => {
     const {name, value} = e.target;
-
-    setSectionSeven((prevState: any) => {
-      const resData = [...prevState.additionalNote];
-      const additionalNote = resData.map((valueData, index) => {
-        var res = valueData
-        if(index === 0) {
-          res = { ...valueData, [name]: value };
-        }
-
-        return res;
-      });
-      return { ...prevState, additionalNote };
-    });
-    
+    setAdditional(value, 0, name)
   }
 
   // Rumus
@@ -163,11 +78,13 @@ const IncomeProtection = (props : Props) => {
     for (var i = 0; i < n; i++) {
       sum += fv / Math.pow(1 + rate, i);
     }
+    console.log('sum', sum)
     return sum.toFixed(2);
   }
 
 
   const capitalSumRequired = (res: any) => {
+    console.log('res.annualAmountNeeded-'+res.annualAmountNeeded, 'res.netRateOfReture-'+res.netRateOfReture, 'res.numberOfYearsNeed-'+res.numberOfYearsNeed)
     var result = getPV(
       res.annualAmountNeeded,
       res.netRateOfReture / 100,
@@ -179,20 +96,19 @@ const IncomeProtection = (props : Props) => {
 
   const totalCashOutflow = (res:any) => {
     var result = parseFloat(res.finalExpense) + parseFloat(res.emergencyFund) + parseFloat(res.mortgage) + parseFloat(res.personalDebts) + parseFloat(res.others);
-    return isNaN(result) ? 0 : result.toFixed(2);
+    return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
   }
 
   const totalAB = (res: any) => {
     var result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashFlow);
-    return isNaN(result) ? 0 : result.toFixed(2);
+    return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
   }
 
   const totalNetAmmount = (res: any) => {
     var result = res.total - res.existingResources - res.existingInsuranceCoverageOnDeath;
-    return isNaN(result) ? 0 : result.toFixed(2);
+    return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
   }
   
-  console.log('7.1', sectionSeven)
   return (
     <>
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -213,7 +129,7 @@ const IncomeProtection = (props : Props) => {
                     <div className="text-right text-green-deep">Client {i+1} </div>
                     <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input type="checkbox" checked={newIncomeProtectionNeedClient[i][0]} onChange={(event) => handleClient(i, 0) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:rin, dataI:g-1' />
+                        <input type="checkbox" checked={section7.answer.need.client[i][0]} onChange={(event) => handleClient(!section7.answer.need.client[i][0],i,0) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:rin, dataI:g-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -232,7 +148,7 @@ const IncomeProtection = (props : Props) => {
                       <div className="text-right text-green-deep">Dependant {i+1} </div>
                       <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-dependant-${i}`}>
                         <div className='items-start justify-start gap-4'>
-                          <input type="checkbox" checked={newIncomeProtectionNeedDependant[i][0]} onChange={(event) => handleDependant(i) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                          <input type="checkbox" checked={section7.answer.need.dependant[i][0]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][0], i, 0) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                           <span className={``}> Review</span>
                         </div>
                       </div>
@@ -257,7 +173,8 @@ const IncomeProtection = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="annualAmountNeeded"
-                    value={newIncomeProtection[i].incomeProtectionUponDeath.annualAmountNeeded}
+                    dataType="incomeProtectionUponDeath"
+                    value={section7.answer.clientData[i].incomeProtectionUponDeath.annualAmountNeeded}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -272,7 +189,8 @@ const IncomeProtection = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="annualAmountNeeded"
-                    value={newIncomeProtectionDep[i].incomeProtectionUponDeath.annualAmountNeeded}
+                    dataType="incomeProtectionUponDeath"
+                    value={section7.answer.dependantData[i].incomeProtectionUponDeath.annualAmountNeeded}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -293,7 +211,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="numberOfYearsNeed"
-                      value={newIncomeProtection[i].incomeProtectionUponDeath.numberOfYearsNeed}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.clientData[i].incomeProtectionUponDeath.numberOfYearsNeed}
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
@@ -308,7 +227,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="numberOfYearsNeed"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.numberOfYearsNeed}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.numberOfYearsNeed}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                   </td>
@@ -329,7 +249,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="netRateOfReture"
-                      value={newIncomeProtection[i].incomeProtectionUponDeath.netRateOfReture}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.clientData[i].incomeProtectionUponDeath.netRateOfReture}
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
@@ -344,7 +265,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="netRateOfReture"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.netRateOfReture}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.netRateOfReture}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                   </td>
@@ -357,24 +279,26 @@ const IncomeProtection = (props : Props) => {
               A. CAPITAN SUM REQUIRED
             </TextSmall>
             </td>
-            <td>
-              {
-                (totalClient.length > 0) ? 
-                  <TextSmall className="text-right uppercase text-green-deep">
-                    ${newIncomeProtection[i].incomeProtectionUponDeath.capitalSumRequired}
-                  </TextSmall>
-                :
-                null
-              }
-            </td>
-            <td>
-              {
-                (totalDependant.length > 0) ? 
-                <TextSmall className="text-right uppercase text-green-deep">
-                  ${newIncomeProtectionDep[i].incomeProtectionUponDeath.capitalSumRequired}
-                </TextSmall> : null
-              }
-            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.clientData[i].incomeProtectionUponDeath.capitalSumRequired}
+                    </TextSmall>
+                </td>
+              );
+            })}
+
+            {totalDependant.map(function (i) {
+              return (
+                <td>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.dependantData[i].incomeProtectionUponDeath.capitalSumRequired}
+                    </TextSmall>
+                </td>
+              );
+            })}
+            
           </tr>
           <tr>
             <td className='align-top'>
@@ -388,7 +312,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="finalExpense"
-                      value={newIncomeProtection[i].incomeProtectionUponDeath.finalExpense}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.clientData[i].incomeProtectionUponDeath.finalExpense}
                       handleChange={(event) => setDataClient(event, i)}
                     />
                 </td>
@@ -403,7 +328,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="finalExpense"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.finalExpense}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.finalExpense}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                 </td>
@@ -422,7 +348,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="emergencyFund"
-                      value={newIncomeProtection[i].incomeProtectionUponDeath.emergencyFund}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.clientData[i].incomeProtectionUponDeath.emergencyFund}
                       handleChange={(event) => setDataClient(event, i)}
                     />
                 </td>
@@ -437,7 +364,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="emergencyFund"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.emergencyFund}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.emergencyFund}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                 </td>
@@ -453,7 +381,7 @@ const IncomeProtection = (props : Props) => {
                 </TextSmall>
               </div>
               <div className="col-span-1 mt-2">
-                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_mortgage" checked={sectionSeven.answer.defaultCheck.income_protection_upon_death_mortgage}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_mortgage" checked={section7.answer.defaultCheck.income_protection_upon_death_mortgage}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
               </div>
             </div>
             </td>
@@ -465,7 +393,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="mortgage"
-                      value={newIncomeProtection[i].incomeProtectionUponDeath.mortgage}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.clientData[i].incomeProtectionUponDeath.mortgage}
                       handleChange={(event) => setDataClient(event, i)}
                     />
                 </td>
@@ -480,7 +409,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="mortgage"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.mortgage}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.mortgage}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                 </td>
@@ -496,7 +426,7 @@ const IncomeProtection = (props : Props) => {
                 </TextSmall>
                 </div>
                 <div className="col-span-1 mt-2">
-                  <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_debt" checked={sectionSeven.answer.defaultCheck.income_protection_upon_death_debt}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                  <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_debt" checked={section7.answer.defaultCheck.income_protection_upon_death_debt}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                 </div>
               </div>
             </td>
@@ -508,7 +438,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="personalDebts"
-                      value={newIncomeProtection[i].incomeProtectionUponDeath.personalDebts}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.clientData[i].incomeProtectionUponDeath.personalDebts}
                       handleChange={(event) => setDataClient(event, i)}
                     />
                 </td>
@@ -523,7 +454,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="personalDebts"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.personalDebts}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.personalDebts}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                 </td>
@@ -537,7 +469,7 @@ const IncomeProtection = (props : Props) => {
                   <TextSmall className="text-gray-light">Others ($)</TextSmall>
                 </div>
                 <div className="col-span-1 mt-2">
-                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_other" checked={sectionSeven.answer.defaultCheck.income_protection_upon_death_other}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_other" checked={section7.answer.defaultCheck.income_protection_upon_death_other}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                 </div>
               </div>
             </td>
@@ -549,7 +481,8 @@ const IncomeProtection = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="others"
-                    value={newIncomeProtection[i].incomeProtectionUponDeath.others}
+                    dataType="incomeProtectionUponDeath"
+                    value={section7.answer.clientData[i].incomeProtectionUponDeath.others}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -564,7 +497,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="others"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.others}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.others}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                 </td>
@@ -577,47 +511,47 @@ const IncomeProtection = (props : Props) => {
                 B. TOTAL CASH OUT FLOW ($)
               </TextSmall>
             </td>
-            <td>
-              {
-                (totalClient.length > 0) ? 
-                  <TextSmall className="text-right uppercase text-green-deep">
-                    ${newIncomeProtection[i].incomeProtectionUponDeath.totalCashFlow}
-                  </TextSmall>
-                :
-                null
-              }
-            </td>
-            <td>
-              {
-                (totalDependant.length > 0) ? 
-                <TextSmall className="text-right uppercase text-green-deep">
-                  ${newIncomeProtectionDep[i].incomeProtectionUponDeath.totalCashFlow}
-                </TextSmall> : null
-              }
-            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.clientData[i].incomeProtectionUponDeath.totalCashFlow}
+                    </TextSmall>
+                </td>
+              );
+            })}
+            {totalDependant.map(function (i) {
+              return (
+                <td>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.dependantData[i].incomeProtectionUponDeath.totalCashFlow}
+                    </TextSmall>
+                </td>
+              );
+            })}
           </tr>
           <tr>
             <td className='align-top'>
               <TextSmall className="text-green-deep">TOTAL A + B ($)</TextSmall>  
             </td>
-            <td>
-              {
-                (totalClient.length > 0) ? 
-                  <TextSmall className="text-right uppercase text-green-deep">
-                  ${newIncomeProtection[i].incomeProtectionUponDeath.total}
-                  </TextSmall>
-                :
-                null
-              }
-            </td>
-            <td>
-              {
-                (totalDependant.length > 0) ? 
-                <TextSmall className="text-right uppercase text-green-deep">
-                  ${newIncomeProtectionDep[i].incomeProtectionUponDeath.total}
-                </TextSmall> : null
-              }
-            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.clientData[i].incomeProtectionUponDeath.total}
+                    </TextSmall>
+                </td>
+              );
+            })}
+            {totalDependant.map(function (i) {
+              return (
+                <td>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.dependantData[i].incomeProtectionUponDeath.total}
+                    </TextSmall>
+                </td>
+              );
+            })}
           </tr>
           <tr>
             <td className='align-top'>
@@ -628,7 +562,7 @@ const IncomeProtection = (props : Props) => {
                 </TextSmall>
                 </div>
                 <div className="col-span-1 mt-2">
-                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_death" checked={sectionSeven.answer.defaultCheck.income_protection_upon_death_death}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                <input type="checkbox" onChange={handleDefaultCheck} name="income_protection_upon_death_death" checked={section7.answer.defaultCheck.income_protection_upon_death_death}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                 </div>
               </div>
             </td>
@@ -640,7 +574,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="existingInsuranceCoverageOnDeath"
-                      value={newIncomeProtection[i].incomeProtectionUponDeath.existingInsuranceCoverageOnDeath}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.clientData[i].incomeProtectionUponDeath.existingInsuranceCoverageOnDeath}
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
@@ -655,7 +590,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="existingInsuranceCoverageOnDeath"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.existingInsuranceCoverageOnDeath}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.existingInsuranceCoverageOnDeath}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                   </td>
@@ -676,7 +612,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="existingResources"
-                      value={newIncomeProtection[i].incomeProtectionUponDeath.existingResources}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.clientData[i].incomeProtectionUponDeath.existingResources}
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
@@ -691,7 +628,8 @@ const IncomeProtection = (props : Props) => {
                       type="text"
                       placeholder="1,000,000"
                       name="existingResources"
-                      value={newIncomeProtectionDep[i].incomeProtectionUponDeath.existingResources}
+                      dataType="incomeProtectionUponDeath"
+                      value={section7.answer.dependantData[i].incomeProtectionUponDeath.existingResources}
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                   </td>
@@ -704,24 +642,24 @@ const IncomeProtection = (props : Props) => {
               NET AMOUNT REQUIRED ($)
             </TextSmall>
             </td>
-            <td>
-              {
-                (totalClient.length > 0) ? 
-                  <TextSmall className="text-right uppercase text-green-deep">
-                    ${newIncomeProtection[i].incomeProtectionUponDeath.netAmountRequired}
-                  </TextSmall>
-                :
-                null
-              }
-            </td>
-            <td>
-              {
-                (totalDependant.length > 0) ? 
-                <TextSmall className="text-right uppercase text-green-deep">
-                  ${newIncomeProtectionDep[i].incomeProtectionUponDeath.netAmountRequired}
-                </TextSmall> : null
-              }
-            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.clientData[i].incomeProtectionUponDeath.netAmountRequired}
+                    </TextSmall>
+                </td>
+              );
+            })}
+            {totalDependant.map(function (i) {
+              return (
+                <td>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.dependantData[i].incomeProtectionUponDeath.netAmountRequired}
+                    </TextSmall>
+                </td>
+              );
+            })}
           </tr>
           <tr>
             <td colSpan={total}>
@@ -735,7 +673,7 @@ const IncomeProtection = (props : Props) => {
                 type="text"
                 placeholder="Additional Notes"
                 name="note"
-                value={sectionSeven.additionalNote[0].note}
+                value={section7.additionalNote[0].note}
                 handleChange={handleAdditional}
               />
             </td>

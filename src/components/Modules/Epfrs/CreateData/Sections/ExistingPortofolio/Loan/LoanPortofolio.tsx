@@ -3,6 +3,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import { SummaryOfLoans } from "@/models/SectionTwo";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -11,6 +12,21 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const LoanPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const [newDataInput, setNewDataInput] = useState<SummaryOfLoans>({
+    editting: false,
+    client: "",
+    typeOfLoan: "",
+    loanTerm: "",
+    yearOfLoanTaken: 0,
+    amountBorrowed: 0,
+    loanStatus: "",
+    typeOfVehicle: "",
+    currentOutstandingLoan: 0,
+    lender: "",
+    interestRate: 0,
+    monthlyLoanRepayment: 0,
+  });
 
   const setData = (params: any) => {
     console.log(params);
@@ -74,36 +90,48 @@ const LoanPortofolio = () => {
                             className="my-4"
                             label="Client"
                             type="text"
-                            placeholder="Margo Madison"
+                            value={newDataInput.client}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                client: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Type Of Loan"
                             type="text"
-                            placeholder="Private"
+                            value={newDataInput.typeOfLoan}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                typeOfLoan: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Loan Term"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.loanTerm}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                loanTerm: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Year Of Loan Taken"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.yearOfLoanTaken}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                yearOfLoanTaken: Number(event.target.value),
+                              })
                             }
                           />
                         </div>
@@ -112,45 +140,60 @@ const LoanPortofolio = () => {
                             className="my-4"
                             label="Amount Borrowed ($)"
                             type="text"
-                            placeholder="Residence"
+                            value={newDataInput.amountBorrowed}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                amountBorrowed: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Current Outstanding Loan ($)"
                             type="text"
-                            placeholder="2012"
+                            value={newDataInput.currentOutstandingLoan}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                currentOutstandingLoan: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Lender"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.lender}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                lender: event.target.value,
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Interest Rate"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.interestRate}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                interestRate: Number(event.target.value),
+                              })
                             }
                           />
                           <Input
                             className="my-4"
                             label="Monthly Loan Repayment (Cash) ($)"
                             type="text"
-                            placeholder="1,000,000"
+                            value={newDataInput.monthlyLoanRepayment}
                             handleChange={(event) =>
-                              setData(event.target.value)
+                              setNewDataInput({
+                                ...newDataInput,
+                                monthlyLoanRepayment: Number(event.target.value),
+                              })
                             }
                           />
                         </div>
@@ -177,18 +220,18 @@ const LoanPortofolio = () => {
         <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
           <thead className="text-left bg-white-bone">
             <tr className="border-b border-gray-soft-strong">
-            <th className="px-2 py-5">SN</th>
-            <th className="px-2 py-5">Client</th>
-            <th className="px-2 py-5">Category</th>
-            <th className="px-2 py-5">Type Of Loan</th>
-            <th className="px-2 py-5">Loan Term</th>
-            <th className="px-2 py-5">Year Of Loan Taken</th>
-            <th className="px-2 py-5">Amount Borrowed ($)</th>
-            <th className="px-2 py-5">Current Outstanding Loan ($)</th>
-            <th className="px-2 py-5">Lender</th>
-            <th className="px-2 py-5">Interest Rate</th>
-            <th className="px-2 py-5">Monthly Loan Repayment (Cash) ($)</th>
-            <th className="px-2 py-5"></th>
+              <th className="px-2 py-5">SN</th>
+              <th className="px-2 py-5">Client</th>
+              <th className="px-2 py-5">Category</th>
+              <th className="px-2 py-5">Type Of Loan</th>
+              <th className="px-2 py-5">Loan Term</th>
+              <th className="px-2 py-5">Year Of Loan Taken</th>
+              <th className="px-2 py-5">Amount Borrowed ($)</th>
+              <th className="px-2 py-5">Current Outstanding Loan ($)</th>
+              <th className="px-2 py-5">Lender</th>
+              <th className="px-2 py-5">Interest Rate</th>
+              <th className="px-2 py-5">Monthly Loan Repayment (Cash) ($)</th>
+              <th className="px-2 py-5"></th>
             </tr>
           </thead>
           <tbody>
@@ -218,7 +261,6 @@ const LoanPortofolio = () => {
           </tbody>
         </table>
       </div>
-
     </SectionCardSingleGrid>
   );
 };

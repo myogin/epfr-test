@@ -29,630 +29,29 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     { id: 1, name: "Review" },
   ];
 
-  const [sectionSeven, setSectionSeven] = useState<SectionSeven>({
-    pfrId: 0,
-    typeClient: 1,
-    totalDependant:0,
-    status: 0,
-    answer: {
-      pfrId: 0,
-      clientData: [
-        {
-            clientId: 0,
-            dependantId: 0,
-            incomeProtectionUponDeath: {
-                annualAmountNeeded: 0,
-                numberOfYearsNeed: 0,
-                netRateOfReture: 0,
-                capitalSumRequired: 0,
-                finalExpense: 0,
-                emergencyFund: 0,
-                mortgage: 0,
-                personalDebts: 0,
-                others: 0,
-                totalCashFlow: 0,
-                total: 0,
-                existingInsuranceCoverageOnDeath: 0,
-                existingResources: 0,
-                netAmountRequired: 0
-            },
-            fundDisabilityIncomeExpense: {
-                annualAmountNeeded: 0,
-                numberOfYearsNeed: 0,
-                netRateOfReture: 0,
-                capitalSumRequired: 0,
-                medicalExpense: 0,
-                mortgage: 0,
-                loans: 0,
-                totalCashOutflow: 0,
-                total: 0,
-                existingInsuranceCoverageOnDisability: 0,
-                existingResources: 0,
-                netAmountRequired: 0
-            },
-            fundCriticalIllnessExpense: {
-                annualAmountNeeded: 0,
-                numberOfYearsNeed: 0,
-                netRateOfReture: 0,
-                capitalSumRequired: 0,
-                medicalExpense: 0,
-                mortgage: 0,
-                loans: 0,
-                totalCashOutflow: 0,
-                total: 0,
-                existingInsuranceCoverageOnCI: 0,
-                existingResources: 0,
-                netAmountRequired: 0
-            },
-            fundMediumToLongTerm: {
-                objective: 0,
-                goalDescription: 0,
-                yearsToReachGoal: 0,
-                less: 0,
-                netAmountRequired: 0
-            },
-            fundRetirementLifeStyle: {
-                age: 0,
-                expectedRetirementAge: 0,
-                yearsToRetirement: 0,
-                selectedMethod: 0,
-                annualIncome: 0,
-                rateOfIncomeIncrement: 0,
-                incomeAtRetirementAge: 0,
-                percentOfIncomeRequiredAtRetirement: 0,
-                incomeRequiredAtRetirement: 0,
-                retirementExpense: 0,
-                inflationRate: 0,
-                expenseATRetirement: 0,
-                yearsToReceiveRetirementIncome: 0,
-                netRateOfReture: 0,
-                amountNeededAtRetirementAge: 0,
-                less: 0,
-                netAmountRequired: 0
-            },
-            coverForPersonalAccident: {
-                amountNeeded: 0,
-                less: 0,
-                netAmountRequired: 0
-            },
-            fundLongTermCare: {
-                desiredMonthlyCashPayout: 0,
-                nameOfExistingLongTermCareInsurance: 0,
-                less: 0,
-                netAmountRequired: 0
-            },
-            fundHospitalExpense: {
-                disiredChoiceOfHospitalType: '',
-                disiredChoiceOfWardClass: '',
-                desiredTypeOfCover: '',
-                nameOfExistingHospitalizationPlan: 0,
-                existingTypeOfHospitalCovered:'',
-                existingClassOfWardCovered:'',
-                existingTypeOfCover:''
-            },
-            estatePlaning: {
-                willWritten: '',
-                lastUpdated: 0,
-                anyProvision: '',
-                haveLastingPowerOfAttorney: '',
-                doneYourCPFNomination: '',
-                anyBenefit: ''
-            },
-            otherInsures: {
-                frequencyOfTravel: 0,
-                typeOfTravelInsuranceCovered: '',
-                companyName: 0,
-                renewalDate: 0,
-                mortgageInsurance: '',
-                groupInsurance: ''
-            },
-            maternity: {
-                amountNeeded: 0,
-                less: 0,
-                netAmountRequired: 0
-            }
-        }
-      ],
-      dependantData: [
-        {
-            clientId: 0,
-            dependantId: 0,
-            incomeProtectionUponDeath: {
-                annualAmountNeeded: 0,
-                numberOfYearsNeed: 0,
-                netRateOfReture: 0,
-                capitalSumRequired: 0,
-                finalExpense: 0,
-                emergencyFund: 0,
-                mortgage: 0,
-                personalDebts: 0,
-                others: 0,
-                totalCashFlow: 0,
-                total: 0,
-                existingInsuranceCoverageOnDeath: 0,
-                existingResources: 0,
-                netAmountRequired: 0
-            },
-            fundDisabilityIncomeExpense: {
-                annualAmountNeeded: 0,
-                numberOfYearsNeed: 0,
-                netRateOfReture: 0,
-                capitalSumRequired: 0,
-                medicalExpense: 0,
-                mortgage: 0,
-                loans: 0,
-                totalCashOutflow: 0,
-                total: 0,
-                existingInsuranceCoverageOnDisability: 0,
-                existingResources: 0,
-                netAmountRequired: 0
-            },
-            fundCriticalIllnessExpense: {
-                annualAmountNeeded: 0,
-                numberOfYearsNeed: 0,
-                netRateOfReture: 0,
-                capitalSumRequired: 0,
-                medicalExpense: 0,
-                mortgage: 0,
-                loans: 0,
-                totalCashOutflow: 0,
-                total: 0,
-                existingInsuranceCoverageOnCI: 0,
-                existingResources: 0,
-                netAmountRequired: 0
-            },
-            fundMediumToLongTerm: {
-                objective: 0,
-                goalDescription: 0,
-                yearsToReachGoal: 0,
-                less: 0,
-                netAmountRequired: 0
-            },
-            fundRetirementLifeStyle: {
-                age: 0,
-                expectedRetirementAge: 0,
-                yearsToRetirement: 0,
-                selectedMethod: 0,
-                annualIncome: 0,
-                rateOfIncomeIncrement: 0,
-                incomeAtRetirementAge: 0,
-                percentOfIncomeRequiredAtRetirement: 0,
-                incomeRequiredAtRetirement: 0,
-                retirementExpense: 0,
-                inflationRate: 0,
-                expenseATRetirement: 0,
-                yearsToReceiveRetirementIncome: 0,
-                netRateOfReture: 0,
-                amountNeededAtRetirementAge: 0,
-                less: 0,
-                netAmountRequired: 0
-            },
-            coverForPersonalAccident: {
-                amountNeeded: 0,
-                less: 0,
-                netAmountRequired: 0
-            },
-            fundLongTermCare: {
-                desiredMonthlyCashPayout: 0,
-                nameOfExistingLongTermCareInsurance: 0,
-                less: 0,
-                netAmountRequired: 0
-            },
-            fundHospitalExpense: {
-                disiredChoiceOfHospitalType: '',
-                disiredChoiceOfWardClass: '',
-                desiredTypeOfCover: '',
-                nameOfExistingHospitalizationPlan: 0,
-                existingTypeOfHospitalCovered:'',
-                existingClassOfWardCovered:'',
-                existingTypeOfCover:''
-            },
-            estatePlaning: {
-                willWritten: '',
-                lastUpdated: 0,
-                anyProvision: '',
-                haveLastingPowerOfAttorney: '',
-                doneYourCPFNomination: '',
-                anyBenefit: ''
-            },
-            otherInsures: {
-                frequencyOfTravel: 0,
-                typeOfTravelInsuranceCovered: '',
-                companyName: 0,
-                renewalDate: 0,
-                mortgageInsurance: '',
-                groupInsurance: ''
-            },
-            maternity: {
-                amountNeeded: 0,
-                less: 0,
-                netAmountRequired: 0
-            }
-        }
-      ],
-      need: {
-        client: [],
-        dependant: []
-      },
-      defaultCheck: {
-        income_protection_upon_death_mortgage: false,
-        income_protection_upon_death_debt: false,
-        income_protection_upon_death_other: false,
-        income_protection_upon_death_death: false,
-        fund_disability_income_expense_mortgage: false,
-        fund_disability_income_expense_disability: false,
-        fund_critical_illness_expense_mortgage: false,
-        fund_critical_illness_expense_ci: false,
-        cover_for_personal_accident_benefit: false,
-        maternity_other: false
-      }
-    },
-    additionalNote: []
-  });
-
-
   {/* No Data */}
-  const resTotal = sectionSeven.typeClient + sectionSeven.totalDependant;
-  sectionSeven.answer.clientData =  new Array(sectionSeven.typeClient).fill(
-    {
-      clientId: 0,
-      dependantId: 0,
-      incomeProtectionUponDeath: {
-          annualAmountNeeded: 0,
-          numberOfYearsNeed: 0,
-          netRateOfReture: 0,
-          capitalSumRequired: 0,
-          finalExpense: 0,
-          emergencyFund: 0,
-          mortgage: 0,
-          personalDebts: 0,
-          others: 0,
-          totalCashFlow: 0,
-          total: 0,
-          existingInsuranceCoverageOnDeath: 0,
-          existingResources: 0,
-          netAmountRequired: 0
-      },
-      fundDisabilityIncomeExpense: {
-          annualAmountNeeded: 0,
-          numberOfYearsNeed: 0,
-          netRateOfReture: 0,
-          capitalSumRequired: 0,
-          medicalExpense: 0,
-          mortgage: 0,
-          loans: 0,
-          totalCashOutflow: 0,
-          total: 0,
-          existingInsuranceCoverageOnDisability: 0,
-          existingResources: 0,
-          netAmountRequired: 0
-      },
-      fundCriticalIllnessExpense: {
-          annualAmountNeeded: 0,
-          numberOfYearsNeed: 0,
-          netRateOfReture: 0,
-          capitalSumRequired: 0,
-          medicalExpense: 0,
-          mortgage: 0,
-          loans: 0,
-          totalCashOutflow: 0,
-          total: 0,
-          existingInsuranceCoverageOnCI: 0,
-          existingResources: 0,
-          netAmountRequired: 0
-      },
-      fundMediumToLongTerm: {
-          objective: 0,
-          goalDescription: 0,
-          yearsToReachGoal: 0,
-          less: 0,
-          netAmountRequired: 0
-      },
-      fundRetirementLifeStyle: {
-          age: 0,
-          expectedRetirementAge: 0,
-          yearsToRetirement: 0,
-          selectedMethod: 0,
-          annualIncome: 0,
-          rateOfIncomeIncrement: 0,
-          incomeAtRetirementAge: 0,
-          percentOfIncomeRequiredAtRetirement: 0,
-          incomeRequiredAtRetirement: 0,
-          retirementExpense: 0,
-          inflationRate: 0,
-          expenseATRetirement: 0,
-          yearsToReceiveRetirementIncome: 0,
-          netRateOfReture: 0,
-          amountNeededAtRetirementAge: 0,
-          less: 0,
-          netAmountRequired: 0
-      },
-      coverForPersonalAccident: {
-          amountNeeded: 0,
-          less: 0,
-          netAmountRequired: 0
-      },
-      fundLongTermCare: {
-          desiredMonthlyCashPayout: 0,
-          nameOfExistingLongTermCareInsurance: 0,
-          less: 0,
-          netAmountRequired: 0
-      },
-      fundHospitalExpense: {
-          disiredChoiceOfHospitalType: 0,
-          disiredChoiceOfWardClass: 0,
-          desiredTypeOfCover: 0,
-          nameOfExistingHospitalizationPlan: 0,
-          existingTypeOfHospitalCovered:0,
-          existingClassOfWardCovered:0,
-          existingTypeOfCover:0
-      },
-      estatePlaning: {
-          willWritten: 0,
-          lastUpdated: 0,
-          anyProvision: 0,
-          haveLastingPowerOfAttorney: 0,
-          doneYourCPFNomination: 0,
-          anyBenefit: 0
-      },
-      otherInsures: {
-          frequencyOfTravel: 0,
-          typeOfTravelInsuranceCovered: 0,
-          companyName: 0,
-          renewalDate: 0,
-          mortgageInsurance: 0,
-          groupInsurance: 0
-      },
-      maternity: {
-          amountNeeded: 0,
-          less: 0,
-          netAmountRequired: 0
-      }
-  });
-  sectionSeven.answer.dependantData =  new Array(sectionSeven.totalDependant).fill(
-    {
-      clientId: 0,
-      dependantId: 0,
-      incomeProtectionUponDeath: {
-          annualAmountNeeded: 0,
-          numberOfYearsNeed: 0,
-          netRateOfReture: 0,
-          capitalSumRequired: 0,
-          finalExpense: 0,
-          emergencyFund: 0,
-          mortgage: 0,
-          personalDebts: 0,
-          others: 0,
-          totalCashFlow: 0,
-          total: 0,
-          existingInsuranceCoverageOnDeath: 0,
-          existingResources: 0,
-          netAmountRequired: 0
-      },
-      fundDisabilityIncomeExpense: {
-          annualAmountNeeded: 0,
-          numberOfYearsNeed: 0,
-          netRateOfReture: 0,
-          capitalSumRequired: 0,
-          medicalExpense: 0,
-          mortgage: 0,
-          loans: 0,
-          totalCashOutflow: 0,
-          total: 0,
-          existingInsuranceCoverageOnDisability: 0,
-          existingResources: 0,
-          netAmountRequired: 0
-      },
-      fundCriticalIllnessExpense: {
-          annualAmountNeeded: 0,
-          numberOfYearsNeed: 0,
-          netRateOfReture: 0,
-          capitalSumRequired: 0,
-          medicalExpense: 0,
-          mortgage: 0,
-          loans: 0,
-          totalCashOutflow: 0,
-          total: 0,
-          existingInsuranceCoverageOnCI: 0,
-          existingResources: 0,
-          netAmountRequired: 0
-      },
-      fundMediumToLongTerm: {
-          objective: 0,
-          goalDescription: 0,
-          yearsToReachGoal: 0,
-          less: 0,
-          netAmountRequired: 0
-      },
-      fundRetirementLifeStyle: {
-          age: 0,
-          expectedRetirementAge: 0,
-          yearsToRetirement: 0,
-          selectedMethod: 0,
-          annualIncome: 0,
-          rateOfIncomeIncrement: 0,
-          incomeAtRetirementAge: 0,
-          percentOfIncomeRequiredAtRetirement: 0,
-          incomeRequiredAtRetirement: 0,
-          retirementExpense: 0,
-          inflationRate: 0,
-          expenseATRetirement: 0,
-          yearsToReceiveRetirementIncome: 0,
-          netRateOfReture: 0,
-          amountNeededAtRetirementAge: 0,
-          less: 0,
-          netAmountRequired: 0
-      },
-      coverForPersonalAccident: {
-          amountNeeded: 0,
-          less: 0,
-          netAmountRequired: 0
-      },
-      fundLongTermCare: {
-          desiredMonthlyCashPayout: 0,
-          nameOfExistingLongTermCareInsurance: 0,
-          less: 0,
-          netAmountRequired: 0
-      },
-      fundHospitalExpense: {
-          disiredChoiceOfHospitalType: 0,
-          disiredChoiceOfWardClass: 0,
-          desiredTypeOfCover: 0,
-          nameOfExistingHospitalizationPlan: 0,
-          existingTypeOfHospitalCovered:0,
-          existingClassOfWardCovered:0,
-          existingTypeOfCover:0
-      },
-      estatePlaning: {
-          willWritten: 0,
-          lastUpdated: 0,
-          anyProvision: 0,
-          haveLastingPowerOfAttorney: 0,
-          doneYourCPFNomination: 0,
-          anyBenefit: 0
-      },
-      otherInsures: {
-          frequencyOfTravel: 0,
-          typeOfTravelInsuranceCovered: 0,
-          companyName: 0,
-          renewalDate: 0,
-          mortgageInsurance: 0,
-          groupInsurance: 0
-      },
-      maternity: {
-          amountNeeded: 0,
-          less: 0,
-          netAmountRequired: 0
-      }
-  });
-  sectionSeven.additionalNote = new Array(14).fill({
-    note: ""
-  });
-  sectionSeven.answer.need.client = new Array(sectionSeven.typeClient).fill(false).map(() => {return new Array(14).fill(false);})
-  sectionSeven.answer.need.dependant =  new Array(sectionSeven.totalDependant).fill(false).map(() => {return new Array(14).fill(false);})
 
-  // const [newIncomeProtectionNeedClient, setIncomeProtectionNeedClient] = useState(sectionSeven.answer.need.client); //
-  // console.log('firstSet', sectionSeven)
   let {
-    showIncomeProtection,
-    showFundDisability,
-    showFundCritical,
-    showFundChildren,
-    showFundMediumToLong,
-    showFundRetirement,
-    showCoverForPersonal,
-    showFundLongTermCare,
-    showFundHospitalExpense,
-    showMaternityPlan,
-    showEstatePlanning,
-    showOtherInsurance,
-    incomeProtection,
-    fundDisability,
-    fundCritical,
-    fundChildren,
-    fundMediumToLong,
-    fundRetirement,
-    coverForPersonal,
-    fundLongTermCare,
-    fundHospitalExpense,
-    maternityPlan,
-    estatePlanning,
-    otherInsurance,
+    section7,
+    setClient,
+    setDependant,
+    setNeed,
+    setAnswerDefaultCheck,
+    setAdditional,
   } = usePrioritiesNeedAnalysis();
 
+  const resTotal = section7.typeClient + section7.totalDependant;
   let { showDetailData } = useNavigationSection();
 
-  const setIncomeProtection = (data: any, i: any) => {
-    if(resTotal == 1){
-      
-      // const updatedClient = sectionSeven.answer.need.client.map((item: any, index: any) => {
-      //   if(index === i){
-      //     if(item[0] === true){
-      //       item[0] = false;
-      //     }else{
-      //       item[0] = true;
-      //     }
-      //   }
-      //   return item;
-      // });
-      
-      // setSectionSeven(prev => ({
-      //   ...prev,
-      //   answer: {
-      //     ...prev.answer,
-      //     need:{
-      //       ...prev.answer.need,
-      //       client: [[true, true]]
-      //     }
-      //   },
-      //   client: [[true, true]]
-      // }))
-
-      setSectionSeven((prevState: any) => {
-        return { 
-          ...prevState,
-          answer: {
-            ...prevState.answer,
-            need: {
-              ...prevState.answer.need,
-              client:[
-                [true, true]
-              ]
-            }  
-          }
-        };
-      });
-
-      // var dataRes = {
-      //   ...sectionSeven,
-      //   answer: {
-      //     ...sectionSeven.answer,
-      //     need:{
-      //       ...sectionSeven.answer.need,
-      //       client: [[true]]
-      //     }
-      //   }
-      // }
-      // console.log('dataRes', dataRes)
-      // setSectionSeven(dataRes);
-
-      // const updatedClient2 = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-      //   if(item[i] === true){
-      //     item[i] = false;
-      //   }else{
-      //     item[i] = true;
-      //   }
-      //   return item;
-      // });
-      // console.log('updatedClient',updatedClient)
-      // setIncomeProtectionNeedClient(updatedClient);
-    }else{
-      showIncomeProtection(!incomeProtection);      
-    }
+  const setIncomeProtection = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  useEffect(() => {    
-    console.log('useEffect - sectionSeven', sectionSeven)
-  }, [sectionSeven]);
-
-  const setFundDisability = (data: any, i: any) => {
-    if(resTotal == 1){
-      // const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-      //   if(item[i] === true){
-      //     item[i] = false;
-      //   }else{
-      //     item[i] = true;
-      //   }
-      //   return item;
-      // });
-      // setIncomeProtectionNeedClient(updatedClient);
-    }else{
-      showFundDisability(!fundDisability);
-    }
+  const setFundDisability = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
   const setFundCritical = (data: any, i: any) => {
-    if(resTotal == 1){
       // const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
       //   if(item[i] === true){
       //     item[i] = false;
@@ -663,75 +62,148 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       // });
       // console.log('updatedClient', updatedClient)
       // setIncomeProtectionNeedClient(updatedClient);
-    }else{
-      showFundCritical(!fundCritical);
-    }
+    
   };
 
   const setFundChildren = () => {
-    showFundChildren(!fundChildren);
+    console.log('setFundChildren')
   };
 
   const setFundMediumToLong = () => {
-    showFundMediumToLong(!fundMediumToLong);
+    console.log('setFundMediumToLong')
   };
 
   const setFundRetirement = () => {
-    showFundRetirement(!fundRetirement);
+    console.log('setFundRetirement')
   };
 
   const setCoverForPersonal = () => {
-    showCoverForPersonal(!coverForPersonal);
+    console.log('setCoverForPersonal')
   };
 
   const setFundLongTermCare = () => {
-    showFundLongTermCare(!fundLongTermCare);
+    console.log('setFundLongTermCare')
   };
 
   const setFundHospitalExpense = () => {
-    showFundHospitalExpense(!fundHospitalExpense);
+    console.log('setFundHospitalExpense')
   };
 
   const setMaternityPlan = () => {
-    showMaternityPlan(!maternityPlan);
+    console.log('setMaternityPlan')
   };
 
   const setEstatePlanning = () => {
-    showEstatePlanning(!estatePlanning);
+    console.log('setEstatePlanning')
   };
 
   const setOtherInsurance = () => {
-    showOtherInsurance(!otherInsurance);
+    console.log('setOtherInsurance')
   };
 
   const scrollPosition = useScrollPosition(7);
   
-  // Section 7.1 Toggle
-  let toggleInProtect = false;
-  if(resTotal == 1){
-    toggleInProtect = sectionSeven.answer.need.client[0][0];
-    incomeProtection = toggleInProtect;
-  }else{
-    toggleInProtect = incomeProtection;
+  const getPV = (fv:any, rate:any, n: any) =>{
+    var sum = 0;
+    for (var i = 0; i < n; i++) {
+      sum += fv / Math.pow(1 + rate, i);
+    }
+    return sum.toFixed(2);
   }
 
-  // Section 7.2 Toggle
-  let toggleInFundDisability = false;
-  if(resTotal == 1){
-    toggleInFundDisability = sectionSeven.answer.need.client[0][1];
-    fundDisability = toggleInFundDisability;
-  }else{
-    toggleInFundDisability = fundDisability;
-  }
+  // Rumus Income Protection
+    const capitalSumRequired = (res: any) => {
+      var result = getPV(
+        res.annualAmountNeeded,
+        res.netRateOfReture / 100,
+        res.numberOfYearsNeed
+      );
 
-  // Section 7.3 Toggle
-  let toggleInFundCritical = false;
-  if(resTotal == 1){
-    toggleInFundCritical = sectionSeven.answer.need.client[0][2];
-    fundCritical = toggleInFundCritical;
-  }else{
-    toggleInFundCritical = fundCritical;
-  }
+      return isNaN(parseFloat(result)) ? 0 : parseFloat(result);
+    }
+
+    const totalCashOutflow = (res:any) => {
+      var result = parseFloat(res.finalExpense) + parseFloat(res.emergencyFund) + parseFloat(res.mortgage) + parseFloat(res.personalDebts) + parseFloat(res.others);
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const totalAB = (res: any) => {
+      var result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashFlow);
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const totalNetAmmount = (res: any) => {
+      var result = res.total - res.existingResources - res.existingInsuranceCoverageOnDeath;
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+  // End Rumus Income Protection
+
+  // Rumus Fund Disabilities
+    const FundDisabCapitalSumRequired = (res: any) => {
+      var result = getPV(
+        res.annualAmountNeeded,
+        res.netRateOfReture / 100,
+        res.numberOfYearsNeed
+      );
+
+      return isNaN(parseFloat(result)) ? 0 : parseFloat(result);
+    }
+
+    const FundDisabTotalCashOutflow = (res:any) => {
+      var result = parseFloat(res.medicalExpense) + parseFloat(res.mortgage) + parseFloat(res.loans);
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const FundDisabTotalAB = (res: any) => {
+      var result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashOutflow);
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const FundDisabTotalNetAmmount = (res: any) => {
+      var result = res.total - res.existingResources - res.existingInsuranceCoverageOnDisability;
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+  // End Rumus Fund Disabilities
+
+
+
+  useEffect(() => {    
+    section7.answer.clientData.map(function(v: any, k: any){
+      // IncomeProtect  
+        const IncomeProtect = v.incomeProtectionUponDeath;
+        const resCapitalSum = capitalSumRequired(IncomeProtect);  
+        setClient(resCapitalSum, k, 'capitalSumRequired', 'incomeProtectionUponDeath');
+
+        const resTotalCashOutflow = totalCashOutflow(IncomeProtect);
+        setClient(resTotalCashOutflow, k, 'totalCashFlow', 'incomeProtectionUponDeath');
+
+        const resTotal = totalAB(IncomeProtect);
+        setClient(resTotal, k, 'total', 'incomeProtectionUponDeath');
+
+        const totalNetAmount = totalNetAmmount(IncomeProtect);
+        setClient(totalNetAmount, k, 'netAmountRequired', 'incomeProtectionUponDeath');
+      // End IncomeProtect
+
+      // Rumus Fund Disabilities
+          const FunDisability = v.fundDisabilityIncomeExpense;
+          const FundDisabResCapitalSum = FundDisabCapitalSumRequired(FunDisability);
+          setClient(FundDisabResCapitalSum, k, 'capitalSumRequired', 'fundDisabilityIncomeExpense')
+
+          const FundDisabResTotalCashOutflow = FundDisabTotalCashOutflow(FunDisability);
+          setClient(FundDisabResTotalCashOutflow, k, 'totalCashOutflow', 'fundDisabilityIncomeExpense')
+
+          const FundDisabResTotal = FundDisabTotalAB(FunDisability);
+          setClient(FundDisabResTotal, k, 'totalAB', 'fundDisabilityIncomeExpense')
+
+          const FundDisabTotalNetAmount = FundDisabTotalNetAmmount(FunDisability);
+          setClient(FundDisabTotalNetAmount, k, 'totalNetAmmount', 'fundDisabilityIncomeExpense')
+      // End Rumus Fund Disabilities
+      
+
+    });
+    console.log('section7', section7)
+  }, [section7]);
+
   return (
     <div id={props.id}>
       <div
@@ -756,52 +228,52 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             7.1 Protection (Income Protection Upon Death)
           </h2>
           <Toggle
-            isChecked={toggleInProtect}
-            toggleName={toggleInProtect ? "Review" : "Not Review"}
-            onChange={() => setIncomeProtection(!toggleInProtect, 0)} />
+            isChecked={section7.answer.need.client[0][0]}
+            toggleName={section7.answer.need.client[0][0] ? "Review" : "Not Review"}
+            onChange={(event) => setIncomeProtection(!section7.answer.need.client[0][0], 0, 0)} />
             {/* <Toggle /> */}
         </HeadingSecondarySectionDoubleGrid>
 
-        {incomeProtection ? <IncomeProtection datas={sectionSeven}/> : []}
+        {section7.answer.need.client[0][0] ? <IncomeProtection section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.2 Protection (Fund Disability Income / Expense)
           </h2>
           <Toggle
-            isChecked={toggleInFundDisability}
-            toggleName={toggleInFundDisability ? "Review" : "Not Review"}
-            onChange={() => setFundDisability(!toggleInFundDisability, 1)}
+            isChecked={section7.answer.need.client[0][1]}
+            toggleName={section7.answer.need.client[0][1] ? "Review" : "Not Review"}
+            onChange={() => setFundDisability(!section7.answer.need.client[0][1], 0, 1)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundDisability ? <FundDisability  datas={sectionSeven}/> : []}
+        {section7.answer.need.client[0][1] ? <FundDisability  datas={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.3 Protection (Fund Critical Illness Expense)
           </h2>
           <Toggle
-            isChecked={fundCritical}
-            toggleName={fundCritical ? "Review" : "Not Review"}
-            onChange={() => setFundCritical(!toggleInFundCritical, 2)}
+            isChecked={section7.answer.need.client[0][2]}
+            toggleName={section7.answer.need.client[0][2] ? "Review" : "Not Review"}
+            onChange={() => setFundCritical(!section7.answer.need.client[0][2], 2)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundCritical ? <FundCritical datas={sectionSeven}/> : []}
+        {section7.answer.need.client[0][2] ? <FundCritical datas={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.4 Saving & Investment (Fund Child(ren)'s Education)
           </h2>
           <Toggle
-            isChecked={fundChildren}
-            toggleName={fundChildren ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][3]}
+            toggleName={section7.answer.need.client[0][3] ? "Review" : "Not Review"}
             onChange={setFundChildren}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundChildren ? <FundChildrens /> : ""}
+        {section7.answer.need.client[0][3] ? <FundChildrens /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -809,98 +281,98 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             Investment Needs / Other Goals)
           </h2>
           <Toggle
-            isChecked={fundMediumToLong}
-            toggleName={fundMediumToLong ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][4]}
+            toggleName={section7.answer.need.client[0][4] ? "Review" : "Not Review"}
             onChange={setFundMediumToLong}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundMediumToLong ? <FundMediumToLong /> : ""}
+        {section7.answer.need.client[0][4] ? <FundMediumToLong /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.6 Saving & Investment (Fund Retirement Lifestyle)
           </h2>
           <Toggle
-            isChecked={fundRetirement}
-            toggleName={fundRetirement ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][5]}
+            toggleName={section7.answer.need.client[0][5] ? "Review" : "Not Review"}
             onChange={setFundRetirement}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundRetirement ? <FundRetirement /> : ""}
+        {section7.answer.need.client[0][5] ? <FundRetirement /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.7 Accident & Health (Cover for Personal Accident)
           </h2>
           <Toggle
-            isChecked={coverForPersonal}
-            toggleName={coverForPersonal ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][6]}
+            toggleName={section7.answer.need.client[0][6] ? "Review" : "Not Review"}
             onChange={setCoverForPersonal}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {coverForPersonal ? <CoverForPersonal /> : ""}
+        {section7.answer.need.client[0][6] ? <CoverForPersonal /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.8 Accident & Health (Fund Long Term Care)
           </h2>
           <Toggle
-            isChecked={fundLongTermCare}
-            toggleName={fundLongTermCare ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][7]}
+            toggleName={section7.answer.need.client[0][7] ? "Review" : "Not Review"}
             onChange={setFundLongTermCare}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundLongTermCare ? <FundLongTermCare /> : ""}
+        {section7.answer.need.client[0][7] ? <FundLongTermCare /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.9 Accident & Health (Fund Hospital Expenses)
           </h2>
           <Toggle
-            isChecked={fundHospitalExpense}
-            toggleName={fundHospitalExpense ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][8]}
+            toggleName={section7.answer.need.client[0][8] ? "Review" : "Not Review"}
             onChange={setFundHospitalExpense}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {fundHospitalExpense ? <FundHospitalExpenses /> : ""}
+        {section7.answer.need.client[0][8] ? <FundHospitalExpenses /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.10 Maternity Plan</h2>
           <Toggle
-            isChecked={maternityPlan}
-            toggleName={maternityPlan ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][9]}
+            toggleName={section7.answer.need.client[0][9] ? "Review" : "Not Review"}
             onChange={setMaternityPlan}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {maternityPlan ? <MaternityPlan /> : ""}
+        {section7.answer.need.client[0][9] ? <MaternityPlan /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.11 Estate Planning</h2>
           <Toggle
-            isChecked={estatePlanning}
-            toggleName={estatePlanning ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][10]}
+            toggleName={section7.answer.need.client[0][10] ? "Review" : "Not Review"}
             onChange={setEstatePlanning}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {estatePlanning ? <EstatePlanning /> : ""}
+        {section7.answer.need.client[0][10] ? <EstatePlanning /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.12 Other Insurance(s)</h2>
           <Toggle
-            isChecked={otherInsurance}
-            toggleName={otherInsurance ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][11]}
+            toggleName={section7.answer.need.client[0][11] ? "Review" : "Not Review"}
             onChange={setOtherInsurance}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {otherInsurance ? <OtherInsurance /> : ""}
+        {section7.answer.need.client[0][11] ? <OtherInsurance /> : ""}
       </>
 
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
