@@ -13,11 +13,12 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 interface Props {
   datas?: any;
   id?: any;
-  changeState: (props: any) => void
 }
 
 const PropertyPortofolio = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
+
+  
 
   // const [newDataInput, setNewDataInput] = useState<SummaryOfProperty>({
   //   editting: false,
