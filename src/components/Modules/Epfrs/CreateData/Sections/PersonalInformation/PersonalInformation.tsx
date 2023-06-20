@@ -153,9 +153,8 @@ const PersonalInformation = (props: Props) => {
     reviewDate,
     status,
     setClient,
+    setAccompaniment,
   } = usePersonalInformation();
-
-  
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -166,12 +165,34 @@ const PersonalInformation = (props: Props) => {
     }
   };
 
+  const countAgeClient = () => {
+    let dob = new Date(clientInfo[0].dateOfBirth);
+    let currentDate = new Date();
+
+    if (!isNaN(dob.getTime())) {
+      const yearsDiff = currentDate.getFullYear() - dob.getFullYear();
+      const monthsDiff = currentDate.getMonth() - dob.getMonth();
+
+      let calculatedAge = yearsDiff;
+
+      if (
+        monthsDiff < 0 ||
+        (monthsDiff === 0 && currentDate.getDate() < dob.getDate())
+      ) {
+        calculatedAge--;
+      }
+
+      setAccompaniment(0, "age", calculatedAge);
+    }
+  };
+
   useEffect(() => {
-    if(dependant?.length > 0) {
+    if (dependant?.length > 0) {
       setShowAddDependent(true);
     }
-  }, [])
-  
+
+    countAgeClient();
+  }, []);
 
   // if (typeof window !== "undefined") {
   //   localStorage.setItem("section1", JSON.stringify(sectionOne));

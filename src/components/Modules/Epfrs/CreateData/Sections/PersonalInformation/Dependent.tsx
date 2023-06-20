@@ -121,7 +121,7 @@ const Dependent = (props: Props) => {
   const saveData = (event: any) => {
     console.log("Masuk Save");
 
-    // setDependentData((prevArray: any) => [...prevArray, newDependent]);
+    setDependent(newDependent);
     setNewDependent({
       name: "",
       relationship: "",
@@ -132,17 +132,6 @@ const Dependent = (props: Props) => {
     });
     setShowModal(false);
   };
-
-  let localStorageSectionOne: any = [];
-  let localStorageSectionOneNormal: any = [];
-
-  // get if existing data from local storage
-  if (typeof window !== "undefined") {
-    localStorageSectionOne = localStorage.getItem("section1")
-      ? localStorage.getItem("section1")
-      : [];
-    localStorageSectionOneNormal = JSON.parse(localStorageSectionOne);
-  }
 
   const openModal = () => {
     setShowModal(true);
