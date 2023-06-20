@@ -115,7 +115,7 @@ const personalInformation = create(
             produce((draft) => {
               draft[name] = value;
             })
-          ),
+          )
       }),
       {
         name: "section1",

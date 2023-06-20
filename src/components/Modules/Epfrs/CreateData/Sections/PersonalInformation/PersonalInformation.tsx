@@ -1,5 +1,5 @@
 import Input from "@/components/Forms/Input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FlashlightLineIcon from "remixicon-react/FlashlightLineIcon";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
@@ -155,6 +155,8 @@ const PersonalInformation = (props: Props) => {
     setClient,
   } = usePersonalInformation();
 
+  
+
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     const { groupdata } = event.target.dataset;
@@ -163,6 +165,13 @@ const PersonalInformation = (props: Props) => {
       setClient(0, name, value);
     }
   };
+
+  useEffect(() => {
+    if(dependant?.length > 0) {
+      setShowAddDependent(true);
+    }
+  }, [])
+  
 
   // if (typeof window !== "undefined") {
   //   localStorage.setItem("section1", JSON.stringify(sectionOne));
@@ -463,7 +472,7 @@ const PersonalInformation = (props: Props) => {
         />
       </HeadingSecondarySectionDoubleGrid>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        {showAddDependent ? <Dependent datas={dependant} /> : ""}
+        {showAddDependent ? <Dependent /> : ""}
       </SectionCardSingleGrid>
 
       {/* Sec 3 */}

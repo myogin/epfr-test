@@ -13,6 +13,7 @@ import moment from "moment";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { DependantInformation } from "@/models/SectionOne";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 interface Props {
   datas?: Array<any>;
@@ -21,6 +22,11 @@ interface Props {
 const Dependent = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   // const [dependentData, setDependentData] = useState(props.datas);
+
+  let {
+    dependant,
+    setDependent
+  } = usePersonalInformation();
 
   // handle new data dependent
   const [newDependent, setNewDependent] = useState<DependantInformation>({
@@ -115,7 +121,7 @@ const Dependent = (props: Props) => {
   const saveData = (event: any) => {
     console.log("Masuk Save");
 
-    setDependentData((prevArray: any) => [...prevArray, newDependent]);
+    // setDependentData((prevArray: any) => [...prevArray, newDependent]);
     setNewDependent({
       name: "",
       relationship: "",
@@ -300,8 +306,8 @@ const Dependent = (props: Props) => {
             </tr>
           </thead>
           <tbody>
-            {dependentData?.length &&
-              dependentData.map((data, index) => (
+            {dependant?.length &&
+              dependant.map((data, index) => (
                 <tr key={"dependent-" + index}>
                   <td className="px-2 py-5">{++index}</td>
                   <td className="px-2 py-5">{data.name}</td>
