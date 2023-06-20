@@ -426,7 +426,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           const netAmountRequired = resultAmountNeededAtRetirementAge - FundRetirement.less;
           const resultNetAmountRequired = isNaN(netAmountRequired) ? 0 : parseFloat(netAmountRequired.toFixed(2));
           setDependant(resultNetAmountRequired, k, 'netAmountRequired', 'fundRetirementLifeStyle')
-        // End Fund Fund Retirement Dataa
+        // End Fund Fund Retirement Dataaa
         });
       }
 
