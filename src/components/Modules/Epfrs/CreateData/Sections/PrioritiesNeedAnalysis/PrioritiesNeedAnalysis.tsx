@@ -19,6 +19,8 @@ import EstatePlanning from "./EstatePlanning/EstatePlanning";
 import OtherInsurance from "./OtherInsurance/OtherInsurance";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import { SectionSeven } from "@/models/SectionSeven";
+import { Result } from "postcss";
+import { parse } from "path";
 interface Props {
   id?: any;
 }
@@ -222,6 +224,13 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
   }
   // End Rumus Fund Medium Data
+
+  // Rumus Fund Retirement 
+
+  // End Rumus Fund Retirement 
+
+
+
   useEffect(() => {    
     // Rumus Client Data
 
@@ -279,8 +288,46 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
         // End Fund Fund Medium Data
         
+        // Fund Fund Retirement Data
+          const  FundRetirement = v.fundRetirementLifeStyle;
+          
+          const yearsToRetirement = FundRetirement.expectedRetirementAge - FundRetirement.age < 0 ? 0 : FundRetirement.expectedRetirementAge - FundRetirement.age;
+          const resultYearsToRetirement = isNaN(yearsToRetirement) ? 0 : parseFloat(yearsToRetirement.toFixed(2));
+          setClient(resultYearsToRetirement, k, 'yearsToRetirement', 'fundRetirementLifeStyle')
 
+          const incomeAtRetirementAge = FundRetirement.annualIncome * Math.pow(1 + FundRetirement.rateOfIncomeIncrement / 100, resultYearsToRetirement);
+          const resultIncomeAtRetirementAge = isNaN(incomeAtRetirementAge) ? 0 : parseFloat(incomeAtRetirementAge.toFixed(2));
+          setClient(resultIncomeAtRetirementAge, k, 'incomeAtRetirementAge', 'fundRetirementLifeStyle')
+          
+          var incomeRequiredAtRetirement = (resultIncomeAtRetirementAge * FundRetirement.percentOfIncomeRequiredAtRetirement) / 100;
+          const resultIncomeRequiredAtRetirement = isNaN(incomeRequiredAtRetirement) ? 0 : parseFloat(incomeRequiredAtRetirement.toFixed(2));
+          setClient(resultIncomeRequiredAtRetirement, k, 'incomeRequiredAtRetirement', 'fundRetirementLifeStyle')
 
+          const expenseATRetirement = FundRetirement.retirementExpense * Math.pow(1 + FundRetirement.inflationRate / 100, resultYearsToRetirement);
+          const resultExpenseATRetirement = isNaN(expenseATRetirement) ? 0 : parseFloat(expenseATRetirement.toFixed(2));
+          setClient(resultExpenseATRetirement, k, 'expenseATRetirement', 'fundRetirementLifeStyle')
+          
+          if (FundRetirement.selectedMethod == 0) {
+            var aliasAmountNeededAtRetirementAge = getPV(
+              resultIncomeRequiredAtRetirement,
+              FundRetirement.netRateOfReture / 100,
+              FundRetirement.yearsToReceiveRetirementIncome
+            );
+          } else {
+            var aliasAmountNeededAtRetirementAge = getPV(
+              resultExpenseATRetirement,
+              FundRetirement.netRateOfReture / 100,
+              FundRetirement.yearsToReceiveRetirementIncome
+            );
+          }
+          
+          const resultAmountNeededAtRetirementAge = isNaN(parseFloat(aliasAmountNeededAtRetirementAge)) ? 0 : parseFloat(aliasAmountNeededAtRetirementAge);
+          setClient(resultAmountNeededAtRetirementAge, k, 'amountNeededAtRetirementAge', 'fundRetirementLifeStyle')
+
+          const netAmountRequired = resultAmountNeededAtRetirementAge - FundRetirement.less;
+          const resultNetAmountRequired = isNaN(netAmountRequired) ? 0 : parseFloat(netAmountRequired.toFixed(2));
+          setClient(resultNetAmountRequired, k, 'netAmountRequired', 'fundRetirementLifeStyle')
+        // End Fund Fund Retirement Data
         });
       }
 
@@ -291,54 +338,95 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           // IncomeProtect  
             const IncomeProtect = v.incomeProtectionUponDeath;
             const resCapitalSum = capitalSumRequired(IncomeProtect);  
-            setClient(resCapitalSum, k, 'capitalSumRequired', 'incomeProtectionUponDeath');
+            setDependant(resCapitalSum, k, 'capitalSumRequired', 'incomeProtectionUponDeath');
 
             const resTotalCashOutflow = totalCashOutflow(IncomeProtect);
-            setClient(resTotalCashOutflow, k, 'totalCashFlow', 'incomeProtectionUponDeath');
+            setDependant(resTotalCashOutflow, k, 'totalCashFlow', 'incomeProtectionUponDeath');
 
             const resTotal = totalAB(IncomeProtect);
-            setClient(resTotal, k, 'total', 'incomeProtectionUponDeath');
+            setDependant(resTotal, k, 'total', 'incomeProtectionUponDeath');
 
             const totalNetAmount = totalNetAmmount(IncomeProtect);
-            setClient(totalNetAmount, k, 'netAmountRequired', 'incomeProtectionUponDeath');
+            setDependant(totalNetAmount, k, 'netAmountRequired', 'incomeProtectionUponDeath');
           // End IncomeProtect
 
           // Rumus Fund Disabilities
               const FunDisability = v.fundDisabilityIncomeExpense;
               const FundDisabResCapitalSum = FundDisabCapitalSumRequired(FunDisability);
-              setClient(FundDisabResCapitalSum, k, 'capitalSumRequired', 'fundDisabilityIncomeExpense')
+              setDependant(FundDisabResCapitalSum, k, 'capitalSumRequired', 'fundDisabilityIncomeExpense')
 
               const FundDisabResTotalCashOutflow = FundDisabTotalCashOutflow(FunDisability);
-              setClient(FundDisabResTotalCashOutflow, k, 'totalCashOutflow', 'fundDisabilityIncomeExpense')
+              setDependant(FundDisabResTotalCashOutflow, k, 'totalCashOutflow', 'fundDisabilityIncomeExpense')
 
               const FundDisabResTotal = FundDisabTotalAB(FunDisability);
-              setClient(FundDisabResTotal, k, 'totalAB', 'fundDisabilityIncomeExpense')
+              setDependant(FundDisabResTotal, k, 'totalAB', 'fundDisabilityIncomeExpense')
 
               const FundDisabTotalNetAmount = FundDisabTotalNetAmmount(FunDisability);
-              setClient(FundDisabTotalNetAmount, k, 'totalNetAmmount', 'fundDisabilityIncomeExpense')
+              setDependant(FundDisabTotalNetAmount, k, 'totalNetAmmount', 'fundDisabilityIncomeExpense')
           // End Rumus Fund Disabilities
 
           // Rumus Fund Critical Illness
             const FunCriticalIllness = v.fundCriticalIllnessExpense;
             const FunCritResCapitalSum = FundCritCapitalSumRequired(FunCriticalIllness);
-            setClient(FunCritResCapitalSum, k, 'capitalSumRequired', 'fundCriticalIllnessExpense')
+            setDependant(FunCritResCapitalSum, k, 'capitalSumRequired', 'fundCriticalIllnessExpense')
 
             const FunCritResTotalCashOutflow = FundCritTotalCashOutflow(FunCriticalIllness);
-            setClient(FunCritResTotalCashOutflow, k, 'totalCashOutflow', 'fundCriticalIllnessExpense')
+            setDependant(FunCritResTotalCashOutflow, k, 'totalCashOutflow', 'fundCriticalIllnessExpense')
 
             const FunCritResTotal = FundCritTotalAB(FunCriticalIllness);
-            setClient(FunCritResTotal, k, 'total', 'fundCriticalIllnessExpense')
+            setDependant(FunCritResTotal, k, 'total', 'fundCriticalIllnessExpense')
 
             const FunCritTotalNetAmount = FundCritTotalNetAmmount(FunCriticalIllness);
-            setClient(FunCritTotalNetAmount, k, 'netAmountRequired', 'fundCriticalIllnessExpense')
+            setDependant(FunCritTotalNetAmount, k, 'netAmountRequired', 'fundCriticalIllnessExpense')
         // End Rumus Fund Critical Illness
         
         // Fund Fund Medium Data
             const FunMedium = v.fundMediumToLongTerm;
             const ResFundMediumNetAmountRequired = FundMediumNetAmountRequired(FunMedium);
-            setClient(ResFundMediumNetAmountRequired, k, 'netAmountRequired', 'fundMediumToLongTerm')
+            setDependant(ResFundMediumNetAmountRequired, k, 'netAmountRequired', 'fundMediumToLongTerm')
 
         // End Fund Fund Medium Data
+
+        // Fund Fund Retirement Data
+          const  FundRetirement = v.fundRetirementLifeStyle;
+            
+          const yearsToRetirement = FundRetirement.expectedRetirementAge - FundRetirement.age < 0 ? 0 : FundRetirement.expectedRetirementAge - FundRetirement.age;
+          const resultYearsToRetirement = isNaN(yearsToRetirement) ? 0 : parseFloat(yearsToRetirement.toFixed(2));
+          setDependant(resultYearsToRetirement, k, 'yearsToRetirement', 'fundRetirementLifeStyle')
+
+          const incomeAtRetirementAge = FundRetirement.annualIncome * Math.pow(1 + FundRetirement.rateOfIncomeIncrement / 100, resultYearsToRetirement);
+          const resultIncomeAtRetirementAge = isNaN(incomeAtRetirementAge) ? 0 : parseFloat(incomeAtRetirementAge.toFixed(2));
+          setDependant(resultIncomeAtRetirementAge, k, 'incomeAtRetirementAge', 'fundRetirementLifeStyle')
+          
+          var incomeRequiredAtRetirement = (resultIncomeAtRetirementAge * FundRetirement.percentOfIncomeRequiredAtRetirement) / 100;
+          const resultIncomeRequiredAtRetirement = isNaN(incomeRequiredAtRetirement) ? 0 : parseFloat(incomeRequiredAtRetirement.toFixed(2));
+          setDependant(resultIncomeRequiredAtRetirement, k, 'incomeRequiredAtRetirement', 'fundRetirementLifeStyle')
+
+          const expenseATRetirement = FundRetirement.retirementExpense * Math.pow(1 + FundRetirement.inflationRate / 100, resultYearsToRetirement);
+          const resultExpenseATRetirement = isNaN(expenseATRetirement) ? 0 : parseFloat(expenseATRetirement.toFixed(2));
+          setDependant(resultExpenseATRetirement, k, 'expenseATRetirement', 'fundRetirementLifeStyle')
+          
+          if (FundRetirement.selectedMethod == 0) {
+            var aliasAmountNeededAtRetirementAge = getPV(
+              resultIncomeRequiredAtRetirement,
+              FundRetirement.netRateOfReture / 100,
+              FundRetirement.yearsToReceiveRetirementIncome
+            );
+          } else {
+            var aliasAmountNeededAtRetirementAge = getPV(
+              resultExpenseATRetirement,
+              FundRetirement.netRateOfReture / 100,
+              FundRetirement.yearsToReceiveRetirementIncome
+            );
+          }
+          
+          const resultAmountNeededAtRetirementAge = isNaN(parseFloat(aliasAmountNeededAtRetirementAge)) ? 0 : parseFloat(aliasAmountNeededAtRetirementAge);
+          setDependant(resultAmountNeededAtRetirementAge, k, 'amountNeededAtRetirementAge', 'fundRetirementLifeStyle')
+
+          const netAmountRequired = resultAmountNeededAtRetirementAge - FundRetirement.less;
+          const resultNetAmountRequired = isNaN(netAmountRequired) ? 0 : parseFloat(netAmountRequired.toFixed(2));
+          setDependant(resultNetAmountRequired, k, 'netAmountRequired', 'fundRetirementLifeStyle')
+        // End Fund Fund Retirement Data
         });
       }
 
