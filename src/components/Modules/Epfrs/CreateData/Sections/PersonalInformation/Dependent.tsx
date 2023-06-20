@@ -20,7 +20,7 @@ interface Props {
 
 const Dependent = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
-  const [dependentData, setDependentData] = useState(props.datas);
+  // const [dependentData, setDependentData] = useState(props.datas);
 
   // handle new data dependent
   const [newDependent, setNewDependent] = useState<DependantInformation>({

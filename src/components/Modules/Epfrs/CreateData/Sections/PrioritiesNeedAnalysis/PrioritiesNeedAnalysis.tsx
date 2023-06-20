@@ -22,6 +22,7 @@ import { SectionSeven } from "@/models/SectionSeven";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const PrioritiesNeedAnalysis = (props: Props) => {

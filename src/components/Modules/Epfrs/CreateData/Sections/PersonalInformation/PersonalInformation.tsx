@@ -18,6 +18,7 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const PersonalInformation = (props: Props) => {
@@ -153,9 +154,6 @@ const PersonalInformation = (props: Props) => {
     status,
     setClient,
   } = usePersonalInformation();
-
-  console.log("apakah ada isinya: ");
-  console.log(clientInfo[0]);
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
