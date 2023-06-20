@@ -30,6 +30,8 @@ import { useRouter } from "next/router";
 
 const EpfrCreateSingle: Page = () => {
 
+  let pfrType = 1;
+
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -204,18 +206,18 @@ const EpfrCreateSingle: Page = () => {
                     scrollThrottle={80}
                     useBoxMethod
                   >
-                    <PersonalInformation id="section-1" />
-                    <ExistingPortofolio id="section-2" />
-                    <CashFlow id="section-3" />
-                    <BalanceSheet id="section-4" />
-                    <RiskProfile id="section-5" />
-                    <CustomerKnowledgeAssesment id="section-6" />
-                    <PrioritiesNeedAnalysis id="section-7" />
-                    <Affordability id="section-8" />
-                    <AnalysisRecommendation id="section-9" />
-                    <SwitchingReplacement id="section-10" />
-                    <ClientsAcknowledgment id="section-11" />
-                    <RepresentativeDeclaration id="section-12" />
+                    <PersonalInformation pfrType={pfrType} id="section-1" />
+                    <ExistingPortofolio pfrType={pfrType} id="section-2" />
+                    <CashFlow pfrType={pfrType} id="section-3" />
+                    <BalanceSheet pfrType={pfrType} id="section-4" />
+                    <RiskProfile pfrType={pfrType} id="section-5" />
+                    <CustomerKnowledgeAssesment pfrType={pfrType} id="section-6" />
+                    <PrioritiesNeedAnalysis pfrType={pfrType} id="section-7" />
+                    <Affordability pfrType={pfrType} id="section-8" />
+                    <AnalysisRecommendation pfrType={pfrType} id="section-9" />
+                    <SwitchingReplacement pfrType={pfrType} id="section-10" />
+                    <ClientsAcknowledgment pfrType={pfrType} id="section-11" />
+                    <RepresentativeDeclaration pfrType={pfrType} id="section-12" />
                   </ScrollSpy>
                 </div>
               )}

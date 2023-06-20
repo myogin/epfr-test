@@ -19,6 +19,7 @@ import { useScrollPosition } from "@/hooks/useScrollPosition";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const BalanceSheet = (props: Props) => {

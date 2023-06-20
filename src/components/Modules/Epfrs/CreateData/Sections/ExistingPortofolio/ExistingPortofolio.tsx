@@ -28,6 +28,7 @@ import { SectionTwo } from "@/models/SectionTwo";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const ExistingPortofolio = (props: Props) => {

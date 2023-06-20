@@ -18,6 +18,7 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const PersonalInformation = (props: Props) => {

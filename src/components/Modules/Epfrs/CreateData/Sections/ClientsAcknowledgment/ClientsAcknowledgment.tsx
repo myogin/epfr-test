@@ -13,6 +13,7 @@ import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const ClientsAcknowledgment = (props: Props) => {
