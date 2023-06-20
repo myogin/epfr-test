@@ -131,6 +131,22 @@ const initialState: SectionSeven = {
             }
         }
         ],
+        childFund: [{
+            nameOfChild: "",
+            yearsToTertiaryEducation: 0,
+            noOfYearsOfStudy: 0,
+            annaulTuitionFees: 0,
+            educationInflationRate: 0,
+            futureValueOfAnnualTuitionFee: 0,
+            totalTuitionFee: 0,
+            annualLivingCosts: 0,
+            inflationRate: 0,
+            futureValueOfAnnualLivingCosts: 0,
+            totalLivingCost: 0,
+            totalEducationFunding: 0,
+            futureValueOfExistingResourceForEducation: 0,
+            netAmountRequired: 0,
+        }],
         dependantData: [
         {
             clientId: 0,
@@ -510,6 +526,9 @@ initialState.section7.answer.need.dependant =  new Array(initialState.section7.t
 
 type Actions = {
   setClient: (value: number, name: string, indexClient: any, groupData: any) => any;
+  addChildFund: () => any;
+  removeChildFund: (index: number) => any;
+  setChildFund: (value: number, indexClient: any, name: string) => any;
   setDependant: (value: number, name: string, indexClient: any, groupData: any) => any;
   setNeed: (value: number, name: string, indexClient: any) => any;
   setNeedDependant: (value: number, name: string, indexClient: any) => any;
@@ -524,6 +543,39 @@ const prioritiesNeedAnalysis = create(
     set(
       produce((draft) => {
           draft.section7.answer.clientData[indexClient][groupData][name] = value;
+      })
+    ),
+    addChildFund: () =>
+    set(
+      produce((draft) => {
+          draft.section7.answer.childFund.push({
+            nameOfChild: "",
+            yearsToTertiaryEducation: 0,
+            noOfYearsOfStudy: 0,
+            annaulTuitionFees: 0,
+            educationInflationRate: 0,
+            futureValueOfAnnualTuitionFee: 0,
+            totalTuitionFee: 0,
+            annualLivingCosts: 0,
+            inflationRate: 0,
+            futureValueOfAnnualLivingCosts: 0,
+            totalLivingCost: 0,
+            totalEducationFunding: 0,
+            futureValueOfExistingResourceForEducation: 0,
+            netAmountRequired: 0,
+          });
+      })
+    ),
+    removeChildFund: (index: any) => 
+    set(
+        produce((draft) => {
+            draft.section7.answer.childFund.splice(index, 1);
+        })
+    ),
+    setChildFund: (value: number, indexClient: string, name: any) =>
+    set(
+      produce((draft) => {
+          draft.section7.answer.childFund[indexClient][name] = value;
       })
     ),
     setDependant: (value: number, indexClient: string, name: any, groupData: any) =>
@@ -555,7 +607,7 @@ const prioritiesNeedAnalysis = create(
       produce((draft) => {
           draft.section7.additionalNote[indexClient][name] = value;
       })
-    ),
+    )
   }))
 
 //   console.log("sectionSeven", SectionSeven/)

@@ -38,6 +38,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     setNeed,
     setAnswerDefaultCheck,
     setAdditional,
+    setChildFund
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
@@ -51,54 +52,44 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     setNeed(data, indexClient, i);
   };
 
-  const setFundCritical = (data: any, i: any) => {
-      // const updatedClient = newIncomeProtectionNeedClient.map((item: any, index: any) => {
-      //   if(item[i] === true){
-      //     item[i] = false;
-      //   }else{
-      //     item[i] = true;
-      //   }
-      //   return item;
-      // });
-      // console.log('updatedClient', updatedClient)
-      // setIncomeProtectionNeedClient(updatedClient);
-    
+  const setFundCritical = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setFundChildren = () => {
-    console.log('setFundChildren')
+  const setFundChildren = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setFundMediumToLong = () => {
-    console.log('setFundMediumToLong')
+  const setFundMediumToLong = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setFundRetirement = () => {
-    console.log('setFundRetirement')
+  const setFundRetirement = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setCoverForPersonal = () => {
-    console.log('setCoverForPersonal')
+  const setCoverForPersonal = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setFundLongTermCare = () => {
-    console.log('setFundLongTermCare')
+  const setFundLongTermCare = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setFundHospitalExpense = () => {
-    console.log('setFundHospitalExpense')
+  const setFundHospitalExpense = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setMaternityPlan = () => {
-    console.log('setMaternityPlan')
+  const setMaternityPlan = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setEstatePlanning = () => {
-    console.log('setEstatePlanning')
+  const setEstatePlanning = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
-  const setOtherInsurance = () => {
-    console.log('setOtherInsurance')
+  const setOtherInsurance = (data: any, indexClient: any, i: any) => {
+    setNeed(data, indexClient, i);
   };
 
   const scrollPosition = useScrollPosition(7);
@@ -164,44 +155,218 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
   // End Rumus Fund Disabilities
+  
+  // Rumus Fund Critical Illness
+    const FundCritCapitalSumRequired = (res: any) => {
+      var result = getPV(
+        res.annualAmountNeeded,
+        res.netRateOfReture / 100,
+        res.numberOfYearsNeed
+      );
 
+      return isNaN(parseFloat(result)) ? 0 : parseFloat(result);
+    }
 
+    const FundCritTotalCashOutflow = (res:any) => {
+      var result = parseFloat(res.medicalExpense) + parseFloat(res.mortgage) + parseFloat(res.loans);
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
 
+    const FundCritTotalAB = (res: any) => {
+      var result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashOutflow);
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const FundCritTotalNetAmmount = (res: any) => {
+      var result = res.total - res.existingResources - res.existingInsuranceCoverageOnCI;
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+  // End Rumus Fund Critical Illness
+
+  // Rumus Fund Children Education 
+    const FundChildFutureValueOfAnnualTuitionFee = (res:any) => {
+      var result = res.annaulTuitionFees * Math.pow(1 + res.educationInflationRate / 100, res.yearsToTertiaryEducation);
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const FundChildTotalTuitionFee = (res:any) => {
+      var result = res.futureValueOfAnnualTuitionFee * res.noOfYearsOfStudy;
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const FundChildFutureValueOfAnnualLivingCosts = (res:any) => {
+      var result = res.annualLivingCosts * Math.pow(1 + res.inflationRate / 100, res.yearsToTertiaryEducation);
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const FundChildTotalLivinCost = (res:any) => {
+      var result = res.futureValueOfAnnualLivingCosts * res.noOfYearsOfStudy;
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const FundChildTotalEducationFunding = (res:any) => {
+      var result = res.totalTuitionFee + res.totalLivingCost;
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+
+    const FundChildNetAmountRequired = (res:any) => {
+      var result = res.totalEducationFunding - res.futureValueOfExistingResourceForEducation;
+      return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+    }
+  // End Rumus Fund Children Education
+
+  // Rumus Fund Fund Medium Data
+  const FundMediumNetAmountRequired = (res:any) => {
+    const result = res.objective - res.less;
+    return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
+  }
+  // End Rumus Fund Medium Data
   useEffect(() => {    
-    section7.answer.clientData.map(function(v: any, k: any){
-      // IncomeProtect  
-        const IncomeProtect = v.incomeProtectionUponDeath;
-        const resCapitalSum = capitalSumRequired(IncomeProtect);  
-        setClient(resCapitalSum, k, 'capitalSumRequired', 'incomeProtectionUponDeath');
+    // Rumus Client Data
 
-        const resTotalCashOutflow = totalCashOutflow(IncomeProtect);
-        setClient(resTotalCashOutflow, k, 'totalCashFlow', 'incomeProtectionUponDeath');
+      if(section7.answer.clientData.length > 0){
+        section7.answer.clientData.map(function(v: any, k: any){
+          // IncomeProtect  
+            const IncomeProtect = v.incomeProtectionUponDeath;
+            const resCapitalSum = capitalSumRequired(IncomeProtect);  
+            setClient(resCapitalSum, k, 'capitalSumRequired', 'incomeProtectionUponDeath');
 
-        const resTotal = totalAB(IncomeProtect);
-        setClient(resTotal, k, 'total', 'incomeProtectionUponDeath');
+            const resTotalCashOutflow = totalCashOutflow(IncomeProtect);
+            setClient(resTotalCashOutflow, k, 'totalCashFlow', 'incomeProtectionUponDeath');
 
-        const totalNetAmount = totalNetAmmount(IncomeProtect);
-        setClient(totalNetAmount, k, 'netAmountRequired', 'incomeProtectionUponDeath');
-      // End IncomeProtect
+            const resTotal = totalAB(IncomeProtect);
+            setClient(resTotal, k, 'total', 'incomeProtectionUponDeath');
 
-      // Rumus Fund Disabilities
-          const FunDisability = v.fundDisabilityIncomeExpense;
-          const FundDisabResCapitalSum = FundDisabCapitalSumRequired(FunDisability);
-          setClient(FundDisabResCapitalSum, k, 'capitalSumRequired', 'fundDisabilityIncomeExpense')
+            const totalNetAmount = totalNetAmmount(IncomeProtect);
+            setClient(totalNetAmount, k, 'netAmountRequired', 'incomeProtectionUponDeath');
+          // End IncomeProtect
 
-          const FundDisabResTotalCashOutflow = FundDisabTotalCashOutflow(FunDisability);
-          setClient(FundDisabResTotalCashOutflow, k, 'totalCashOutflow', 'fundDisabilityIncomeExpense')
+          // Rumus Fund Disabilities
+              const FunDisability = v.fundDisabilityIncomeExpense;
+              const FundDisabResCapitalSum = FundDisabCapitalSumRequired(FunDisability);
+              setClient(FundDisabResCapitalSum, k, 'capitalSumRequired', 'fundDisabilityIncomeExpense')
 
-          const FundDisabResTotal = FundDisabTotalAB(FunDisability);
-          setClient(FundDisabResTotal, k, 'totalAB', 'fundDisabilityIncomeExpense')
+              const FundDisabResTotalCashOutflow = FundDisabTotalCashOutflow(FunDisability);
+              setClient(FundDisabResTotalCashOutflow, k, 'totalCashOutflow', 'fundDisabilityIncomeExpense')
 
-          const FundDisabTotalNetAmount = FundDisabTotalNetAmmount(FunDisability);
-          setClient(FundDisabTotalNetAmount, k, 'totalNetAmmount', 'fundDisabilityIncomeExpense')
-      // End Rumus Fund Disabilities
-      
+              const FundDisabResTotal = FundDisabTotalAB(FunDisability);
+              setClient(FundDisabResTotal, k, 'totalAB', 'fundDisabilityIncomeExpense')
 
-    });
-    console.log('section7', section7)
+              const FundDisabTotalNetAmount = FundDisabTotalNetAmmount(FunDisability);
+              setClient(FundDisabTotalNetAmount, k, 'totalNetAmmount', 'fundDisabilityIncomeExpense')
+          // End Rumus Fund Disabilities
+
+          // Rumus Fund Critical Illness
+            const FunCriticalIllness = v.fundCriticalIllnessExpense;
+            const FunCritResCapitalSum = FundCritCapitalSumRequired(FunCriticalIllness);
+            setClient(FunCritResCapitalSum, k, 'capitalSumRequired', 'fundCriticalIllnessExpense')
+
+            const FunCritResTotalCashOutflow = FundCritTotalCashOutflow(FunCriticalIllness);
+            setClient(FunCritResTotalCashOutflow, k, 'totalCashOutflow', 'fundCriticalIllnessExpense')
+
+            const FunCritResTotal = FundCritTotalAB(FunCriticalIllness);
+            setClient(FunCritResTotal, k, 'total', 'fundCriticalIllnessExpense')
+
+            const FunCritTotalNetAmount = FundCritTotalNetAmmount(FunCriticalIllness);
+            setClient(FunCritTotalNetAmount, k, 'netAmountRequired', 'fundCriticalIllnessExpense')
+        // End Rumus Fund Critical Illness
+        
+        // Fund Fund Medium Data
+            const FunMedium = v.fundMediumToLongTerm;
+            const ResFundMediumNetAmountRequired = FundMediumNetAmountRequired(FunMedium);
+            setClient(ResFundMediumNetAmountRequired, k, 'netAmountRequired', 'fundMediumToLongTerm')
+
+        // End Fund Fund Medium Data
+        
+
+
+        });
+      }
+
+    // Rumus Dependant Data
+
+      if(section7.answer.dependantData.length > 0){
+        section7.answer.dependantData.map(function(v: any, k: any){
+          // IncomeProtect  
+            const IncomeProtect = v.incomeProtectionUponDeath;
+            const resCapitalSum = capitalSumRequired(IncomeProtect);  
+            setClient(resCapitalSum, k, 'capitalSumRequired', 'incomeProtectionUponDeath');
+
+            const resTotalCashOutflow = totalCashOutflow(IncomeProtect);
+            setClient(resTotalCashOutflow, k, 'totalCashFlow', 'incomeProtectionUponDeath');
+
+            const resTotal = totalAB(IncomeProtect);
+            setClient(resTotal, k, 'total', 'incomeProtectionUponDeath');
+
+            const totalNetAmount = totalNetAmmount(IncomeProtect);
+            setClient(totalNetAmount, k, 'netAmountRequired', 'incomeProtectionUponDeath');
+          // End IncomeProtect
+
+          // Rumus Fund Disabilities
+              const FunDisability = v.fundDisabilityIncomeExpense;
+              const FundDisabResCapitalSum = FundDisabCapitalSumRequired(FunDisability);
+              setClient(FundDisabResCapitalSum, k, 'capitalSumRequired', 'fundDisabilityIncomeExpense')
+
+              const FundDisabResTotalCashOutflow = FundDisabTotalCashOutflow(FunDisability);
+              setClient(FundDisabResTotalCashOutflow, k, 'totalCashOutflow', 'fundDisabilityIncomeExpense')
+
+              const FundDisabResTotal = FundDisabTotalAB(FunDisability);
+              setClient(FundDisabResTotal, k, 'totalAB', 'fundDisabilityIncomeExpense')
+
+              const FundDisabTotalNetAmount = FundDisabTotalNetAmmount(FunDisability);
+              setClient(FundDisabTotalNetAmount, k, 'totalNetAmmount', 'fundDisabilityIncomeExpense')
+          // End Rumus Fund Disabilities
+
+          // Rumus Fund Critical Illness
+            const FunCriticalIllness = v.fundCriticalIllnessExpense;
+            const FunCritResCapitalSum = FundCritCapitalSumRequired(FunCriticalIllness);
+            setClient(FunCritResCapitalSum, k, 'capitalSumRequired', 'fundCriticalIllnessExpense')
+
+            const FunCritResTotalCashOutflow = FundCritTotalCashOutflow(FunCriticalIllness);
+            setClient(FunCritResTotalCashOutflow, k, 'totalCashOutflow', 'fundCriticalIllnessExpense')
+
+            const FunCritResTotal = FundCritTotalAB(FunCriticalIllness);
+            setClient(FunCritResTotal, k, 'total', 'fundCriticalIllnessExpense')
+
+            const FunCritTotalNetAmount = FundCritTotalNetAmmount(FunCriticalIllness);
+            setClient(FunCritTotalNetAmount, k, 'netAmountRequired', 'fundCriticalIllnessExpense')
+        // End Rumus Fund Critical Illness
+        
+        // Fund Fund Medium Data
+            const FunMedium = v.fundMediumToLongTerm;
+            const ResFundMediumNetAmountRequired = FundMediumNetAmountRequired(FunMedium);
+            setClient(ResFundMediumNetAmountRequired, k, 'netAmountRequired', 'fundMediumToLongTerm')
+
+        // End Fund Fund Medium Data
+        });
+      }
+
+    // Rumus Child Fund Data
+      if(section7.answer.childFund.length > 0){
+        section7.answer.childFund.map(function(v: any, k:any){
+          const resFutureValueOfAnnualTuitionFee = FundChildFutureValueOfAnnualTuitionFee(v);
+          setChildFund(resFutureValueOfAnnualTuitionFee, k, 'futureValueOfAnnualTuitionFee');
+          
+          const resTotalTuitionFee = FundChildTotalTuitionFee(v);
+          setChildFund(resTotalTuitionFee, k, 'totalTuitionFee');
+          
+          const resFutureValueOfAnnualLivingCosts = FundChildFutureValueOfAnnualLivingCosts(v);
+          setChildFund(resFutureValueOfAnnualLivingCosts, k, 'futureValueOfAnnualLivingCosts');
+          
+          const resTotalLivinCost = FundChildTotalLivinCost(v);
+          setChildFund(resTotalLivinCost, k, 'totalLivingCost');
+          
+          const resTotalEducationFunding = FundChildTotalEducationFunding(v);
+          setChildFund(resTotalEducationFunding, k, 'totalEducationFunding');
+          
+          const resNetAmountRequired = FundChildNetAmountRequired(v);
+          setChildFund(resNetAmountRequired, k, 'netAmountRequired');
+        });
+
+      }  
+
+      console.log('section7', section7)
   }, [section7]);
 
   return (
@@ -247,7 +412,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][1] ? <FundDisability  datas={section7}/> : []}
+        {section7.answer.need.client[0][1] ? <FundDisability  section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -256,11 +421,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][2]}
             toggleName={section7.answer.need.client[0][2] ? "Review" : "Not Review"}
-            onChange={() => setFundCritical(!section7.answer.need.client[0][2], 2)}
+            onChange={() => setFundCritical(!section7.answer.need.client[0][2], 0, 2)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][2] ? <FundCritical datas={section7}/> : []}
+        {section7.answer.need.client[0][2] ? <FundCritical section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -269,11 +434,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][3]}
             toggleName={section7.answer.need.client[0][3] ? "Review" : "Not Review"}
-            onChange={setFundChildren}
+            onChange={(event) => setFundChildren(!section7.answer.need.client[0][3], 0, 3)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][3] ? <FundChildrens /> : ""}
+        {section7.answer.need.client[0][3] ? <FundChildrens section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -283,11 +448,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][4]}
             toggleName={section7.answer.need.client[0][4] ? "Review" : "Not Review"}
-            onChange={setFundMediumToLong}
+            onChange={(event) => setFundMediumToLong(!section7.answer.need.client[0][4], 0, 4)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][4] ? <FundMediumToLong /> : ""}
+        {section7.answer.need.client[0][4] ? <FundMediumToLong section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -296,11 +461,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][5]}
             toggleName={section7.answer.need.client[0][5] ? "Review" : "Not Review"}
-            onChange={setFundRetirement}
+            onChange={(event) => setFundRetirement(!section7.answer.need.client[0][5], 0, 5)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][5] ? <FundRetirement /> : ""}
+        {section7.answer.need.client[0][5] ? <FundRetirement section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -309,11 +474,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][6]}
             toggleName={section7.answer.need.client[0][6] ? "Review" : "Not Review"}
-            onChange={setCoverForPersonal}
+            onChange={(event) => setCoverForPersonal(!answer.need.client[0][6], 0, 6)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][6] ? <CoverForPersonal /> : ""}
+        {section7.answer.need.client[0][6] ? <CoverForPersonal section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -322,11 +487,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][7]}
             toggleName={section7.answer.need.client[0][7] ? "Review" : "Not Review"}
-            onChange={setFundLongTermCare}
+            onChange={(event) => setFundLongTermCare(!answer.need.client[0][7], 0, 7)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][7] ? <FundLongTermCare /> : ""}
+        {section7.answer.need.client[0][7] ? <FundLongTermCare section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -335,44 +500,44 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][8]}
             toggleName={section7.answer.need.client[0][8] ? "Review" : "Not Review"}
-            onChange={setFundHospitalExpense}
+            onChange={(event) => setFundHospitalExpense([0][8], 0, 8)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][8] ? <FundHospitalExpenses /> : ""}
+        {section7.answer.need.client[0][8] ? <FundHospitalExpenses section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.10 Maternity Plan</h2>
           <Toggle
             isChecked={section7.answer.need.client[0][9]}
             toggleName={section7.answer.need.client[0][9] ? "Review" : "Not Review"}
-            onChange={setMaternityPlan}
+            onChange={(event) => setMaternityPlan(!section7.answer.need.client[0][9], 0, 9)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][9] ? <MaternityPlan /> : ""}
+        {section7.answer.need.client[0][9] ? <MaternityPlan section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.11 Estate Planning</h2>
           <Toggle
             isChecked={section7.answer.need.client[0][10]}
             toggleName={section7.answer.need.client[0][10] ? "Review" : "Not Review"}
-            onChange={setEstatePlanning}
+            onChange={(event) => setEstatePlanning(!section7.answer.need.client[0][10], 0, 10)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][10] ? <EstatePlanning /> : ""}
+        {section7.answer.need.client[0][10] ? <EstatePlanning section7={section7}/> : []}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.12 Other Insurance(s)</h2>
           <Toggle
             isChecked={section7.answer.need.client[0][11]}
             toggleName={section7.answer.need.client[0][11] ? "Review" : "Not Review"}
-            onChange={setOtherInsurance}
+            onChange={(event) => setOtherInsurance(!section7.answer.need.client[0][11], 0, 11)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][11] ? <OtherInsurance /> : ""}
+        {section7.answer.need.client[0][11] ? <OtherInsurance section7={section7}/> : []}
       </>
 
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>

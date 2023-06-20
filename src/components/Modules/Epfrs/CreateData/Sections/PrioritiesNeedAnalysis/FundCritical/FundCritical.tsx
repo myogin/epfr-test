@@ -8,132 +8,89 @@ import Input from '@/components/Forms/Input'
 import React, {useState} from 'react'
 import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
+import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 
 interface Props {
   datas?: Array<any>;
 }
 
 const FundCritical = (props : Props) => {
-  const [sectionSeven, setSectionSeven] = useState<any>(props.datas);
-  const [needClient, setNeedClient] = useState(sectionSeven.answer.need.client); //
-  const [needDependant, setNeedDependant] = useState(sectionSeven.answer.need.dependant);
-  const [clientData, setClienData] = useState(sectionSeven.answer.clientData)
-  const [dependantData, setDependantData] = useState(sectionSeven.answer.dependantData)
+  let {
+    section7,
+    setClient,
+    setDependant,
+    setNeed,
+    setNeedDependant,
+    setAnswerDefaultCheck,
+    setAdditional,
+  } = usePrioritiesNeedAnalysis();
 
-  // console.log('7.3', sectionSeven)
 
   // Total Data Client & Deoendants
-    let total = sectionSeven.typeClient + sectionSeven.totalDependant;
+    let total = section7.typeClient + section7.totalDependant;
     var totalClient = [];
     var totalDependant = [];
-    for (var i = 0; i < sectionSeven.typeClient; i++) {
+    for (var i = 0; i < section7.typeClient; i++) {
       totalClient.push(i);
     }
 
-    for (var i = 0; i < sectionSeven.totalDependant; i++) {
+    for (var i = 0; i < section7.totalDependant; i++) {
       totalDependant.push(i);
     }
   
   // Handle Checkbox Client & Dependant
-  const handleClient = (i: any) => {
-    const updatedClient = needClient.map((item: any, index: any) => {
-      if(item[i] === true){
-        item[i] = false;
-      }else{
-        item[i] = true;
-      }
-      return item;
-    });
-    setNeedClient(updatedClient);
+  const handleClient = (value:any, i: any, dataI:any) => {
+    setNeed(value, i, dataI);
   }
 
-  const handleDependant = (i: any) => {
-    const updatedDependant = needDependant.map((item: any, index: any) => {
-      if(item[i] === true){
-        item[i] = false;
-      }else{
-        item[i] = true;
-      }
-      return item;
-    });
-    setNeedDependant(updatedDependant);
-    
-    
+  const handleDependant = (value:any, i: any, dataI:any) => {
+    setNeedDependant(value, i, dataI);
   }
 
   // Set Client Data
   const setDataClient = (event: any, i: any) => {
-    const groupdata = i;
+    const { groupdata } = event.target.dataset;
     const { name, value } = event.target;
-    const dataIncome = [...clientData];
-
-    dataIncome[groupdata].clientId = groupdata+1;
-    dataIncome[groupdata].fundCriticalIllnessExpense[name] = value;
-
-    const resCapitalSum = capitalSumRequired(dataIncome[groupdata].fundCriticalIllnessExpense);
-    dataIncome[groupdata].fundCriticalIllnessExpense['capitalSumRequired'] = resCapitalSum;
-
-    const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].fundCriticalIllnessExpense);
-    dataIncome[groupdata].fundCriticalIllnessExpense['totalCashOutflow'] = resTotalCashOutflow;
-
-    const resTotal = totalAB(dataIncome[groupdata].fundCriticalIllnessExpense);
-    dataIncome[groupdata].fundCriticalIllnessExpense['total'] = resTotal;
-
-    const totalNetAmount = totalNetAmmount(dataIncome[groupdata].fundCriticalIllnessExpense);
-    dataIncome[groupdata].fundCriticalIllnessExpense['netAmountRequired'] = totalNetAmount;
-
-    setClienData(dataIncome);
+    setClient(value, i, name, groupdata);
   }
 
   // Set Dependant Data
   const setDataDependant = (event: any, i: any) => {
-    const groupdata = i;
+    const { groupdata } = event.target.dataset;
     const { name, value } = event.target;
-    const dataIncome = [...dependantData];
-    dataIncome[groupdata].dependantId = groupdata+1;
-    dataIncome[groupdata].fundCriticalIllnessExpense[name] = value;
+    setDependant(value, i, name, groupdata);
+
+    // const groupdata = i;
+    // const { name, value } = event.target;
+    // const dataIncome = [...dependantData];
+    // dataIncome[groupdata].dependantId = groupdata+1;
+    // dataIncome[groupdata].fundCriticalIllnessExpense[name] = value;
     
-    const resCapitalSum = capitalSumRequired(dataIncome[groupdata].fundCriticalIllnessExpense);
-    dataIncome[groupdata].fundCriticalIllnessExpense['capitalSumRequired'] = resCapitalSum;
+    // const resCapitalSum = capitalSumRequired(dataIncome[groupdata].fundCriticalIllnessExpense);
+    // dataIncome[groupdata].fundCriticalIllnessExpense['capitalSumRequired'] = resCapitalSum;
 
-    const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].fundCriticalIllnessExpense);
-    dataIncome[groupdata].fundCriticalIllnessExpense['totalCashOutflow'] = resTotalCashOutflow;
+    // const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].fundCriticalIllnessExpense);
+    // dataIncome[groupdata].fundCriticalIllnessExpense['totalCashOutflow'] = resTotalCashOutflow;
 
-    const resTotal = totalAB(dataIncome[groupdata].fundCriticalIllnessExpense);
-    dataIncome[groupdata].fundCriticalIllnessExpense['total'] = resTotal;
+    // const resTotal = totalAB(dataIncome[groupdata].fundCriticalIllnessExpense);
+    // dataIncome[groupdata].fundCriticalIllnessExpense['total'] = resTotal;
 
-    const totalNetAmount = totalNetAmmount(dataIncome[groupdata].fundCriticalIllnessExpense);
-    dataIncome[groupdata].fundCriticalIllnessExpense['netAmountRequired'] = totalNetAmount;
+    // const totalNetAmount = totalNetAmmount(dataIncome[groupdata].fundCriticalIllnessExpense);
+    // dataIncome[groupdata].fundCriticalIllnessExpense['netAmountRequired'] = totalNetAmount;
 
-    setDependantData(dataIncome);
+    // setDependantData(dataIncome);
   }
 
   // Default Check
   const handleDefaultCheck = (e: any) => {
     const { name, checked, value } = e.target;
-    setSectionSeven((prevState: any) => {
-      const newDefault = {...prevState}
-      newDefault.answer.defaultCheck[name] = checked
-      return newDefault
-    });
+    setAnswerDefaultCheck(checked, '', name)
   }
   
   // Additional Note
   const handleAdditional = (e: any) => {
     const {name, value} = e.target;
-
-    setSectionSeven((prevState: any) => {
-      const resData = [...prevState.additionalNote];
-      const additionalNote = resData.map((valueData, index) => {
-        var res = valueData
-        if(index === 1) {
-          res = { ...valueData, [name]: value };
-        }
-
-        return res;
-      });
-      return { ...prevState, additionalNote };
-    });
+    setAdditional(value, 2, name)
     
   }
 
@@ -171,11 +128,6 @@ const FundCritical = (props : Props) => {
     return isNaN(result) ? 0 : result.toFixed(2);
   }
 
-  const setData = (params: any) => {
-    console.log('params', params);
-  };
-
-  console.log('7.3', sectionSeven)
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -195,7 +147,7 @@ const FundCritical = (props : Props) => {
                     <div className="text-right text-green-deep">Client {i+1} </div>
                     <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input type="checkbox" checked={needClient[i][1]} onChange={(event) => handleClient(i) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input type="checkbox" checked={section7.answer.need.client[i][2]} onChange={(event) => handleClient(!section7.answer.need.client[i][2], i, 2) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -214,7 +166,7 @@ const FundCritical = (props : Props) => {
                       <div className="text-right text-green-deep">Dependant {i+1} </div>
                       <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-dependant-${i}`}>
                         <div className='items-start justify-start gap-4'>
-                          <input type="checkbox" checked={needDependant[i][1]} onChange={(event) => handleDependant(i) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                          <input type="checkbox" checked={section7.answer.need.dependant[i][2]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][2], i, 2) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                           <span className={``}> Review</span>
                         </div>
                       </div>
@@ -238,7 +190,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="annualAmountNeeded"
-                    value={clientData[i].fundCriticalIllnessExpense.annualAmountNeeded}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.clientData[i].fundCriticalIllnessExpense.annualAmountNeeded}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -253,7 +206,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="annualAmountNeeded"
-                    value={dependantData[i].fundCriticalIllnessExpense.annualAmountNeeded}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.dependantData[i].fundCriticalIllnessExpense.annualAmountNeeded}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -274,7 +228,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="numberOfYearsNeed"
-                    value={clientData[i].fundCriticalIllnessExpense.numberOfYearsNeed}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.clientData[i].fundCriticalIllnessExpense.numberOfYearsNeed}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -289,7 +244,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="numberOfYearsNeed"
-                    value={dependantData[i].fundCriticalIllnessExpense.numberOfYearsNeed}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.dependantData[i].fundCriticalIllnessExpense.numberOfYearsNeed}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -310,7 +266,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="netRateOfReture"
-                    value={clientData[i].fundCriticalIllnessExpense.netRateOfReture}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.clientData[i].fundCriticalIllnessExpense.netRateOfReture}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -325,7 +282,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="netRateOfReture"
-                    value={dependantData[i].fundCriticalIllnessExpense.netRateOfReture}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.dependantData[i].fundCriticalIllnessExpense.netRateOfReture}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -338,24 +296,25 @@ const FundCritical = (props : Props) => {
             A CAPITAL SUM REQUIRED
             </TextSmall>
             </td>
-            <td className='align-top'>
-              {
-                (totalClient.length > 0) ? 
+            {totalClient.map(function (i) {
+              return (
+                <td className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
-                    ${clientData[i].fundCriticalIllnessExpense.capitalSumRequired}
+                    ${section7.answer.clientData[i].fundCriticalIllnessExpense.capitalSumRequired}
                   </TextSmall>
-                :
-                null
-              }
-            </td>
-            <td className='align-top'>
-              {
-                (totalDependant.length > 0) ? 
-                <TextSmall className="text-right uppercase text-green-deep">
-                  ${dependantData[i].fundCriticalIllnessExpense.capitalSumRequired}
-                </TextSmall> : null
-              }
-            </td>
+                </td>
+                );
+            })}
+            {totalDependant.map(function (i) {
+              return (
+                <td className='align-top'>
+                  <TextSmall className="text-right uppercase text-green-deep">
+                    ${section7.answer.dependantData[i].fundCriticalIllnessExpense.capitalSumRequired}
+                  </TextSmall>
+                </td>
+                );
+            })}
+            
           </tr>
           <tr>
             <td className='align-top'>
@@ -371,7 +330,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="medicalExpense"
-                    value={clientData[i].fundCriticalIllnessExpense.medicalExpense}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.clientData[i].fundCriticalIllnessExpense.medicalExpense}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -386,7 +346,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="medicalExpense"
-                    value={dependantData[i].fundCriticalIllnessExpense.medicalExpense}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.dependantData[i].fundCriticalIllnessExpense.medicalExpense}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -402,7 +363,7 @@ const FundCritical = (props : Props) => {
                   </TextSmall>
                 </div>
                 <div className="col-span-1 mt-2">
-                <input type="checkbox" onChange={handleDefaultCheck} name="fund_disability_income_expense_mortgage" checked={sectionSeven.answer.defaultCheck.fund_disability_income_expense_mortgage}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                <input type="checkbox" onChange={handleDefaultCheck} name="fund_critical_illness_expense_mortgage" checked={section7.answer.defaultCheck.fund_critical_illness_expense_mortgage}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                 </div>
               </div>
             </td>
@@ -414,7 +375,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="mortgage"
-                    value={clientData[i].fundCriticalIllnessExpense.mortgage}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.clientData[i].fundCriticalIllnessExpense.mortgage}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -429,7 +391,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="mortgage"
-                    value={dependantData[i].fundCriticalIllnessExpense.mortgage}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.dependantData[i].fundCriticalIllnessExpense.mortgage}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -450,7 +413,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="loans"
-                    value={clientData[i].fundCriticalIllnessExpense.loans}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.clientData[i].fundCriticalIllnessExpense.loans}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -465,7 +429,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="loans"
-                    value={dependantData[i].fundCriticalIllnessExpense.loans}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.dependantData[i].fundCriticalIllnessExpense.loans}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -478,24 +443,24 @@ const FundCritical = (props : Props) => {
               B. TOTAL CASH OUTFLOW ($)
               </TextSmall>
               </td>
-              <td className='align-top'>
-                {
-                  (totalClient.length > 0) ? 
+              {totalClient.map(function (i) {
+                return (
+                  <td className='align-top'>
                     <TextSmall className="text-right uppercase text-green-deep">
-                      ${clientData[i].fundCriticalIllnessExpense.totalCashOutflow}
+                      ${section7.answer.clientData[i].fundCriticalIllnessExpense.totalCashOutflow}
                     </TextSmall>
-                  :
-                  null
-                }
-              </td>
-              <td className='align-top'>
-                {
-                  (totalDependant.length > 0) ? 
-                  <TextSmall className="text-right uppercase text-green-deep">
-                    ${dependantData[i].fundCriticalIllnessExpense.totalCashOutflow}
-                  </TextSmall> : null
-                }
-              </td>
+                  </td>
+                  );
+              })}
+              {totalDependant.map(function (i) {
+                return (
+                  <td className='align-top'>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.dependantData[i].fundCriticalIllnessExpense.totalCashOutflow}
+                    </TextSmall>
+                  </td>
+                  );
+              })}
           </tr>
           <tr>
               <td className='align-top'>
@@ -503,24 +468,24 @@ const FundCritical = (props : Props) => {
               TOTAL (A + B) ($)
               </TextSmall>
               </td>
-              <td className='align-top'>
-                {
-                  (totalClient.length > 0) ? 
+              {totalClient.map(function (i) {
+                return (
+                  <td className='align-top'>
                     <TextSmall className="text-right uppercase text-green-deep">
-                      ${clientData[i].fundCriticalIllnessExpense.total}
+                      ${section7.answer.clientData[i].fundCriticalIllnessExpense.total}
                     </TextSmall>
-                  :
-                  null
-                }
-              </td>
-              <td className='align-top'>
-                {
-                  (totalDependant.length > 0) ? 
-                  <TextSmall className="text-right uppercase text-green-deep">
-                    ${dependantData[i].fundCriticalIllnessExpense.total}
-                  </TextSmall> : null
-                }
-              </td>
+                  </td>
+                  );
+              })}
+              {totalDependant.map(function (i) {
+                return (
+                  <td className='align-top'>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.dependantData[i].fundCriticalIllnessExpense.total}
+                    </TextSmall>
+                  </td>
+                  );
+              })}
           </tr>
           <tr>
             <td className='align-top'>
@@ -531,7 +496,7 @@ const FundCritical = (props : Props) => {
                 </TextSmall>
                 </div>
                 <div className="col-span-1 mt-2">
-                <input type="checkbox" onChange={handleDefaultCheck} name="fund_disability_income_expense_disability" checked={sectionSeven.answer.defaultCheck.fund_disability_income_expense_disability}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                <input type="checkbox" onChange={handleDefaultCheck} name="fund_critical_illness_expense_ci" checked={section7.answer.defaultCheck.fund_critical_illness_expense_ci}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                 </div>
               </div>
             </td>
@@ -543,7 +508,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="existingInsuranceCoverageOnCI"
-                    value={clientData[i].fundCriticalIllnessExpense.existingInsuranceCoverageOnCI}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.clientData[i].fundCriticalIllnessExpense.existingInsuranceCoverageOnCI}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -558,7 +524,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="existingInsuranceCoverageOnCI"
-                    value={dependantData[i].fundCriticalIllnessExpense.existingInsuranceCoverageOnCI}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.dependantData[i].fundCriticalIllnessExpense.existingInsuranceCoverageOnCI}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -579,7 +546,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="existingResources"
-                    value={clientData[i].fundCriticalIllnessExpense.existingResources}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.clientData[i].fundCriticalIllnessExpense.existingResources}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
@@ -594,7 +562,8 @@ const FundCritical = (props : Props) => {
                     type="text"
                     placeholder="1,000,000"
                     name="existingResources"
-                    value={dependantData[i].fundCriticalIllnessExpense.existingResources}
+                    dataType="fundCriticalIllnessExpense"
+                    value={section7.answer.dependantData[i].fundCriticalIllnessExpense.existingResources}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -607,24 +576,24 @@ const FundCritical = (props : Props) => {
               Net amount required ($)
               </TextSmall>
             </td>
-            <td className='align-top'>
-              {
-                (totalClient.length > 0) ? 
-                  <TextSmall className="text-right uppercase text-green-deep">
-                    ${clientData[i].fundCriticalIllnessExpense.netAmountRequired}
-                  </TextSmall>
-                :
-                null
-              }
-            </td>
-            <td className='align-top'>
-              {
-                (totalDependant.length > 0) ? 
-                <TextSmall className="text-right uppercase text-green-deep">
-                  ${clientData[i].fundCriticalIllnessExpense.netAmountRequired}
-                </TextSmall> : null
-              }
-            </td>
+            {totalClient.map(function (i) {
+                return (
+                  <td className='align-top'>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.clientData[i].fundCriticalIllnessExpense.netAmountRequired}
+                    </TextSmall>
+                  </td>
+                  );
+              })}
+              {totalDependant.map(function (i) {
+                return (
+                  <td className='align-top'>
+                    <TextSmall className="text-right uppercase text-green-deep">
+                      ${section7.answer.dependantData[i].fundCriticalIllnessExpense.netAmountRequired}
+                    </TextSmall>
+                  </td>
+                  );
+              })}
           </tr>
           <tr>
             <td colSpan={total}>
@@ -638,7 +607,7 @@ const FundCritical = (props : Props) => {
                 type="text"
                 placeholder="Additional Notes"
                 name="note"
-                value={sectionSeven.additionalNote[1].note}
+                value={section7.additionalNote[2].note}
                 handleChange={handleAdditional}
               />
             </td>

@@ -51,23 +51,6 @@ const FundDisability = (props : Props) => {
     const { name, value } = event.target;
     setClient(value, i, name, groupdata);
 
-    // dataIncome[groupdata].clientId = groupdata+1;
-    // dataIncome[groupdata].fundDisabilityIncomeExpense[name] = value;
-
-    // const resCapitalSum = capitalSumRequired(dataIncome[groupdata].fundDisabilityIncomeExpense);
-    // dataIncome[groupdata].fundDisabilityIncomeExpense['capitalSumRequired'] = resCapitalSum;
-
-    // const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].fundDisabilityIncomeExpense);
-    // console.log('resTotalCashOutflow', resTotalCashOutflow)
-    // dataIncome[groupdata].fundDisabilityIncomeExpense['totalCashOutflow'] = resTotalCashOutflow;
-
-    // const resTotal = totalAB(dataIncome[groupdata].fundDisabilityIncomeExpense);
-    // dataIncome[groupdata].fundDisabilityIncomeExpense['total'] = resTotal;
-
-    // const totalNetAmount = totalNetAmmount(dataIncome[groupdata].fundDisabilityIncomeExpense);
-    // dataIncome[groupdata].fundDisabilityIncomeExpense['netAmountRequired'] = totalNetAmount;
-
-    // setClienData(dataIncome);
   }
 
   // Set Dependant Data
@@ -75,26 +58,6 @@ const FundDisability = (props : Props) => {
     const { groupdata } = event.target.dataset;
     const { name, value } = event.target;
     setDependant(value, i, name, groupdata);
-
-    // const groupdata = i;
-    // const { name, value } = event.target;
-    // const dataIncome = [...dependantData];
-    // dataIncome[groupdata].dependantId = groupdata+1;
-    // dataIncome[groupdata].fundDisabilityIncomeExpense[name] = value;
-    
-    // const resCapitalSum = capitalSumRequired(dataIncome[groupdata].fundDisabilityIncomeExpense);
-    // dataIncome[groupdata].fundDisabilityIncomeExpense['capitalSumRequired'] = resCapitalSum;
-
-    // const resTotalCashOutflow = totalCashOutflow(dataIncome[groupdata].fundDisabilityIncomeExpense);
-    // dataIncome[groupdata].fundDisabilityIncomeExpense['totalCashOutflow'] = resTotalCashOutflow;
-
-    // const resTotal = totalAB(dataIncome[groupdata].fundDisabilityIncomeExpense);
-    // dataIncome[groupdata].fundDisabilityIncomeExpense['total'] = resTotal;
-
-    // const totalNetAmount = totalNetAmmount(dataIncome[groupdata].fundDisabilityIncomeExpense);
-    // dataIncome[groupdata].fundDisabilityIncomeExpense['netAmountRequired'] = totalNetAmount;
-
-    // setDependantData(dataIncome);
   }
 
   // Default Check
