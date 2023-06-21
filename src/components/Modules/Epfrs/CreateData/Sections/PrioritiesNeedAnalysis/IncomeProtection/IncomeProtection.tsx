@@ -6,7 +6,7 @@ import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
 import React, {useState} from 'react'
-import Dependent from '../../PersonalInformation/Dependent'
+import Dependent from '../../PersonalInformation/Dependents/Dependent'
 
 interface Props {
   datas?: Array<any>;
