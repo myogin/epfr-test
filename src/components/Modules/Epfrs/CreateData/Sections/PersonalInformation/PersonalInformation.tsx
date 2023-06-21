@@ -42,22 +42,16 @@ const PersonalInformation = (props: Props) => {
 
   const scrollPosition = useScrollPosition(1);
 
-  let { ownerId, type, id, dependant, accompaniment, issues, status } =
+  let { ownerId, type, id, dependant, issues, status } =
     usePersonalInformation();
+
+  let checkAccompainment = CheckAccompainment();
 
   useEffect(() => {
     if (dependant?.length > 0) {
       setShowAddDependent(true);
     }
-
-    if (
-      accompaniment[0].age > 62 ||
-      Number(accompaniment[0].english_spoken) === 2 ||
-      Number(accompaniment[0].education_level) <= 2
-    ) {
-      setShowTrustedIndividual(true);
-    }
-  }, [dependant, accompaniment]);
+  }, [dependant]);
 
   return (
     <div id={props.id}>
@@ -113,9 +107,7 @@ const PersonalInformation = (props: Props) => {
       </HeadingSecondarySection>
       <Accompainment />
       {/* Sec 4 */}
-      {accompaniment[0].age > 62 ||
-      Number(accompaniment[0].english_spoken) === 2 ||
-      Number(accompaniment[0].education_level) <= 2 ? (
+      {checkAccompainment ? (
         <>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             1.4 Trusted Individual
@@ -143,5 +135,21 @@ const PersonalInformation = (props: Props) => {
     </div>
   );
 };
+
+function CheckAccompainment() {
+  let { accompaniment } = usePersonalInformation();
+
+  let checker = false;
+
+  if (
+    accompaniment[0].age > 62 ||
+    Number(accompaniment[0].english_spoken) === 2 ||
+    Number(accompaniment[0].education_level) <= 2
+  ) {
+    checker = true;
+  }
+
+  return checker;
+}
 
 export default PersonalInformation;
