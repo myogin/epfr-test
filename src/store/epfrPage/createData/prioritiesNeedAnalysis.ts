@@ -243,7 +243,7 @@ const initialState: SectionSeven = {
             },
             estatePlaning: {
                 willWritten: '',
-                lastUpdated: 0,
+                lastUpdated: '',
                 anyProvision: '',
                 haveLastingPowerOfAttorney: '',
                 doneYourCPFNomination: '',
@@ -269,17 +269,20 @@ const initialState: SectionSeven = {
         dependant: []
         },
         defaultCheck: {
-        income_protection_upon_death_mortgage: false,
-        income_protection_upon_death_debt: false,
-        income_protection_upon_death_other: false,
-        income_protection_upon_death_death: false,
-        fund_disability_income_expense_mortgage: false,
-        fund_disability_income_expense_disability: false,
-        fund_critical_illness_expense_mortgage: false,
-        fund_critical_illness_expense_ci: false,
-        cover_for_personal_accident_benefit: false,
-        maternity_other: false
-        }
+            income_protection_upon_death_mortgage: false,
+            income_protection_upon_death_debt: false,
+            income_protection_upon_death_other: false,
+            income_protection_upon_death_death: false,
+            fund_disability_income_expense_mortgage: false,
+            fund_disability_income_expense_disability: false,
+            fund_critical_illness_expense_mortgage: false,
+            fund_critical_illness_expense_ci: false,
+            cover_for_personal_accident_benefit: false,
+            maternity_other: false
+        },
+        addtionalMaternityPlan: [],
+        issues: [],
+        noneed: []
     },
     additionalNote: []
   }
@@ -529,6 +532,9 @@ type Actions = {
   addChildFund: () => any;
   removeChildFund: (index: number) => any;
   setChildFund: (value: number, indexClient: any, name: string) => any;
+  addMaternity: () => any;
+  removeMaternity: (index: number) => any;
+  setMaternity: (value: number, name: string, indexClient: any, groupData: any, indexSub: any) => any;
   setDependant: (value: number, name: string, indexClient: any, groupData: any) => any;
   setNeed: (value: number, name: string, indexClient: any) => any;
   setNeedDependant: (value: number, name: string, indexClient: any) => any;
@@ -577,6 +583,43 @@ const prioritiesNeedAnalysis = create(
       produce((draft) => {
           draft.section7.answer.childFund[indexClient][name] = value;
       })
+    ),
+    addMaternity: () =>
+    set(
+      produce((draft) => {
+        var client = [];
+        var dependant = [];
+        for (var i = 0; i < initialState.section7.typeClient; i++) {
+            client.push(0);
+        }
+    
+        for (var i = 0; i < initialState.section7.totalDependant; i++) {
+            dependant.push(0);
+        }
+        draft.section7.answer.addtionalMaternityPlan.push({
+            client:  client,
+            dependants: dependant,
+            key: ""
+        });
+      })
+    ),
+    removeMaternity: (index: any) => 
+    set(
+        produce((draft) => {
+            draft.section7.answer.addtionalMaternityPlan.splice(index, 1);
+        })
+    ),
+    setMaternity: (value: number, indexClient: string, name: any, groupData: any, indexSub:any) => 
+    set(
+        produce((draft) => {
+            console.log('name', name)
+            console.log('indexSub', indexSub)
+            if(indexSub == null){
+                draft.section7.answer.addtionalMaternityPlan[indexClient][name] = value;
+            }else{
+                draft.section7.answer.addtionalMaternityPlan[indexClient][groupData][name] = value;
+            }
+        })
     ),
     setDependant: (value: number, indexClient: string, name: any, groupData: any) =>
     set(

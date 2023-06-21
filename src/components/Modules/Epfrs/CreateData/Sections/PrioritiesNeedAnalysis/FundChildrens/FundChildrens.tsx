@@ -17,7 +17,7 @@ interface Props {
   datas?: Array<any>;
 }
 
-const FundChildrens = () => {
+const FundChildrens =(props : Props) => {
   let {
     section7,
     setClient,

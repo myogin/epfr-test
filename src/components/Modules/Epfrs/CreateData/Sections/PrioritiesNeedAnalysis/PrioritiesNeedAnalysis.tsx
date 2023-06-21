@@ -328,11 +328,28 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           const resultNetAmountRequired = isNaN(netAmountRequired) ? 0 : parseFloat(netAmountRequired.toFixed(2));
           setClient(resultNetAmountRequired, k, 'netAmountRequired', 'fundRetirementLifeStyle')
         // End Fund Fund Retirement Data
+
+        // Cover Personal Accident
+          const resCoverPersonalAccident = v.coverForPersonalAccident;
+          const coverNetAmountRequired = resCoverPersonalAccident.amountNeeded - resCoverPersonalAccident.less;
+          setClient(coverNetAmountRequired, k, 'netAmountRequired', 'coverForPersonalAccident');
+        // End Cover Personal Accident
+
+        // Cover Fund Long Term
+          const resFundLongTermCare = v.fundLongTermCare;
+          const FundNetAmountRequired = resFundLongTermCare.desiredMonthlyCashPayout - resFundLongTermCare.less;
+          setClient(FundNetAmountRequired, k, 'netAmountRequired', 'fundLongTermCare');
+        // End Fund Long Term
+
+        // Maternity Others
+          const resMaternity = v.maternity;
+          const MaterNetAmountRequired = resMaternity.amountNeeded - resMaternity.less;
+          setClient(MaterNetAmountRequired, k, 'netAmountRequired', 'maternity');
+        // End Maternity Others
         });
       }
 
     // Rumus Dependant Data
-
       if(section7.answer.dependantData.length > 0){
         section7.answer.dependantData.map(function(v: any, k: any){
           // IncomeProtect  
@@ -427,6 +444,24 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           const resultNetAmountRequired = isNaN(netAmountRequired) ? 0 : parseFloat(netAmountRequired.toFixed(2));
           setDependant(resultNetAmountRequired, k, 'netAmountRequired', 'fundRetirementLifeStyle')
         // End Fund Fund Retirement Dataaa
+
+        // Cover Personal Accident
+          const resCoverPersonalAccident = v.coverForPersonalAccident;
+          const coverNetAmountRequired = resCoverPersonalAccident.amountNeeded - resCoverPersonalAccident.less;
+          setClient(coverNetAmountRequired, k, 'netAmountRequired', 'coverForPersonalAccident');
+        // End Cover Personal Accident
+
+        // Cover Fund Long Term
+          const resFundLongTermCare = v.fundLongTermCare;
+          const FundNetAmountRequired = resFundLongTermCare.desiredMonthlyCashPayout - resFundLongTermCare.less;
+          setClient(FundNetAmountRequired, k, 'netAmountRequired', 'fundLongTermCare');
+        // End Fund Long Term
+
+        // Maternity Others
+          const resMaternity = v.maternity;
+          const MaterNetAmountRequired = resMaternity.amountNeeded - resMaternity.less;
+          setClient(MaterNetAmountRequired, k, 'netAmountRequired', 'maternity');
+        // End Maternity Others
         });
       }
 
@@ -562,7 +597,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][6]}
             toggleName={section7.answer.need.client[0][6] ? "Review" : "Not Review"}
-            onChange={(event) => setCoverForPersonal(!answer.need.client[0][6], 0, 6)}
+            onChange={(event) => setCoverForPersonal(!section7.answer.need.client[0][6], 0, 6)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
@@ -575,7 +610,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][7]}
             toggleName={section7.answer.need.client[0][7] ? "Review" : "Not Review"}
-            onChange={(event) => setFundLongTermCare(!answer.need.client[0][7], 0, 7)}
+            onChange={(event) => setFundLongTermCare(!section7.answer.need.client[0][7], 0, 7)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
@@ -588,7 +623,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           <Toggle
             isChecked={section7.answer.need.client[0][8]}
             toggleName={section7.answer.need.client[0][8] ? "Review" : "Not Review"}
-            onChange={(event) => setFundHospitalExpense([0][8], 0, 8)}
+            onChange={(event) => setFundHospitalExpense(!section7.answer.need.client[0][8], 0, 8)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
