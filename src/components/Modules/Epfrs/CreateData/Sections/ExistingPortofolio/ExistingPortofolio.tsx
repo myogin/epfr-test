@@ -20,7 +20,6 @@ import LoanPortofolio from "./Loan/LoanPortofolio";
 import PropertyPortofolio from "./Property/PropertyPortofolio";
 import SavingPortofolio from "./Saving/SavingPortofolio";
 import SrsPortofolio from "./Srs/SrsPortofolio";
-import VehiclesPortofolio from "./Vehicles/VehiclesPortofolio";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";

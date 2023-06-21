@@ -171,48 +171,54 @@ const PropertyPortofolio = (props: Props) => {
           </Dialog>
         </Transition>
       </div>
-
-      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-          <thead className="text-left bg-white-bone">
-            <tr className="border-b border-gray-soft-strong">
-              <th className="px-2 py-5">SN</th>
-              <th className="px-2 py-5">Client</th>
-              <th className="px-2 py-5">Category</th>
-              <th className="px-2 py-5">Type Of Property</th>
-              <th className="px-2 py-5">Year Purchashed</th>
-              <th className="px-2 py-5">Purchase Price</th>
-              <th className="px-2 py-5">Loan Amount Taken</th>
-              <th className="px-2 py-5">Current Outstanding Loan</th>
-              <th className="px-2 py-5">Current Market Value</th>
-              <th className="px-2 py-5"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-2 py-5">1</td>
-              <td className="px-2 py-5">Client 1</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="w-1/12 px-2 py-5">
-                <div className="flex w-full gap-2">
-                  <ButtonBox className="text-green-deep">
-                    <PencilLineIcon size={14} />
-                  </ButtonBox>
-                  <ButtonBox className="text-red">
-                    <CloseLineIcon size={14} />
-                  </ButtonBox>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {summaryOfProperty[0].client !== "" ? (
+        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+            <thead className="text-left bg-white-bone">
+              <tr className="border-b border-gray-soft-strong">
+                <th className="px-2 py-5">SN</th>
+                <th className="px-2 py-5">Client</th>
+                <th className="px-2 py-5">Category</th>
+                <th className="px-2 py-5">Type Of Property</th>
+                <th className="px-2 py-5">Year Purchashed</th>
+                <th className="px-2 py-5">Purchase Price</th>
+                <th className="px-2 py-5">Loan Amount Taken</th>
+                <th className="px-2 py-5">Current Outstanding Loan</th>
+                <th className="px-2 py-5">Current Market Value</th>
+                <th className="px-2 py-5"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {summaryOfProperty?.length &&
+                summaryOfProperty.map((value, index) => (
+                  <tr key={index}>
+                    <td className="px-2 py-5">{index++}</td>
+                    <td className="px-2 py-5">{value.client}</td>
+                    <td className="px-2 py-5">{value.category}</td>
+                    <td className="px-2 py-5">{value.typeOfProperty}</td>
+                    <td className="px-2 py-5">{value.yearPurchased}</td>
+                    <td className="px-2 py-5">{value.purchasePrice}</td>
+                    <td className="px-2 py-5">{value.loanAmount}</td>
+                    <td className="px-2 py-5">{value.currentOutstanding}</td>
+                    <td className="px-2 py-5">{value.currentMarketValue}</td>
+                    <td className="w-1/12 px-2 py-5">
+                      <div className="flex w-full gap-2">
+                        <ButtonBox className="text-green-deep">
+                          <PencilLineIcon size={14} />
+                        </ButtonBox>
+                        <ButtonBox className="text-red">
+                          <CloseLineIcon size={14} />
+                        </ButtonBox>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        ""
+      )}
     </SectionCardSingleGrid>
   );
 };

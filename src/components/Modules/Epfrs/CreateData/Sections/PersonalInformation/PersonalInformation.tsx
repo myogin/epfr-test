@@ -107,22 +107,6 @@ const PersonalInformation = (props: Props) => {
           <TrustedIndividual />
         </>
       ) : null}
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">
-        Declaration by Trusted Individual
-      </HeadingSecondarySection>
-      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowSingle>
-          <Checkbox
-            lableStyle="text-sm font-normal text-gray-light"
-            label="I have conveyed and/or translated the recommendation(s) and all
-            relevant disclosures into a language which the client can
-            understand. By providing my contact details a. signing this seaion
-            in this 'Personal Financial IlecorcP, I have gjven my consent mallow
-            Lega, FP Pte Ltd to contact me tor verification oldie contents in
-            this 'Personal Financial Record• and not tor any other purposes."
-          />
-        </RowSingle>
-      </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
