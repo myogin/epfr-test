@@ -26,7 +26,6 @@ const Client = () => {
         setClient(0, name, value);
 
         if (name === "dateOfBirth") {
-          console.log("Ini gak masuk ni")
           countAgeClient();
         }
 

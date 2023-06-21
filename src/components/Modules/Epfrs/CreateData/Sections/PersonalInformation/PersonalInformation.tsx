@@ -14,7 +14,6 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 import Client from "./Clients/Client";
 import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
-
 interface Props {
   id?: any;
   pfrType?: number;
@@ -22,13 +21,6 @@ interface Props {
 
 const PersonalInformation = (props: Props) => {
   const [showAddDependent, setShowAddDependent] = useState(false);
-  const [showTrustedIndividual, setShowTrustedIndividual] = useState(false);
-
-  let statusReviewDependent = "Not Review";
-
-  if (showAddDependent === true) {
-    statusReviewDependent = "Review";
-  }
 
   const handleShowAddDependent = (params: boolean) => {
     setShowAddDependent(params);
@@ -42,10 +34,10 @@ const PersonalInformation = (props: Props) => {
 
   const scrollPosition = useScrollPosition(1);
 
-  let { ownerId, type, id, dependant, issues, status } =
+  let { ownerId, type, id, dependant,accompaniment, issues, status } =
     usePersonalInformation();
 
-  let checkAccompainment = CheckAccompainment();
+  let checkAccompainment = CheckAccompainment(accompaniment);
 
   useEffect(() => {
     if (dependant?.length > 0) {
@@ -95,7 +87,7 @@ const PersonalInformation = (props: Props) => {
         <Toggle
           isChecked={showAddDependent}
           onChange={() => handleShowAddDependent(!showAddDependent)}
-          toggleName={statusReviewDependent}
+          toggleName={showAddDependent ? "Review" : "Not Review"}
         />
       </HeadingSecondarySectionDoubleGrid>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -136,8 +128,7 @@ const PersonalInformation = (props: Props) => {
   );
 };
 
-function CheckAccompainment() {
-  let { accompaniment } = usePersonalInformation();
+function CheckAccompainment(accompaniment : any) {
 
   let checker = false;
 
