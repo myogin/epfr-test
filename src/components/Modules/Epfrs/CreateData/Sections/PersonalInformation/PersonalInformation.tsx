@@ -22,6 +22,7 @@ interface Props {
 
 const PersonalInformation = (props: Props) => {
   const [showAddDependent, setShowAddDependent] = useState(false);
+  const [showTrustedIndividual, setShowTrustedIndividual] = useState(false);
 
   let statusReviewDependent = "Not Review";
 
@@ -33,33 +34,30 @@ const PersonalInformation = (props: Props) => {
     setShowAddDependent(params);
   };
 
-
   let { showDetailData } = useNavigationSection();
 
   const showDetail = (params: any) => {
     showDetailData(params);
   };
-  
+
   const scrollPosition = useScrollPosition(1);
 
-  let {
-    ownerId,
-    type,
-    id,
-    dependant,
-    issues,
-    status,
-  } = usePersonalInformation();
-
-  
-
-  
+  let { ownerId, type, id, dependant, accompaniment, issues, status } =
+    usePersonalInformation();
 
   useEffect(() => {
     if (dependant?.length > 0) {
       setShowAddDependent(true);
     }
-  }, []);
+
+    if (
+      accompaniment[0].age > 62 ||
+      Number(accompaniment[0].english_spoken) === 2 ||
+      Number(accompaniment[0].education_level) <= 2
+    ) {
+      setShowTrustedIndividual(true);
+    }
+  }, [dependant, accompaniment]);
 
   return (
     <div id={props.id}>
@@ -93,12 +91,10 @@ const PersonalInformation = (props: Props) => {
           Section 1. Personal Information
         </HeadingPrimarySection>
       </div>
-
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         1.1 Client Details
       </HeadingSecondarySection>
       <Client />
-
       {/* Sec 2 */}
       <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
         <h2 className="text-xl font-bold">1.2 Dependent Information</h2>
@@ -111,20 +107,22 @@ const PersonalInformation = (props: Props) => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         {showAddDependent ? <Dependent /> : ""}
       </SectionCardSingleGrid>
-
       {/* Sec 3 */}
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         1.3 Client Accompainment Assestment
       </HeadingSecondarySection>
       <Accompainment />
-      
       {/* Sec 4 */}
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">
-        1.4 Trusted Individual
-      </HeadingSecondarySection>
-      <TrustedIndividual />
-
-      
+      {accompaniment[0].age > 62 ||
+      Number(accompaniment[0].english_spoken) === 2 ||
+      Number(accompaniment[0].education_level) <= 2 ? (
+        <>
+          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+            1.4 Trusted Individual
+          </HeadingSecondarySection>
+          <TrustedIndividual />
+        </>
+      ) : null}
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         Declaration by Trusted Individual
       </HeadingSecondarySection>
