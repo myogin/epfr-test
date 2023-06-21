@@ -489,7 +489,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
       }  
 
-      console.log('section7', section7)
+      localStorage.setItem("section7", JSON.stringify(section7));
   }, [section7]);
 
   return (
