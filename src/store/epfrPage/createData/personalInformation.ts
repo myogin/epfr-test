@@ -7,6 +7,7 @@ type Actions = {
   setClient: (clientType: number, name: string, value: any) => any;
   setDependent: (indexData: number, params: any) => any;
   removeDependent: (params: any) => any;
+  patchDependent: (params: any) => any;
   setAccompaniment: (clientType: number, name: string, value: any) => any;
   setTrustedIndividuals: (clientType: number, name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
@@ -115,13 +116,27 @@ const personalInformation = create(
           ),
         removeDependent: (params: any) =>
           set(
-            
             produce((draft) => {
               const dependentIndex = draft.dependant.findIndex(
                 (el: any) => el.id === params
               );
               console.log("masuk disini");
               draft.dependant.splice(dependentIndex, 1);
+            })
+          ),
+        patchDependent: (params: any) =>
+          set(
+            produce((draft) => {
+              const dependant = draft.dependant.find(
+                (el: any) => el.id === params.id
+              );
+
+              dependant.name = params.name;
+              dependant.relationship = params.relationship;
+              dependant.dateOfBirth = params.dateOfBirth;
+              dependant.age = params.age;
+              dependant.gender = params.gender;
+              dependant.year = params.year;
             })
           ),
         setAccompaniment: (clientType: number, name: string, value: any) =>

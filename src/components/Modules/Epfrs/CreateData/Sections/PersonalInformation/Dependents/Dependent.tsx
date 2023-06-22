@@ -21,9 +21,11 @@ const Dependent = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDependentId, setActionDependentId] = useState(0);
+  const [saveType, setSaveType] = useState("");
 
   // Get data from zustand state
-  let { dependant, setDependent, removeDependent } = usePersonalInformation();
+  let { dependant, setDependent, removeDependent, patchDependent } =
+    usePersonalInformation();
 
   let checkIndex = checkDependentData(dependant);
 
@@ -119,25 +121,31 @@ const Dependent = (props: Props) => {
     }
   };
 
-  const saveData = (event: any) => {
-    console.log("Masuk Save");
-    console.log(dependant?.length);
-
-    let checkTotalData = dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
-
-    setDependent(checkTotalData, newDependent);
-    setShowModal(false);
-  };
-
   const openModal = () => {
+    setSaveType("add");
     setNewDependent(initialState);
     setShowModal(true);
   };
 
   const openModalEdit = (params: any) => {
+    setSaveType("update");
     const detailDependent = dependant.filter((obj) => obj.id === params);
     setNewDependent(detailDependent[0]);
     setShowModal(true);
+  };
+
+  const saveData = () => {
+    
+    let checkTotalData =
+      dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
+
+    if (saveType === "add") {
+      setDependent(checkTotalData, newDependent);
+    } else {
+      patchDependent(newDependent);
+    }
+
+    setShowModal(false);
   };
 
   const modalRemoveDependent = (params: any) => {
@@ -408,16 +416,15 @@ const Dependent = (props: Props) => {
   );
 };
 
-function checkDependentData(dependant : any) {
-
-  let data : number = 0;
-  if(dependant?.length) {
-    if(dependant[0].name === "") {
-      data = dependant.length
-    }else {
+function checkDependentData(dependant: any) {
+  let data: number = 0;
+  if (dependant?.length) {
+    if (dependant[0].name === "") {
+      data = dependant.length;
+    } else {
       data = dependant.length + 1;
     }
-  }else {
+  } else {
     data = dependant.length + 1;
   }
 
