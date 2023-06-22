@@ -99,7 +99,7 @@ const personalInformation = create(
         setDependent: (indexData: number, params: any) =>
           set(
             produce((draft) => {
-              if (indexData === 0) {
+              if (indexData === 0 && get().dependant?.length) {
                 let dependentReplace = draft.dependant[indexData];
                 dependentReplace.id = params.id;
                 dependentReplace.name = params.name;

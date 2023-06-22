@@ -40,7 +40,7 @@ const PersonalInformation = (props: Props) => {
   let checkAccompainment = CheckAccompainment(accompaniment);
 
   useEffect(() => {
-    if (dependant[0].name !== "") {
+    if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
   }, [dependant]);
@@ -83,7 +83,7 @@ const PersonalInformation = (props: Props) => {
       <Client />
       {/* Sec 2 */}
       <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
-        <h2 className="text-xl font-bold">1.2 Dependent Information</h2>
+        <div className="text-xl font-bold">1.2 Dependent Information</div>
         <Toggle
           isChecked={showAddDependent}
           onChange={() => handleShowAddDependent(!showAddDependent)}

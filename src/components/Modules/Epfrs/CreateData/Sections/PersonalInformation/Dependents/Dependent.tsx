@@ -25,8 +25,7 @@ const Dependent = (props: Props) => {
   // Get data from zustand state
   let { dependant, setDependent, removeDependent } = usePersonalInformation();
 
-  let checkIndex =
-    dependant[0].name === "" ? dependant.length : dependant.length + 1;
+  let checkIndex = checkDependentData(dependant);
 
   console.log("Apa sih ini " + checkIndex);
   // Initiate new local state for new data
@@ -122,8 +121,9 @@ const Dependent = (props: Props) => {
 
   const saveData = (event: any) => {
     console.log("Masuk Save");
+    console.log(dependant?.length);
 
-    let checkTotalData = dependant[0].id === 0 ? 0 : 1;
+    let checkTotalData = dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
     setDependent(checkTotalData, newDependent);
     setShowModal(false);
@@ -356,7 +356,7 @@ const Dependent = (props: Props) => {
           </Dialog>
         </Transition>
       </div>
-      {dependant[0].name !== "" ? (
+      {dependant?.length && dependant[0].name !== "" ? (
         <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
           <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
             <thead className="text-left bg-white-bone">
@@ -407,5 +407,21 @@ const Dependent = (props: Props) => {
     </>
   );
 };
+
+function checkDependentData(dependant : any) {
+
+  let data : number = 0;
+  if(dependant?.length) {
+    if(dependant[0].name === "") {
+      data = dependant.length
+    }else {
+      data = dependant.length + 1;
+    }
+  }else {
+    data = dependant.length + 1;
+  }
+
+  return data;
+}
 
 export default Dependent;
