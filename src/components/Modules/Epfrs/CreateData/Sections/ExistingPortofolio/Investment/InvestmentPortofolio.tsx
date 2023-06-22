@@ -4,6 +4,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import { SummaryOfInvestment } from "@/models/SectionTwo";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -12,6 +13,8 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const InvestmentPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  let { summaryOfInvestment, setInvestment } = useExistingPortofolio();
 
   const [newDataInput, setNewDataInput] = useState<SummaryOfInvestment>({
     editting: false,
@@ -188,46 +191,50 @@ const InvestmentPortofolio = () => {
           </Dialog>
         </Transition>
       </div>
-
-      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-          <thead className="text-left bg-white-bone">
-            <tr className="border-b border-gray-soft-strong">
-              <th className="px-2 py-5">SN</th>
-              <th className="px-2 py-5">Client</th>
-              <th className="px-2 py-5">Type Of Investment</th>
-              <th className="px-2 py-5">Company</th>
-              <th className="px-2 py-5">Year Invested</th>
-              <th className="px-2 py-5">Investment Amount</th>
-              <th className="px-2 py-5">Current Value</th>
-              <th className="px-2 py-5">Source Of Investment</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-2 py-5">1</td>
-              <td className="px-2 py-5">Client 1</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="w-1/12 px-2 py-5">
-                <div className="flex w-full gap-2">
-                  <ButtonBox className="text-green-deep">
-                    <PencilLineIcon size={14} />
-                  </ButtonBox>
-                  <ButtonBox className="text-red">
-                    <CloseLineIcon size={14} />
-                  </ButtonBox>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {summaryOfInvestment[0].client !== "" ? (
+        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+            <thead className="text-left bg-white-bone">
+              <tr className="border-b border-gray-soft-strong">
+                <th className="px-2 py-5">SN</th>
+                <th className="px-2 py-5">Client</th>
+                <th className="px-2 py-5">Type Of Investment</th>
+                <th className="px-2 py-5">Company</th>
+                <th className="px-2 py-5">Year Invested</th>
+                <th className="px-2 py-5">Investment Amount</th>
+                <th className="px-2 py-5">Current Value</th>
+                <th className="px-2 py-5">Source Of Investment</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {summaryOfInvestment?.length &&
+                summaryOfInvestment.map((value, index) => (
+                  <tr key={index}>
+                    <td className="px-2 py-5">{++index}</td>
+                    <td className="px-2 py-5">{value.client}</td>
+                    <td className="px-2 py-5">{value.typeOfInvestment}</td>
+                    <td className="px-2 py-5">{value.company}</td>
+                    <td className="px-2 py-5">{value.yearInvested}</td>
+                    <td className="px-2 py-5">{value.investmentAmount}</td>
+                    <td className="px-2 py-5">{value.currentvalue}</td>
+                    <td className="px-2 py-5">{value.sourceOfInvestment}</td>
+                    <td className="w-1/12 px-2 py-5">
+                      <div className="flex w-full gap-2">
+                        <ButtonBox className="text-green-deep">
+                          <PencilLineIcon size={14} />
+                        </ButtonBox>
+                        <ButtonBox className="text-red">
+                          <CloseLineIcon size={14} />
+                        </ButtonBox>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </SectionCardSingleGrid>
   );
 };

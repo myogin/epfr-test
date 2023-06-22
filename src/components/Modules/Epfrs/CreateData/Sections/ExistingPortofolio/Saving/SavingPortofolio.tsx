@@ -4,6 +4,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import { SummaryOfSavings } from "@/models/SectionTwo";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -12,6 +13,8 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const SavingPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  let { summaryOfSavings, setSaving } = useExistingPortofolio();
 
   const [newDataInput, setNewDataInput] = useState<SummaryOfSavings>({
     editting: false,
@@ -149,40 +152,44 @@ const SavingPortofolio = () => {
           </Dialog>
         </Transition>
       </div>
-
-      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-          <thead className="text-left bg-white-bone">
-            <tr className="border-b border-gray-soft-strong">
-              <th className="px-2 py-5">SN</th>
-              <th className="px-2 py-5">Client</th>
-              <th className="px-2 py-5">Type Of Deposit</th>
-              <th className="px-2 py-5">Bank</th>
-              <th className="px-2 py-5">Savings Amount</th>
-              <th className="px-2 py-5"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-2 py-5">1</td>
-              <td className="px-2 py-5">Client 1</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="w-1/12 px-2 py-5">
-                <div className="flex w-full gap-2">
-                  <ButtonBox className="text-green-deep">
-                    <PencilLineIcon size={14} />
-                  </ButtonBox>
-                  <ButtonBox className="text-red">
-                    <CloseLineIcon size={14} />
-                  </ButtonBox>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {summaryOfSavings[0].client !== "" ? (
+        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+            <thead className="text-left bg-white-bone">
+              <tr className="border-b border-gray-soft-strong">
+                <th className="px-2 py-5">SN</th>
+                <th className="px-2 py-5">Client</th>
+                <th className="px-2 py-5">Type Of Deposit</th>
+                <th className="px-2 py-5">Bank</th>
+                <th className="px-2 py-5">Savings Amount</th>
+                <th className="px-2 py-5"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {summaryOfSavings?.length && summaryOfSavings.map((value, index) => (
+                <tr key={index}>
+                <td className="px-2 py-5">{++index}</td>
+                <td className="px-2 py-5">{value.client}</td>
+                <td className="px-2 py-5">{value.typeOfDeposit}</td>
+                <td className="px-2 py-5">{value.bank}</td>
+                <td className="px-2 py-5">{value.savingAmount}</td>
+                <td className="w-1/12 px-2 py-5">
+                  <div className="flex w-full gap-2">
+                    <ButtonBox className="text-green-deep">
+                      <PencilLineIcon size={14} />
+                    </ButtonBox>
+                    <ButtonBox className="text-red">
+                      <CloseLineIcon size={14} />
+                    </ButtonBox>
+                  </div>
+                </td>
+              </tr>
+              ))}
+              
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </SectionCardSingleGrid>
   );
 };

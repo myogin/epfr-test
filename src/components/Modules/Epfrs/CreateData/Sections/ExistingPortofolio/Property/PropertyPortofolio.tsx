@@ -192,7 +192,7 @@ const PropertyPortofolio = (props: Props) => {
               {summaryOfProperty?.length &&
                 summaryOfProperty.map((value, index) => (
                   <tr key={index}>
-                    <td className="px-2 py-5">{index++}</td>
+                    <td className="px-2 py-5">{++index}</td>
                     <td className="px-2 py-5">{value.client}</td>
                     <td className="px-2 py-5">{value.category}</td>
                     <td className="px-2 py-5">{value.typeOfProperty}</td>
