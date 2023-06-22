@@ -5,7 +5,8 @@ import { produce } from "immer";
 
 type Actions = {
   setClient: (clientType: number, name: string, value: any) => any;
-  setDependent: (params : any) => any;
+  setDependent: (indexData: number, params: any) => any;
+  removeDependent: (params: any) => any;
   setAccompaniment: (clientType: number, name: string, value: any) => any;
   setTrustedIndividuals: (clientType: number, name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
@@ -46,12 +47,13 @@ const initialState: SectionOne = {
   ],
   dependant: [
     {
-      name: "test",
-      relationship: "SON",
-      dateOfBirth: "10 June 2010",
-      age: 13,
-      gender: "1",
-      year: "2",
+      id: 0,
+      name: "",
+      relationship: "",
+      dateOfBirth: "",
+      age: 0,
+      gender: "0",
+      year: "0",
     },
   ],
   accompaniment: [
@@ -94,10 +96,32 @@ const personalInformation = create(
               client[name] = value;
             })
           ),
-        setDependent: (params : any) =>
+        setDependent: (indexData: number, params: any) =>
           set(
             produce((draft) => {
-              draft.dependant.push(params)
+              if (indexData === 0) {
+                let dependentReplace = draft.dependant[indexData];
+                dependentReplace.id = params.id;
+                dependentReplace.name = params.name;
+                dependentReplace.relationship = params.relationship;
+                dependentReplace.dateOfBirth = params.dateOfBirth;
+                dependentReplace.age = params.age;
+                dependentReplace.gender = params.gender;
+                dependentReplace.year = params.year;
+              } else {
+                draft.dependant.push(params);
+              }
+            })
+          ),
+        removeDependent: (params: any) =>
+          set(
+            
+            produce((draft) => {
+              const dependentIndex = draft.dependant.findIndex(
+                (el: any) => el.id === params
+              );
+              console.log("masuk disini");
+              draft.dependant.splice(dependentIndex, 1);
             })
           ),
         setAccompaniment: (clientType: number, name: string, value: any) =>
@@ -114,7 +138,7 @@ const personalInformation = create(
             produce((draft) => {
               draft[name] = value;
             })
-          )
+          ),
       }),
       {
         name: "section1",

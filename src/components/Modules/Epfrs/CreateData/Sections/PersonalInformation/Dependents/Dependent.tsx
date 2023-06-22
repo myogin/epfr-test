@@ -19,19 +19,26 @@ interface Props {
 
 const Dependent = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [actionDependentId, setActionDependentId] = useState(0);
 
   // Get data from zustand state
-  let { dependant, setDependent } = usePersonalInformation();
+  let { dependant, setDependent, removeDependent } = usePersonalInformation();
 
+  let checkIndex =
+    dependant[0].name === "" ? dependant.length : dependant.length + 1;
+
+  console.log("Apa sih ini " + checkIndex);
   // Initiate new local state for new data
-  let initialState : DependantInformation = {
+  let initialState: DependantInformation = {
+    id: checkIndex,
     name: "",
     relationship: "",
     dateOfBirth: "",
     age: 0,
     gender: "",
-    year: ""
-  }
+    year: "",
+  };
 
   // inject initial state to useState
   const [newDependent, setNewDependent] = useState(initialState);
@@ -116,22 +123,31 @@ const Dependent = (props: Props) => {
   const saveData = (event: any) => {
     console.log("Masuk Save");
 
-    setDependent(newDependent);
-    setNewDependent(initialState);
+    let checkTotalData = dependant[0].id === 0 ? 0 : 1;
+
+    setDependent(checkTotalData, newDependent);
     setShowModal(false);
   };
 
   const openModal = () => {
+    setNewDependent(initialState);
     setShowModal(true);
   };
 
   const openModalEdit = (params: any) => {
-    console.log(params);
+    const detailDependent = dependant.filter((obj) => obj.id === params);
+    setNewDependent(detailDependent[0]);
     setShowModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const modalRemoveDependent = (params: any) => {
+    setShowModalRemove(true);
+    setActionDependentId(params);
+  };
+
+  const removeDependentAction = (params: any) => {
+    removeDependent(params);
+    setShowModalRemove(false);
   };
 
   return (
@@ -142,7 +158,11 @@ const Dependent = (props: Props) => {
         </ButtonBox>
 
         <Transition appear show={showModal} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModal(false)}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -257,7 +277,9 @@ const Dependent = (props: Props) => {
                       <ButtonGreenMedium onClick={saveData}>
                         Save
                       </ButtonGreenMedium>
-                      <ButtonTransparentMedium onClick={closeModal}>
+                      <ButtonTransparentMedium
+                        onClick={() => setShowModal(false)}
+                      >
                         Cancel
                       </ButtonTransparentMedium>
                     </div>
@@ -267,50 +289,121 @@ const Dependent = (props: Props) => {
             </div>
           </Dialog>
         </Transition>
-      </div>
-      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-          <thead className="text-left bg-white-bone">
-            <tr className="border-b border-gray-soft-strong">
-              <th className="px-2 py-5">SN</th>
-              <th className="px-2 py-5">Name</th>
-              <th className="px-2 py-5">Relationship</th>
-              <th className="px-2 py-5">Date Of Birth</th>
-              <th className="px-2 py-5">Age</th>
-              <th className="px-2 py-5">Sex</th>
-              <th className="px-2 py-5">Years to Support</th>
-              <th className="px-2 py-5"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {dependant?.length &&
-              dependant.map((data, index) => (
-                <tr key={"dependent-" + index}>
-                  <td className="px-2 py-5">{++index}</td>
-                  <td className="px-2 py-5">{data.name}</td>
-                  <td className="px-2 py-5">{data.relationship}</td>
-                  <td className="px-2 py-5">{data.dateOfBirth}</td>
-                  <td className="px-2 py-5">{data.age}</td>
-                  <td className="px-2 py-5">{genderStatus(data.gender)}</td>
-                  <td className="px-2 py-5">{data.year}</td>
-                  <td className="w-1/12 px-2 py-5">
-                    <div className="flex w-full gap-2">
-                      <ButtonBox
-                        onClick={() => openModalEdit(data.id)}
-                        className="text-green-deep"
-                      >
-                        <PencilLineIcon size={14} />
-                      </ButtonBox>
-                      <ButtonBox className="text-red">
-                        <CloseLineIcon size={14} />
-                      </ButtonBox>
+
+        {/* Modal Delete */}
+        <Transition appear show={showModalRemove} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModalRemove(false)}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-full p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Remove Dependent
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Are you sure to remove this data.?
+                      </p>
                     </div>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+
+                    <div className="mt-4">
+                      <button
+                        type="button"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={() => removeDependentAction(actionDependentId)}
+                      >
+                        Remove
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={() => setShowModalRemove(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
       </div>
+      {dependant[0].name !== "" ? (
+        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+            <thead className="text-left bg-white-bone">
+              <tr className="border-b border-gray-soft-strong">
+                <th className="px-2 py-5">SN</th>
+                <th className="px-2 py-5">Name</th>
+                <th className="px-2 py-5">Relationship</th>
+                <th className="px-2 py-5">Date Of Birth</th>
+                <th className="px-2 py-5">Age</th>
+                <th className="px-2 py-5">Sex</th>
+                <th className="px-2 py-5">Years to Support</th>
+                <th className="px-2 py-5"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {dependant?.length &&
+                dependant.map((data, index) => (
+                  <tr key={"dependent-" + index}>
+                    <td className="px-2 py-5">{++index}</td>
+                    <td className="px-2 py-5">{data.name}</td>
+                    <td className="px-2 py-5">{data.relationship}</td>
+                    <td className="px-2 py-5">{data.dateOfBirth}</td>
+                    <td className="px-2 py-5">{data.age}</td>
+                    <td className="px-2 py-5">{genderStatus(data.gender)}</td>
+                    <td className="px-2 py-5">{data.year}</td>
+                    <td className="w-1/12 px-2 py-5">
+                      <div className="flex w-full gap-2">
+                        <ButtonBox
+                          onClick={() => openModalEdit(data.id)}
+                          className="text-green-deep"
+                        >
+                          <PencilLineIcon size={14} />
+                        </ButtonBox>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => modalRemoveDependent(data.id)}
+                        >
+                          <CloseLineIcon size={14} />
+                        </ButtonBox>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </>
   );
 };
