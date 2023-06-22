@@ -40,7 +40,7 @@ const PersonalInformation = (props: Props) => {
   let checkAccompainment = CheckAccompainment(accompaniment);
 
   useEffect(() => {
-    if (dependant?.length > 0) {
+    if (dependant[0].name !== "") {
       setShowAddDependent(true);
     }
   }, [dependant]);

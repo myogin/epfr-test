@@ -27,7 +27,7 @@ export interface PersonalInformation {
   mailingAddr: string;
 }
 export interface DependantInformation {
-  id?: string;
+  id?: number;
   name: string;
   relationship: string;
   dateOfBirth: string;
