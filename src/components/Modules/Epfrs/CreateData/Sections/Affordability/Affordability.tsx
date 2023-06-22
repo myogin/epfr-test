@@ -1,6 +1,7 @@
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowFourthGrid from "@/components/Attributes/Rows/Grids/RowFourthGrid";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import RowSixGrid from "@/components/Attributes/Rows/Grids/RowSixGrid";
@@ -85,7 +86,18 @@ const Affordability = (props: Props) => {
             label="Payor For Client 1"
           />
         </div>
+        <RowDoubleGrid>
+        <div className="text-left space-y-11">
+          <div className="text-sm font-bold">Total Annual Income ($)</div>
+          <div className="text-sm font-normal">1,000,000</div>
+        </div>
+        <div className="text-left space-y-11">
+          <div className="text-sm font-bold">Total Annual Income ($)</div>
+          <div className="text-sm font-normal">1,000,000</div>
+        </div>
+      </RowDoubleGrid>
       </SectionCardSingleGrid>
+      
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingleGrid>
           <HeadingSecondarySection>Payor Budget</HeadingSecondarySection>
