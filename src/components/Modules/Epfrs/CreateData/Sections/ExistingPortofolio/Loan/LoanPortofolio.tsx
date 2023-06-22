@@ -144,6 +144,7 @@ const LoanPortofolio = () => {
                             label="Amount Borrowed ($)"
                             type="text"
                             value={newDataInput.amountBorrowed}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -156,6 +157,7 @@ const LoanPortofolio = () => {
                             label="Current Outstanding Loan ($)"
                             type="text"
                             value={newDataInput.currentOutstandingLoan}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -182,6 +184,7 @@ const LoanPortofolio = () => {
                             label="Interest Rate"
                             type="text"
                             value={newDataInput.interestRate}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -194,6 +197,7 @@ const LoanPortofolio = () => {
                             label="Monthly Loan Repayment (Cash) ($)"
                             type="text"
                             value={newDataInput.monthlyLoanRepayment}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,

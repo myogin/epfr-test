@@ -21,6 +21,22 @@ const PropertyPortofolio = (props: Props) => {
 
   let { summaryOfProperty, setProperty } = useExistingPortofolio();
 
+  let initialState: SummaryOfProperty = {
+    client: "",
+    category: 0,
+    typeOfProperty: "",
+    yearPurchased: 0,
+    purchasePrice: 0,
+    loanAmount: 0,
+    currentOutstanding: 0,
+    monthlyLoanRepaymentCash: 0,
+    monthlyLoanRepaymentCPF: 0,
+    currentMarketValue: 0,
+  };
+
+  // inject initial state to useState
+  const [newData, setNewData] = useState(initialState);
+
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
 
@@ -125,6 +141,7 @@ const PropertyPortofolio = (props: Props) => {
                             label="Purchase Price ($)"
                             type="text"
                             name="purchasePrice"
+                            formStyle="text-right"
                             value={summaryOfProperty[0].purchasePrice}
                             handleChange={handleInputChange}
                           />
@@ -133,6 +150,7 @@ const PropertyPortofolio = (props: Props) => {
                             label="Current Outstanding Loan ($)"
                             type="text"
                             name="currentOutstanding"
+                            formStyle="text-right"
                             value={summaryOfProperty[0].currentOutstanding}
                             handleChange={handleInputChange}
                           />
@@ -141,6 +159,7 @@ const PropertyPortofolio = (props: Props) => {
                             label="Loan Amount Taken ($)"
                             type="text"
                             name="loanAmount"
+                            formStyle="text-right"
                             value={summaryOfProperty[0].loanAmount}
                             handleChange={handleInputChange}
                           />
@@ -149,6 +168,7 @@ const PropertyPortofolio = (props: Props) => {
                             label="Current Market Value ($)"
                             type="text"
                             name="currentMarketValue"
+                            formStyle="text-right"
                             value={summaryOfProperty[0].currentMarketValue}
                             handleChange={handleInputChange}
                           />

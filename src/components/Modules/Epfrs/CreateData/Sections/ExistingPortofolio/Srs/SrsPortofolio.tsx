@@ -96,6 +96,7 @@ const SrsPortofolio = () => {
                           label="Amount"
                           type="text"
                           value={newDataInput.amount}
+                          formStyle="text-right"
                           handleChange={(event) =>
                             setNewDataInput({
                               ...newDataInput,

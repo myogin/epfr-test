@@ -100,6 +100,7 @@ const CpfPortofolio = () => {
                             label="Ordinary Account"
                             type="text"
                             value={newDataInput.ordinaryAccount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -112,6 +113,7 @@ const CpfPortofolio = () => {
                             label="Special Account"
                             type="text"
                             value={newDataInput.specialAccount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -124,6 +126,7 @@ const CpfPortofolio = () => {
                             label="Medisave Account"
                             type="text"
                             value={newDataInput.medisaveAccount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -138,6 +141,7 @@ const CpfPortofolio = () => {
                             label="Retirement Account"
                             type="text"
                             value={newDataInput.retirementAccount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,

@@ -141,6 +141,7 @@ const InvestmentPortofolio = () => {
                             label="Investment Amount"
                             type="text"
                             value={newDataInput.investmentAmount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -153,6 +154,7 @@ const InvestmentPortofolio = () => {
                             label="Current Value"
                             type="text"
                             value={newDataInput.currentvalue}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,

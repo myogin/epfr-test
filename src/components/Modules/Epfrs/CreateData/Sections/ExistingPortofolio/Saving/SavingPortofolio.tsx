@@ -126,6 +126,7 @@ const SavingPortofolio = () => {
                             label="Savings Amount"
                             type="text"
                             value={newDataInput.savingAmount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
