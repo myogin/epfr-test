@@ -100,7 +100,8 @@ const OtherInsurance = (props : Props) => {
                     <div className="text-right text-green-deep">Client {i+1} </div>
                     <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input type="checkbox" checked={section7.answer.need.client[i][11]} onChange={(event) => handleClient(!section7.answer.need.client[i][11], i, 11) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input
+                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][11]} onChange={(event) => handleClient(!section7.answer.need.client[i][11], i, 11) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -122,6 +123,7 @@ const OtherInsurance = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="Value"
@@ -172,7 +174,8 @@ const OtherInsurance = (props : Props) => {
                     <div className="text-right text-green-deep">Client {i+1} </div>
                     <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input type="checkbox" checked={section7.answer.need.client[i][12]} onChange={(event) => handleClient(!section7.answer.need.client[i][12], i, 12) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input
+                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][12]} onChange={(event) => handleClient(!section7.answer.need.client[i][12], i, 12) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -193,6 +196,7 @@ const OtherInsurance = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="Value"
@@ -215,6 +219,7 @@ const OtherInsurance = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="date"
                     placeholder="date"
@@ -242,7 +247,8 @@ const OtherInsurance = (props : Props) => {
                     <div className="text-right text-green-deep">Client {i+1} </div>
                     <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input type="checkbox" checked={section7.answer.need.client[i][13]} onChange={(event) => handleClient(!section7.answer.need.client[i][13], i, 13) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input
+                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][13]} onChange={(event) => handleClient(!section7.answer.need.client[i][13], i, 13) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -303,6 +309,7 @@ const OtherInsurance = (props : Props) => {
           <tr>
             <td colSpan={total+1}>
               <Input
+                formStyle="text-right"
                 className="mb-10"
                 type="text"
                 placeholder="Additional Notes"

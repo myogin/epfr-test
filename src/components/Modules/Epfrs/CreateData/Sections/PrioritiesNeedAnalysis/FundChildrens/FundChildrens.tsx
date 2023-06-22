@@ -211,6 +211,7 @@ const FundChildrens =(props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -233,6 +234,7 @@ const FundChildrens =(props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -255,6 +257,7 @@ const FundChildrens =(props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -276,6 +279,7 @@ const FundChildrens =(props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -331,6 +335,7 @@ const FundChildrens =(props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -352,6 +357,7 @@ const FundChildrens =(props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -425,6 +431,7 @@ const FundChildrens =(props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"

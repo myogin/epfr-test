@@ -152,7 +152,8 @@ const EstatePlanning = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
-                    className="mb-10"
+                formStyle="text-right"
+                className="mb-10"
                     type="date"
                     placeholder="date"
                     name="lastUpdated"
@@ -256,6 +257,7 @@ const EstatePlanning = (props : Props) => {
           <tr>
             <td colSpan={total+1}>
               <Input
+                formStyle="text-right"
                 className="mb-10"
                 type="text"
                 placeholder="Additional Notes"

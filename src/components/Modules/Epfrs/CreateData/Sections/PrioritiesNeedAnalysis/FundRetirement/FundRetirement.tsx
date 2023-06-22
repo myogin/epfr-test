@@ -106,7 +106,8 @@ const FundRetirement = () => {
                     <div className="text-right text-green-deep">Client {i+1} </div>
                     <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input type="checkbox" checked={section7.answer.need.client[i][5]} onChange={(event) => handleClient(!section7.answer.need.client[i][5], i, 5) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input
+                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][5]} onChange={(event) => handleClient(!section7.answer.need.client[i][5], i, 5) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -125,7 +126,8 @@ const FundRetirement = () => {
                       <div className="text-right text-green-deep">Dependant {i+1} </div>
                       <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-dependant-${i}`}>
                         <div className='items-start justify-start gap-4'>
-                          <input type="checkbox" checked={section7.answer.need.dependant[i][5]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][5], i, 1) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                          <input
+                            formStyle="text-right" type="checkbox" checked={section7.answer.need.dependant[i][5]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][5], i, 1) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                           <span className={``}> Review</span>
                         </div>
                       </div>
@@ -145,6 +147,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -161,6 +164,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -245,6 +249,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -261,6 +266,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -283,6 +289,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -299,6 +306,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -347,6 +355,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -363,6 +372,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -412,6 +422,7 @@ const FundRetirement = () => {
                   (section7.answer.clientData[i].fundRetirementLifeStyle.selectedMethod == 1) ?
                     <td className={``}>
                       <Input
+                        formStyle="text-right"
                         className="mb-10"
                         type="text"
                         placeholder="1,000,000"
@@ -429,6 +440,7 @@ const FundRetirement = () => {
                   (section7.answer.dependantData[i].fundRetirementLifeStyle.selectedMethod == 1) ?
                     <td className={``}>
                       <Input
+                        formStyle="text-right"
                         className="mb-10"
                         type="text"
                         placeholder="1,000,000"
@@ -453,6 +465,7 @@ const FundRetirement = () => {
                   (section7.answer.clientData[i].fundRetirementLifeStyle.selectedMethod == 1) ?
                     <td className={``}>
                       <Input
+                        formStyle="text-right"
                         className="mb-10"
                         type="text"
                         placeholder="1,000,000"
@@ -470,6 +483,7 @@ const FundRetirement = () => {
                   (section7.answer.dependantData[i].fundRetirementLifeStyle.selectedMethod == 1) ?
                     <td className={``}>
                       <Input
+                        formStyle="text-right"
                         className="mb-10"
                         type="text"
                         placeholder="1,000,000"
@@ -519,6 +533,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -535,6 +550,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -557,6 +573,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -573,6 +590,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -621,6 +639,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -637,6 +656,7 @@ const FundRetirement = () => {
                 return (
                   <td className={``}>
                     <Input
+                      formStyle="text-right"
                       className="mb-10"
                       type="text"
                       placeholder="1,000,000"
@@ -683,6 +703,7 @@ const FundRetirement = () => {
           <tr>
             <td colSpan={total+1}>
               <Input
+                formStyle="text-right"
                 className="mb-10"
                 type="text"
                 placeholder="Additional Notes"

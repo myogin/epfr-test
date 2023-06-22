@@ -186,6 +186,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -202,6 +203,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -224,6 +226,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -240,6 +243,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -262,6 +266,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -278,6 +283,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -326,6 +332,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -342,6 +349,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -371,6 +379,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -387,6 +396,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -409,6 +419,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -425,6 +436,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -504,6 +516,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -520,6 +533,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -542,6 +556,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -558,6 +573,7 @@ const FundCritical = (props : Props) => {
               return (
                 <td className={``}>
                   <Input
+                    formStyle="text-right"
                     className="mb-10"
                     type="text"
                     placeholder="1,000,000"
@@ -603,6 +619,7 @@ const FundCritical = (props : Props) => {
           <tr>
             <td colSpan={total+1}>
               <Input
+                formStyle="text-right"
                 className="mb-10"
                 type="text"
                 placeholder="Additional Notes"
