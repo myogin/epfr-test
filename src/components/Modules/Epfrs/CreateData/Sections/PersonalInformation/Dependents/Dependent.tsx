@@ -1,4 +1,3 @@
-import SubSectionCardDoubleGrid from "@/components/Attributes/Cards/SubSectionCardDoubleGrid";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
@@ -9,10 +8,10 @@ import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
-import moment from "moment";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { DependantInformation } from "@/models/SectionOne";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import moment from "moment";
 
 interface Props {
   datas?: Array<any>;
@@ -20,17 +19,22 @@ interface Props {
 
 const Dependent = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
-  const [dependentData, setDependentData] = useState(props.datas);
 
-  // handle new data dependent
-  const [newDependent, setNewDependent] = useState<DependantInformation>({
+  // Get data from zustand state
+  let { dependant, setDependent } = usePersonalInformation();
+
+  // Initiate new local state for new data
+  let initialState : DependantInformation = {
     name: "",
     relationship: "",
     dateOfBirth: "",
     age: 0,
     gender: "",
-    year: "",
-  });
+    year: ""
+  }
+
+  // inject initial state to useState
+  const [newDependent, setNewDependent] = useState(initialState);
 
   // Variable Select Box
   let relationships: Array<any> = [
@@ -57,7 +61,6 @@ const Dependent = (props: Props) => {
   };
 
   const checkRelationship = (params: any) => {
-    // setNewDependent({ ...newDependent, relationships: params });
     switch (params) {
       case "SON":
         setNewDependent({
@@ -84,8 +87,6 @@ const Dependent = (props: Props) => {
   };
 
   const checkBirthDate = (params: any) => {
-    // setNewDependent({ ...newDependent, dateOfBirth: params });
-
     let currentDate = new Date();
     let dependentBirthDate = new Date(params);
 
@@ -115,28 +116,10 @@ const Dependent = (props: Props) => {
   const saveData = (event: any) => {
     console.log("Masuk Save");
 
-    setDependentData((prevArray: any) => [...prevArray, newDependent]);
-    setNewDependent({
-      name: "",
-      relationship: "",
-      dateOfBirth: "",
-      age: 0,
-      gender: "",
-      year: "",
-    });
+    setDependent(newDependent);
+    setNewDependent(initialState);
     setShowModal(false);
   };
-
-  let localStorageSectionOne: any = [];
-  let localStorageSectionOneNormal: any = [];
-
-  // get if existing data from local storage
-  if (typeof window !== "undefined") {
-    localStorageSectionOne = localStorage.getItem("section1")
-      ? localStorage.getItem("section1")
-      : [];
-    localStorageSectionOneNormal = JSON.parse(localStorageSectionOne);
-  }
 
   const openModal = () => {
     setShowModal(true);
@@ -300,8 +283,8 @@ const Dependent = (props: Props) => {
             </tr>
           </thead>
           <tbody>
-            {dependentData?.length &&
-              dependentData.map((data, index) => (
+            {dependant?.length &&
+              dependant.map((data, index) => (
                 <tr key={"dependent-" + index}>
                   <td className="px-2 py-5">{++index}</td>
                   <td className="px-2 py-5">{data.name}</td>

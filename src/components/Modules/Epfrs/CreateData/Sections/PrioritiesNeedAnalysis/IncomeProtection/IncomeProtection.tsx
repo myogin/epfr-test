@@ -5,8 +5,9 @@ import TextThin from '@/components/Attributes/Typography/TextThin'
 import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
+
 import React, {useState, useEffect} from 'react'
-import Dependent from '../../PersonalInformation/Dependent'
+import Dependent from '../../PersonalInformation/Dependents/Dependent'
 import Toggle from "@/components/Forms/Toggle";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 

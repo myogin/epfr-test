@@ -11,6 +11,7 @@ import React, { useState } from "react";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const SwitchingReplacement = (props: Props) => {

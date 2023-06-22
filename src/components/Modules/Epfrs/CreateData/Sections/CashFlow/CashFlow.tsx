@@ -19,6 +19,7 @@ import { SectionThree } from "@/models/SectionThree";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const CashFlow = (props: Props) => {

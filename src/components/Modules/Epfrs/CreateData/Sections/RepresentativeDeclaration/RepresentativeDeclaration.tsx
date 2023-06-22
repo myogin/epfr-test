@@ -14,6 +14,7 @@ import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const RepresentativeDeclaration = (props: Props) => {

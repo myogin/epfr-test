@@ -21,6 +21,7 @@ import { log } from "console";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const BalanceSheet = (props: Props) => {

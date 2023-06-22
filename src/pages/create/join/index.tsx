@@ -25,6 +25,8 @@ import ArrowLeftSLineIcon from 'remixicon-react/ArrowLeftSLineIcon';
 
 const EpfrCreateJoint: Page = () => {
 
+  let pfrType = 2;
+
   let showElement = useNavigationSection(
     (state: { sectionCreateEpfrId: number }) => state.sectionCreateEpfrId
   );
