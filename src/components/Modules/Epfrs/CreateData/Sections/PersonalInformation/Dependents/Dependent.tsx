@@ -135,20 +135,20 @@ const Dependent = (props: Props) => {
   };
 
   const openModalEdit = (params: any) => {
-    console.log(params);
+    const detailDependent = dependant.filter((obj) => obj.id === params);
+    setNewDependent(detailDependent[0]);
     setShowModal(true);
   };
 
   const modalRemoveDependent = (params: any) => {
-    console.log("masuk sini nggak modal remove " + params);
     setShowModalRemove(true);
     setActionDependentId(params);
   };
 
-  const removeDependentAction = (params : any) => {
-    removeDependent(params)
-    setShowModalRemove(false)
-  }
+  const removeDependentAction = (params: any) => {
+    removeDependent(params);
+    setShowModalRemove(false);
+  };
 
   return (
     <>
@@ -158,7 +158,11 @@ const Dependent = (props: Props) => {
         </ButtonBox>
 
         <Transition appear show={showModal} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={() => setShowModal(false)}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModal(false)}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -273,7 +277,9 @@ const Dependent = (props: Props) => {
                       <ButtonGreenMedium onClick={saveData}>
                         Save
                       </ButtonGreenMedium>
-                      <ButtonTransparentMedium onClick={() => setShowModal(false)}>
+                      <ButtonTransparentMedium
+                        onClick={() => setShowModal(false)}
+                      >
                         Cancel
                       </ButtonTransparentMedium>
                     </div>
@@ -286,7 +292,11 @@ const Dependent = (props: Props) => {
 
         {/* Modal Delete */}
         <Transition appear show={showModalRemove} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={() => setShowModalRemove(false)}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModalRemove(false)}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
