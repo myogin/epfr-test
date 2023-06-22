@@ -20,7 +20,6 @@ import LoanPortofolio from "./Loan/LoanPortofolio";
 import PropertyPortofolio from "./Property/PropertyPortofolio";
 import SavingPortofolio from "./Saving/SavingPortofolio";
 import SrsPortofolio from "./Srs/SrsPortofolio";
-import VehiclesPortofolio from "./Vehicles/VehiclesPortofolio";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
@@ -98,7 +97,7 @@ const ExistingPortofolio = (props: Props) => {
         <>
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">
-              2.1 Summary of Property(ies) test {summaryOfProperty[0].editting}
+              2.1 Summary of Property(ies)
             </h2>
             <Toggle
               isChecked={summaryOfProperty[0].editting}

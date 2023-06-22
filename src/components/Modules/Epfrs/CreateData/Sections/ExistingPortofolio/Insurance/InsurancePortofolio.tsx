@@ -4,6 +4,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import { SummaryOfInsurance, SummaryOfInsurance2 } from "@/models/SectionTwo";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -12,6 +13,9 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const InsurancePortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+
+  let { summaryOfInsurance, summaryOfInsurance2, setInsurance, setInsurance2 } =
+    useExistingPortofolio();
 
   const [newDataInput, setNewDataInput] = useState<SummaryOfInsurance>({
     editting: false,
@@ -444,112 +448,115 @@ const InsurancePortofolio = () => {
           </Dialog>
         </Transition>
       </div>
+      {summaryOfInsurance[0].client !== "" ? (
+        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+            <thead className="text-left bg-white-bone">
+              <tr className="border-b border-gray-soft-strong">
+                <th className="px-2 py-5">SN</th>
+                <th className="px-2 py-5">Client</th>
+                <th className="px-2 py-5">Insured</th>
+                <th className="px-2 py-5">Insurer</th>
+                <th className="px-2 py-5">Policy Type</th>
+                <th className="px-2 py-5">Policy Term</th>
+                <th className="px-2 py-5">Sum Assured Death</th>
+                <th className="px-2 py-5">Sum Assured TPD</th>
+                <th className="px-2 py-5">Sum Assured CI</th>
+                <th className="px-2 py-5">Sum Assured Early CI</th>
+                <th className="px-2 py-5">Sum Assured Acc</th>
+                <th className="px-2 py-5">Year Of Purchase</th>
+                <th className="px-2 py-5">Premium</th>
+                <th className="px-2 py-5">Premium Frequency</th>
+                <th className="px-2 py-5">Source Of Fund</th>
+                <th className="px-2 py-5"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-2 py-5">1</td>
+                <td className="px-2 py-5">Client 1</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="w-1/12 px-2 py-5">
+                  <div className="flex w-full gap-2">
+                    <ButtonBox className="text-green-deep">
+                      <PencilLineIcon size={14} />
+                    </ButtonBox>
+                    <ButtonBox className="text-red">
+                      <CloseLineIcon size={14} />
+                    </ButtonBox>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : null}
 
-      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-          <thead className="text-left bg-white-bone">
-            <tr className="border-b border-gray-soft-strong">
-              <th className="px-2 py-5">SN</th>
-              <th className="px-2 py-5">Client</th>
-              <th className="px-2 py-5">Insured</th>
-              <th className="px-2 py-5">Insurer</th>
-              <th className="px-2 py-5">Policy Type</th>
-              <th className="px-2 py-5">Policy Term</th>
-              <th className="px-2 py-5">Sum Assured Death</th>
-              <th className="px-2 py-5">Sum Assured TPD</th>
-              <th className="px-2 py-5">Sum Assured CI</th>
-              <th className="px-2 py-5">Sum Assured Early CI</th>
-              <th className="px-2 py-5">Sum Assured Acc</th>
-              <th className="px-2 py-5">Year Of Purchase</th>
-              <th className="px-2 py-5">Premium</th>
-              <th className="px-2 py-5">Premium Frequency</th>
-              <th className="px-2 py-5">Source Of Fund</th>
-              <th className="px-2 py-5"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-2 py-5">1</td>
-              <td className="px-2 py-5">Client 1</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="w-1/12 px-2 py-5">
-                <div className="flex w-full gap-2">
-                  <ButtonBox className="text-green-deep">
-                    <PencilLineIcon size={14} />
-                  </ButtonBox>
-                  <ButtonBox className="text-red">
-                    <CloseLineIcon size={14} />
-                  </ButtonBox>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-          <thead className="text-left bg-white-bone">
-            <tr className="border-b border-gray-soft-strong">
-              <th className="px-2 py-5">SN</th>
-              <th className="px-2 py-5">Client</th>
-              <th className="px-2 py-5">Insured</th>
-              <th className="px-2 py-5">Insurer</th>
-              <th className="px-2 py-5">Policy Type</th>
-              <th className="px-2 py-5">Policy Term</th>
-              <th className="px-2 py-5">
-                Existing Hospitalization Plan (If Any)
-              </th>
-              <th className="px-2 py-5">Type Of Hospital Covered</th>
-              <th className="px-2 py-5">Class Of Ward Covered</th>
-              <th className="px-2 py-5">Year Of Purchase</th>
-              <th className="px-2 py-5">Premium Cash</th>
-              <th className="px-2 py-5">Premium Medisave</th>
-              <th className="px-2 py-5">Frequency</th>
-              <th className="px-2 py-5"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-2 py-5">1</td>
-              <td className="px-2 py-5">Client 1</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="w-1/12 px-2 py-5">
-                <div className="flex w-full gap-2">
-                  <ButtonBox className="text-green-deep">
-                    <PencilLineIcon size={14} />
-                  </ButtonBox>
-                  <ButtonBox className="text-red">
-                    <CloseLineIcon size={14} />
-                  </ButtonBox>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {summaryOfInsurance2[0].client !== "" ? (
+        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+            <thead className="text-left bg-white-bone">
+              <tr className="border-b border-gray-soft-strong">
+                <th className="px-2 py-5">SN</th>
+                <th className="px-2 py-5">Client</th>
+                <th className="px-2 py-5">Insured</th>
+                <th className="px-2 py-5">Insurer</th>
+                <th className="px-2 py-5">Policy Type</th>
+                <th className="px-2 py-5">Policy Term</th>
+                <th className="px-2 py-5">
+                  Existing Hospitalization Plan (If Any)
+                </th>
+                <th className="px-2 py-5">Type Of Hospital Covered</th>
+                <th className="px-2 py-5">Class Of Ward Covered</th>
+                <th className="px-2 py-5">Year Of Purchase</th>
+                <th className="px-2 py-5">Premium Cash</th>
+                <th className="px-2 py-5">Premium Medisave</th>
+                <th className="px-2 py-5">Frequency</th>
+                <th className="px-2 py-5"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-2 py-5">1</td>
+                <td className="px-2 py-5">Client 1</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="w-1/12 px-2 py-5">
+                  <div className="flex w-full gap-2">
+                    <ButtonBox className="text-green-deep">
+                      <PencilLineIcon size={14} />
+                    </ButtonBox>
+                    <ButtonBox className="text-red">
+                      <CloseLineIcon size={14} />
+                    </ButtonBox>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </SectionCardSingleGrid>
   );
 };

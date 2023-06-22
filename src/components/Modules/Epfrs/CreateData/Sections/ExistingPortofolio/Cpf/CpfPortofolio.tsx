@@ -4,16 +4,17 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import { SummaryOfCPF } from "@/models/SectionTwo";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
-
 const CpfPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
-  
+
+  let { summaryOfCPF, setCpf } = useExistingPortofolio();
 
   const [newDataInput, setNewDataInput] = useState<SummaryOfCPF>({
     editting: false,
@@ -23,8 +24,6 @@ const CpfPortofolio = () => {
     medisaveAccount: 0,
     retirementAccount: 0,
   });
-
-
 
   const setData = (params: any) => {
     console.log(params);
@@ -101,6 +100,7 @@ const CpfPortofolio = () => {
                             label="Ordinary Account"
                             type="text"
                             value={newDataInput.ordinaryAccount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -113,6 +113,7 @@ const CpfPortofolio = () => {
                             label="Special Account"
                             type="text"
                             value={newDataInput.specialAccount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -125,6 +126,7 @@ const CpfPortofolio = () => {
                             label="Medisave Account"
                             type="text"
                             value={newDataInput.medisaveAccount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -139,6 +141,7 @@ const CpfPortofolio = () => {
                             label="Retirement Account"
                             type="text"
                             value={newDataInput.retirementAccount}
+                            formStyle="text-right"
                             handleChange={(event) =>
                               setNewDataInput({
                                 ...newDataInput,
@@ -165,40 +168,46 @@ const CpfPortofolio = () => {
           </Dialog>
         </Transition>
       </div>
-
-      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-          <thead className="text-left bg-white-bone">
-            <tr className="border-b border-gray-soft-strong">
-              <th className="px-2 py-5">SN</th>
-              <th className="px-2 py-5">Ordinary Account</th>
-              <th className="px-2 py-5">Special Account</th>
-              <th className="px-2 py-5">Medisave Account</th>
-              <th className="px-2 py-5">Retirement Account</th>
-              <th className="px-2 py-5"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-2 py-5">1</td>
-              <td className="px-2 py-5">Client 1</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="w-1/12 px-2 py-5">
-                <div className="flex w-full gap-2">
-                  <ButtonBox className="text-green-deep">
-                    <PencilLineIcon size={14} />
-                  </ButtonBox>
-                  <ButtonBox className="text-red">
-                    <CloseLineIcon size={14} />
-                  </ButtonBox>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {summaryOfCPF[0].client !== "" ? (
+        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+            <thead className="text-left bg-white-bone">
+              <tr className="border-b border-gray-soft-strong">
+                <th className="px-2 py-5">SN</th>
+                <th className="px-2 py-5">Client</th>
+                <th className="px-2 py-5">Ordinary Account</th>
+                <th className="px-2 py-5">Special Account</th>
+                <th className="px-2 py-5">Medisave Account</th>
+                <th className="px-2 py-5">Retirement Account</th>
+                <th className="px-2 py-5"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {summaryOfCPF?.length && summaryOfCPF.map((value, index) => (
+                <tr key={index}>
+                <td className="px-2 py-5">{++index}</td>
+                <td className="px-2 py-5">{value.client}</td>
+                <td className="px-2 py-5">{value.ordinaryAccount}</td>
+                <td className="px-2 py-5">{value.specialAccount}</td>
+                <td className="px-2 py-5">{value.medisaveAccount}</td>
+                <td className="px-2 py-5">{value.retirementAccount}</td>
+                <td className="w-1/12 px-2 py-5">
+                  <div className="flex w-full gap-2">
+                    <ButtonBox className="text-green-deep">
+                      <PencilLineIcon size={14} />
+                    </ButtonBox>
+                    <ButtonBox className="text-red">
+                      <CloseLineIcon size={14} />
+                    </ButtonBox>
+                  </div>
+                </td>
+              </tr>
+              ))}
+              
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </SectionCardSingleGrid>
   );
 };

@@ -36,6 +36,7 @@ const Select = (props: Props) => {
         className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
         onChange={props.handleChange}
       >
+        <option value="-">Please select data</option>
         {props.datas?.length &&
           props.datas.map((val, index) => (
             <option

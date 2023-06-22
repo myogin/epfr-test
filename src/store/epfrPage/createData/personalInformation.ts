@@ -5,7 +5,7 @@ import { produce } from "immer";
 
 type Actions = {
   setClient: (clientType: number, name: string, value: any) => any;
-  setDependent: (clientType: number, name: string, value: any) => any;
+  setDependent: (params : any) => any;
   setAccompaniment: (clientType: number, name: string, value: any) => any;
   setTrustedIndividuals: (clientType: number, name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
@@ -94,18 +94,17 @@ const personalInformation = create(
               client[name] = value;
             })
           ),
-        setDependent: (clientType: number, name: string, value: any) =>
+        setDependent: (params : any) =>
           set(
             produce((draft) => {
-              let dependant = draft.dependant[clientType];
-              dependant[name] = value;
+              draft.dependant.push(params)
             })
           ),
         setAccompaniment: (clientType: number, name: string, value: any) =>
           set(
             produce((draft) => {
-              let dependant = draft.dependant[clientType];
-              dependant[name] = value;
+              let accompaniment = draft.accompaniment[clientType];
+              accompaniment[name] = value;
             })
           ),
         setTrustedIndividuals: (clientType: number, name: string, value: any) =>
@@ -115,7 +114,7 @@ const personalInformation = create(
             produce((draft) => {
               draft[name] = value;
             })
-          ),
+          )
       }),
       {
         name: "section1",

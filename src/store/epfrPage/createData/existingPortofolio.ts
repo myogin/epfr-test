@@ -149,11 +149,10 @@ const existingPortofolio = create(
     persist<SectionTwo & Actions>(
       (set, get) => ({
         ...initialState,
-        setProperty: (clientType: number, name: string, value: any) =>
+        setProperty: (params : any) =>
           set(
             produce((draft) => {
-              let data = draft.summaryOfProperty[clientType];
-              data[name] = value;
+              draft.summaryOfProperty.push(params)
             })
           ),
         setInvestment: (clientType: number, name: string, value: any) =>
