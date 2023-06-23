@@ -14,10 +14,15 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 const InvestmentPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
-  let { summaryOfInvestment, setInvestment } = useExistingPortofolio();
+  let { summaryOfInvestment, setInvestment, patchInvestment, removeData } = useExistingPortofolio();
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [actionDatatId, setActionDataId] = useState(0);
+  const [saveType, setSaveType] = useState("");
 
-  const [newDataInput, setNewDataInput] = useState<SummaryOfInvestment>({
-    editting: false,
+  let checkIndex = checkData(summaryOfInvestment);
+
+  let initialState: SummaryOfInvestment = {
+    id: checkIndex,
     client: "",
     typeOfInvestment: "",
     typeOfInvestmentOther: "",
@@ -26,22 +31,47 @@ const InvestmentPortofolio = () => {
     investmentAmount: 0,
     currentvalue: 0,
     sourceOfInvestment: "",
-  });
-
-  const setData = (params: any) => {
-    console.log(params);
   };
 
-  const saveData = () => {
-    console.log("Save test");
-  };
+
+  // inject initial state to useState
+  const [newData, setNewData] = useState(initialState);
 
   const openModal = () => {
+    setSaveType("add");
+    setNewData(initialState);
     setShowModal(true);
   };
 
-  const closeModal = () => {
+  const openModalEdit = (params: any) => {
+    setSaveType("update");
+    const detailData = summaryOfInvestment.filter((obj) => obj.id === params);
+    setNewData(detailData[0]);
+    setShowModal(true);
+  };
+
+  const saveData = () => {
+    let checkTotalData = summaryOfInvestment?.length === 0 || summaryOfInvestment[0].id === 0 ? 0 : 1;
+
+    console.log(checkTotalData);
+    
+    if (saveType === "add") {
+      setInvestment(checkTotalData, newData);
+    } else {
+      patchInvestment(newData);
+    }
+
     setShowModal(false);
+  };
+
+  const modalRemoveData = (params: any) => {
+    setShowModalRemove(true);
+    setActionDataId(params);
+  };
+
+  const removeDataAction = (params: any) => {
+    removeData("summaryOfInvestment", params);
+    setShowModalRemove(false);
   };
 
   return (
@@ -52,7 +82,7 @@ const InvestmentPortofolio = () => {
         </ButtonBox>
 
         <Transition appear show={showModal} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Dialog as="div" className="relative z-10" onClose={() => setShowModal(false)}>
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -90,10 +120,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Client"
                             type="text"
-                            value={newDataInput.client}
+                            value={newData.client}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 client: event.target.value,
                               })
                             }
@@ -102,10 +132,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Type Of Investment"
                             type="text"
-                            value={newDataInput.typeOfInvestment}
+                            value={newData.typeOfInvestment}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 typeOfInvestment: event.target.value,
                               })
                             }
@@ -114,10 +144,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Company"
                             type="text"
-                            value={newDataInput.company}
+                            value={newData.company}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 company: event.target.value,
                               })
                             }
@@ -126,10 +156,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Year Invested"
                             type="text"
-                            value={newDataInput.yearInvested}
+                            value={newData.yearInvested}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 yearInvested: Number(event.target.value),
                               })
                             }
@@ -140,11 +170,11 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Investment Amount"
                             type="text"
-                            value={newDataInput.investmentAmount}
+                            value={newData.investmentAmount}
                             formStyle="text-right"
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 investmentAmount: Number(event.target.value),
                               })
                             }
@@ -153,11 +183,11 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Current Value"
                             type="text"
-                            value={newDataInput.currentvalue}
+                            value={newData.currentvalue}
                             formStyle="text-right"
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 currentvalue: Number(event.target.value),
                               })
                             }
@@ -166,10 +196,10 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Source Of Investment"
                             type="text"
-                            value={newDataInput.sourceOfInvestment}
+                            value={newData.sourceOfInvestment}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 sourceOfInvestment: event.target.value,
                               })
                             }
@@ -182,7 +212,7 @@ const InvestmentPortofolio = () => {
                       <ButtonGreenMedium onClick={() => saveData()}>
                         Save
                       </ButtonGreenMedium>
-                      <ButtonTransparentMedium onClick={closeModal}>
+                      <ButtonTransparentMedium onClick={() => setShowModal(false)}>
                         Cancel
                       </ButtonTransparentMedium>
                     </div>
@@ -192,8 +222,74 @@ const InvestmentPortofolio = () => {
             </div>
           </Dialog>
         </Transition>
+
+        {/* Modal Delete */}
+        <Transition appear show={showModalRemove} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModalRemove(false)}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-full p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Remove Data
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Are you sure to remove this data.?
+                      </p>
+                    </div>
+
+                    <div className="mt-4">
+                      <button
+                        type="button"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={() => removeDataAction(actionDatatId)}
+                      >
+                        Remove
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={() => setShowModalRemove(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
       </div>
-      {summaryOfInvestment[0].client !== "" ? (
+      {summaryOfInvestment?.length && summaryOfInvestment[0].client !== "" ? (
         <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
           <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
             <thead className="text-left bg-white-bone">
@@ -211,22 +307,22 @@ const InvestmentPortofolio = () => {
             </thead>
             <tbody>
               {summaryOfInvestment?.length &&
-                summaryOfInvestment.map((value, index) => (
+                summaryOfInvestment.map((data, index) => (
                   <tr key={index}>
                     <td className="px-2 py-5">{++index}</td>
-                    <td className="px-2 py-5">{value.client}</td>
-                    <td className="px-2 py-5">{value.typeOfInvestment}</td>
-                    <td className="px-2 py-5">{value.company}</td>
-                    <td className="px-2 py-5">{value.yearInvested}</td>
-                    <td className="px-2 py-5">{value.investmentAmount}</td>
-                    <td className="px-2 py-5">{value.currentvalue}</td>
-                    <td className="px-2 py-5">{value.sourceOfInvestment}</td>
+                    <td className="px-2 py-5">{data.client}</td>
+                    <td className="px-2 py-5">{data.typeOfInvestment}</td>
+                    <td className="px-2 py-5">{data.company}</td>
+                    <td className="px-2 py-5">{data.yearInvested}</td>
+                    <td className="px-2 py-5">{data.investmentAmount}</td>
+                    <td className="px-2 py-5">{data.currentvalue}</td>
+                    <td className="px-2 py-5">{data.sourceOfInvestment}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
-                        <ButtonBox className="text-green-deep">
+                        <ButtonBox className="text-green-deep" onClick={() => openModalEdit(data.id)}>
                           <PencilLineIcon size={14} />
                         </ButtonBox>
-                        <ButtonBox className="text-red">
+                        <ButtonBox className="text-red" onClick={() => modalRemoveData(data.id)}>
                           <CloseLineIcon size={14} />
                         </ButtonBox>
                       </div>
@@ -240,5 +336,20 @@ const InvestmentPortofolio = () => {
     </SectionCardSingleGrid>
   );
 };
+
+function checkData(datas: any) {
+  let data: number = 0;
+  if (datas?.length) {
+    if (datas[0].client === "") {
+      data = datas.length;
+    } else {
+      data = datas.length + 1;
+    }
+  } else {
+    data = datas.length + 1;
+  }
+
+  return data;
+}
 
 export default InvestmentPortofolio;

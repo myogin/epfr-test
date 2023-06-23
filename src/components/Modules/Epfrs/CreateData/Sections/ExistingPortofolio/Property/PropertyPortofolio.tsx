@@ -22,7 +22,7 @@ const PropertyPortofolio = (props: Props) => {
   const [actionDatatId, setActionDataId] = useState(0);
   const [saveType, setSaveType] = useState("");
 
-  let { summaryOfProperty, setProperty, removeProperty, patchProperty } =
+  let { summaryOfProperty, setProperty, removeData, patchProperty } =
     useExistingPortofolio();
 
   let checkIndex = checkPropertyData(summaryOfProperty);
@@ -80,7 +80,7 @@ const PropertyPortofolio = (props: Props) => {
   };
 
   const removeDataAction = (params: any) => {
-    removeProperty(params);
+    removeData("summaryOfProperty",params);
     setShowModalRemove(false);
   };
 

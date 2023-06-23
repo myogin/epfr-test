@@ -5,7 +5,8 @@ import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
   setProperty: (indexData: number, params: any) => any;
-  setInvestment: (clientType: number, name: string, value: any) => any;
+  setInvestment: (indexData: number, params: any) => any;
+  patchInvestment: (params: any) => any;
   setSaving: (clientType: number, name: string, value: any) => any;
   setCpf: (clientType: number, name: string, value: any) => any;
   setInsurance: (clientType: number, name: string, value: any) => any;
@@ -13,8 +14,8 @@ type Actions = {
   setSrs: (clientType: number, name: string, value: any) => any;
   setLoan: (clientType: number, name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
-  removeProperty: (params : any) => any;
-  patchProperty: (params : any) => any;
+  removeData: (attribut: string, params: any) => any;
+  patchProperty: (params: any) => any;
   setToggle: (
     object: string,
     clientType: number,
@@ -177,16 +178,6 @@ const existingPortofolio = create(
               }
             })
           ),
-
-        removeProperty: (params: any) =>
-          set(
-            produce((draft) => {
-              const propertyIndex = draft.summaryOfProperty.findIndex(
-                (el: any) => el.id === params
-              );
-              draft.summaryOfProperty.splice(propertyIndex, 1);
-            })
-          ),
         patchProperty: (params: any) =>
           set(
             produce((draft) => {
@@ -207,11 +198,47 @@ const existingPortofolio = create(
               property.currentMarketValue = params.currentMarketValue;
             })
           ),
-        setInvestment: (clientType: number, name: string, value: any) =>
+        setInvestment: (indexData: number, params: any) =>
           set(
             produce((draft) => {
-              let data = draft.summaryOfInvestment[clientType];
-              data[name] = value;
+              if (indexData === 0 && get().summaryOfProperty?.length) {
+                let propertyReplace = draft.summaryOfProperty[indexData];
+                propertyReplace.id = params.id;
+                propertyReplace.client = params.client;
+                propertyReplace.category = params.category;
+                propertyReplace.typeOfProperty = params.typeOfProperty;
+                propertyReplace.yearPurchased = params.yearPurchased;
+                propertyReplace.purchasePrice = params.purchasePrice;
+                propertyReplace.loanAmount = params.loanAmount;
+                propertyReplace.currentOutstanding = params.currentOutstanding;
+                propertyReplace.monthlyLoanRepaymentCash =
+                  params.monthlyLoanRepaymentCash;
+                propertyReplace.monthlyLoanRepaymentCPF =
+                  params.monthlyLoanRepaymentCPF;
+                propertyReplace.currentMarketValue = params.currentMarketValue;
+              } else {
+                draft.summaryOfProperty.push(params);
+              }
+            })
+          ),
+        patchInvestment: (params: any) =>
+          set(
+            produce((draft) => {
+              const property = draft.summaryOfProperty.find(
+                (el: any) => el.id === params.id
+              );
+
+              property.client = params.client;
+              property.category = params.category;
+              property.typeOfProperty = params.typeOfProperty;
+              property.yearPurchased = params.yearPurchased;
+              property.purchasePrice = params.purchasePrice;
+              property.loanAmount = params.loanAmount;
+              property.currentOutstanding = params.currentOutstanding;
+              property.monthlyLoanRepaymentCash =
+                params.monthlyLoanRepaymentCash;
+              property.monthlyLoanRepaymentCPF = params.monthlyLoanRepaymentCPF;
+              property.currentMarketValue = params.currentMarketValue;
             })
           ),
         setSaving: (clientType: number, name: string, value: any) =>
@@ -256,6 +283,7 @@ const existingPortofolio = create(
               data[name] = value;
             })
           ),
+
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
@@ -272,6 +300,14 @@ const existingPortofolio = create(
             produce((draft) => {
               let getObject = draft[object][clientType];
               getObject[name] = value;
+            })
+          ),
+        removeData: (attribut: string, params: any) =>
+          set(
+            produce((draft) => {
+              let data = draft[attribut];
+              const dataIndex = data.findIndex((el: any) => el.id === params);
+              data.splice(dataIndex, 1);
             })
           ),
       }),
