@@ -34,10 +34,10 @@ const PersonalInformation = (props: Props) => {
 
   const scrollPosition = useScrollPosition(1);
 
-  let { ownerId, type, id, dependant,accompaniment, issues, status } =
+  let { ownerId, type, id, dependant,accompaniment, issues, status, setTrustedIndividuals } =
     usePersonalInformation();
 
-  let checkAccompainment = CheckAccompainment(accompaniment);
+  let checkAccompainment = CheckAccompainment(accompaniment, setTrustedIndividuals);
 
   useEffect(() => {
     if (dependant?.length && dependant[0].name !== "") {
@@ -112,7 +112,8 @@ const PersonalInformation = (props: Props) => {
   );
 };
 
-function CheckAccompainment(accompaniment : any) {
+function CheckAccompainment(accompaniment : any, setTrustedIndividuals : any) {
+
 
   let checker = false;
 
@@ -122,6 +123,14 @@ function CheckAccompainment(accompaniment : any) {
     Number(accompaniment[0].education_level) <= 2
   ) {
     checker = true;
+    setTrustedIndividuals("condition1", true)
+  }
+
+  if(Number(accompaniment[0].english_spoken) === 2) {
+    setTrustedIndividuals("condition2", true)
+    checker = true;
+  }else {
+    setTrustedIndividuals("condition2", false)
   }
 
   return checker;

@@ -5,7 +5,7 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 import React from "react";
 
 const Accompainment = () => {
-  let { accompaniment,setAccompaniment } = usePersonalInformation();
+  let { accompaniment, setAccompaniment } = usePersonalInformation();
 
   let englishLevel: Array<any> = [
     { id: 1, name: "Proficient" },

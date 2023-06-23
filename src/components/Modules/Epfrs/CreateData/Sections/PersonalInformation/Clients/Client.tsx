@@ -26,7 +26,8 @@ const Client = () => {
         setClient(0, name, value);
 
         if (name === "dateOfBirth") {
-          countAgeClient();
+          console.log("masuk sini dob")
+          countAgeClient(value);
         }
 
         if (name === "clientTitle") {
@@ -42,11 +43,15 @@ const Client = () => {
     }
   };
 
-  const countAgeClient = () => {
-    let dob = new Date(clientInfo[0].dateOfBirth);
+  const countAgeClient = (params : Date) => {
+    let dob = new Date(params);
     let currentDate = new Date();
 
+    console.log(dob);
+
     if (!isNaN(dob.getTime())) {
+
+      console.log("Cek masuk sini nggak")
       const yearsDiff = currentDate.getFullYear() - dob.getFullYear();
       const monthsDiff = currentDate.getMonth() - dob.getMonth();
 

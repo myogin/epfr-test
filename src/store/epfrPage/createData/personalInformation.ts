@@ -9,7 +9,7 @@ type Actions = {
   removeDependent: (params: any) => any;
   patchDependent: (params: any) => any;
   setAccompaniment: (clientType: number, name: string, value: any) => any;
-  setTrustedIndividuals: (clientType: number, name: string, value: any) => any;
+  setTrustedIndividuals: (name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
 };
 
@@ -146,8 +146,11 @@ const personalInformation = create(
               accompaniment[name] = value;
             })
           ),
-        setTrustedIndividuals: (clientType: number, name: string, value: any) =>
-          set(produce((draft) => {})),
+        setTrustedIndividuals: (name: string, value: any) =>
+          set(produce((draft) => {
+            let trustedIndividual = draft.trustedIndividuals
+            trustedIndividual[name] = value;
+          })),
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
