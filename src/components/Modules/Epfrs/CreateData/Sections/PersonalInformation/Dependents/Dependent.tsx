@@ -20,7 +20,7 @@ interface Props {
 const Dependent = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
-  const [actionDependentId, setActionDependentId] = useState(0);
+  const [actionDatatId, setActionDataId] = useState(0);
   const [saveType, setSaveType] = useState("");
 
   // Get data from zustand state
@@ -42,7 +42,7 @@ const Dependent = (props: Props) => {
   };
 
   // inject initial state to useState
-  const [newDependent, setNewDependent] = useState(initialState);
+  const [newData, setNewData] = useState(initialState);
 
   // Variable Select Box
   let relationships: Array<any> = [
@@ -71,22 +71,22 @@ const Dependent = (props: Props) => {
   const checkRelationship = (params: any) => {
     switch (params) {
       case "SON":
-        setNewDependent({
-          ...newDependent,
+        setNewData({
+          ...newData,
           gender: "1",
           relationship: params,
         });
         break;
       case "DAUGHTER":
-        setNewDependent({
-          ...newDependent,
+        setNewData({
+          ...newData,
           gender: "2",
           relationship: params,
         });
         break;
       default:
-        setNewDependent({
-          ...newDependent,
+        setNewData({
+          ...newData,
           gender: "1",
           relationship: params,
         });
@@ -113,8 +113,8 @@ const Dependent = (props: Props) => {
         calculatedAge--;
       }
 
-      setNewDependent({
-        ...newDependent,
+      setNewData({
+        ...newData,
         age: calculatedAge,
         dateOfBirth: params,
       });
@@ -123,14 +123,14 @@ const Dependent = (props: Props) => {
 
   const openModal = () => {
     setSaveType("add");
-    setNewDependent(initialState);
+    setNewData(initialState);
     setShowModal(true);
   };
 
   const openModalEdit = (params: any) => {
     setSaveType("update");
-    const detailDependent = dependant.filter((obj) => obj.id === params);
-    setNewDependent(detailDependent[0]);
+    const detailData = dependant.filter((obj) => obj.id === params);
+    setNewData(detailData[0]);
     setShowModal(true);
   };
 
@@ -140,20 +140,20 @@ const Dependent = (props: Props) => {
       dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
     if (saveType === "add") {
-      setDependent(checkTotalData, newDependent);
+      setDependent(checkTotalData, newData);
     } else {
-      patchDependent(newDependent);
+      patchDependent(newData);
     }
 
     setShowModal(false);
   };
 
-  const modalRemoveDependent = (params: any) => {
+  const modalRemoveData = (params: any) => {
     setShowModalRemove(true);
-    setActionDependentId(params);
+    setActionDataId(params);
   };
 
-  const removeDependentAction = (params: any) => {
+  const removeDataAction = (params: any) => {
     removeDependent(params);
     setShowModalRemove(false);
   };
@@ -208,11 +208,11 @@ const Dependent = (props: Props) => {
                           label="Name"
                           name="nameDependent"
                           type="text"
-                          value={newDependent.name}
+                          value={newData.name}
                           placeholder="Dependent name"
                           handleChange={(event) =>
-                            setNewDependent({
-                              ...newDependent,
+                            setNewData({
+                              ...newData,
                               name: event.target.value,
                             })
                           }
@@ -225,18 +225,18 @@ const Dependent = (props: Props) => {
                             label="Relationship"
                             name="relationship"
                             datas={relationships}
-                            value={newDependent.relationship}
+                            value={newData.relationship}
                             handleChange={(event) =>
                               checkRelationship(event.target.value)
                             }
                           />
-                          {/* <DatePicker className="w-full px-0 py-2 my-4 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong" selected={newDependent.dateOfBirth} onChange={(date) => checkBirthDate(date)} /> */}
+                          {/* <DatePicker className="w-full px-0 py-2 my-4 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong" selected={newData.dateOfBirth} onChange={(date) => checkBirthDate(date)} /> */}
                           <Input
                             className="my-4"
                             label="Date Of Birth"
                             type="date"
                             name="dateOfBirth"
-                            value={newDependent.dateOfBirth}
+                            value={newData.dateOfBirth}
                             handleChange={(event) =>
                               checkBirthDate(event.target.value)
                             }
@@ -247,7 +247,7 @@ const Dependent = (props: Props) => {
                             label="Age"
                             type="number"
                             name="age"
-                            value={newDependent.age}
+                            value={newData.age}
                           />
                         </div>
                         <div>
@@ -255,11 +255,11 @@ const Dependent = (props: Props) => {
                             className="my-4"
                             label="Sex"
                             name="gender"
-                            value={newDependent.gender}
+                            value={newData.gender}
                             datas={genders}
                             handleChange={(event) =>
-                              setNewDependent({
-                                ...newDependent,
+                              setNewData({
+                                ...newData,
                                 gender: event.target.value,
                               })
                             }
@@ -269,11 +269,11 @@ const Dependent = (props: Props) => {
                             label="Years To Support"
                             type="number"
                             name="year"
-                            value={newDependent.year}
+                            value={newData.year}
                             placeholder="Years To Support"
                             handleChange={(event) =>
-                              setNewDependent({
-                                ...newDependent,
+                              setNewData({
+                                ...newData,
                                 year: event.target.value,
                               })
                             }
@@ -333,7 +333,7 @@ const Dependent = (props: Props) => {
                       as="h3"
                       className="text-lg font-medium leading-6 text-gray-900"
                     >
-                      Remove Dependent
+                      Remove Data
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
@@ -345,7 +345,7 @@ const Dependent = (props: Props) => {
                       <button
                         type="button"
                         className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                        onClick={() => removeDependentAction(actionDependentId)}
+                        onClick={() => removeDataAction(actionDatatId)}
                       >
                         Remove
                       </button>
@@ -400,7 +400,7 @@ const Dependent = (props: Props) => {
                         </ButtonBox>
                         <ButtonBox
                           className="text-red"
-                          onClick={() => modalRemoveDependent(data.id)}
+                          onClick={() => modalRemoveData(data.id)}
                         >
                           <CloseLineIcon size={14} />
                         </ButtonBox>
