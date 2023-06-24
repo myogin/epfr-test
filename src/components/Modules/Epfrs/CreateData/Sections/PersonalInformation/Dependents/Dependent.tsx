@@ -17,33 +17,35 @@ interface Props {
   datas?: Array<any>;
 }
 
+
 const Dependent = (props: Props) => {
+   // Get data from zustand state
+   let { dependant, setDependent, removeDependent, patchDependent } =
+   usePersonalInformation();
+
+ let checkIndex = checkDependentData(dependant);
+
+ console.log("Apa sih ini " + checkIndex);
+ // Initiate new local state for new data
+ let initialState: DependantInformation = {
+   id: checkIndex,
+   name: "",
+   relationship: "",
+   dateOfBirth: "",
+   age: 0,
+   gender: "",
+   year: "",
+ };
+ 
   const [showModal, setShowModal] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
   const [saveType, setSaveType] = useState("");
-
-  // Get data from zustand state
-  let { dependant, setDependent, removeDependent, patchDependent } =
-    usePersonalInformation();
-
-  let checkIndex = checkDependentData(dependant);
-
-  console.log("Apa sih ini " + checkIndex);
-  // Initiate new local state for new data
-  let initialState: DependantInformation = {
-    id: checkIndex,
-    name: "",
-    relationship: "",
-    dateOfBirth: "",
-    age: 0,
-    gender: "",
-    year: "",
-  };
-
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
 
+  let buttonSave = checkButtonActive(newData)
+  
   // Variable Select Box
   let relationships: Array<any> = [
     { id: "SON", name: "SON" },
@@ -135,7 +137,6 @@ const Dependent = (props: Props) => {
   };
 
   const saveData = () => {
-    
     let checkTotalData =
       dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
@@ -216,6 +217,12 @@ const Dependent = (props: Props) => {
                               name: event.target.value,
                             })
                           }
+                          needValidation={true}
+                          logic={
+                            newData.name === "" || newData.name === "-"
+                              ? false
+                              : true
+                          }
                         />
                       </div>
                       <div className="flex justify-between gap-8">
@@ -229,6 +236,13 @@ const Dependent = (props: Props) => {
                             handleChange={(event) =>
                               checkRelationship(event.target.value)
                             }
+                            needValidation={true}
+                            logic={
+                              newData.relationship === "" ||
+                              newData.relationship === "-"
+                                ? false
+                                : true
+                            }
                           />
                           {/* <DatePicker className="w-full px-0 py-2 my-4 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong" selected={newData.dateOfBirth} onChange={(date) => checkBirthDate(date)} /> */}
                           <Input
@@ -239,6 +253,13 @@ const Dependent = (props: Props) => {
                             value={newData.dateOfBirth}
                             handleChange={(event) =>
                               checkBirthDate(event.target.value)
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.dateOfBirth === "" ||
+                              newData.dateOfBirth === "-"
+                                ? false
+                                : true
                             }
                           />
                           <Input
@@ -263,6 +284,12 @@ const Dependent = (props: Props) => {
                                 gender: event.target.value,
                               })
                             }
+                            needValidation={true}
+                            logic={
+                              newData.gender === "" || newData.gender === "-"
+                                ? false
+                                : true
+                            }
                           />
                           <Input
                             className="my-4"
@@ -282,7 +309,10 @@ const Dependent = (props: Props) => {
                       </div>
                     </div>
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={saveData}>
+                      <ButtonGreenMedium
+                        disabled={buttonSave}
+                        onClick={saveData}
+                      >
                         Save
                       </ButtonGreenMedium>
                       <ButtonTransparentMedium
@@ -416,7 +446,7 @@ const Dependent = (props: Props) => {
   );
 };
 
-function checkDependentData(dependant: any) {
+const checkDependentData = (dependant : any) => {
   let data: number = 0;
   if (dependant?.length) {
     if (dependant[0].name === "") {
@@ -429,6 +459,22 @@ function checkDependentData(dependant: any) {
   }
 
   return data;
+}
+
+const checkButtonActive = (newData : any) => {
+  let button : boolean = false;
+  if (
+    newData.name === "" ||
+    newData.relationship === "" ||
+    newData.dateOfBirth === "" ||
+    newData.gender === ""
+  ) {
+    button = true;
+  }else {
+    button = false;
+  }
+
+  return button;
 }
 
 export default Dependent;

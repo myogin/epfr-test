@@ -6,28 +6,12 @@ import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import Toggle from "@/components/Forms/Toggle";
-import { TrustedIndividual } from "@/models/SectionOne";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React, { useState } from "react";
 
 const TrustedIndividual = () => {
-  let initialState: TrustedIndividual = {
-    condition1: false,
-    condition2: false,
-    trustedEmail: "",
-    nameOfTrustedIndividual: "",
-    passportNo: "",
-    relationship: "",
-    languageUsed: "",
-    contactNumber: "",
-    englishLevel1: 0,
-    englishLevel2: 0,
-    educationLevel: 0,
-    ageLevel: 0,
-    declaration: 0,
-  };
 
-  let { trustedIndividuals } = usePersonalInformation();
+  let { trustedIndividuals, setTrustedIndividuals } = usePersonalInformation();
 
   const changeData = (params: any) => {};
 
@@ -43,8 +27,16 @@ const TrustedIndividual = () => {
     { id: 5, name: "Others" },
   ];
 
-  const [newTrustedIndividual, setNewTrustedIndividual] =
-    useState(initialState);
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    setTrustedIndividuals(name, value);
+  };
+
+  const handleCheckbox = (name : string, value : boolean) => {
+
+    setTrustedIndividuals(name, value);
+  };
 
   return (
     <>
@@ -67,22 +59,39 @@ const TrustedIndividual = () => {
             type="text"
             value={trustedIndividuals.nameOfTrustedIndividual}
             placeholder="-"
-            handleChange={(event) => setData(event.target.value)}
+            name="nameOfTrustedIndividual"
+            handleChange={handleInputChange}
+            needValidation={true}
+            logic={
+              trustedIndividuals.nameOfTrustedIndividual === "" ||
+              trustedIndividuals.nameOfTrustedIndividual === "-"
+                ? false
+                : true
+            }
           />
           <Input
             className="mb-10"
-            label="NRIC/Passport No. of Trusted Individual"
+            label="NRIC/Passport Number of Trusted Individual"
             type="text"
             placeholder="-"
+            name="passportNo"
             value={trustedIndividuals.passportNo}
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
+            needValidation={true}
+            logic={
+              trustedIndividuals.passportNo === "" ||
+              trustedIndividuals.passportNo === "-"
+                ? false
+                : true
+            }
           />
           <Select
             className="mb-10"
             label="Language Used"
             value={trustedIndividuals.languageUsed}
+            name="languageUsed"
             datas={languages}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
         </div>
         <div>
@@ -98,16 +107,32 @@ const TrustedIndividual = () => {
             label="Trusted Individual Email Address"
             type="text"
             placeholder="-"
+            name="trustedEmail"
             value={trustedIndividuals.trustedEmail}
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
+            needValidation={true}
+            logic={
+              trustedIndividuals.trustedEmail === "" ||
+              trustedIndividuals.trustedEmail === "-"
+                ? false
+                : true
+            }
           />
           <Input
             className="mb-10"
             label="Relationship to Client"
             type="text"
             placeholder="-"
+            name="relationship"
             value={trustedIndividuals.relationship}
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
+            needValidation={true}
+            logic={
+              trustedIndividuals.relationship === "" ||
+              trustedIndividuals.relationship === "-"
+                ? false
+                : true
+            }
           />
           <Input
             className="mb-10"
@@ -115,7 +140,15 @@ const TrustedIndividual = () => {
             type="text"
             placeholder="-"
             value={trustedIndividuals.contactNumber}
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
+            needValidation={true}
+            name="contactNumber"
+            logic={
+              trustedIndividuals.contactNumber === "" ||
+              trustedIndividuals.contactNumber === "-"
+                ? false
+                : true
+            }
           />
         </div>
       </SectionCardDoubleGrid>
@@ -125,6 +158,11 @@ const TrustedIndividual = () => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
           <Checkbox
+            needValidation={true}
+            name="declaration"
+            onChange={(event) => handleCheckbox(event.target.name, !trustedIndividuals.declaration)}
+            logic={trustedIndividuals.declaration}
+            isChecked={trustedIndividuals.declaration}
             lableStyle="text-sm font-normal text-gray-light"
             label="I have conveyed and/or translated the recommendation(s) and all
         relevant disclosures into a language which the client can

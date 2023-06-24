@@ -57,7 +57,7 @@ export interface TrustedIndividual {
   englishLevel2: number;
   educationLevel: number;
   ageLevel: number;
-  declaration: number;
+  declaration: boolean;
 }
 
 export interface SectionOne {

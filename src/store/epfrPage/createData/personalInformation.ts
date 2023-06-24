@@ -78,7 +78,7 @@ const initialState: SectionOne = {
     englishLevel2: 0,
     educationLevel: 0,
     ageLevel: 0,
-    declaration: 0,
+    declaration: false,
   },
   issues: [],
   reviewDate: "",
@@ -95,6 +95,26 @@ const personalInformation = create(
             produce((draft) => {
               let client = draft.clientInfo[clientType];
               client[name] = value;
+
+              // check validation
+              if (
+                draft.clientInfo[clientType].clientTitle === "" ||
+                draft.clientInfo[clientType].clientName === "" ||
+                draft.clientInfo[clientType].gender === "" ||
+                draft.clientInfo[clientType].residency === "" ||
+                draft.clientInfo[clientType].dateOfBirth === "" ||
+                draft.clientInfo[clientType].marital === "" ||
+                draft.clientInfo[clientType].smoker === "" ||
+                draft.clientInfo[clientType].employmentStatus === "" ||
+                draft.clientInfo[clientType].annualIncome === "" ||
+                draft.clientInfo[clientType].contactMobile === "" ||
+                draft.clientInfo[clientType].email === "" ||
+                draft.clientInfo[clientType].residentialAddr === ""
+              ) {
+                draft.status = 0;
+              } else {
+                draft.status = 1;
+              }
             })
           ),
         setDependent: (indexData: number, params: any) =>
@@ -111,6 +131,25 @@ const personalInformation = create(
                 dependentReplace.year = params.year;
               } else {
                 draft.dependant.push(params);
+              }
+
+              // check validation
+              let checkDependent = 0;
+              draft.dependant.map((value: any, index: any) => {
+                if (
+                  value.name === "" ||
+                  value.relationship === "" ||
+                  value.dateOfBirth === "" ||
+                  value.gender === ""
+                ) {
+                  checkDependent++;
+                }
+              });
+
+              if (checkDependent > 0) {
+                draft.status = 0;
+              } else {
+                draft.status = 1;
               }
             })
           ),
@@ -147,10 +186,12 @@ const personalInformation = create(
             })
           ),
         setTrustedIndividuals: (name: string, value: any) =>
-          set(produce((draft) => {
-            let trustedIndividual = draft.trustedIndividuals
-            trustedIndividual[name] = value;
-          })),
+          set(
+            produce((draft) => {
+              let trustedIndividual = draft.trustedIndividuals;
+              trustedIndividual[name] = value;
+            })
+          ),
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
