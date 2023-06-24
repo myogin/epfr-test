@@ -98,21 +98,21 @@ const personalInformation = create(
 
               // check validation
               if (
-                get().clientInfo[clientType].clientTitle === "" ||
-                get().clientInfo[clientType].clientName === "" ||
-                get().clientInfo[clientType].gender === "" ||
-                get().clientInfo[clientType].residency === "" ||
-                get().clientInfo[clientType].dateOfBirth === "" ||
-                get().clientInfo[clientType].marital === "" ||
-                get().clientInfo[clientType].smoker === "" ||
-                get().clientInfo[clientType].employmentStatus === "" ||
-                get().clientInfo[clientType].annualIncome === "" ||
-                get().clientInfo[clientType].contactMobile === "" ||
-                get().clientInfo[clientType].email === "" ||
-                get().clientInfo[clientType].residentialAddr === ""
+                draft.clientInfo[clientType].clientTitle === "" ||
+                draft.clientInfo[clientType].clientName === "" ||
+                draft.clientInfo[clientType].gender === "" ||
+                draft.clientInfo[clientType].residency === "" ||
+                draft.clientInfo[clientType].dateOfBirth === "" ||
+                draft.clientInfo[clientType].marital === "" ||
+                draft.clientInfo[clientType].smoker === "" ||
+                draft.clientInfo[clientType].employmentStatus === "" ||
+                draft.clientInfo[clientType].annualIncome === "" ||
+                draft.clientInfo[clientType].contactMobile === "" ||
+                draft.clientInfo[clientType].email === "" ||
+                draft.clientInfo[clientType].residentialAddr === ""
               ) {
                 draft.status = 0;
-              }else {
+              } else {
                 draft.status = 1;
               }
             })
@@ -131,6 +131,25 @@ const personalInformation = create(
                 dependentReplace.year = params.year;
               } else {
                 draft.dependant.push(params);
+              }
+
+              // check validation
+              let checkDependent = 0;
+              draft.dependant.map((value: any, index: any) => {
+                if (
+                  value.name === "" ||
+                  value.relationship === "" ||
+                  value.dateOfBirth === "" ||
+                  value.gender === ""
+                ) {
+                  checkDependent++;
+                }
+              });
+
+              if (checkDependent > 0) {
+                draft.status = 0;
+              } else {
+                draft.status = 1;
               }
             })
           ),

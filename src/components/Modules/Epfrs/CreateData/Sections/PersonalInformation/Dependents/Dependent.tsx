@@ -17,33 +17,35 @@ interface Props {
   datas?: Array<any>;
 }
 
+
 const Dependent = (props: Props) => {
+   // Get data from zustand state
+   let { dependant, setDependent, removeDependent, patchDependent } =
+   usePersonalInformation();
+
+ let checkIndex = checkDependentData(dependant);
+
+ console.log("Apa sih ini " + checkIndex);
+ // Initiate new local state for new data
+ let initialState: DependantInformation = {
+   id: checkIndex,
+   name: "",
+   relationship: "",
+   dateOfBirth: "",
+   age: 0,
+   gender: "",
+   year: "",
+ };
+ 
   const [showModal, setShowModal] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
   const [saveType, setSaveType] = useState("");
-
-  // Get data from zustand state
-  let { dependant, setDependent, removeDependent, patchDependent } =
-    usePersonalInformation();
-
-  let checkIndex = checkDependentData(dependant);
-
-  console.log("Apa sih ini " + checkIndex);
-  // Initiate new local state for new data
-  let initialState: DependantInformation = {
-    id: checkIndex,
-    name: "",
-    relationship: "",
-    dateOfBirth: "",
-    age: 0,
-    gender: "",
-    year: "",
-  };
-
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
 
+  let buttonSave = checkButtonActive(newData)
+  
   // Variable Select Box
   let relationships: Array<any> = [
     { id: "SON", name: "SON" },
@@ -307,7 +309,10 @@ const Dependent = (props: Props) => {
                       </div>
                     </div>
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={saveData}>
+                      <ButtonGreenMedium
+                        disabled={buttonSave}
+                        onClick={saveData}
+                      >
                         Save
                       </ButtonGreenMedium>
                       <ButtonTransparentMedium
@@ -441,7 +446,7 @@ const Dependent = (props: Props) => {
   );
 };
 
-function checkDependentData(dependant: any) {
+const checkDependentData = (dependant : any) => {
   let data: number = 0;
   if (dependant?.length) {
     if (dependant[0].name === "") {
@@ -454,6 +459,22 @@ function checkDependentData(dependant: any) {
   }
 
   return data;
+}
+
+const checkButtonActive = (newData : any) => {
+  let button : boolean = false;
+  if (
+    newData.name === "" ||
+    newData.relationship === "" ||
+    newData.dateOfBirth === "" ||
+    newData.gender === ""
+  ) {
+    button = true;
+  }else {
+    button = false;
+  }
+
+  return button;
 }
 
 export default Dependent;
