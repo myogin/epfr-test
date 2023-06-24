@@ -3,6 +3,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import Select from "@/components/Forms/Select";
 import { SummaryOfProperty } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { Transition, Dialog } from "@headlessui/react";
@@ -27,7 +28,7 @@ const PropertyPortofolio = (props: Props) => {
 
   let checkIndex = checkPropertyData(summaryOfProperty);
 
-  console.log("cek data "+ checkIndex)
+  console.log("cek data " + checkIndex);
 
   let initialState: SummaryOfProperty = {
     id: checkIndex,
@@ -46,7 +47,6 @@ const PropertyPortofolio = (props: Props) => {
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
 
-
   const openModal = () => {
     setSaveType("add");
     setNewData(initialState);
@@ -61,10 +61,11 @@ const PropertyPortofolio = (props: Props) => {
   };
 
   const saveData = () => {
-    let checkTotalData = summaryOfProperty?.length === 0 || summaryOfProperty[0].id === 0 ? 0 : 1;
+    let checkTotalData =
+      summaryOfProperty?.length === 0 || summaryOfProperty[0].id === 0 ? 0 : 1;
 
     console.log(checkTotalData);
-    
+
     if (saveType === "add") {
       setProperty(checkTotalData, newData);
     } else {
@@ -80,8 +81,29 @@ const PropertyPortofolio = (props: Props) => {
   };
 
   const removeDataAction = (params: any) => {
-    removeData("summaryOfProperty",params);
+    removeData("summaryOfProperty", params);
     setShowModalRemove(false);
+  };
+
+  let typeOfProperties: Array<any> = [
+    { id: "0", name: "Public" },
+    { id: "1", name: "Private" },
+  ];
+
+  let clients: Array<any> = [
+    { id: "0", name: "Client 1" },
+    { id: "1", name: "Client 2" },
+  ];
+
+  const clientName = (params: any) => {
+    switch (params) {
+      case "1":
+        return "Client 1";
+      case "2":
+        return "Client 2";
+      default:
+        return "Client 1";
+    }
   };
 
   return (
@@ -92,7 +114,11 @@ const PropertyPortofolio = (props: Props) => {
         </ButtonBox>
 
         <Transition appear show={showModal} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={() => setShowModal(false)}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModal(false)}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -126,30 +152,31 @@ const PropertyPortofolio = (props: Props) => {
                     <div className="mt-2">
                       <div className="flex justify-between gap-8">
                         <div>
-                          <Input
+                          <Select
                             className="my-4"
-                            label="Client"
-                            type="text"
                             name="client"
-                            placeholder="Margo Madison"
+                            label="Client"
                             value={newData.client}
+                            datas={clients}
                             handleChange={(event) =>
                               setNewData({
                                 ...newData,
                                 client: event.target.value,
-                              })}
+                              })
+                            }
                           />
-                          <Input
+                          <Select
                             className="my-4"
-                            label="Type Of Property"
-                            type="text"
                             name="typeOfProperty"
+                            label="Type Of Property"
                             value={newData.typeOfProperty}
+                            datas={typeOfProperties}
                             handleChange={(event) =>
                               setNewData({
                                 ...newData,
                                 typeOfProperty: event.target.value,
-                              })}
+                              })
+                            }
                           />
                           <Input
                             className="my-4"
@@ -161,7 +188,8 @@ const PropertyPortofolio = (props: Props) => {
                               setNewData({
                                 ...newData,
                                 category: Number(event.target.value),
-                              })}
+                              })
+                            }
                           />
                           <Input
                             className="my-4"
@@ -173,7 +201,8 @@ const PropertyPortofolio = (props: Props) => {
                               setNewData({
                                 ...newData,
                                 yearPurchased: Number(event.target.value),
-                              })}
+                              })
+                            }
                           />
                         </div>
                         <div>
@@ -188,7 +217,8 @@ const PropertyPortofolio = (props: Props) => {
                               setNewData({
                                 ...newData,
                                 purchasePrice: Number(event.target.value),
-                              })}
+                              })
+                            }
                           />
                           <Input
                             className="my-4"
@@ -201,7 +231,8 @@ const PropertyPortofolio = (props: Props) => {
                               setNewData({
                                 ...newData,
                                 currentOutstanding: Number(event.target.value),
-                              })}
+                              })
+                            }
                           />
                           <Input
                             className="my-4"
@@ -214,7 +245,8 @@ const PropertyPortofolio = (props: Props) => {
                               setNewData({
                                 ...newData,
                                 loanAmount: Number(event.target.value),
-                              })}
+                              })
+                            }
                           />
                           <Input
                             className="my-4"
@@ -227,7 +259,8 @@ const PropertyPortofolio = (props: Props) => {
                               setNewData({
                                 ...newData,
                                 currentMarketValue: Number(event.target.value),
-                              })}
+                              })
+                            }
                           />
                         </div>
                       </div>
@@ -237,7 +270,9 @@ const PropertyPortofolio = (props: Props) => {
                       <ButtonGreenMedium onClick={() => saveData()}>
                         Save
                       </ButtonGreenMedium>
-                      <ButtonTransparentMedium onClick={() => setShowModal(false)}>
+                      <ButtonTransparentMedium
+                        onClick={() => setShowModal(false)}
+                      >
                         Cancel
                       </ButtonTransparentMedium>
                     </div>
@@ -336,7 +371,7 @@ const PropertyPortofolio = (props: Props) => {
                 summaryOfProperty.map((data, index) => (
                   <tr key={index}>
                     <td className="px-2 py-5">{++index}</td>
-                    <td className="px-2 py-5">{data.client}</td>
+                    <td className="px-2 py-5">{clientName(data.client)}</td>
                     <td className="px-2 py-5">{data.category}</td>
                     <td className="px-2 py-5">{data.typeOfProperty}</td>
                     <td className="px-2 py-5">{data.yearPurchased}</td>
@@ -346,10 +381,16 @@ const PropertyPortofolio = (props: Props) => {
                     <td className="px-2 py-5">{data.currentMarketValue}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
-                        <ButtonBox className="text-green-deep" onClick={() => openModalEdit(data.id)}>
+                        <ButtonBox
+                          className="text-green-deep"
+                          onClick={() => openModalEdit(data.id)}
+                        >
                           <PencilLineIcon size={14} />
                         </ButtonBox>
-                        <ButtonBox className="text-red" onClick={() => modalRemoveData(data.id)}>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => modalRemoveData(data.id)}
+                        >
                           <CloseLineIcon size={14} />
                         </ButtonBox>
                       </div>

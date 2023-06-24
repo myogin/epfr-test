@@ -11,7 +11,10 @@ interface Props {
   handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   readonly?: boolean;
   name?: string;
-  dataType?:string;
+  dataType?: string;
+  needValidation?: boolean;
+  logic?: boolean;
+  textError?: string;
 }
 
 const Input = (props: Props) => {
@@ -34,6 +37,11 @@ const Input = (props: Props) => {
         placeholder={props.placeholder}
         className={`w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong ${props.formStyle}`}
       />
+
+      {/* Error Validation */}
+      {props.needValidation && !props.logic ? (
+        <span className="w-full text-xs text-left text-red">{props.textError ? props.textError : "Required field"}</span>
+      ) : null}
     </div>
   );
 };

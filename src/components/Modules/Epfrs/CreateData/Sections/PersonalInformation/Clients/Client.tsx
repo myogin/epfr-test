@@ -77,44 +77,49 @@ const Client = () => {
   };
 
   let clientTitles: Array<any> = [
-    { id: 1, name: "Dr" },
-    { id: 2, name: "Mdm" },
-    { id: 3, name: "Mr" },
-    { id: 4, name: "Ms" },
-    { id: 5, name: "Mrs" },
+    { id: 0, name: "Dr" },
+    { id: 1, name: "Mdm" },
+    { id: 2, name: "Mr" },
+    { id: 3, name: "Ms" },
+    { id: 4, name: "Mrs" },
   ];
 
   let clientSex: Array<any> = [
-    { id: 1, name: "Man" },
-    { id: 2, name: "Female" },
+    { id: 0, name: "Man" },
+    { id: 1, name: "Female" },
   ];
 
   let clientSmoker: Array<any> = [
     { id: 1, name: "Yes" },
-    { id: 2, name: "No" },
+    { id: 0, name: "No" },
   ];
 
   let country: Array<any> = [
-    { id: 1, name: "Singapore" },
-    { id: 2, name: "Malay" },
-    { id: 3, name: "Thailand" },
-  ];
-
-  let recidence: Array<any> = [
     { id: 1, name: "Singaporean" },
     { id: 2, name: "Malay" },
     { id: 3, name: "Thailand" },
   ];
 
+  let recidence: Array<any> = [
+    { id: 0, name: "Singapore Citizen" },
+    { id: 1, name: "Singapore PR" },
+    { id: 2, name: "Foreigner" },
+  ];
+
   let marital: Array<any> = [
-    { id: 1, name: "Single" },
-    { id: 2, name: "Meried" },
+    { id: 0, name: "Single" },
+    { id: 1, name: "Meried" },
+    { id: 2, name: "Widowed" },
+    { id: 3, name: "Divorced" },
   ];
 
   let employment: Array<any> = [
-    { id: 1, name: "Fulltime" },
-    { id: 2, name: "Parttime" },
-    { id: 3, name: "Freelance" },
+    { id: 0, name: "Full Time" },
+    { id: 1, name: "Part Time" },
+    { id: 2, name: "Self-Employed" },
+    { id: 3, name: "Retired" },
+    { id: 4, name: "Unemployed" },
+    { id: 5, name: "Others" },
   ];
 
   let employmentSector: Array<any> = [
@@ -130,9 +135,12 @@ const Client = () => {
   ];
 
   let annualIncome: Array<any> = [
-    { id: 1, name: "0 - 29,000" },
-    { id: 2, name: "29,000 - 49,000" },
-    { id: 3, name: "50,000 - 79,000" },
+    { id: 0, name: "0 ~ 29,999" },
+    { id: 1, name: "30,000 ~ 49,999" },
+    { id: 2, name: "50,000 ~ 99,999" },
+    { id: 3, name: "100,000 ~ 149,999" },
+    { id: 4, name: "150,000 ~ 299,999" },
+    { id: 5, name: "300,000 ~" },
   ];
   return (
     <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
@@ -146,6 +154,8 @@ const Client = () => {
           value={clientInfo[0].clientTitle}
           datas={clientTitles}
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].clientTitle === "" || clientInfo[0].clientTitle ==="-"  ? false : true}
         />
         <Input
           dataType="clientInfo"
@@ -166,6 +176,8 @@ const Client = () => {
           value={clientInfo[0].gender}
           datas={clientSex}
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].gender === "" || clientInfo[0].gender ==="-"  ? false : true}
         />
         <Input
           dataType="clientInfo"
@@ -176,6 +188,8 @@ const Client = () => {
           value={clientInfo[0].dateOfBirth}
           placeholder="01 January 1998"
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].dateOfBirth === "" || clientInfo[0].dateOfBirth ==="-"  ? false : true}
         />
         {/* Selected Form */}
         <Select
@@ -196,6 +210,8 @@ const Client = () => {
           value={clientInfo[0].employmentStatus}
           datas={employment}
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].employmentStatus === "" || clientInfo[0].employmentStatus ==="-"  ? false : true}
         />
         {/* Selected Form */}
         <Select
@@ -236,6 +252,8 @@ const Client = () => {
           value={clientInfo[0].residentialAddr}
           placeholder="Singapore"
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].residentialAddr === "" || clientInfo[0].residentialAddr ==="-"  ? false : true}
         />
         {/* Selected Form */}
       </div>
@@ -249,6 +267,8 @@ const Client = () => {
           value={clientInfo[0].clientName}
           placeholder="Margo Madison"
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].clientName === "" || clientInfo[0].clientName ==="-"  ? false : true}
         />
         <Input
           dataType="clientInfo"
@@ -259,6 +279,8 @@ const Client = () => {
           value={clientInfo[0].email}
           placeholder="margomadison@gmail.com"
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].email === "" || clientInfo[0].email ==="-"  ? false : true}
         />
         <Select
           dataType="clientInfo"
@@ -268,6 +290,8 @@ const Client = () => {
           value={clientInfo[0].residency}
           datas={recidence}
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].residency === "" || clientInfo[0].residency ==="-"  ? false : true}
         />
         <Select
           dataType="clientInfo"
@@ -277,6 +301,8 @@ const Client = () => {
           value={clientInfo[0].marital}
           datas={marital}
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].marital === "" || clientInfo[0].marital ==="-"  ? false : true}
         />
         <Input
           dataType="clientInfo"
@@ -296,6 +322,8 @@ const Client = () => {
           value={clientInfo[0].annualIncome}
           datas={annualIncome}
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].annualIncome === "" || clientInfo[0].annualIncome ==="-"  ? false : true}
         />
         <Input
           dataType="clientInfo"
@@ -306,6 +334,8 @@ const Client = () => {
           value={clientInfo[0].contactMobile}
           placeholder="2121921298"
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].contactMobile === "" || clientInfo[0].contactMobile ==="-"  ? false : true}
         />
         <Input
           dataType="clientInfo"
@@ -325,6 +355,8 @@ const Client = () => {
           value={clientInfo[0].smoker}
           datas={clientSmoker}
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={clientInfo[0].smoker === "" || clientInfo[0].smoker ==="-"  ? false : true}
         />
         <Input
           dataType="generalInfo"
@@ -335,6 +367,8 @@ const Client = () => {
           value={reviewDate}
           placeholder="01 January 1998"
           handleChange={handleInputChange}
+          needValidation={true}
+          logic={reviewDate === "" || reviewDate ==="-"  ? false : true}
         />
       </div>
     </SectionCardDoubleGrid>
