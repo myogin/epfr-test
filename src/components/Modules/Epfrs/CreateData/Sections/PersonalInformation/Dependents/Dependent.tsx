@@ -135,7 +135,6 @@ const Dependent = (props: Props) => {
   };
 
   const saveData = () => {
-    
     let checkTotalData =
       dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
@@ -216,6 +215,12 @@ const Dependent = (props: Props) => {
                               name: event.target.value,
                             })
                           }
+                          needValidation={true}
+                          logic={
+                            newData.name === "" || newData.name === "-"
+                              ? false
+                              : true
+                          }
                         />
                       </div>
                       <div className="flex justify-between gap-8">
@@ -229,6 +234,13 @@ const Dependent = (props: Props) => {
                             handleChange={(event) =>
                               checkRelationship(event.target.value)
                             }
+                            needValidation={true}
+                            logic={
+                              newData.relationship === "" ||
+                              newData.relationship === "-"
+                                ? false
+                                : true
+                            }
                           />
                           {/* <DatePicker className="w-full px-0 py-2 my-4 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong" selected={newData.dateOfBirth} onChange={(date) => checkBirthDate(date)} /> */}
                           <Input
@@ -239,6 +251,13 @@ const Dependent = (props: Props) => {
                             value={newData.dateOfBirth}
                             handleChange={(event) =>
                               checkBirthDate(event.target.value)
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.dateOfBirth === "" ||
+                              newData.dateOfBirth === "-"
+                                ? false
+                                : true
                             }
                           />
                           <Input
@@ -262,6 +281,12 @@ const Dependent = (props: Props) => {
                                 ...newData,
                                 gender: event.target.value,
                               })
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.gender === "" || newData.gender === "-"
+                                ? false
+                                : true
                             }
                           />
                           <Input

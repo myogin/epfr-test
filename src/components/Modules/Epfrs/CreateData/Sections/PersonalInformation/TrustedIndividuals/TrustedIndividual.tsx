@@ -27,7 +27,7 @@ const TrustedIndividual = () => {
     declaration: 0,
   };
 
-  let { trustedIndividuals } = usePersonalInformation();
+  let { trustedIndividuals, setTrustedIndividuals } = usePersonalInformation();
 
   const changeData = (params: any) => {};
 
@@ -43,8 +43,12 @@ const TrustedIndividual = () => {
     { id: 5, name: "Others" },
   ];
 
-  const [newTrustedIndividual, setNewTrustedIndividual] =
-    useState(initialState);
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+    const { groupdata } = event.target.dataset;
+
+    setTrustedIndividuals(name, value);
+  };
 
   return (
     <>
@@ -67,22 +71,39 @@ const TrustedIndividual = () => {
             type="text"
             value={trustedIndividuals.nameOfTrustedIndividual}
             placeholder="-"
-            handleChange={(event) => setData(event.target.value)}
+            name="nameOfTrustedIndividual"
+            handleChange={handleInputChange}
+            needValidation={true}
+            logic={
+              trustedIndividuals.nameOfTrustedIndividual === "" ||
+              trustedIndividuals.nameOfTrustedIndividual === "-"
+                ? false
+                : true
+            }
           />
           <Input
             className="mb-10"
-            label="NRIC/Passport No. of Trusted Individual"
+            label="NRIC/Passport Number of Trusted Individual"
             type="text"
             placeholder="-"
+            name="passportNo"
             value={trustedIndividuals.passportNo}
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
+            needValidation={true}
+            logic={
+              trustedIndividuals.passportNo === "" ||
+              trustedIndividuals.passportNo === "-"
+                ? false
+                : true
+            }
           />
           <Select
             className="mb-10"
             label="Language Used"
             value={trustedIndividuals.languageUsed}
+            name="languageUsed"
             datas={languages}
-            handleChange={(event) => changeData(eval(event.target.value))}
+            handleChange={handleInputChange}
           />
         </div>
         <div>
@@ -98,16 +119,32 @@ const TrustedIndividual = () => {
             label="Trusted Individual Email Address"
             type="text"
             placeholder="-"
+            name="trustedEmail"
             value={trustedIndividuals.trustedEmail}
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
+            needValidation={true}
+            logic={
+              trustedIndividuals.trustedEmail === "" ||
+              trustedIndividuals.trustedEmail === "-"
+                ? false
+                : true
+            }
           />
           <Input
             className="mb-10"
             label="Relationship to Client"
             type="text"
             placeholder="-"
+            name="relationship"
             value={trustedIndividuals.relationship}
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
+            needValidation={true}
+            logic={
+              trustedIndividuals.relationship === "" ||
+              trustedIndividuals.relationship === "-"
+                ? false
+                : true
+            }
           />
           <Input
             className="mb-10"
@@ -115,7 +152,15 @@ const TrustedIndividual = () => {
             type="text"
             placeholder="-"
             value={trustedIndividuals.contactNumber}
-            handleChange={(event) => setData(event.target.value)}
+            handleChange={handleInputChange}
+            needValidation={true}
+            name="contactNumber"
+            logic={
+              trustedIndividuals.contactNumber === "" ||
+              trustedIndividuals.contactNumber === "-"
+                ? false
+                : true
+            }
           />
         </div>
       </SectionCardDoubleGrid>
