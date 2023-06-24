@@ -6,26 +6,10 @@ import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import Toggle from "@/components/Forms/Toggle";
-import { TrustedIndividual } from "@/models/SectionOne";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React, { useState } from "react";
 
 const TrustedIndividual = () => {
-  let initialState: TrustedIndividual = {
-    condition1: false,
-    condition2: false,
-    trustedEmail: "",
-    nameOfTrustedIndividual: "",
-    passportNo: "",
-    relationship: "",
-    languageUsed: "",
-    contactNumber: "",
-    englishLevel1: 0,
-    englishLevel2: 0,
-    educationLevel: 0,
-    ageLevel: 0,
-    declaration: 0,
-  };
 
   let { trustedIndividuals, setTrustedIndividuals } = usePersonalInformation();
 
@@ -45,7 +29,11 @@ const TrustedIndividual = () => {
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
-    const { groupdata } = event.target.dataset;
+
+    setTrustedIndividuals(name, value);
+  };
+
+  const handleCheckbox = (name : string, value : boolean) => {
 
     setTrustedIndividuals(name, value);
   };
@@ -170,6 +158,11 @@ const TrustedIndividual = () => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
           <Checkbox
+            needValidation={true}
+            name="declaration"
+            onChange={(event) => handleCheckbox(event.target.name, !trustedIndividuals.declaration)}
+            logic={trustedIndividuals.declaration}
+            isChecked={trustedIndividuals.declaration}
             lableStyle="text-sm font-normal text-gray-light"
             label="I have conveyed and/or translated the recommendation(s) and all
         relevant disclosures into a language which the client can

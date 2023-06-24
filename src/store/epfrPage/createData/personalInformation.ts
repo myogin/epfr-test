@@ -78,7 +78,7 @@ const initialState: SectionOne = {
     englishLevel2: 0,
     educationLevel: 0,
     ageLevel: 0,
-    declaration: 0,
+    declaration: false,
   },
   issues: [],
   reviewDate: "",
@@ -95,6 +95,26 @@ const personalInformation = create(
             produce((draft) => {
               let client = draft.clientInfo[clientType];
               client[name] = value;
+
+              // check validation
+              if (
+                get().clientInfo[clientType].clientTitle === "" ||
+                get().clientInfo[clientType].clientName === "" ||
+                get().clientInfo[clientType].gender === "" ||
+                get().clientInfo[clientType].residency === "" ||
+                get().clientInfo[clientType].dateOfBirth === "" ||
+                get().clientInfo[clientType].marital === "" ||
+                get().clientInfo[clientType].smoker === "" ||
+                get().clientInfo[clientType].employmentStatus === "" ||
+                get().clientInfo[clientType].annualIncome === "" ||
+                get().clientInfo[clientType].contactMobile === "" ||
+                get().clientInfo[clientType].email === "" ||
+                get().clientInfo[clientType].residentialAddr === ""
+              ) {
+                draft.status = 0;
+              }else {
+                draft.status = 1;
+              }
             })
           ),
         setDependent: (indexData: number, params: any) =>
@@ -147,10 +167,12 @@ const personalInformation = create(
             })
           ),
         setTrustedIndividuals: (name: string, value: any) =>
-          set(produce((draft) => {
-            let trustedIndividual = draft.trustedIndividuals
-            trustedIndividual[name] = value;
-          })),
+          set(
+            produce((draft) => {
+              let trustedIndividual = draft.trustedIndividuals;
+              trustedIndividual[name] = value;
+            })
+          ),
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
