@@ -6,8 +6,9 @@ import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import { SummaryOfProperty } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
@@ -23,8 +24,12 @@ const PropertyPortofolio = (props: Props) => {
   const [actionDatatId, setActionDataId] = useState(0);
   const [saveType, setSaveType] = useState("");
 
+  // get property state
   let { summaryOfProperty, setProperty, removeData, patchProperty } =
     useExistingPortofolio();
+
+  // get client state
+  let { clientInfo } = usePersonalInformation();
 
   let checkIndex = checkPropertyData(summaryOfProperty);
 
@@ -60,6 +65,8 @@ const PropertyPortofolio = (props: Props) => {
     setShowModal(true);
   };
 
+  let buttonSave = checkButtonActive(newData);
+
   const saveData = () => {
     let checkTotalData =
       summaryOfProperty?.length === 0 || summaryOfProperty[0].id === 0 ? 0 : 1;
@@ -90,10 +97,7 @@ const PropertyPortofolio = (props: Props) => {
     { id: "1", name: "Private" },
   ];
 
-  let clients: Array<any> = [
-    { id: "0", name: "Client 1" },
-    { id: "1", name: "Client 2" },
-  ];
+  let clients: Array<any> = getClientCustom(clientInfo);
 
   const clientName = (params: any) => {
     switch (params) {
@@ -164,6 +168,12 @@ const PropertyPortofolio = (props: Props) => {
                                 client: event.target.value,
                               })
                             }
+                            needValidation={true}
+                            logic={
+                              newData.client === "" || newData.client === "-"
+                                ? false
+                                : true
+                            }
                           />
                           <Select
                             className="my-4"
@@ -177,18 +187,12 @@ const PropertyPortofolio = (props: Props) => {
                                 typeOfProperty: event.target.value,
                               })
                             }
-                          />
-                          <Input
-                            className="my-4"
-                            label="Category"
-                            type="text"
-                            name="category"
-                            value={newData.category}
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                category: Number(event.target.value),
-                              })
+                            needValidation={true}
+                            logic={
+                              newData.typeOfProperty === "" ||
+                              newData.typeOfProperty === "-"
+                                ? false
+                                : true
                             }
                           />
                           <Input
@@ -267,7 +271,10 @@ const PropertyPortofolio = (props: Props) => {
                     </div>
 
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={() => saveData()}>
+                      <ButtonGreenMedium
+                        disabled={buttonSave}
+                        onClick={() => saveData()}
+                      >
                         Save
                       </ButtonGreenMedium>
                       <ButtonTransparentMedium
@@ -407,6 +414,19 @@ const PropertyPortofolio = (props: Props) => {
   );
 };
 
+// Custom function here
+const getClientCustom = (clients: any) => {
+  let clientCustom: any[] = [];
+
+  if (clients?.length) {
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
+  }
+
+  return clientCustom;
+};
+
 function checkPropertyData(property: any) {
   let data: number = 0;
   if (property?.length) {
@@ -421,5 +441,21 @@ function checkPropertyData(property: any) {
 
   return data;
 }
+
+const checkButtonActive = (newData: any) => {
+  let button: boolean = false;
+  if (
+    newData.client === "" ||
+    newData.client === "-" ||
+    newData.typeOfProperty === "" ||
+    newData.typeOfProperty === "-"
+  ) {
+    button = true;
+  } else {
+    button = false;
+  }
+
+  return button;
+};
 
 export default PropertyPortofolio;

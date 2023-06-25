@@ -5,6 +5,7 @@ import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparen
 import Input from "@/components/Forms/Input";
 import { SummaryOfLoans } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -15,6 +16,8 @@ const LoanPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
   let { summaryOfLoans, setLoan } = useExistingPortofolio();
+  // get client state 
+  let {clientInfo} = usePersonalInformation();
 
   const [newDataInput, setNewDataInput] = useState<SummaryOfLoans>({
     editting: false,
@@ -30,6 +33,8 @@ const LoanPortofolio = () => {
     interestRate: 0,
     monthlyLoanRepayment: 0,
   });
+
+  let clients: Array<any> = getClientCustom(clientInfo)
 
   const setData = (params: any) => {
     console.log(params);
@@ -276,5 +281,20 @@ const LoanPortofolio = () => {
     </SectionCardSingleGrid>
   );
 };
+
+// Additional function
+const getClientCustom = (clients : any) => {
+  
+  let clientCustom : any[] = [];
+
+  if(clients?.length) {
+    clients.map((data : any, index : any) => {
+      clientCustom.push({id: index, name: data.clientName});
+    })
+  }
+
+  return clientCustom;
+}
+
 
 export default LoanPortofolio;

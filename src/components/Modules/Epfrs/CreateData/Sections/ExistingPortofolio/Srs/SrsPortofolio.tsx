@@ -5,6 +5,7 @@ import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparen
 import Input from "@/components/Forms/Input";
 import { SummaryOfSRS } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -15,12 +16,16 @@ const SrsPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
   let { summaryOfSRS, setSrs } = useExistingPortofolio();
+  // get client state 
+  let {clientInfo} = usePersonalInformation();
 
   const [newDataInput, setNewDataInput] = useState<SummaryOfSRS>({
     editting: false,
     client: "",
     amount: 0,
   });
+
+  let clients: Array<any> = getClientCustom(clientInfo)
 
   const setData = (params: any) => {
     console.log(params);
@@ -156,5 +161,19 @@ const SrsPortofolio = () => {
     </SectionCardSingleGrid>
   );
 };
+
+const getClientCustom = (clients : any) => {
+  
+  let clientCustom : any[] = [];
+
+  if(clients?.length) {
+    clients.map((data : any, index : any) => {
+      clientCustom.push({id: index, name: data.clientName});
+    })
+  }
+
+  return clientCustom;
+}
+
 
 export default SrsPortofolio;

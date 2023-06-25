@@ -3,8 +3,10 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import Select from "@/components/Forms/Select";
 import { SummaryOfSavings } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -15,8 +17,10 @@ const SavingPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
   let { summaryOfSavings, setSaving } = useExistingPortofolio();
+  // get client state 
+  let {clientInfo} = usePersonalInformation();
 
-  const [newDataInput, setNewDataInput] = useState<SummaryOfSavings>({
+  const [newData, setNewData] = useState<SummaryOfSavings>({
     editting: false,
     client: "",
     typeOfDeposit: 0,
@@ -24,6 +28,15 @@ const SavingPortofolio = () => {
     yearDeposit: 0,
     savingAmount: 0,
   });
+
+  let clients: Array<any> = getClientCustom(clientInfo)
+
+  let buttonSave = checkButtonActive(newData);
+
+  let deposits : Array<any> = [
+    {id: "0", name:"Savings Account"},
+    {id: "1", name:"Fixed Deposit"},
+  ]
 
   const setData = (params: any) => {
     console.log(params);
@@ -83,26 +96,52 @@ const SavingPortofolio = () => {
                     <div className="mt-2">
                       <div className="flex justify-between gap-8">
                         <div>
-                          <Input
+                        <Select
                             className="my-4"
+                            name="client"
                             label="Client"
-                            type="text"
-                            value={newDataInput.client}
+                            value={newData.client}
+                            datas={clients}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 client: event.target.value,
                               })
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.client === "" || newData.client === "-"
+                                ? false
+                                : true
+                            }
+                          />
+                          <Select
+                            className="my-4"
+                            name="typeOfDeposit"
+                            label="Type Of Deposit"
+                            value={newData.typeOfDeposit}
+                            datas={deposits}
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                typeOfDeposit: Number(event.target.value),
+                              })
+                            }
+                            needValidation={true}
+                            logic={
+                              String(newData.typeOfDeposit) === "-" || String(newData.typeOfDeposit) === "NaN"
+                                ? false
+                                : true
                             }
                           />
                           <Input
                             className="my-4"
                             label="Type Of Deposit"
                             type="text"
-                            value={newDataInput.typeOfDeposit}
+                            value={newData.typeOfDeposit}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 typeOfDeposit: Number(event.target.value),
                               })
                             }
@@ -113,10 +152,10 @@ const SavingPortofolio = () => {
                             className="my-4"
                             label="Bank"
                             type="text"
-                            value={newDataInput.bank}
+                            value={newData.bank}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 bank: event.target.value,
                               })
                             }
@@ -125,11 +164,11 @@ const SavingPortofolio = () => {
                             className="my-4"
                             label="Savings Amount"
                             type="text"
-                            value={newDataInput.savingAmount}
+                            value={newData.savingAmount}
                             formStyle="text-right"
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 savingAmount: Number(event.target.value),
                               })
                             }
@@ -139,7 +178,7 @@ const SavingPortofolio = () => {
                     </div>
 
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={() => saveData()}>
+                      <ButtonGreenMedium disabled={buttonSave} onClick={() => saveData()}>
                         Save
                       </ButtonGreenMedium>
                       <ButtonTransparentMedium onClick={closeModal}>
@@ -193,6 +232,35 @@ const SavingPortofolio = () => {
       ) : null}
     </SectionCardSingleGrid>
   );
+};
+
+const getClientCustom = (clients : any) => {
+  
+  let clientCustom : any[] = [];
+
+  if(clients?.length) {
+    clients.map((data : any, index : any) => {
+      clientCustom.push({id: index, name: data.clientName});
+    })
+  }
+
+  return clientCustom;
+}
+
+const checkButtonActive = (newData: any) => {
+  let button: boolean = false;
+  if (
+    newData.client === "" ||
+    newData.client === "-" ||
+    newData.typeOfDeposit === "NaN" ||
+    newData.typeOfDeposit === "-"
+  ) {
+    button = true;
+  } else {
+    button = false;
+  }
+
+  return button;
 };
 
 export default SavingPortofolio;
