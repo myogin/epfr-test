@@ -3,6 +3,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import Select from "@/components/Forms/Select";
 import { SummaryOfCPF } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
@@ -16,10 +17,10 @@ const CpfPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
   let { summaryOfCPF, setCpf } = useExistingPortofolio();
-  // get client state 
-  let {clientInfo} = usePersonalInformation();
+  // get client state
+  let { clientInfo } = usePersonalInformation();
 
-  const [newDataInput, setNewDataInput] = useState<SummaryOfCPF>({
+  const [newData, setNewData] = useState<SummaryOfCPF>({
     editting: false,
     client: "",
     ordinaryAccount: 0,
@@ -28,7 +29,9 @@ const CpfPortofolio = () => {
     retirementAccount: 0,
   });
 
-  let clients: Array<any> = getClientCustom(clientInfo)
+  let clients: Array<any> = getClientCustom(clientInfo);
+
+  let buttonSave = checkButtonActive(newData);
 
   const setData = (params: any) => {
     console.log(params);
@@ -88,41 +91,35 @@ const CpfPortofolio = () => {
                     <div className="mt-2">
                       <div className="flex justify-between gap-8">
                         <div>
-                          <Input
+                          <Select
                             className="my-4"
+                            name="client"
                             label="Client"
-                            type="text"
-                            value={newDataInput.client}
+                            value={newData.client}
+                            datas={clients}
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 client: event.target.value,
                               })
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.client === "" || newData.client === "-"
+                                ? false
+                                : true
                             }
                           />
                           <Input
                             className="my-4"
                             label="Ordinary Account"
                             type="text"
-                            value={newDataInput.ordinaryAccount}
+                            value={newData.ordinaryAccount}
                             formStyle="text-right"
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 ordinaryAccount: Number(event.target.value),
-                              })
-                            }
-                          />
-                          <Input
-                            className="my-4"
-                            label="Special Account"
-                            type="text"
-                            value={newDataInput.specialAccount}
-                            formStyle="text-right"
-                            handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
-                                specialAccount: Number(event.target.value),
                               })
                             }
                           />
@@ -130,11 +127,11 @@ const CpfPortofolio = () => {
                             className="my-4"
                             label="Medisave Account"
                             type="text"
-                            value={newDataInput.medisaveAccount}
+                            value={newData.medisaveAccount}
                             formStyle="text-right"
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 medisaveAccount: Number(event.target.value),
                               })
                             }
@@ -145,12 +142,25 @@ const CpfPortofolio = () => {
                             className="my-4"
                             label="Retirement Account"
                             type="text"
-                            value={newDataInput.retirementAccount}
+                            value={newData.retirementAccount}
                             formStyle="text-right"
                             handleChange={(event) =>
-                              setNewDataInput({
-                                ...newDataInput,
+                              setNewData({
+                                ...newData,
                                 retirementAccount: Number(event.target.value),
+                              })
+                            }
+                          />
+                          <Input
+                            className="my-4"
+                            label="Special Account"
+                            type="text"
+                            value={newData.specialAccount}
+                            formStyle="text-right"
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                specialAccount: Number(event.target.value),
                               })
                             }
                           />
@@ -159,7 +169,10 @@ const CpfPortofolio = () => {
                     </div>
 
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={() => saveData()}>
+                      <ButtonGreenMedium
+                        disabled={buttonSave}
+                        onClick={() => saveData()}
+                      >
                         Save
                       </ButtonGreenMedium>
                       <ButtonTransparentMedium onClick={closeModal}>
@@ -188,27 +201,27 @@ const CpfPortofolio = () => {
               </tr>
             </thead>
             <tbody>
-              {summaryOfCPF?.length && summaryOfCPF.map((value, index) => (
-                <tr key={index}>
-                <td className="px-2 py-5">{++index}</td>
-                <td className="px-2 py-5">{value.client}</td>
-                <td className="px-2 py-5">{value.ordinaryAccount}</td>
-                <td className="px-2 py-5">{value.specialAccount}</td>
-                <td className="px-2 py-5">{value.medisaveAccount}</td>
-                <td className="px-2 py-5">{value.retirementAccount}</td>
-                <td className="w-1/12 px-2 py-5">
-                  <div className="flex w-full gap-2">
-                    <ButtonBox className="text-green-deep">
-                      <PencilLineIcon size={14} />
-                    </ButtonBox>
-                    <ButtonBox className="text-red">
-                      <CloseLineIcon size={14} />
-                    </ButtonBox>
-                  </div>
-                </td>
-              </tr>
-              ))}
-              
+              {summaryOfCPF?.length &&
+                summaryOfCPF.map((value, index) => (
+                  <tr key={index}>
+                    <td className="px-2 py-5">{++index}</td>
+                    <td className="px-2 py-5">{value.client}</td>
+                    <td className="px-2 py-5">{value.ordinaryAccount}</td>
+                    <td className="px-2 py-5">{value.specialAccount}</td>
+                    <td className="px-2 py-5">{value.medisaveAccount}</td>
+                    <td className="px-2 py-5">{value.retirementAccount}</td>
+                    <td className="w-1/12 px-2 py-5">
+                      <div className="flex w-full gap-2">
+                        <ButtonBox className="text-green-deep">
+                          <PencilLineIcon size={14} />
+                        </ButtonBox>
+                        <ButtonBox className="text-red">
+                          <CloseLineIcon size={14} />
+                        </ButtonBox>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -218,17 +231,27 @@ const CpfPortofolio = () => {
 };
 
 // Additional function
-const getClientCustom = (clients : any) => {
-  
-  let clientCustom : any[] = [];
+const getClientCustom = (clients: any) => {
+  let clientCustom: any[] = [];
 
-  if(clients?.length) {
-    clients.map((data : any, index : any) => {
-      clientCustom.push({id: index, name: data.clientName});
-    })
+  if (clients?.length) {
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
   }
 
   return clientCustom;
-}
+};
+
+const checkButtonActive = (newData: any) => {
+  let button: boolean = false;
+  if (newData.client === "" || newData.client === "-") {
+    button = true;
+  } else {
+    button = false;
+  }
+
+  return button;
+};
 
 export default CpfPortofolio;
