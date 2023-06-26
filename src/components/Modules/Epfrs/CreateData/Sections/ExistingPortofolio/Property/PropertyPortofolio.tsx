@@ -100,13 +100,21 @@ const PropertyPortofolio = (props: Props) => {
   let clients: Array<any> = getClientCustom(clientInfo);
 
   const clientName = (params: any) => {
+    let customName = "-";
+    if (clients.length > 0) {
+      customName = clients[Number(params)].name;
+    }
+    return customName;
+  };
+
+  const typeOfPropertiesName = (params: any) => {
     switch (params) {
+      case "0":
+        return "Public"
       case "1":
-        return "Client 1";
-      case "2":
-        return "Client 2";
+        return "Private"
       default:
-        return "Client 1";
+        return "Public"
     }
   };
 
@@ -363,7 +371,6 @@ const PropertyPortofolio = (props: Props) => {
               <tr className="border-b border-gray-soft-strong">
                 <th className="px-2 py-5">SN</th>
                 <th className="px-2 py-5">Client</th>
-                <th className="px-2 py-5">Category</th>
                 <th className="px-2 py-5">Type Of Property</th>
                 <th className="px-2 py-5">Year Purchashed</th>
                 <th className="px-2 py-5">Purchase Price</th>
@@ -379,8 +386,7 @@ const PropertyPortofolio = (props: Props) => {
                   <tr key={index}>
                     <td className="px-2 py-5">{++index}</td>
                     <td className="px-2 py-5">{clientName(data.client)}</td>
-                    <td className="px-2 py-5">{data.category}</td>
-                    <td className="px-2 py-5">{data.typeOfProperty}</td>
+                    <td className="px-2 py-5">{typeOfPropertiesName(data.typeOfProperty)}</td>
                     <td className="px-2 py-5">{data.yearPurchased}</td>
                     <td className="px-2 py-5">{data.purchasePrice}</td>
                     <td className="px-2 py-5">{data.loanAmount}</td>

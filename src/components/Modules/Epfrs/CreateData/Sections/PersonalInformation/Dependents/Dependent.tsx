@@ -39,6 +39,7 @@ const Dependent = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
+  const [actionDatatIndex, setActionDataIndex] = useState(0);
   const [saveType, setSaveType] = useState("");
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
@@ -149,6 +150,7 @@ const Dependent = (props: Props) => {
   };
 
   const modalRemoveData = (params: any) => {
+
     setShowModalRemove(true);
     setActionDataId(params);
   };

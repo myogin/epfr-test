@@ -75,6 +75,20 @@ const ExistingPortofolio = (props: Props) => {
   //   localStorage.setItem("section2", JSON.stringify(sectionTwo));
   // }, []);
 
+  const checkToggel = (attribute: any) => {
+    let checkValue = false;
+    if (attribute.length > 0) {
+      if (attribute[0].editting) {
+        checkValue = true;
+      } else {
+        checkValue = false;
+      }
+    } else {
+      checkValue = false;
+    }
+
+    return checkValue;
+  };
   return (
     <div id={props.id}>
       <div
@@ -93,29 +107,27 @@ const ExistingPortofolio = (props: Props) => {
           Section 2. Existing Portfolio
         </HeadingPrimarySection>
       </div>
-      {!need ? (
+      {need ? (
         <>
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
-            <h2 className="text-xl font-bold">
-              2.1 Summary of Property(ies)
-            </h2>
+            <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
             <Toggle
-              isChecked={summaryOfProperty[0].editting}
+              isChecked={checkToggel(summaryOfProperty)}
               toggleName={
-                summaryOfProperty[0].editting ? "Review" : "Not Review"
+                checkToggel(summaryOfProperty) ? "Review" : "Not Review"
               }
               onChange={() =>
                 handleToggle(
                   "summaryOfProperty",
                   0,
-                  !summaryOfProperty[0].editting
+                  !checkToggel(summaryOfProperty)
                 )
               }
             />
             {/* <Toggle /> */}
           </HeadingSecondarySectionDoubleGrid>
 
-          {summaryOfProperty[0].editting ? <PropertyPortofolio /> : null}
+          {checkToggel(summaryOfProperty) ? <PropertyPortofolio /> : null}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>
@@ -224,13 +236,14 @@ const ExistingPortofolio = (props: Props) => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
           <Checkbox
+            isChecked={need}
             onChange={() => setGlobal("need", !need)}
             lableStyle="text-sm font-normal text-gray-light"
             label="The Client would not like their assets and liabilities to be taken
             into consideration for the needs analysis and recommendations"
           />
         </RowSingle>
-        {need ? (
+        {!need ? (
           <>
             <RowSingle className="my-10">
               <TextArea label="The Reason" defaultValue="test text area" />

@@ -26,7 +26,7 @@ type Actions = {
 
 const initialState: SectionTwo = {
   id: 0,
-  need: false,
+  need: true,
   declineToReview: [],
   reason: "",
   summaryOfProperty: [
