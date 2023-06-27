@@ -35,7 +35,6 @@ const initialState: SectionTwo = {
       id: 0,
       editting: false,
       client: "",
-      category: 0,
       typeOfProperty: "",
       yearPurchased: 0,
       purchasePrice: 0,
@@ -163,7 +162,6 @@ const existingPortofolio = create(
                 let dataReplace = draft.summaryOfProperty[indexData];
                 dataReplace.id = params.id;
                 dataReplace.client = params.client;
-                dataReplace.category = params.category;
                 dataReplace.typeOfProperty = params.typeOfProperty;
                 dataReplace.yearPurchased = params.yearPurchased;
                 dataReplace.purchasePrice = params.purchasePrice;
@@ -187,7 +185,6 @@ const existingPortofolio = create(
               );
 
               property.client = params.client;
-              property.category = params.category;
               property.typeOfProperty = params.typeOfProperty;
               property.yearPurchased = params.yearPurchased;
               property.purchasePrice = params.purchasePrice;
@@ -215,13 +212,13 @@ const existingPortofolio = create(
                 dataReplace.id = 0;
                 dataReplace.client = "";
                 dataReplace.typeOfProperty = "";
-                dataReplace.yearPurchased = "";
-                dataReplace.purchasePrice = "";
-                dataReplace.loanAmount = "";
-                dataReplace.currentOutstanding = "";
-                dataReplace.monthlyLoanRepaymentCash = "";
-                dataReplace.monthlyLoanRepaymentCPF = "";
-                dataReplace.currentMarketValue = "";
+                dataReplace.yearPurchased = 0;
+                dataReplace.purchasePrice = 0;
+                dataReplace.loanAmount = 0;
+                dataReplace.currentOutstanding = 0;
+                dataReplace.monthlyLoanRepaymentCash = 0;
+                dataReplace.monthlyLoanRepaymentCPF = 0;
+                dataReplace.currentMarketValue = 0;
               }
             })
           ),

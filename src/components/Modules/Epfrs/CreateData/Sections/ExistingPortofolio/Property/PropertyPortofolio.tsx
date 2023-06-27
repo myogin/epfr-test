@@ -25,7 +25,7 @@ const PropertyPortofolio = (props: Props) => {
   const [saveType, setSaveType] = useState("");
 
   // get property state
-  let { summaryOfProperty, setProperty, removeData, patchProperty } =
+  let { summaryOfProperty, setProperty, removeProperty, patchProperty } =
     useExistingPortofolio();
 
   // get client state
@@ -38,7 +38,6 @@ const PropertyPortofolio = (props: Props) => {
   let initialState: SummaryOfProperty = {
     id: checkIndex,
     client: "",
-    category: 0,
     typeOfProperty: "",
     yearPurchased: 0,
     purchasePrice: 0,
@@ -88,7 +87,7 @@ const PropertyPortofolio = (props: Props) => {
   };
 
   const removeDataAction = (params: any) => {
-    removeData("summaryOfProperty", params);
+    removeProperty(params);
     setShowModalRemove(false);
   };
 

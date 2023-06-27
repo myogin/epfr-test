@@ -75,20 +75,6 @@ const ExistingPortofolio = (props: Props) => {
   //   localStorage.setItem("section2", JSON.stringify(sectionTwo));
   // }, []);
 
-  const checkToggel = (attribute: any) => {
-    let checkValue = false;
-    if (attribute.length > 0) {
-      if (attribute[0].editting) {
-        checkValue = true;
-      } else {
-        checkValue = false;
-      }
-    } else {
-      checkValue = false;
-    }
-
-    return checkValue;
-  };
   return (
     <div id={props.id}>
       <div
@@ -112,22 +98,22 @@ const ExistingPortofolio = (props: Props) => {
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
             <Toggle
-              isChecked={checkToggel(summaryOfProperty)}
+              isChecked={summaryOfProperty[0].editting}
               toggleName={
-                checkToggel(summaryOfProperty) ? "Review" : "Not Review"
+                summaryOfProperty[0].editting ? "Review" : "Not Review"
               }
               onChange={() =>
                 handleToggle(
                   "summaryOfProperty",
                   0,
-                  !checkToggel(summaryOfProperty)
+                  !summaryOfProperty[0].editting
                 )
               }
             />
             {/* <Toggle /> */}
           </HeadingSecondarySectionDoubleGrid>
 
-          {checkToggel(summaryOfProperty) ? <PropertyPortofolio /> : null}
+          {summaryOfProperty[0].editting ? <PropertyPortofolio /> : null}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>
