@@ -23,8 +23,6 @@ const Dependent = (props: Props) => {
     usePersonalInformation();
 
   let checkIndex = checkDependentData(dependant);
-
-  console.log("Apa sih ini " + checkIndex);
   // Initiate new local state for new data
   let initialState: DependantInformation = {
     id: checkIndex,

@@ -7,6 +7,7 @@ type Actions = {
   setProperty: (indexData: number, params: any) => any;
   setInvestment: (indexData: number, params: any) => any;
   patchInvestment: (params: any) => any;
+  removeProperty: (params: any) => any;
   setSaving: (clientType: number, name: string, value: any) => any;
   setCpf: (clientType: number, name: string, value: any) => any;
   setInsurance: (clientType: number, name: string, value: any) => any;
@@ -159,20 +160,20 @@ const existingPortofolio = create(
           set(
             produce((draft) => {
               if (indexData === 0 && get().summaryOfProperty?.length) {
-                let propertyReplace = draft.summaryOfProperty[indexData];
-                propertyReplace.id = params.id;
-                propertyReplace.client = params.client;
-                propertyReplace.category = params.category;
-                propertyReplace.typeOfProperty = params.typeOfProperty;
-                propertyReplace.yearPurchased = params.yearPurchased;
-                propertyReplace.purchasePrice = params.purchasePrice;
-                propertyReplace.loanAmount = params.loanAmount;
-                propertyReplace.currentOutstanding = params.currentOutstanding;
-                propertyReplace.monthlyLoanRepaymentCash =
+                let dataReplace = draft.summaryOfProperty[indexData];
+                dataReplace.id = params.id;
+                dataReplace.client = params.client;
+                dataReplace.category = params.category;
+                dataReplace.typeOfProperty = params.typeOfProperty;
+                dataReplace.yearPurchased = params.yearPurchased;
+                dataReplace.purchasePrice = params.purchasePrice;
+                dataReplace.loanAmount = params.loanAmount;
+                dataReplace.currentOutstanding = params.currentOutstanding;
+                dataReplace.monthlyLoanRepaymentCash =
                   params.monthlyLoanRepaymentCash;
-                propertyReplace.monthlyLoanRepaymentCPF =
+                dataReplace.monthlyLoanRepaymentCPF =
                   params.monthlyLoanRepaymentCPF;
-                propertyReplace.currentMarketValue = params.currentMarketValue;
+                dataReplace.currentMarketValue = params.currentMarketValue;
               } else {
                 draft.summaryOfProperty.push(params);
               }
@@ -196,6 +197,32 @@ const existingPortofolio = create(
                 params.monthlyLoanRepaymentCash;
               property.monthlyLoanRepaymentCPF = params.monthlyLoanRepaymentCPF;
               property.currentMarketValue = params.currentMarketValue;
+            })
+          ),
+          removeProperty: (params: any) =>
+          set(
+            produce((draft) => {
+              if (get().summaryOfProperty?.length > 1) {
+                const propertyIndex = draft.summaryOfProperty.findIndex(
+                  (el: any) => el.id === params
+                );
+                console.log("masuk disini");
+                draft.summaryOfProperty.splice(propertyIndex, 1);
+
+                // reset index 0 dependent data
+              } else {
+                let dataReplace = draft.summaryOfProperty[0];
+                dataReplace.id = 0;
+                dataReplace.client = "";
+                dataReplace.typeOfProperty = "";
+                dataReplace.yearPurchased = "";
+                dataReplace.purchasePrice = "";
+                dataReplace.loanAmount = "";
+                dataReplace.currentOutstanding = "";
+                dataReplace.monthlyLoanRepaymentCash = "";
+                dataReplace.monthlyLoanRepaymentCPF = "";
+                dataReplace.currentMarketValue = "";
+              }
             })
           ),
         setInvestment: (indexData: number, params: any) =>
