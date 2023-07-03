@@ -225,8 +225,7 @@ const ExistingPortofolio = (props: Props) => {
             isChecked={need}
             onChange={() => setGlobal("need", !need)}
             lableStyle="text-sm font-normal text-gray-light"
-            label="The Client would not like their assets and liabilities to be taken
-            into consideration for the needs analysis and recommendations"
+            label=" Would you like your assets and liabilities to be taken into consideration for the Needs Analysis and Recommendation(s)?"
           />
         </RowSingle>
         {!need ? (
