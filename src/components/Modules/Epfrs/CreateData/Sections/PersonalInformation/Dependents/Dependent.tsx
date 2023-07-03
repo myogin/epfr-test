@@ -1,59 +1,125 @@
-import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
-import { SummaryOfInvestment } from "@/models/SectionTwo";
-import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
-import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
-import { Transition, Dialog } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
+import "react-datepicker/dist/react-datepicker.css";
+import { DependantInformation } from "@/models/SectionOne";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import moment from "moment";
 
-const InvestmentPortofolio = () => {
-  const [showModal, setShowModal] = useState(false);
+interface Props {
+  datas?: Array<any>;
+}
 
-  let { summaryOfInvestment, setInvestment, patchInvestment, removeInvestment } =
-    useExistingPortofolio();
-  const [showModalRemove, setShowModalRemove] = useState(false);
-  const [actionDatatId, setActionDataId] = useState(0);
-  const [saveType, setSaveType] = useState("");
-  // get client state
-  let { clientInfo } = usePersonalInformation();
+const Dependent = (props: Props) => {
+  // Get data from zustand state
+  let { dependant, setDependent, removeDependent, patchDependent } =
+    usePersonalInformation();
 
-  let checkIndex = checkData(summaryOfInvestment);
-
-  let initialState: SummaryOfInvestment = {
+  let checkIndex = checkDependentData(dependant);
+  // Initiate new local state for new data
+  let initialState: DependantInformation = {
     id: checkIndex,
-    editting: true,
-    client: "",
-    typeOfInvestment: "",
-    typeOfInvestmentOther: "",
-    company: "",
-    yearInvested: 0,
-    investmentAmount: 0,
-    currentvalue: 0,
-    sourceOfInvestment: "",
+    name: "",
+    relationship: "",
+    dateOfBirth: "",
+    age: 0,
+    gender: "",
+    year: "",
   };
 
-  let typeOfInvestments: Array<any> = [
-    { id: "0", name: "Bonds" },
-    { id: "1", name: "Unit Trusts" },
-    { id: "2", name: "Stock & Shares" },
-    { id: "3", name: "Other" },
-  ];
-
-  let sourceOfInvestments: Array<any> = [
-    { id: "0", name: "Cash" },
-    { id: "1", name: "CPF" },
-    { id: "2", name: "SRS" },
-  ];
-
+  const [showModal, setShowModal] = useState(false);
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [actionDatatId, setActionDataId] = useState(0);
+  const [actionDatatIndex, setActionDataIndex] = useState(0);
+  const [saveType, setSaveType] = useState("");
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
+
+  let buttonSave = checkButtonActive(newData);
+
+  // Variable Select Box
+  let relationships: Array<any> = [
+    { id: "SON", name: "SON" },
+    { id: "DAUGHTER", name: "DAUGHTER" },
+    { id: "PARENT", name: "PARENT" },
+    { id: "SPOUSE", name: "SPOUSE" },
+  ];
+
+  let genders: Array<any> = [
+    { id: "1", name: "MALE" },
+    { id: "2", name: "FEMALE" },
+  ];
+
+  const genderStatus = (params: any) => {
+    switch (params) {
+      case "1":
+        return "MALE";
+      case "2":
+        return "FEMALE";
+      default:
+        return "MALE";
+    }
+  };
+
+  const checkRelationship = (params: any) => {
+    switch (params) {
+      case "SON":
+        setNewData({
+          ...newData,
+          gender: "1",
+          relationship: params,
+        });
+        break;
+      case "DAUGHTER":
+        setNewData({
+          ...newData,
+          gender: "2",
+          relationship: params,
+        });
+        break;
+      default:
+        setNewData({
+          ...newData,
+          gender: "1",
+          relationship: params,
+        });
+        break;
+    }
+  };
+
+  const checkBirthDate = (params: any) => {
+    let currentDate = new Date();
+    let dependentBirthDate = new Date(params);
+
+    if (!isNaN(dependentBirthDate.getTime())) {
+      const yearsDiff =
+        currentDate.getFullYear() - dependentBirthDate.getFullYear();
+      const monthsDiff = currentDate.getMonth() - dependentBirthDate.getMonth();
+
+      let calculatedAge = yearsDiff;
+
+      if (
+        monthsDiff < 0 ||
+        (monthsDiff === 0 &&
+          currentDate.getDate() < dependentBirthDate.getDate())
+      ) {
+        calculatedAge--;
+      }
+
+      setNewData({
+        ...newData,
+        age: calculatedAge,
+        dateOfBirth: params,
+      });
+    }
+  };
 
   const openModal = () => {
     setSaveType("add");
@@ -63,52 +129,37 @@ const InvestmentPortofolio = () => {
 
   const openModalEdit = (params: any) => {
     setSaveType("update");
-    const detailData = summaryOfInvestment.filter((obj) => obj.id === params);
+    const detailData = dependant.filter((obj) => obj.id === params);
     setNewData(detailData[0]);
     setShowModal(true);
   };
 
-  let clients: Array<any> = getClientCustom(clientInfo);
-
-  let buttonSave = checkButtonActive(newData);
-
   const saveData = () => {
     let checkTotalData =
-      summaryOfInvestment?.length === 0 || summaryOfInvestment[0].id === 0
-        ? 0
-        : 1;
-
-    console.log(checkTotalData);
+      dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
     if (saveType === "add") {
-      setInvestment(checkTotalData, newData);
+      setDependent(checkTotalData, newData);
     } else {
-      patchInvestment(newData);
+      patchDependent(newData);
     }
 
     setShowModal(false);
   };
 
   const modalRemoveData = (params: any) => {
+
     setShowModalRemove(true);
     setActionDataId(params);
   };
 
   const removeDataAction = (params: any) => {
-    removeInvestment(params);
+    removeDependent(params);
     setShowModalRemove(false);
   };
 
-  const clientName = (params: any) => {
-    let customName = "-";
-    if (clients.length > 0) {
-      customName = clients[Number(params)].name;
-    }
-    return customName;
-  };
-
   return (
-    <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+    <>
       <div className="w-full">
         <ButtonBox onClick={openModal} className="text-green-deep">
           <AddLineIcon />
@@ -148,134 +199,118 @@ const InvestmentPortofolio = () => {
                       as="h3"
                       className="text-lg font-medium leading-6 text-gray-900"
                     >
-                      Add Investment
+                      Add Dependent
                     </Dialog.Title>
                     <div className="mt-2">
+                      <div className="flex">
+                        <Input
+                          className="my-4"
+                          label="Name"
+                          name="nameDependent"
+                          type="text"
+                          value={newData.name}
+                          placeholder="Dependent name"
+                          handleChange={(event) =>
+                            setNewData({
+                              ...newData,
+                              name: event.target.value,
+                            })
+                          }
+                          needValidation={true}
+                          logic={
+                            newData.name === "" || newData.name === "-"
+                              ? false
+                              : true
+                          }
+                        />
+                      </div>
                       <div className="flex justify-between gap-8">
-                        <div className="basis-2/3">
+                        <div>
                           <Select
                             className="my-4"
-                            name="client"
-                            label="Client"
-                            value={newData.client}
-                            datas={clients}
+                            label="Relationship"
+                            name="relationship"
+                            datas={relationships}
+                            value={newData.relationship}
                             handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                client: event.target.value,
-                              })
+                              checkRelationship(event.target.value)
                             }
                             needValidation={true}
                             logic={
-                              newData.client === "" || newData.client === "-"
+                              newData.relationship === "" ||
+                              newData.relationship === "-"
                                 ? false
                                 : true
                             }
                           />
-                          <Select
+                          {/* <DatePicker className="w-full px-0 py-2 my-4 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong" selected={newData.dateOfBirth} onChange={(date) => checkBirthDate(date)} /> */}
+                          <Input
                             className="my-4"
-                            name="typeOfInvestment"
-                            label="Type Of Investment"
-                            value={newData.typeOfInvestment}
-                            datas={typeOfInvestments}
+                            label="Date Of Birth"
+                            type="date"
+                            name="dateOfBirth"
+                            value={newData.dateOfBirth}
                             handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                typeOfInvestment: event.target.value,
-                              })
+                              checkBirthDate(event.target.value)
                             }
                             needValidation={true}
                             logic={
-                              newData.typeOfInvestment === "" ||
-                              newData.typeOfInvestment === "-"
+                              newData.dateOfBirth === "" ||
+                              newData.dateOfBirth === "-"
                                 ? false
                                 : true
                             }
                           />
                           <Input
+                            readonly
                             className="my-4"
-                            label="Company"
-                            type="text"
-                            name="company"
-                            value={newData.company}
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                company: event.target.value,
-                              })
-                            }
-                          />
-                          <Input
-                            className="my-4"
-                            label="Year Invested"
-                            type="text"
-                            name="yearInvested"
-                            value={newData.yearInvested}
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                yearInvested: Number(event.target.value),
-                              })
-                            }
+                            label="Age"
+                            type="number"
+                            name="age"
+                            value={newData.age}
                           />
                         </div>
-                        <div className="basis-1/3">
-                          <Input
-                            className="my-4"
-                            label="Investment Amount"
-                            type="text"
-                            name="investmentAmount"
-                            value={newData.investmentAmount}
-                            formStyle="text-right"
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                investmentAmount: Number(event.target.value),
-                              })
-                            }
-                          />
-                          <Input
-                            className="my-4"
-                            label="Current Value"
-                            type="text"
-                            name="currentvalue"
-                            value={newData.currentvalue}
-                            formStyle="text-right"
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                currentvalue: Number(event.target.value),
-                              })
-                            }
-                          />
+                        <div>
                           <Select
                             className="my-4"
-                            name="sourceOfInvestment"
-                            label="Source Of Investment"
-                            value={newData.sourceOfInvestment}
-                            datas={sourceOfInvestments}
+                            label="Sex"
+                            name="gender"
+                            value={newData.gender}
+                            datas={genders}
                             handleChange={(event) =>
                               setNewData({
                                 ...newData,
-                                sourceOfInvestment: event.target.value,
+                                gender: event.target.value,
                               })
                             }
                             needValidation={true}
                             logic={
-                              newData.sourceOfInvestment === "" ||
-                              newData.sourceOfInvestment === "-"
+                              newData.gender === "" || newData.gender === "-"
                                 ? false
                                 : true
+                            }
+                          />
+                          <Input
+                            className="my-4"
+                            label="Years To Support"
+                            type="number"
+                            name="year"
+                            value={newData.year}
+                            placeholder="Years To Support"
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                year: event.target.value,
+                              })
                             }
                           />
                         </div>
                       </div>
                     </div>
-
                     <div className="flex gap-4 mt-4">
                       <ButtonGreenMedium
                         disabled={buttonSave}
-                        onClick={() => saveData()}
+                        onClick={saveData}
                       >
                         Save
                       </ButtonGreenMedium>
@@ -358,43 +393,37 @@ const InvestmentPortofolio = () => {
           </Dialog>
         </Transition>
       </div>
-      {summaryOfInvestment?.length && summaryOfInvestment[0].client !== "" ? (
+      {dependant?.length && dependant[0].name !== "" ? (
         <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
           <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
             <thead className="text-left bg-white-bone">
               <tr className="border-b border-gray-soft-strong">
                 <th className="px-2 py-5">SN</th>
-                <th className="px-2 py-5">Client</th>
-                <th className="px-2 py-5">Type Of Investment</th>
-                <th className="px-2 py-5">Company</th>
-                <th className="px-2 py-5">Year Invested</th>
-                <th className="px-2 py-5">Investment Amount</th>
-                <th className="px-2 py-5">Current Value</th>
-                <th className="px-2 py-5">Source Of Investment</th>
-                <th></th>
+                <th className="px-2 py-5">Name</th>
+                <th className="px-2 py-5">Relationship</th>
+                <th className="px-2 py-5">Date Of Birth</th>
+                <th className="px-2 py-5">Age</th>
+                <th className="px-2 py-5">Sex</th>
+                <th className="px-2 py-5">Years to Support</th>
+                <th className="px-2 py-5"></th>
               </tr>
             </thead>
             <tbody>
-              {summaryOfInvestment?.length &&
-                summaryOfInvestment.map((data, index) => (
-                  <tr key={index}>
+              {dependant?.length &&
+                dependant.map((data, index) => (
+                  <tr key={"dependent-" + index}>
                     <td className="px-2 py-5">{++index}</td>
-                    <td className="px-2 py-5">{clientName(data.client)}</td>
-                    <td className="px-2 py-5">
-                      {data.typeOfInvestment
-                        ? typeOfInvestments[Number(data.typeOfInvestment)].name
-                        : ""}
-                    </td>
-                    <td className="px-2 py-5">{data.company}</td>
-                    <td className="px-2 py-5">{data.yearInvested}</td>
-                    <td className="px-2 py-5">{data.investmentAmount}</td>
-                    <td className="px-2 py-5">{data.currentvalue}</td>
-                    <td className="px-2 py-5">{data.sourceOfInvestment}</td>
+                    <td className="px-2 py-5">{data.name}</td>
+                    <td className="px-2 py-5">{data.relationship}</td>
+                    <td className="px-2 py-5">{data.dateOfBirth}</td>
+                    <td className="px-2 py-5">{data.age}</td>
+                    <td className="px-2 py-5">{genderStatus(data.gender)}</td>
+                    <td className="px-2 py-5">{data.year}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
                         <ButtonBox
-                          className="text-green-deep"
                           onClick={() => openModalEdit(data.id)}
+                          className="text-green-deep"
                         >
                           <PencilLineIcon size={14} />
                         </ButtonBox>
@@ -412,47 +441,34 @@ const InvestmentPortofolio = () => {
           </table>
         </div>
       ) : null}
-    </SectionCardSingleGrid>
+    </>
   );
 };
 
-// Additional function
-const getClientCustom = (clients: any) => {
-  let clientCustom: any[] = [];
-
-  if (clients?.length) {
-    clients.map((data: any, index: any) => {
-      clientCustom.push({ id: index, name: data.clientName });
-    });
-  }
-
-  return clientCustom;
-};
-
-function checkData(datas: any) {
+const checkDependentData = (dependant: any) => {
   let data: number = 0;
-  if (datas?.length) {
-    if (datas[0].client === "") {
-      data = datas.length;
+  if (dependant?.length) {
+    if (dependant[0].name === "") {
+      data = dependant.length;
     } else {
-      data = datas.length + 1;
+      data = dependant.length + 1;
     }
   } else {
-    data = datas.length + 1;
+    data = dependant.length + 1;
   }
 
   return data;
-}
+};
 
 const checkButtonActive = (newData: any) => {
   let button: boolean = false;
   if (
-    newData.client === "" ||
-    newData.client === "-" ||
-    newData.typeOfInvestment === "" ||
-    newData.typeOfInvestment === "-" ||
-    newData.sourceOfInvestment === "" ||
-    newData.sourceOfInvestment === "-"
+    newData.name === "" ||
+    newData.relationship === "" ||
+    newData.relationship === "-" ||
+    newData.dateOfBirth === "" ||
+    newData.gender === "" ||
+    newData.gender === "-"
   ) {
     button = true;
   } else {
@@ -462,4 +478,4 @@ const checkButtonActive = (newData: any) => {
   return button;
 };
 
-export default InvestmentPortofolio;
+export default Dependent;

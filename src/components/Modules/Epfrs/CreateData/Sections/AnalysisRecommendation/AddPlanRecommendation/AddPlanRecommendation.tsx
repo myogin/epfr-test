@@ -309,7 +309,7 @@ const AddPlanRecommendation = () => {
             <RowSingleGrid>
               <TextSmall>Product Feature</TextSmall>
               <p className="text-sm text-gray-light">
-                MyRetirement is a life insurance endowment plan that aims to
+                {`MyRetirement is a life insurance endowment plan that aims to
                 provide a platform for accumulating retirement savings and
                 providing retirement income solutions. This is a participating
                 policy that participates in the performance of Singapore Life’s
@@ -319,7 +319,7 @@ const AddPlanRecommendation = () => {
                 death and terminal illness. The plan provides limited premium
                 payment of 8 years OR limited premium payment of 10 years OR
                 regular premium payment up to 5 years before Policyholder's
-                selected Retirement Age.
+                selected Retirement Age.`}
               </p>
             </RowSingleGrid>
           </>

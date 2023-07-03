@@ -1,6 +1,7 @@
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowFourthGrid from "@/components/Attributes/Rows/Grids/RowFourthGrid";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import RowSixGrid from "@/components/Attributes/Rows/Grids/RowSixGrid";
@@ -16,14 +17,26 @@ import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React from "react";
+import React, {useState, useEffect} from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
+import { useAffordability } from "@/store/epfrPage/createData/affordability";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const Affordability = (props: Props) => {
+  let {
+    section8,
+    setPayorDetail,
+    setPayorBudget
+  } = useAffordability();
+
+  useEffect(() => {  
+    console.log('section8', section8);
+  }, [section8]);
+
   const setData = (params: any) => {
     console.log(params);
   };
@@ -48,13 +61,21 @@ const Affordability = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
 
+  const handlePayorDetail = (event: any, key: any) => {
+    const { groupdata } = event.target.dataset;
+    const { name, value } = event.target;
+    setPayorDetail(key, name, groupdata, value);
+  };
+
+  const checkboxPayorBudget = (event:any, key:any, index:any) => {
+    const { name, value } = event.target;
+    console.log('value', value)
+    setPayorBudget(key, index, name, value);
+  }
+
   const saveData = (params: any) => {
     showDetailData(params);
   };
-
-  const checkboxPayorBudget = (params:any) => {
-
-  }
 
   const scrollPosition = useScrollPosition(8);
   return (
@@ -76,16 +97,80 @@ const Affordability = (props: Props) => {
         </HeadingPrimarySection>
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <div>
-          <Select
-            value=""
-            className="my-4"
-            datas={payorForClient}
-            handleChange={(event) => setData(eval(event.target.value))}
-            label="Payor For Client 1"
-          />
-        </div>
+        <RowDoubleGrid>
+          {section8.payorDetail.map(function(value:any, key:any){
+            return (
+              <div className="text-left space-y-11" key={"payor-detail-top-"+key}>
+                <Select
+                  className="my-4"
+                  name="isSelf"
+                  dataType="payorDetail"
+                  datas={payorForClient}
+                  value={value.isSelf}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                  label={`Payor For Client ${key+1}`}
+                />
+              </div>
+            );
+          })}
+        </RowDoubleGrid>
+        
+        <RowDoubleGrid>
+          {section8.payorDetail.map(function(value:any, key:any){
+            return (
+              <div className="text-left space-y-11" key={"payor-detail-"+key}>
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="relationShip"
+                  dataType="payorDetail"
+                  label={`PAYOR RELATIONSHIP TO CLIENT1 : ${key+1}`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                />
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="payorName"
+                  dataType="payorDetail"
+                  label={`PAYOR NAME :`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                />
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="passportNo"
+                  dataType="payorDetail"
+                  label={`PAYOR NRIC / PASSPORT NUMBER :`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                />
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="occupation"
+                  dataType="payorDetail"
+                  label={`PAYOR OCCUPATION :`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                />
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="payorIncome"
+                  dataType="payorDetail"
+                  label={`PAYOR ANNUAL INCOME RANGE (S$) :`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                />
+              </div>
+              
+            );
+          })}
+        </RowDoubleGrid>
       </SectionCardSingleGrid>
+      
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingleGrid>
           <HeadingSecondarySection>Payor Budget</HeadingSecondarySection>
@@ -99,15 +184,20 @@ const Affordability = (props: Props) => {
           ))}
           
         </RowSixGrid>
-        <RowSixGrid>
-          <div className="text-sm font-bold">Client 1</div>
-          {payorDetails?.length && payorDetails.map((val, index) => (
-            <div key={"payor-budget-checkbox"+val.id} className="flex items-center justify-center">
-            <Checkbox onChange={() => checkboxPayorBudget(val.id)} />
-          </div>
-          ))}
+          {section8.payorBudget.map(function(value:any, key:any){
+            return (
+              <RowSixGrid key={"payor-budget-top-"+key}>
+                <div className="text-sm font-bold">Client {key+1}</div>
+                {value?.length && value.map((val: any, index: any) => (
+                  <div key={"payor-budget-checkbox"+index} className="flex items-center justify-center">
+                  <input type="checkbox" name="selection" onChange={(event) => checkboxPayorBudget(event, key, index)} checked={value.selection}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                </div>
+                ))}
+              </RowSixGrid>
+            );
+          })}
           
-        </RowSixGrid>
+          
       </SectionCardSingleGrid>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingleGrid>
@@ -234,9 +324,9 @@ const Affordability = (props: Props) => {
             handleChange={(event) => setData(eval(event.target.value))}
           />
           <small className="text-sm italic font-normal">
-            If the answer is "Yes", a potential risk of not being able to
+            {`If the answer is "Yes", a potential risk of not being able to
             continue paying premiums in the future may occur. Budget is
-            considered substantial if it is more than 50% of assets or surplus
+            considered substantial if it is more than 50% of assets or surplus`}
           </small>
         </div>
       </SectionCardSingleGrid>

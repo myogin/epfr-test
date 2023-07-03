@@ -1,7 +1,7 @@
 export interface SummaryOfProperty {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
-  category: number;
   typeOfProperty: string;
   yearPurchased: number;
   purchasePrice: number;
@@ -13,7 +13,8 @@ export interface SummaryOfProperty {
 }
 
 export interface SummaryOfInvestment {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   typeOfInvestment: string;
   typeOfInvestmentOther: string;
@@ -25,7 +26,8 @@ export interface SummaryOfInvestment {
 }
 
 export interface SummaryOfSavings {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   typeOfDeposit: number;
   bank: string;
@@ -34,7 +36,8 @@ export interface SummaryOfSavings {
 }
 
 export interface SummaryOfInsurance {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   insured: string;
   status: string;
@@ -56,7 +59,8 @@ export interface SummaryOfInsurance {
 }
 
 export interface SummaryOfInsurance2 {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   insured: string;
   insurer: string;
@@ -73,7 +77,8 @@ export interface SummaryOfInsurance2 {
 }
 
 export interface SummaryOfLoans {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   typeOfLoan: string;
   loanTerm: string;
@@ -88,7 +93,8 @@ export interface SummaryOfLoans {
 }
 
 export interface SummaryOfCPF {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   ordinaryAccount: number;
   specialAccount: number;
@@ -97,7 +103,8 @@ export interface SummaryOfCPF {
 }
 
 export interface SummaryOfSRS {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   amount: number;
 }

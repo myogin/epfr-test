@@ -16,6 +16,7 @@ import { SectionSix } from "@/models/SectionSix";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const CustomerKnowledgeAssesment = (props: Props) => {

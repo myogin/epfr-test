@@ -3,7 +3,10 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import Select from "@/components/Forms/Select";
 import { SummaryOfSRS } from "@/models/SectionTwo";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -13,11 +16,17 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 const SrsPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
-  const [newDataInput, setNewDataInput] = useState<SummaryOfSRS>({
+  let { summaryOfSRS, setSrs } = useExistingPortofolio();
+  // get client state
+  let { clientInfo } = usePersonalInformation();
+
+  const [newData, setNewData] = useState<SummaryOfSRS>({
     editting: false,
     client: "",
     amount: 0,
   });
+
+  let clients: Array<any> = getClientCustom(clientInfo);
 
   const setData = (params: any) => {
     console.log(params);
@@ -76,26 +85,34 @@ const SrsPortofolio = () => {
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="flex flex-col w-full">
-                        <Input
+                        <Select
                           className="my-4"
+                          name="client"
                           label="Client"
-                          type="text"
-                          value={newDataInput.client}
+                          value={newData.client}
+                          datas={clients}
                           handleChange={(event) =>
-                            setNewDataInput({
-                              ...newDataInput,
+                            setNewData({
+                              ...newData,
                               client: event.target.value,
                             })
+                          }
+                          needValidation={true}
+                          logic={
+                            newData.client === "" || newData.client === "-"
+                              ? false
+                              : true
                           }
                         />
                         <Input
                           className="my-4"
                           label="Amount"
                           type="text"
-                          value={newDataInput.amount}
+                          value={newData.amount}
+                          formStyle="text-right"
                           handleChange={(event) =>
-                            setNewDataInput({
-                              ...newDataInput,
+                            setNewData({
+                              ...newData,
                               amount: Number(event.target.value),
                             })
                           }
@@ -118,38 +135,51 @@ const SrsPortofolio = () => {
           </Dialog>
         </Transition>
       </div>
-
-      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-          <thead className="text-left bg-white-bone">
-            <tr className="border-b border-gray-soft-strong">
-              <th className="px-2 py-5">SN</th>
-              <th className="px-2 py-5">Client</th>
-              <th className="px-2 py-5">Amount</th>
-              <th className="px-2 py-5"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-2 py-5">1</td>
-              <td className="px-2 py-5">Client 1</td>
-              <td className="px-2 py-5">$0.0</td>
-              <td className="w-1/12 px-2 py-5">
-                <div className="flex w-full gap-2">
-                  <ButtonBox className="text-green-deep">
-                    <PencilLineIcon size={14} />
-                  </ButtonBox>
-                  <ButtonBox className="text-red">
-                    <CloseLineIcon size={14} />
-                  </ButtonBox>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {summaryOfSRS[0].client !== "" ? (
+        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+            <thead className="text-left bg-white-bone">
+              <tr className="border-b border-gray-soft-strong">
+                <th className="px-2 py-5">SN</th>
+                <th className="px-2 py-5">Client</th>
+                <th className="px-2 py-5">Amount</th>
+                <th className="px-2 py-5"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-2 py-5">1</td>
+                <td className="px-2 py-5">Client 1</td>
+                <td className="px-2 py-5">$0.0</td>
+                <td className="w-1/12 px-2 py-5">
+                  <div className="flex w-full gap-2">
+                    <ButtonBox className="text-green-deep">
+                      <PencilLineIcon size={14} />
+                    </ButtonBox>
+                    <ButtonBox className="text-red">
+                      <CloseLineIcon size={14} />
+                    </ButtonBox>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </SectionCardSingleGrid>
   );
+};
+
+const getClientCustom = (clients: any) => {
+  let clientCustom: any[] = [];
+
+  if (clients?.length) {
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
+  }
+
+  return clientCustom;
 };
 
 export default SrsPortofolio;
