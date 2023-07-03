@@ -100,7 +100,7 @@ const Affordability = (props: Props) => {
         <RowDoubleGrid>
           {section8.payorDetail.map(function(value:any, key:any){
             return (
-              <div className="text-left space-y-11">
+              <div className="text-left space-y-11" key={"payor-detail-top-"+key}>
                 <Select
                   className="my-4"
                   name="isSelf"
@@ -118,7 +118,7 @@ const Affordability = (props: Props) => {
         <RowDoubleGrid>
           {section8.payorDetail.map(function(value:any, key:any){
             return (
-              <div className="text-left space-y-11">
+              <div className="text-left space-y-11" key={"payor-detail-"+key}>
                 <Input
                   className="mb-10"
                   type="text"
@@ -186,7 +186,7 @@ const Affordability = (props: Props) => {
         </RowSixGrid>
           {section8.payorBudget.map(function(value:any, key:any){
             return (
-              <RowSixGrid>
+              <RowSixGrid key={"payor-budget-top-"+key}>
                 <div className="text-sm font-bold">Client {key+1}</div>
                 {value?.length && value.map((val: any, index: any) => (
                   <div key={"payor-budget-checkbox"+index} className="flex items-center justify-center">
@@ -324,9 +324,9 @@ const Affordability = (props: Props) => {
             handleChange={(event) => setData(eval(event.target.value))}
           />
           <small className="text-sm italic font-normal">
-            If the answer is "Yes", a potential risk of not being able to
+            {`If the answer is "Yes", a potential risk of not being able to
             continue paying premiums in the future may occur. Budget is
-            considered substantial if it is more than 50% of assets or surplus
+            considered substantial if it is more than 50% of assets or surplus`}
           </small>
         </div>
       </SectionCardSingleGrid>
