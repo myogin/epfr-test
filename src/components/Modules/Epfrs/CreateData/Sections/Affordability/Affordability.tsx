@@ -217,6 +217,7 @@ const Affordability = (props: Props) => {
           <HeadingSecondarySection key={"heading-1"}>Payor Budget</HeadingSecondarySection>
         </RowSingleGrid>
         <RowSixGrid key={"row-six"}>
+          <div></div>
           {payorDetails?.length && payorDetails.map((val, index) => (
             <div key={"payor-budget-top"+val.id} className="flex items-center justify-center text-sm font-normal">
             {val.name}
@@ -249,29 +250,29 @@ const Affordability = (props: Props) => {
             <RowTripleGrid className="mb-16" key={"total-annual"+key}>
               <div className="text-center space-y-11">
                 <div className="text-sm font-bold">Total Annual Income ($)</div>
-                <div className="text-sm font-normal">1,000,000</div>
+                <div className="text-sm font-normal">0</div>
               </div>
               <div className="text-center space-y-11">
                 <div className="text-sm font-bold">Total Annual Expense ($)</div>
-                <div className="text-sm font-normal">1,000,000</div>
+                <div className="text-sm font-normal">0</div>
               </div>
               <div className="text-center space-y-11">
                 <div className="text-sm font-bold">Annual Surplus / Shortfall ($)</div>
-                <div className="text-sm font-normal">1,000,000</div>
+                <div className="text-sm font-normal">0</div>
               </div>
             </RowTripleGrid>
             <RowTripleGrid key={"total-asset"+key}>
               <div className="text-center space-y-11">
                 <div className="text-sm font-bold">Total Asset($)</div>
-                <div className="text-sm font-normal">1,000,000</div>
+                <div className="text-sm font-normal">0</div>
               </div>
               <div className="text-center space-y-11">
                 <div className="text-sm font-bold">Total Liabilities($)</div>
-                <div className="text-sm font-normal">1,000,000</div>
+                <div className="text-sm font-normal">0</div>
               </div>
               <div className="text-center space-y-11">
                 <div className="text-sm font-bold">Net Worth ($)</div>
-                <div className="text-sm font-normal">1,000,000</div>
+                <div className="text-sm font-normal">0</div>
               </div>
             </RowTripleGrid>
 
@@ -282,6 +283,7 @@ const Affordability = (props: Props) => {
               </RowSingleGrid>
             </RowSingleGrid>
             <RowFourthGrid>
+              <div></div>
               <div className="text-sm font-bold text-right">Annual ($)</div>
               <div className="text-sm font-bold text-right">Single ($)</div>
               <div className="text-sm font-bold text-right">Source of Fund</div>
