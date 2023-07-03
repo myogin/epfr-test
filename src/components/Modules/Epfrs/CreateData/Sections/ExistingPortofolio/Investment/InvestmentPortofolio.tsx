@@ -16,7 +16,7 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 const InvestmentPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
-  let { summaryOfInvestment, setInvestment, patchInvestment, removeData } =
+  let { summaryOfInvestment, setInvestment, patchInvestment, removeInvestment } =
     useExistingPortofolio();
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
@@ -28,6 +28,7 @@ const InvestmentPortofolio = () => {
 
   let initialState: SummaryOfInvestment = {
     id: checkIndex,
+    editting: true,
     client: "",
     typeOfInvestment: "",
     typeOfInvestmentOther: "",
@@ -94,8 +95,16 @@ const InvestmentPortofolio = () => {
   };
 
   const removeDataAction = (params: any) => {
-    removeData("summaryOfInvestment", params);
+    removeInvestment(params);
     setShowModalRemove(false);
+  };
+
+  const clientName = (params: any) => {
+    let customName = "-";
+    if (clients.length > 0) {
+      customName = clients[Number(params)].name;
+    }
+    return customName;
   };
 
   return (
@@ -143,7 +152,7 @@ const InvestmentPortofolio = () => {
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="flex justify-between gap-8">
-                        <div>
+                        <div className="basis-2/3">
                           <Select
                             className="my-4"
                             name="client"
@@ -210,7 +219,7 @@ const InvestmentPortofolio = () => {
                             }
                           />
                         </div>
-                        <div>
+                        <div className="basis-1/3">
                           <Input
                             className="my-4"
                             label="Investment Amount"
@@ -370,8 +379,12 @@ const InvestmentPortofolio = () => {
                 summaryOfInvestment.map((data, index) => (
                   <tr key={index}>
                     <td className="px-2 py-5">{++index}</td>
-                    <td className="px-2 py-5">{data.client}</td>
-                    <td className="px-2 py-5">{data.typeOfInvestment}</td>
+                    <td className="px-2 py-5">{clientName(data.client)}</td>
+                    <td className="px-2 py-5">
+                      {data.typeOfInvestment
+                        ? typeOfInvestments[Number(data.typeOfInvestment)].name
+                        : ""}
+                    </td>
                     <td className="px-2 py-5">{data.company}</td>
                     <td className="px-2 py-5">{data.yearInvested}</td>
                     <td className="px-2 py-5">{data.investmentAmount}</td>

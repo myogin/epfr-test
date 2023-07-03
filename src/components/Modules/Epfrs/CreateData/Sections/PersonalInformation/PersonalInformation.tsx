@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import FlashlightLineIcon from "remixicon-react/FlashlightLineIcon";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
-import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
-import Checkbox from "@/components/Forms/Checkbox";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingSecondarySectionDoubleGrid from "@/components/Attributes/Sections/HeadingSecondarySectionDoubleGrid";
 import Toggle from "@/components/Forms/Toggle";
@@ -34,10 +32,21 @@ const PersonalInformation = (props: Props) => {
 
   const scrollPosition = useScrollPosition(1);
 
-  let { ownerId, type, id, dependant,accompaniment, issues, status, setTrustedIndividuals } =
-    usePersonalInformation();
+  let {
+    ownerId,
+    type,
+    id,
+    dependant,
+    accompaniment,
+    issues,
+    status,
+    setTrustedIndividuals,
+  } = usePersonalInformation();
 
-  let checkAccompainment = CheckAccompainment(accompaniment, setTrustedIndividuals);
+  let checkAccompainment = CheckAccompainment(
+    accompaniment,
+    setTrustedIndividuals
+  );
 
   useEffect(() => {
     if (dependant?.length && dependant[0].name !== "") {
@@ -112,25 +121,34 @@ const PersonalInformation = (props: Props) => {
   );
 };
 
-function CheckAccompainment(accompaniment : any, setTrustedIndividuals : any) {
-
-
+function CheckAccompainment(accompaniment: any, setTrustedIndividuals: any) {
   let checker = false;
 
   if (
-    accompaniment[0].age > 62 ||
-    Number(accompaniment[0].english_spoken) === 2 ||
-    Number(accompaniment[0].education_level) <= 2
+    (accompaniment[0].education_level === "-" ||
+      accompaniment[0].education_level === "") &&
+    (accompaniment[0].english_spoken === "-" ||
+      accompaniment[0].english_spoken === "") &&
+    (accompaniment[0].english_written === "-" ||
+      accompaniment[0].english_written === "")
   ) {
-    checker = true;
-    setTrustedIndividuals("condition1", true)
-  }
+    checker = false;
+  } else {
+    if (
+      accompaniment[0].age > 62 ||
+      Number(accompaniment[0].english_spoken) === 2 ||
+      Number(accompaniment[0].education_level) <= 2
+    ) {
+      checker = true;
+      setTrustedIndividuals("condition1", true);
+    }
 
-  if(Number(accompaniment[0].english_spoken) === 2) {
-    setTrustedIndividuals("condition2", true)
-    checker = true;
-  }else {
-    setTrustedIndividuals("condition2", false)
+    if (Number(accompaniment[0].english_spoken) === 2) {
+      setTrustedIndividuals("condition2", true);
+      checker = true;
+    } else {
+      setTrustedIndividuals("condition2", false);
+    }
   }
 
   return checker;

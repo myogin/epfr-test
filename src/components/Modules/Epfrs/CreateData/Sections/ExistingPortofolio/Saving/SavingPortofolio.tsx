@@ -15,43 +15,82 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const SavingPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+  const [saveType, setSaveType] = useState("");
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [actionDatatId, setActionDataId] = useState(0);
 
-  let { summaryOfSavings, setSaving } = useExistingPortofolio();
-  // get client state 
-  let {clientInfo} = usePersonalInformation();
+  let { summaryOfSavings, setSaving, patchSaving, removeSaving } =
+    useExistingPortofolio();
+  // get client state
+  let { clientInfo } = usePersonalInformation();
 
-  const [newData, setNewData] = useState<SummaryOfSavings>({
-    editting: false,
+  let checkIndex = checkCountData(summaryOfSavings);
+
+  let initialState: SummaryOfSavings = {
+    id: checkIndex,
+    editting: true,
     client: "",
     typeOfDeposit: 0,
     bank: "",
     yearDeposit: 0,
     savingAmount: 0,
-  });
+  };
 
-  let clients: Array<any> = getClientCustom(clientInfo)
+  const [newData, setNewData] = useState<SummaryOfSavings>(initialState);
+
+  let clients: Array<any> = getClientCustom(clientInfo);
+
+  const clientName = (params: any) => {
+    let customName = "-";
+    if (clients.length > 0) {
+      customName = clients[Number(params)].name;
+    }
+    return customName;
+  };
 
   let buttonSave = checkButtonActive(newData);
 
-  let deposits : Array<any> = [
-    {id: "0", name:"Savings Account"},
-    {id: "1", name:"Fixed Deposit"},
-  ]
-
-  const setData = (params: any) => {
-    console.log(params);
-  };
+  let deposits: Array<any> = [
+    { id: "0", name: "Savings Account" },
+    { id: "1", name: "Fixed Deposit" },
+  ];
 
   const saveData = () => {
-    console.log("Save test");
+    let checkTotalData =
+      summaryOfSavings?.length === 0 || summaryOfSavings[0].id === 0 ? 0 : 1;
+
+    console.log(checkTotalData);
+
+    if (saveType === "add") {
+      setSaving(checkTotalData, newData);
+    } else {
+      patchSaving(newData);
+    }
+
+    setShowModal(false);
   };
 
   const openModal = () => {
+    setSaveType("add");
+    setNewData(initialState);
     setShowModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const openModalEdit = (params: any) => {
+    setSaveType("update");
+    const detailData = summaryOfSavings.filter((obj) => obj.id === params);
+    setNewData(detailData[0]);
+    setShowModal(true);
+  };
+
+  const modalRemoveData = (params: any) => {
+    setShowModalRemove(true);
+    setActionDataId(params);
+  };
+
+  const removeDataAction = (params: any) => {
+    removeSaving(params);
+    setShowModalRemove(false);
   };
 
   return (
@@ -62,7 +101,11 @@ const SavingPortofolio = () => {
         </ButtonBox>
 
         <Transition appear show={showModal} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModal(false)}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -96,7 +139,7 @@ const SavingPortofolio = () => {
                     <div className="mt-2">
                       <div className="flex justify-between gap-8">
                         <div>
-                        <Select
+                          <Select
                             className="my-4"
                             name="client"
                             label="Client"
@@ -129,20 +172,21 @@ const SavingPortofolio = () => {
                             }
                             needValidation={true}
                             logic={
-                              String(newData.typeOfDeposit) === "-" || String(newData.typeOfDeposit) === "NaN"
+                              String(newData.typeOfDeposit) === "-" ||
+                              String(newData.typeOfDeposit) === "NaN"
                                 ? false
                                 : true
                             }
                           />
                           <Input
                             className="my-4"
-                            label="Type Of Deposit"
+                            label="Year Deposite"
                             type="text"
-                            value={newData.typeOfDeposit}
+                            value={newData.yearDeposit}
                             handleChange={(event) =>
                               setNewData({
                                 ...newData,
-                                typeOfDeposit: Number(event.target.value),
+                                yearDeposit: Number(event.target.value),
                               })
                             }
                           />
@@ -178,12 +222,83 @@ const SavingPortofolio = () => {
                     </div>
 
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium disabled={buttonSave} onClick={() => saveData()}>
+                      <ButtonGreenMedium
+                        disabled={buttonSave}
+                        onClick={() => saveData()}
+                      >
                         Save
                       </ButtonGreenMedium>
-                      <ButtonTransparentMedium onClick={closeModal}>
+                      <ButtonTransparentMedium
+                        onClick={() => setShowModal(false)}
+                      >
                         Cancel
                       </ButtonTransparentMedium>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+
+        {/* Modal Delete */}
+        <Transition appear show={showModalRemove} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModalRemove(false)}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-full p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Remove Data
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Are you sure to remove this data.?
+                      </p>
+                    </div>
+
+                    <div className="mt-4 space-x-4">
+                      <button
+                        type="button"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md text-red hover:ring-red focus:outline-none focus-visible:ring-2 focus-visible:ring-red focus-visible:ring-offset-2"
+                        onClick={() => removeDataAction(actionDatatId)}
+                      >
+                        Remove
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                        onClick={() => setShowModalRemove(false)}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -206,26 +321,32 @@ const SavingPortofolio = () => {
               </tr>
             </thead>
             <tbody>
-              {summaryOfSavings?.length && summaryOfSavings.map((value, index) => (
-                <tr key={index}>
-                <td className="px-2 py-5">{++index}</td>
-                <td className="px-2 py-5">{value.client}</td>
-                <td className="px-2 py-5">{value.typeOfDeposit}</td>
-                <td className="px-2 py-5">{value.bank}</td>
-                <td className="px-2 py-5">{value.savingAmount}</td>
-                <td className="w-1/12 px-2 py-5">
-                  <div className="flex w-full gap-2">
-                    <ButtonBox className="text-green-deep">
-                      <PencilLineIcon size={14} />
-                    </ButtonBox>
-                    <ButtonBox className="text-red">
-                      <CloseLineIcon size={14} />
-                    </ButtonBox>
-                  </div>
-                </td>
-              </tr>
-              ))}
-              
+              {summaryOfSavings?.length &&
+                summaryOfSavings.map((data, index) => (
+                  <tr key={index}>
+                    <td className="px-2 py-5">{++index}</td>
+                    <td className="px-2 py-5">{clientName(data.client)}</td>
+                    <td className="px-2 py-5">{data.typeOfDeposit >= 0 ? deposits[Number(data.typeOfDeposit)].name : ""}</td>
+                    <td className="px-2 py-5">{data.bank}</td>
+                    <td className="px-2 py-5">{data.savingAmount}</td>
+                    <td className="w-1/12 px-2 py-5">
+                      <div className="flex w-full gap-2">
+                        <ButtonBox
+                          className="text-green-deep"
+                          onClick={() => openModalEdit(data.id)}
+                        >
+                          <PencilLineIcon size={14} />
+                        </ButtonBox>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => modalRemoveData(data.id)}
+                        >
+                          <CloseLineIcon size={14} />
+                        </ButtonBox>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -234,18 +355,17 @@ const SavingPortofolio = () => {
   );
 };
 
-const getClientCustom = (clients : any) => {
-  
-  let clientCustom : any[] = [];
+const getClientCustom = (clients: any) => {
+  let clientCustom: any[] = [];
 
-  if(clients?.length) {
-    clients.map((data : any, index : any) => {
-      clientCustom.push({id: index, name: data.clientName});
-    })
+  if (clients?.length) {
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
   }
 
   return clientCustom;
-}
+};
 
 const checkButtonActive = (newData: any) => {
   let button: boolean = false;
@@ -262,5 +382,20 @@ const checkButtonActive = (newData: any) => {
 
   return button;
 };
+
+function checkCountData(datas: any) {
+  let data: number = 0;
+  if (datas?.length) {
+    if (datas[0].client === "") {
+      data = datas.length;
+    } else {
+      data = datas.length + 1;
+    }
+  } else {
+    data = datas.length + 1;
+  }
+
+  return data;
+}
 
 export default SavingPortofolio;

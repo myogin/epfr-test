@@ -31,12 +31,13 @@ const PropertyPortofolio = (props: Props) => {
   // get client state
   let { clientInfo } = usePersonalInformation();
 
-  let checkIndex = checkPropertyData(summaryOfProperty);
+  let checkIndex = checkCountData(summaryOfProperty);
 
   console.log("cek data " + checkIndex);
 
   let initialState: SummaryOfProperty = {
     id: checkIndex,
+    editting: true,
     client: "",
     typeOfProperty: "",
     yearPurchased: 0,
@@ -162,7 +163,7 @@ const PropertyPortofolio = (props: Props) => {
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="flex justify-between gap-8">
-                        <div>
+                        <div className="basis-2/3">
                           <Select
                             className="my-4"
                             name="client"
@@ -216,7 +217,7 @@ const PropertyPortofolio = (props: Props) => {
                             }
                           />
                         </div>
-                        <div>
+                        <div className="basis-1/3">
                           <Input
                             className="my-4"
                             label="Purchase Price ($)"
@@ -340,17 +341,17 @@ const PropertyPortofolio = (props: Props) => {
                       </p>
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-4 space-x-4">
                       <button
                         type="button"
-                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md text-red hover:ring-red focus:outline-none focus-visible:ring-2 focus-visible:ring-red focus-visible:ring-offset-2"
                         onClick={() => removeDataAction(actionDatatId)}
                       >
                         Remove
                       </button>
                       <button
                         type="button"
-                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                         onClick={() => setShowModalRemove(false)}
                       >
                         Cancel
@@ -432,16 +433,16 @@ const getClientCustom = (clients: any) => {
   return clientCustom;
 };
 
-function checkPropertyData(property: any) {
+function checkCountData(datas: any) {
   let data: number = 0;
-  if (property?.length) {
-    if (property[0].client === "") {
-      data = property.length;
+  if (datas?.length) {
+    if (datas[0].client === "") {
+      data = datas.length;
     } else {
-      data = property.length + 1;
+      data = datas.length + 1;
     }
   } else {
-    data = property.length + 1;
+    data = datas.length + 1;
   }
 
   return data;
