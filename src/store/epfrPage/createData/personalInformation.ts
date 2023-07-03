@@ -156,11 +156,24 @@ const personalInformation = create(
         removeDependent: (params: any) =>
           set(
             produce((draft) => {
-              const dependentIndex = draft.dependant.findIndex(
-                (el: any) => el.id === params
-              );
-              console.log("masuk disini");
-              draft.dependant.splice(dependentIndex, 1);
+              if (get().dependant?.length > 1) {
+                const dependentIndex = draft.dependant.findIndex(
+                  (el: any) => el.id === params
+                );
+                console.log("masuk disini");
+                draft.dependant.splice(dependentIndex, 1);
+
+                // reset index 0 dependent data
+              } else {
+                let dependentReplace = draft.dependant[0];
+                dependentReplace.id = 0;
+                dependentReplace.name = "";
+                dependentReplace.relationship = "";
+                dependentReplace.dateOfBirth = "";
+                dependentReplace.age = 0;
+                dependentReplace.gender = "0";
+                dependentReplace.year = "0";
+              }
             })
           ),
         patchDependent: (params: any) =>

@@ -17,35 +17,33 @@ interface Props {
   datas?: Array<any>;
 }
 
-
 const Dependent = (props: Props) => {
-   // Get data from zustand state
-   let { dependant, setDependent, removeDependent, patchDependent } =
-   usePersonalInformation();
+  // Get data from zustand state
+  let { dependant, setDependent, removeDependent, patchDependent } =
+    usePersonalInformation();
 
- let checkIndex = checkDependentData(dependant);
+  let checkIndex = checkDependentData(dependant);
+  // Initiate new local state for new data
+  let initialState: DependantInformation = {
+    id: checkIndex,
+    name: "",
+    relationship: "",
+    dateOfBirth: "",
+    age: 0,
+    gender: "",
+    year: "",
+  };
 
- console.log("Apa sih ini " + checkIndex);
- // Initiate new local state for new data
- let initialState: DependantInformation = {
-   id: checkIndex,
-   name: "",
-   relationship: "",
-   dateOfBirth: "",
-   age: 0,
-   gender: "",
-   year: "",
- };
- 
   const [showModal, setShowModal] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
+  const [actionDatatIndex, setActionDataIndex] = useState(0);
   const [saveType, setSaveType] = useState("");
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
 
-  let buttonSave = checkButtonActive(newData)
-  
+  let buttonSave = checkButtonActive(newData);
+
   // Variable Select Box
   let relationships: Array<any> = [
     { id: "SON", name: "SON" },
@@ -150,6 +148,7 @@ const Dependent = (props: Props) => {
   };
 
   const modalRemoveData = (params: any) => {
+
     setShowModalRemove(true);
     setActionDataId(params);
   };
@@ -446,7 +445,7 @@ const Dependent = (props: Props) => {
   );
 };
 
-const checkDependentData = (dependant : any) => {
+const checkDependentData = (dependant: any) => {
   let data: number = 0;
   if (dependant?.length) {
     if (dependant[0].name === "") {
@@ -459,22 +458,24 @@ const checkDependentData = (dependant : any) => {
   }
 
   return data;
-}
+};
 
-const checkButtonActive = (newData : any) => {
-  let button : boolean = false;
+const checkButtonActive = (newData: any) => {
+  let button: boolean = false;
   if (
     newData.name === "" ||
     newData.relationship === "" ||
+    newData.relationship === "-" ||
     newData.dateOfBirth === "" ||
-    newData.gender === ""
+    newData.gender === "" ||
+    newData.gender === "-"
   ) {
     button = true;
-  }else {
+  } else {
     button = false;
   }
 
   return button;
-}
+};
 
 export default Dependent;

@@ -2,7 +2,6 @@ export interface SummaryOfProperty {
   editting?: boolean;
   id?: number;
   client: string;
-  category: number;
   typeOfProperty: string;
   yearPurchased: number;
   purchasePrice: number;

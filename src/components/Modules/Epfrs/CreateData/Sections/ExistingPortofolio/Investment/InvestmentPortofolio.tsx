@@ -3,8 +3,10 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import Select from "@/components/Forms/Select";
 import { SummaryOfInvestment } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -14,15 +16,19 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 const InvestmentPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
-  let { summaryOfInvestment, setInvestment, patchInvestment, removeData } = useExistingPortofolio();
+  let { summaryOfInvestment, setInvestment, patchInvestment, removeInvestment } =
+    useExistingPortofolio();
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
   const [saveType, setSaveType] = useState("");
+  // get client state
+  let { clientInfo } = usePersonalInformation();
 
   let checkIndex = checkData(summaryOfInvestment);
 
   let initialState: SummaryOfInvestment = {
     id: checkIndex,
+    editting: true,
     client: "",
     typeOfInvestment: "",
     typeOfInvestmentOther: "",
@@ -33,6 +39,18 @@ const InvestmentPortofolio = () => {
     sourceOfInvestment: "",
   };
 
+  let typeOfInvestments: Array<any> = [
+    { id: "0", name: "Bonds" },
+    { id: "1", name: "Unit Trusts" },
+    { id: "2", name: "Stock & Shares" },
+    { id: "3", name: "Other" },
+  ];
+
+  let sourceOfInvestments: Array<any> = [
+    { id: "0", name: "Cash" },
+    { id: "1", name: "CPF" },
+    { id: "2", name: "SRS" },
+  ];
 
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
@@ -50,11 +68,18 @@ const InvestmentPortofolio = () => {
     setShowModal(true);
   };
 
+  let clients: Array<any> = getClientCustom(clientInfo);
+
+  let buttonSave = checkButtonActive(newData);
+
   const saveData = () => {
-    let checkTotalData = summaryOfInvestment?.length === 0 || summaryOfInvestment[0].id === 0 ? 0 : 1;
+    let checkTotalData =
+      summaryOfInvestment?.length === 0 || summaryOfInvestment[0].id === 0
+        ? 0
+        : 1;
 
     console.log(checkTotalData);
-    
+
     if (saveType === "add") {
       setInvestment(checkTotalData, newData);
     } else {
@@ -70,8 +95,16 @@ const InvestmentPortofolio = () => {
   };
 
   const removeDataAction = (params: any) => {
-    removeData("summaryOfInvestment", params);
+    removeInvestment(params);
     setShowModalRemove(false);
+  };
+
+  const clientName = (params: any) => {
+    let customName = "-";
+    if (clients.length > 0) {
+      customName = clients[Number(params)].name;
+    }
+    return customName;
   };
 
   return (
@@ -82,7 +115,11 @@ const InvestmentPortofolio = () => {
         </ButtonBox>
 
         <Transition appear show={showModal} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={() => setShowModal(false)}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModal(false)}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -115,35 +152,51 @@ const InvestmentPortofolio = () => {
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="flex justify-between gap-8">
-                        <div>
-                          <Input
+                        <div className="basis-2/3">
+                          <Select
                             className="my-4"
+                            name="client"
                             label="Client"
-                            type="text"
                             value={newData.client}
+                            datas={clients}
                             handleChange={(event) =>
                               setNewData({
                                 ...newData,
                                 client: event.target.value,
                               })
                             }
+                            needValidation={true}
+                            logic={
+                              newData.client === "" || newData.client === "-"
+                                ? false
+                                : true
+                            }
                           />
-                          <Input
+                          <Select
                             className="my-4"
+                            name="typeOfInvestment"
                             label="Type Of Investment"
-                            type="text"
                             value={newData.typeOfInvestment}
+                            datas={typeOfInvestments}
                             handleChange={(event) =>
                               setNewData({
                                 ...newData,
                                 typeOfInvestment: event.target.value,
                               })
                             }
+                            needValidation={true}
+                            logic={
+                              newData.typeOfInvestment === "" ||
+                              newData.typeOfInvestment === "-"
+                                ? false
+                                : true
+                            }
                           />
                           <Input
                             className="my-4"
                             label="Company"
                             type="text"
+                            name="company"
                             value={newData.company}
                             handleChange={(event) =>
                               setNewData({
@@ -156,6 +209,7 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Year Invested"
                             type="text"
+                            name="yearInvested"
                             value={newData.yearInvested}
                             handleChange={(event) =>
                               setNewData({
@@ -165,11 +219,12 @@ const InvestmentPortofolio = () => {
                             }
                           />
                         </div>
-                        <div>
+                        <div className="basis-1/3">
                           <Input
                             className="my-4"
                             label="Investment Amount"
                             type="text"
+                            name="investmentAmount"
                             value={newData.investmentAmount}
                             formStyle="text-right"
                             handleChange={(event) =>
@@ -183,6 +238,7 @@ const InvestmentPortofolio = () => {
                             className="my-4"
                             label="Current Value"
                             type="text"
+                            name="currentvalue"
                             value={newData.currentvalue}
                             formStyle="text-right"
                             handleChange={(event) =>
@@ -192,16 +248,24 @@ const InvestmentPortofolio = () => {
                               })
                             }
                           />
-                          <Input
+                          <Select
                             className="my-4"
+                            name="sourceOfInvestment"
                             label="Source Of Investment"
-                            type="text"
                             value={newData.sourceOfInvestment}
+                            datas={sourceOfInvestments}
                             handleChange={(event) =>
                               setNewData({
                                 ...newData,
                                 sourceOfInvestment: event.target.value,
                               })
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.sourceOfInvestment === "" ||
+                              newData.sourceOfInvestment === "-"
+                                ? false
+                                : true
                             }
                           />
                         </div>
@@ -209,10 +273,15 @@ const InvestmentPortofolio = () => {
                     </div>
 
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={() => saveData()}>
+                      <ButtonGreenMedium
+                        disabled={buttonSave}
+                        onClick={() => saveData()}
+                      >
                         Save
                       </ButtonGreenMedium>
-                      <ButtonTransparentMedium onClick={() => setShowModal(false)}>
+                      <ButtonTransparentMedium
+                        onClick={() => setShowModal(false)}
+                      >
                         Cancel
                       </ButtonTransparentMedium>
                     </div>
@@ -310,8 +379,12 @@ const InvestmentPortofolio = () => {
                 summaryOfInvestment.map((data, index) => (
                   <tr key={index}>
                     <td className="px-2 py-5">{++index}</td>
-                    <td className="px-2 py-5">{data.client}</td>
-                    <td className="px-2 py-5">{data.typeOfInvestment}</td>
+                    <td className="px-2 py-5">{clientName(data.client)}</td>
+                    <td className="px-2 py-5">
+                      {data.typeOfInvestment
+                        ? typeOfInvestments[Number(data.typeOfInvestment)].name
+                        : ""}
+                    </td>
                     <td className="px-2 py-5">{data.company}</td>
                     <td className="px-2 py-5">{data.yearInvested}</td>
                     <td className="px-2 py-5">{data.investmentAmount}</td>
@@ -319,10 +392,16 @@ const InvestmentPortofolio = () => {
                     <td className="px-2 py-5">{data.sourceOfInvestment}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
-                        <ButtonBox className="text-green-deep" onClick={() => openModalEdit(data.id)}>
+                        <ButtonBox
+                          className="text-green-deep"
+                          onClick={() => openModalEdit(data.id)}
+                        >
                           <PencilLineIcon size={14} />
                         </ButtonBox>
-                        <ButtonBox className="text-red" onClick={() => modalRemoveData(data.id)}>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => modalRemoveData(data.id)}
+                        >
                           <CloseLineIcon size={14} />
                         </ButtonBox>
                       </div>
@@ -335,6 +414,19 @@ const InvestmentPortofolio = () => {
       ) : null}
     </SectionCardSingleGrid>
   );
+};
+
+// Additional function
+const getClientCustom = (clients: any) => {
+  let clientCustom: any[] = [];
+
+  if (clients?.length) {
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
+  }
+
+  return clientCustom;
 };
 
 function checkData(datas: any) {
@@ -351,5 +443,23 @@ function checkData(datas: any) {
 
   return data;
 }
+
+const checkButtonActive = (newData: any) => {
+  let button: boolean = false;
+  if (
+    newData.client === "" ||
+    newData.client === "-" ||
+    newData.typeOfInvestment === "" ||
+    newData.typeOfInvestment === "-" ||
+    newData.sourceOfInvestment === "" ||
+    newData.sourceOfInvestment === "-"
+  ) {
+    button = true;
+  } else {
+    button = false;
+  }
+
+  return button;
+};
 
 export default InvestmentPortofolio;

@@ -3,8 +3,10 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
+import Select from "@/components/Forms/Select";
 import { SummaryOfSRS } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -15,12 +17,16 @@ const SrsPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
   let { summaryOfSRS, setSrs } = useExistingPortofolio();
+  // get client state
+  let { clientInfo } = usePersonalInformation();
 
-  const [newDataInput, setNewDataInput] = useState<SummaryOfSRS>({
+  const [newData, setNewData] = useState<SummaryOfSRS>({
     editting: false,
     client: "",
     amount: 0,
   });
+
+  let clients: Array<any> = getClientCustom(clientInfo);
 
   const setData = (params: any) => {
     console.log(params);
@@ -79,27 +85,34 @@ const SrsPortofolio = () => {
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="flex flex-col w-full">
-                        <Input
+                        <Select
                           className="my-4"
+                          name="client"
                           label="Client"
-                          type="text"
-                          value={newDataInput.client}
+                          value={newData.client}
+                          datas={clients}
                           handleChange={(event) =>
-                            setNewDataInput({
-                              ...newDataInput,
+                            setNewData({
+                              ...newData,
                               client: event.target.value,
                             })
+                          }
+                          needValidation={true}
+                          logic={
+                            newData.client === "" || newData.client === "-"
+                              ? false
+                              : true
                           }
                         />
                         <Input
                           className="my-4"
                           label="Amount"
                           type="text"
-                          value={newDataInput.amount}
+                          value={newData.amount}
                           formStyle="text-right"
                           handleChange={(event) =>
-                            setNewDataInput({
-                              ...newDataInput,
+                            setNewData({
+                              ...newData,
                               amount: Number(event.target.value),
                             })
                           }
@@ -155,6 +168,18 @@ const SrsPortofolio = () => {
       ) : null}
     </SectionCardSingleGrid>
   );
+};
+
+const getClientCustom = (clients: any) => {
+  let clientCustom: any[] = [];
+
+  if (clients?.length) {
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
+  }
+
+  return clientCustom;
 };
 
 export default SrsPortofolio;

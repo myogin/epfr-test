@@ -142,6 +142,8 @@ const Client = () => {
     { id: 4, name: "150,000 ~ 299,999" },
     { id: 5, name: "300,000 ~" },
   ];
+
+  
   return (
     <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
       <div>

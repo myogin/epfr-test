@@ -93,12 +93,10 @@ const ExistingPortofolio = (props: Props) => {
           Section 2. Existing Portfolio
         </HeadingPrimarySection>
       </div>
-      {!need ? (
+      {need ? (
         <>
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
-            <h2 className="text-xl font-bold">
-              2.1 Summary of Property(ies)
-            </h2>
+            <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
             <Toggle
               isChecked={summaryOfProperty[0].editting}
               toggleName={
@@ -224,13 +222,14 @@ const ExistingPortofolio = (props: Props) => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
           <Checkbox
+            isChecked={need}
             onChange={() => setGlobal("need", !need)}
             lableStyle="text-sm font-normal text-gray-light"
             label="The Client would not like their assets and liabilities to be taken
             into consideration for the needs analysis and recommendations"
           />
         </RowSingle>
-        {need ? (
+        {!need ? (
           <>
             <RowSingle className="my-10">
               <TextArea label="The Reason" defaultValue="test text area" />

@@ -6,8 +6,9 @@ import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import { SummaryOfProperty } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
@@ -23,17 +24,21 @@ const PropertyPortofolio = (props: Props) => {
   const [actionDatatId, setActionDataId] = useState(0);
   const [saveType, setSaveType] = useState("");
 
-  let { summaryOfProperty, setProperty, removeData, patchProperty } =
+  // get property state
+  let { summaryOfProperty, setProperty, removeProperty, patchProperty } =
     useExistingPortofolio();
 
-  let checkIndex = checkPropertyData(summaryOfProperty);
+  // get client state
+  let { clientInfo } = usePersonalInformation();
+
+  let checkIndex = checkCountData(summaryOfProperty);
 
   console.log("cek data " + checkIndex);
 
   let initialState: SummaryOfProperty = {
     id: checkIndex,
+    editting: true,
     client: "",
-    category: 0,
     typeOfProperty: "",
     yearPurchased: 0,
     purchasePrice: 0,
@@ -60,6 +65,8 @@ const PropertyPortofolio = (props: Props) => {
     setShowModal(true);
   };
 
+  let buttonSave = checkButtonActive(newData);
+
   const saveData = () => {
     let checkTotalData =
       summaryOfProperty?.length === 0 || summaryOfProperty[0].id === 0 ? 0 : 1;
@@ -81,7 +88,7 @@ const PropertyPortofolio = (props: Props) => {
   };
 
   const removeDataAction = (params: any) => {
-    removeData("summaryOfProperty", params);
+    removeProperty(params);
     setShowModalRemove(false);
   };
 
@@ -90,19 +97,24 @@ const PropertyPortofolio = (props: Props) => {
     { id: "1", name: "Private" },
   ];
 
-  let clients: Array<any> = [
-    { id: "0", name: "Client 1" },
-    { id: "1", name: "Client 2" },
-  ];
+  let clients: Array<any> = getClientCustom(clientInfo);
 
   const clientName = (params: any) => {
+    let customName = "-";
+    if (clients.length > 0) {
+      customName = clients[Number(params)].name;
+    }
+    return customName;
+  };
+
+  const typeOfPropertiesName = (params: any) => {
     switch (params) {
+      case "0":
+        return "Public"
       case "1":
-        return "Client 1";
-      case "2":
-        return "Client 2";
+        return "Private"
       default:
-        return "Client 1";
+        return "Public"
     }
   };
 
@@ -151,7 +163,7 @@ const PropertyPortofolio = (props: Props) => {
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="flex justify-between gap-8">
-                        <div>
+                        <div className="basis-2/3">
                           <Select
                             className="my-4"
                             name="client"
@@ -163,6 +175,12 @@ const PropertyPortofolio = (props: Props) => {
                                 ...newData,
                                 client: event.target.value,
                               })
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.client === "" || newData.client === "-"
+                                ? false
+                                : true
                             }
                           />
                           <Select
@@ -177,18 +195,12 @@ const PropertyPortofolio = (props: Props) => {
                                 typeOfProperty: event.target.value,
                               })
                             }
-                          />
-                          <Input
-                            className="my-4"
-                            label="Category"
-                            type="text"
-                            name="category"
-                            value={newData.category}
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                category: Number(event.target.value),
-                              })
+                            needValidation={true}
+                            logic={
+                              newData.typeOfProperty === "" ||
+                              newData.typeOfProperty === "-"
+                                ? false
+                                : true
                             }
                           />
                           <Input
@@ -205,7 +217,7 @@ const PropertyPortofolio = (props: Props) => {
                             }
                           />
                         </div>
-                        <div>
+                        <div className="basis-1/3">
                           <Input
                             className="my-4"
                             label="Purchase Price ($)"
@@ -267,7 +279,10 @@ const PropertyPortofolio = (props: Props) => {
                     </div>
 
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={() => saveData()}>
+                      <ButtonGreenMedium
+                        disabled={buttonSave}
+                        onClick={() => saveData()}
+                      >
                         Save
                       </ButtonGreenMedium>
                       <ButtonTransparentMedium
@@ -326,17 +341,17 @@ const PropertyPortofolio = (props: Props) => {
                       </p>
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-4 space-x-4">
                       <button
                         type="button"
-                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md text-red hover:ring-red focus:outline-none focus-visible:ring-2 focus-visible:ring-red focus-visible:ring-offset-2"
                         onClick={() => removeDataAction(actionDatatId)}
                       >
                         Remove
                       </button>
                       <button
                         type="button"
-                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                         onClick={() => setShowModalRemove(false)}
                       >
                         Cancel
@@ -356,7 +371,6 @@ const PropertyPortofolio = (props: Props) => {
               <tr className="border-b border-gray-soft-strong">
                 <th className="px-2 py-5">SN</th>
                 <th className="px-2 py-5">Client</th>
-                <th className="px-2 py-5">Category</th>
                 <th className="px-2 py-5">Type Of Property</th>
                 <th className="px-2 py-5">Year Purchashed</th>
                 <th className="px-2 py-5">Purchase Price</th>
@@ -372,8 +386,7 @@ const PropertyPortofolio = (props: Props) => {
                   <tr key={index}>
                     <td className="px-2 py-5">{++index}</td>
                     <td className="px-2 py-5">{clientName(data.client)}</td>
-                    <td className="px-2 py-5">{data.category}</td>
-                    <td className="px-2 py-5">{data.typeOfProperty}</td>
+                    <td className="px-2 py-5">{typeOfPropertiesName(data.typeOfProperty)}</td>
                     <td className="px-2 py-5">{data.yearPurchased}</td>
                     <td className="px-2 py-5">{data.purchasePrice}</td>
                     <td className="px-2 py-5">{data.loanAmount}</td>
@@ -407,19 +420,48 @@ const PropertyPortofolio = (props: Props) => {
   );
 };
 
-function checkPropertyData(property: any) {
+// Custom function here
+const getClientCustom = (clients: any) => {
+  let clientCustom: any[] = [];
+
+  if (clients?.length) {
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
+  }
+
+  return clientCustom;
+};
+
+function checkCountData(datas: any) {
   let data: number = 0;
-  if (property?.length) {
-    if (property[0].client === "") {
-      data = property.length;
+  if (datas?.length) {
+    if (datas[0].client === "") {
+      data = datas.length;
     } else {
-      data = property.length + 1;
+      data = datas.length + 1;
     }
   } else {
-    data = property.length + 1;
+    data = datas.length + 1;
   }
 
   return data;
 }
+
+const checkButtonActive = (newData: any) => {
+  let button: boolean = false;
+  if (
+    newData.client === "" ||
+    newData.client === "-" ||
+    newData.typeOfProperty === "" ||
+    newData.typeOfProperty === "-"
+  ) {
+    button = true;
+  } else {
+    button = false;
+  }
+
+  return button;
+};
 
 export default PropertyPortofolio;
