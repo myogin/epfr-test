@@ -4,6 +4,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
+import { checkCountData, getClientCustom } from "@/libs/helper";
 import { SummaryOfInvestment } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
@@ -24,7 +25,7 @@ const InvestmentPortofolio = () => {
   // get client state
   let { clientInfo } = usePersonalInformation();
 
-  let checkIndex = checkData(summaryOfInvestment);
+  let checkIndex = checkCountData(summaryOfInvestment);
 
   let initialState: SummaryOfInvestment = {
     id: checkIndex,
@@ -417,32 +418,6 @@ const InvestmentPortofolio = () => {
 };
 
 // Additional function
-const getClientCustom = (clients: any) => {
-  let clientCustom: any[] = [];
-
-  if (clients?.length) {
-    clients.map((data: any, index: any) => {
-      clientCustom.push({ id: index, name: data.clientName });
-    });
-  }
-
-  return clientCustom;
-};
-
-function checkData(datas: any) {
-  let data: number = 0;
-  if (datas?.length) {
-    if (datas[0].client === "") {
-      data = datas.length;
-    } else {
-      data = datas.length + 1;
-    }
-  } else {
-    data = datas.length + 1;
-  }
-
-  return data;
-}
 
 const checkButtonActive = (newData: any) => {
   let button: boolean = false;
