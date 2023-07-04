@@ -6,7 +6,7 @@ import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import TextArea from "@/components/Forms/TextArea";
 import { Menu, Transition } from "@headlessui/react";
-import React, { Fragment } from "react";
+import React, {useState, useEffect, Fragment} from 'react'
 import ArrowDropDownLineIcon from "remixicon-react/ArrowDropDownLineIcon";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import TextThin from "@/components/Attributes/Typography/TextThin";
@@ -17,13 +17,15 @@ import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import dynamic from "next/dynamic";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { EditorState, convertToRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
 
-const TextAreaEditor = dynamic(
-  () => import("@/components/Forms/TextAreaEditor"),
-  {
-    ssr: false,
-  }
-);
+const Editor = dynamic(
+  () => import('react-draft-wysiwyg').then(mod => mod.Editor),
+  { ssr: false }
+)
 
 interface Props {
   id?: any;
@@ -31,19 +33,60 @@ interface Props {
 }
 
 const AnalysisRecommendation = (props: Props) => {
-  let { showDetailData } = useNavigationSection();
+  let {
+    section9,
+    setParent
+  } = useAnalysisRecommendation();
 
+  const [editorData, setEditor] = useState({
+    overView1: EditorState.createEmpty(),
+    overView2: EditorState.createEmpty(),
+    reasonForBenefit: EditorState.createEmpty(),
+    reasonForRisk: EditorState.createEmpty(),
+    reasonForDeviation: EditorState.createEmpty()
+  });
+
+  const handleOverView1 = (editorState: any) => {
+    setEditor({...editorData,overView1: editorState});
+    setParent('overView1', draftToHtml(convertToRaw(editorData.overView1.getCurrentContent())));
+  };
+
+  const handleOverView2 = (editorState: any) => {
+    setEditor({...editorData,overView2: editorState});
+    setParent('overView2', draftToHtml(convertToRaw(editorData.overView2.getCurrentContent())));
+  };
+
+  const handleReasonBenefit = (editorState: any) => {
+    setEditor({...editorData,reasonForBenefit: editorState});
+    setParent('reasonForBenefit', draftToHtml(convertToRaw(editorData.reasonForBenefit.getCurrentContent())));
+  };
+
+  const handleReasonRisk = (editorState: any) => {
+    setEditor({...editorData,reasonForRisk: editorState});
+    setParent('reasonForRisk', draftToHtml(convertToRaw(editorData.reasonForRisk.getCurrentContent())));
+  };
+
+  const handleReasonDeviation = (editorState: any) => {
+    setEditor({...editorData,reasonForDeviation: editorState});
+    setParent('reasonForDeviation', draftToHtml(convertToRaw(editorData.reasonForDeviation.getCurrentContent())));
+  };
+
+  let { showDetailData } = useNavigationSection();
   const showDetail = (params: any) => {
     localStorage.setItem("group_name", params);
 
     showDetailData(91);
   };
-
   const saveData = (params: any) => {
     showDetailData(params);
   };
 
   const scrollPosition = useScrollPosition(9)
+
+  useEffect(() => {  
+    console.log('section9', section9);
+    localStorage.setItem("section9", JSON.stringify(section9));
+  }, [section9]);
 
   return (
     <div id={props.id}>
@@ -62,7 +105,27 @@ const AnalysisRecommendation = (props: Props) => {
             concern(s), medical condition(s), shortfall amount($), where
             applicable*
           </TextThin>
-          <TextAreaEditor />
+          <Editor
+            toolbarClassName="toolbar-class"
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class"
+            editorState={editorData.overView1} 
+            onEditorStateChange={handleOverView1}
+            toolbar={{
+              options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'history'],
+              inline: { inDropdown: true },
+              list: { inDropdown: true },
+              textAlign: { inDropdown: true },
+              link: { inDropdown: true },
+              history: { inDropdown: true },
+              image: { 
+                urlEnabled: true,
+                uploadEnabled: true,
+                previewImage: true,
+                alt: { present: false, mandatory: false } 
+              },
+            }}
+          />
 
           {/* <TextArea defaultValue="text here" rows={5} /> */}
         </RowSingleGrid>
@@ -72,7 +135,27 @@ const AnalysisRecommendation = (props: Props) => {
             2) Client's investment objectives, investment time horizon,
             investment risk profile, where applicable *
           </TextThin>
-          <TextAreaEditor />
+          <Editor
+            toolbarClassName="toolbar-class"
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class"
+            editorState={editorData.overView2} 
+            onEditorStateChange={handleOverView2}
+            toolbar={{
+              options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'history'],
+              inline: { inDropdown: true },
+              list: { inDropdown: true },
+              textAlign: { inDropdown: true },
+              link: { inDropdown: true },
+              history: { inDropdown: true },
+              image: { 
+                urlEnabled: true,
+                uploadEnabled: true,
+                previewImage: true,
+                alt: { present: false, mandatory: false } 
+              },
+            }}
+          />
           {/* <TextArea defaultValue="text here" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>
@@ -505,7 +588,27 @@ const AnalysisRecommendation = (props: Props) => {
           </div>
         </RowSingleGrid>
         <RowSingleGrid>
-          <TextAreaEditor />
+          <Editor
+            toolbarClassName="toolbar-class"
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class"
+            editorState={editorData.reasonForBenefit} 
+            onEditorStateChange={handleReasonBenefit}
+            toolbar={{
+              options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'history'],
+              inline: { inDropdown: true },
+              list: { inDropdown: true },
+              textAlign: { inDropdown: true },
+              link: { inDropdown: true },
+              history: { inDropdown: true },
+              image: { 
+                urlEnabled: true,
+                uploadEnabled: true,
+                previewImage: true,
+                alt: { present: false, mandatory: false } 
+              },
+            }}
+          />
           {/* <TextArea label="Reason" defaultValue="Test reason" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>
@@ -552,7 +655,27 @@ const AnalysisRecommendation = (props: Props) => {
           </div>
         </RowSingleGrid>
         <RowSingleGrid>
-          <TextAreaEditor />
+          <Editor
+            toolbarClassName="toolbar-class"
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class"
+            editorState={editorData.reasonForRisk} 
+            onEditorStateChange={handleReasonRisk}
+            toolbar={{
+              options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'history'],
+              inline: { inDropdown: true },
+              list: { inDropdown: true },
+              textAlign: { inDropdown: true },
+              link: { inDropdown: true },
+              history: { inDropdown: true },
+              image: { 
+                urlEnabled: true,
+                uploadEnabled: true,
+                previewImage: true,
+                alt: { present: false, mandatory: false } 
+              },
+            }}
+          />
           {/* <TextArea label="Reason" defaultValue="Test reason" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>
@@ -572,7 +695,27 @@ const AnalysisRecommendation = (props: Props) => {
           Representative's recommended plan(s)/funds
         </RowSingleGrid>
         <RowSingleGrid>
-          <TextAreaEditor />
+          <Editor
+            toolbarClassName="toolbar-class"
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class"
+            editorState={editorData.reasonForDeviation} 
+            onEditorStateChange={handleReasonDeviation}
+            toolbar={{
+              options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'history'],
+              inline: { inDropdown: true },
+              list: { inDropdown: true },
+              textAlign: { inDropdown: true },
+              link: { inDropdown: true },
+              history: { inDropdown: true },
+              image: { 
+                urlEnabled: true,
+                uploadEnabled: true,
+                previewImage: true,
+                alt: { present: false, mandatory: false } 
+              },
+            }}
+          />
           {/* <TextArea label="Reason" defaultValue="Test reason" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>

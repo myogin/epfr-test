@@ -35,14 +35,6 @@ const Affordability = (props: Props) => {
     setAssetOrSurplus
   } = useAffordability();
 
-  useEffect(() => {  
-    console.log('section8', section8);
-  }, [section8]);
-
-  const setData = (params: any) => {
-    console.log(params);
-  };
-
   let fillInformation: Array<any> = [
     { id: 0, name: "No" },
     { id: 1, name: "Yes" },
@@ -60,8 +52,6 @@ const Affordability = (props: Props) => {
     { id: 3, name: "CPF Medisave", annual: 0, single: 0 },
     { id: 4, name: "SRS", annual: 0, single: 0 },
   ];
-
-
 
   let { showDetailData } = useNavigationSection();
 
@@ -99,10 +89,11 @@ const Affordability = (props: Props) => {
     setAssetOrSurplus(key, name, value);
   };
 
-  const saveData = (params: any) => {
-    showDetailData(params);
-  };
-
+  useEffect(() => {  
+    console.log('section8', section8);
+    localStorage.setItem("section8", JSON.stringify(section8));
+  }, [section8]);
+  
   const scrollPosition = useScrollPosition(8);
   return (
     <div id={props.id}>
