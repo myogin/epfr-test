@@ -587,6 +587,7 @@ const RiskProfile = (props: Props) => {
               className="my-4"
               label="The Reason"
               name="reason"
+              needValidation={true}
             />
           </div>
         ) : (
