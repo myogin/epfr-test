@@ -2,15 +2,15 @@ export interface SectionSix {
   id: number;
   need: boolean[];
   reason: any[];
-  answers: Answer[];
+  answers: Answer;
   outcome: boolean[];
   issues: any[];
   outcomeChanged: boolean;
-  status: number;
+  status: boolean;
 }
 
 export interface Answer {
-  education: boolean[];
+  education: Array<boolean[]>;
   investment: boolean[];
   work: boolean[];
 }
