@@ -4,13 +4,15 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
-    setAnnualIncome: (indexData: number, params: any) => any
+  setAnnualIncome: (indexData: number, params: any) => any;
+  setAnnualSurplus: (indexData: number, params: any) => any;
+  setAnswer: (indexData: number, params: any) => any;
 };
 
 const initialState: SectionThree = {
   id: 0,
-  need: [1,1],
-  reason: ["",""],
+  need: [1, 1],
+  reason: ["", ""],
   others: {
     annualExpense: [
       {
@@ -101,37 +103,54 @@ const initialState: SectionThree = {
 };
 
 const cashFlow = create(
-    devtools(
-      persist<SectionThree & Actions>(
-        (set, get) => ({
-          ...initialState,
-          setAnnualIncome: (indexData: number, value: any) =>
-            set(
-              produce((draft) => {
-                if (indexData === 0 && get().data[0]?.length) {
-                    let dataReplace = draft.summaryOfInvestment[indexData];
-                    dataReplace.id = params.id;
-                    dataReplace.client = params.client;
-                    dataReplace.typeOfInvestment = params.typeOfInvestment;
-                    dataReplace.typeOfInvestmentOther =
-                      params.typeOfInvestmentOther;
-                    dataReplace.company = params.company;
-                    dataReplace.yearInvested = params.yearInvested;
-                    dataReplace.investmentAmount = params.investmentAmount;
-                    dataReplace.currentvalue = params.currentvalue;
-                    dataReplace.sourceOfInvestment = params.sourceOfInvestment;
-                  } else {
-                    draft.summaryOfInvestment.push(params);
-                  }
-                })
-              })
-            ),
-        }),
-        {
-          name: "section1",
-        }
-      )
+  devtools(
+    persist<SectionThree & Actions>(
+      (set, get) => ({
+        ...initialState,
+        setAnnualIncome: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              if (indexData === 0 && get().data?.length) {
+                let dataReplace = draft.data[indexData];
+                dataReplace.annualIncome.annualGrossIncome =
+                  params.annualGrossIncome;
+                dataReplace.annualIncome.additionalWages =
+                  params.additionalWages;
+                dataReplace.annualIncome.less = params.less;
+              } else {
+                draft.data.push(params);
+              }
+            })
+          ),
+        setAnnualSurplus: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              if (indexData === 0 && get().data?.length) {
+                let dataReplace = draft.data[indexData];
+                dataReplace.annualSurplus.annualSurplus = params.annualSurplus;
+              } else {
+                draft.data.push(params);
+              }
+            })
+          ),
+        setAnswer: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              if (indexData === 0 && get().data?.length) {
+                let dataReplace = draft.data[indexData];
+                dataReplace.answer.answer = params.answer;
+                dataReplace.answer.state = params.state;
+              } else {
+                draft.data.push(params);
+              }
+            })
+          ),
+      }),
+      {
+        name: "section3",
+      }
     )
-  );
+  )
+);
 
 export const useCashFlow = cashFlow;
