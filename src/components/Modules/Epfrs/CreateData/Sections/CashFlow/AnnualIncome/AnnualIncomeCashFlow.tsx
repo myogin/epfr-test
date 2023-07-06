@@ -1,11 +1,12 @@
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowDinamycGrid from "@/components/Attributes/Rows/Grids/RowDinamycGrid";
 import RowTripleGrid from "@/components/Attributes/Rows/Grids/RowTripleGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import ButtonBorder from "@/components/Forms/Buttons/ButtonBorder";
 import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import Input from "@/components/Forms/Input";
-import { checkCountData } from "@/libs/helper";
+import { checkCountData, getLength } from "@/libs/helper";
 import { AnnualIncome, Datas } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import React, { useState } from "react";
@@ -20,6 +21,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
   const setData = (params: any) => {
     console.log(params);
   };
+
+  let getLenght = getLength(props.pfrType);
 
   let { data, setAnnualIncome, setAnnualSurplus } = useCashFlow();
 
@@ -90,32 +93,34 @@ const AnnualIncomeCashFlow = (props: Props) => {
     }
   };
 
-  const getNumber = () => {};
-
   const [other, setOther] = useState<any>(0);
   const [cpfContribution, setCpfContribution] = useState<any>(0);
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <RowTripleGrid>
+      <RowDinamycGrid
+        className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        }`}
+      >
         <div></div>
-        {props.pfrType == 1 ? (
-          <>
-            <div className="text-sm font-bold text-right">Monthly</div>
-            <div className="text-sm font-bold text-right">Annual</div>
-          </>
-        ) : (
-          <>
-            <div className="text-sm font-bold text-right">Monthly</div>
-            <div className="text-sm font-bold text-right">Annual</div>
-            <div className="text-sm font-bold text-right">Monthly</div>
-            <div className="text-sm font-bold text-right">Annual</div>
-          </>
-        )}
-      </RowTripleGrid>
-      <RowTripleGrid className="items-center">
+        {getLenght?.length &&
+          getLenght.map((data, index) => (
+            <>
+              <div className="text-sm font-bold text-right">Monthly</div>
+              <div className="text-sm font-bold text-right">Annual</div>
+            </>
+          ))}
+      </RowDinamycGrid>
+      <RowDinamycGrid className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        } items-center`}>
         <div>
           <TextSmall className="text-gray-light">
-            Annual Gross Income {annualData ? annualData : 0}
+            Annual Gross Income
           </TextSmall>
         </div>
         {data?.length &&
@@ -153,8 +158,12 @@ const AnnualIncomeCashFlow = (props: Props) => {
               </div>
             </>
           ))}
-      </RowTripleGrid>
-      <RowTripleGrid className="items-center">
+      </RowDinamycGrid>
+      <RowDinamycGrid className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        } items-center`}>
         <div>
           <TextSmall className="text-gray-light">Additional Wages</TextSmall>
         </div>
@@ -193,7 +202,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
               </div>
             </>
           ))}
-      </RowTripleGrid>
+      </RowDinamycGrid>
       <RowTripleGrid className="items-center">
         <div className="flex items-center justify-start">
           <TextSmall className="text-gray-light">Others</TextSmall>

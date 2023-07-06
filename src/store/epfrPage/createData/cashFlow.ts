@@ -5,6 +5,7 @@ import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
   setAnnualIncome: (clientType: number, name: string, value: any) => any;
+  setAnnualExpanse: (clientType: number, name: string, value: any) => any;
   setData: (indexData: number, params: any) => any;
   setAnnualSurplus: (indexData: number, params: any) => any;
   setAnswer: (indexData: number, params: any) => any;
@@ -32,7 +33,24 @@ const initialState: SectionThree = {
   },
   data: [
     {
-      id:0,
+      id: 0,
+      annualIncome: {
+        annualGrossIncome: 0,
+        additionalWages: 0,
+        less: 0,
+        others: 0,
+      },
+      annualSurplus: {
+        annualSurplus: 0,
+      },
+      answer: {
+        state: "",
+        answer: "",
+      },
+      reasonForSurplus: "",
+    },
+    {
+      id: 1,
       annualIncome: {
         annualGrossIncome: 0,
         additionalWages: 0,
@@ -127,9 +145,15 @@ const cashFlow = create(
         setAnnualIncome: (clientType: number, name: string, value: any) =>
           set(
             produce((draft) => {
-              let annualIncome = draft.data[clientType].annualIncome;
-              annualIncome[name] = value;
-
+              let data = draft.data[clientType].annualIncome;
+              data[name] = value;
+            })
+          ),
+        setAnnualExpanse: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.annualExpense[clientType].key;
+              data[name] = value;
             })
           ),
         setAnnualSurplus: (indexData: number, params: any) =>
