@@ -7,11 +7,12 @@ import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSec
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonRedMedium from "@/components/Forms/Buttons/ButtonRedMedium";
+import {getAllCompany} from "@/services/companyService";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AddPlanRecommendation = () => {
   let benefits: Array<any> = [
@@ -178,7 +179,14 @@ const AddPlanRecommendation = () => {
     { id: 2, name: "US Dollar" },
   ];
 
-  console.log("data " + productSelect);
+  
+  const [dataCompany, setCompany] = useState<any>(null);
+  
+  useEffect(() => {
+    getAllCompany().then((data) => {
+      setCompany(data.companies)
+    });
+  }, []);
 
   const changeDataOwner = (params: any) => {
     console.log("masuk sini owner");
@@ -217,7 +225,7 @@ const AddPlanRecommendation = () => {
   const saveData = (params: any) => {
     showDetailData(params);
   };
-
+  
   return (
     <>
       <HeadingSecondarySection className="mx-8 2xl:mx-60">Product Details</HeadingSecondarySection>
@@ -230,20 +238,6 @@ const AddPlanRecommendation = () => {
               className="my-4"
               handleChange={(event) => changeDataOwner(event.target.value)}
             />
-            <Select
-              datas={dataCategory}
-              label="Category"
-              className="my-4"
-              handleChange={(event) => changeDataCategory(event.target.value)}
-            />
-            <Select
-              datas={dataProductName}
-              label="Product Name"
-              className="my-4"
-              handleChange={(event) =>
-                changeDataProductName(event.target.value)
-              }
-            />
           </div>
           <div>
             <Select
@@ -254,15 +248,41 @@ const AddPlanRecommendation = () => {
                 changeDataRecommendation(event.target.value)
               }
             />
-            <Select
-              datas={dataProvider}
-              label="Provider Name"
-              className="my-4"
-              handleChange={(event) => changeDataProvider(event.target.value)}
-            />
           </div>
         </RowDoubleGrid>
 
+        <RowDoubleGrid>
+            <div>
+              <Select
+                datas={dataCompany}
+                label="Provider Name"
+                className="my-4"
+                handleChange={(event) => changeDataProvider(event.target.value)}
+              />
+            </div>
+            <div>
+            <Select
+              datas={dataCategory}
+              label="Category"
+              className="my-4"
+              handleChange={(event) => changeDataCategory(event.target.value)}
+            />
+            </div>
+        </RowDoubleGrid>
+
+        <RowDoubleGrid>
+          <div>
+            <Select
+              datas={dataProductName}
+              label="Product Name"
+              className="my-4"
+              handleChange={(event) =>
+                changeDataProductName(event.target.value)
+              }
+            />
+          </div>
+        </RowDoubleGrid>
+        
         {productSelect > 0 ? (
           <>
             <RowDoubleGrid>
