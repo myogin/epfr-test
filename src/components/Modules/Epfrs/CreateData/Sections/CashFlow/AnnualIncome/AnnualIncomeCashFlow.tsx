@@ -5,7 +5,8 @@ import ButtonBorder from "@/components/Forms/Buttons/ButtonBorder";
 import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import Input from "@/components/Forms/Input";
-import { Datas } from "@/models/SectionThree";
+import { checkCountData } from "@/libs/helper";
+import { AnnualIncome, Datas } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import React, { useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
@@ -21,8 +22,38 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   let { data } = useCashFlow();
 
-  const [annualGrossIncome, setAnnualGrossIncome] = useState<any>(0);
-  const [additionalWages, setAdditionalWages] = useState<any>(0);
+  let checkIndex = checkCountData(data);
+
+  let initialState: Datas = {
+    id: checkIndex,
+    annualIncome: {
+      annualGrossIncome: 0,
+      additionalWages: 0,
+      less: 0,
+      others: 0,
+    },
+    annualSurplus: {
+      annualSurplus: 0,
+    },
+    answer: {
+      state: "",
+      answer: "",
+    },
+    reasonForSurplus: "",
+  };
+
+  let initialStateAnnualIncome: AnnualIncome = {
+    annualGrossIncome: 0,
+    additionalWages: 0,
+    less: 0,
+    others: 0,
+  };
+
+  const [newData, setNewData] = useState(initialState);
+  const [newAnnualIncome, setNewAnnualIncome] = useState(
+    initialStateAnnualIncome
+  );
+
   const [other, setOther] = useState<any>(0);
   const [cpfContribution, setCpfContribution] = useState<any>(0);
   return (
@@ -45,26 +76,32 @@ const AnnualIncomeCashFlow = (props: Props) => {
           data.map((d, index) => (
             <>
               <div>
-              <Input
-                className="my-4"
-                formStyle="text-right"
-                type="text"
-                value={d.annualIncome.annualGrossIncome / 12}
-                handleChange={(event) => setAnnualGrossIncome(event.target.value)}
-              />
-            </div>
-            <div>
-              <Input
-                className="my-4"
-                formStyle="text-right"
-                type="text"
-                value={d.annualIncome.annualGrossIncome * 12}
-                handleChange={(event) => setAnnualGrossIncome(event.target.value)}
-              />
-            </div>
+                <Input
+                  className="my-4"
+                  formStyle="text-right"
+                  type="text"
+                  value={d.annualIncome.annualGrossIncome / 12}
+                  handleChange={(event) =>
+                    setNewAnnualIncome({
+                      ...newAnnualIncome,
+                      annualGrossIncome: Number(event.target.value),
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Input
+                  className="my-4"
+                  formStyle="text-right"
+                  type="text"
+                  value={d.annualIncome.annualGrossIncome * 12}
+                  handleChange={(event) =>
+                    setNewAnnualIncome({...newAnnualIncome, annualGrossIncome : Number(event.target.value)})
+                  }
+                />
+              </div>
             </>
           ))}
-        
       </RowTripleGrid>
       <RowTripleGrid className="items-center">
         <div>
@@ -74,23 +111,27 @@ const AnnualIncomeCashFlow = (props: Props) => {
           data.map((d, index) => (
             <>
               <div>
-              <Input
-                className="my-4"
-                type="text"
-                formStyle="text-right"
-                value={d.annualIncome.additionalWages / 12}
-                handleChange={(event) => setAdditionalWages(event.target.value)}
-              />
-            </div>
-            <div>
-              <Input
-                className="my-4"
-                type="text"
-                formStyle="text-right"
-                value={d.annualIncome.additionalWages * 12}
-                handleChange={(event) => setAdditionalWages(event.target.value)}
-              />
-            </div>
+                <Input
+                  className="my-4"
+                  type="text"
+                  formStyle="text-right"
+                  value={d.annualIncome.additionalWages / 12}
+                  handleChange={(event) =>
+                    setNewAnnualIncome({...newAnnualIncome, additionalWages : Number(event.target.value)})
+                  }
+                />
+              </div>
+              <div>
+                <Input
+                  className="my-4"
+                  type="text"
+                  formStyle="text-right"
+                  value={d.annualIncome.additionalWages * 12}
+                  handleChange={(event) =>
+                    setNewAnnualIncome({...newAnnualIncome, additionalWages : Number(event.target.value)})
+                  }
+                />
+              </div>
             </>
           ))}
       </RowTripleGrid>
@@ -105,23 +146,23 @@ const AnnualIncomeCashFlow = (props: Props) => {
           data.map((d, index) => (
             <>
               <div>
-              <Input
-                className="my-4"
-                type="text"
-                formStyle="text-right"
-                value={other}
-                handleChange={(event) => setOther(event.target.value)}
-              />
-            </div>
-            <div>
-              <Input
-                className="my-4"
-                type="text"
-                formStyle="text-right"
-                value={other}
-                handleChange={(event) => setOther(event.target.value)}
-              />
-            </div>
+                <Input
+                  className="my-4"
+                  type="text"
+                  formStyle="text-right"
+                  value={other}
+                  handleChange={(event) => setOther(event.target.value)}
+                />
+              </div>
+              <div>
+                <Input
+                  className="my-4"
+                  type="text"
+                  formStyle="text-right"
+                  value={other}
+                  handleChange={(event) => setOther(event.target.value)}
+                />
+              </div>
             </>
           ))}
       </RowTripleGrid>
@@ -135,26 +176,29 @@ const AnnualIncomeCashFlow = (props: Props) => {
           data.map((d, index) => (
             <>
               <div>
-              <Input
-                className="my-4"
-                type="text"
-                formStyle="text-right"
-                value={cpfContribution}
-                handleChange={(event) => setCpfContribution(event.target.value)}
-              />
-            </div>
-            <div>
-              <Input
-                className="my-4"
-                type="text"
-                formStyle="text-right"
-                value={cpfContribution}
-                handleChange={(event) => setCpfContribution(event.target.value)}
-              />
-            </div>
+                <Input
+                  className="my-4"
+                  type="text"
+                  formStyle="text-right"
+                  value={cpfContribution}
+                  handleChange={(event) =>
+                    setCpfContribution(event.target.value)
+                  }
+                />
+              </div>
+              <div>
+                <Input
+                  className="my-4"
+                  type="text"
+                  formStyle="text-right"
+                  value={cpfContribution}
+                  handleChange={(event) =>
+                    setCpfContribution(event.target.value)
+                  }
+                />
+              </div>
             </>
           ))}
-        
       </RowTripleGrid>
       <RowTripleGrid className="items-center">
         <div>
@@ -164,26 +208,25 @@ const AnnualIncomeCashFlow = (props: Props) => {
           data.map((d, index) => (
             <>
               <div>
-              <Input
-                className="my-4"
-                type="text"
-                formStyle="text-right text-green-deep"
-                value={cpfContribution}
-                handleChange={(event) => setData(event.target.value)}
-              />
-            </div>
-            <div>
-              <Input
-                className="my-4"
-                type="text"
-                formStyle="text-right text-green-deep"
-                value={cpfContribution}
-                handleChange={(event) => setData(event.target.value)}
-              />
-            </div>
+                <Input
+                  className="my-4"
+                  type="text"
+                  formStyle="text-right text-green-deep"
+                  value={cpfContribution}
+                  handleChange={(event) => setData(event.target.value)}
+                />
+              </div>
+              <div>
+                <Input
+                  className="my-4"
+                  type="text"
+                  formStyle="text-right text-green-deep"
+                  value={cpfContribution}
+                  handleChange={(event) => setData(event.target.value)}
+                />
+              </div>
             </>
           ))}
-        
       </RowTripleGrid>
     </SectionCardSingleGrid>
   );

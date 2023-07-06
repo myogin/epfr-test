@@ -5,6 +5,7 @@ import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
   setAnnualIncome: (indexData: number, params: any) => any;
+  setData: (indexData: number, params: any) => any;
   setAnnualSurplus: (indexData: number, params: any) => any;
   setAnswer: (indexData: number, params: any) => any;
 };
@@ -31,6 +32,7 @@ const initialState: SectionThree = {
   },
   data: [
     {
+      id:0,
       annualIncome: {
         annualGrossIncome: 0,
         additionalWages: 0,
@@ -107,6 +109,21 @@ const cashFlow = create(
     persist<SectionThree & Actions>(
       (set, get) => ({
         ...initialState,
+        setData: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              if (indexData === 0 && get().data?.length) {
+                let dataReplace = draft.data[indexData];
+                dataReplace.annualIncome.annualGrossIncome =
+                  params.annualIncome.annualGrossIncome;
+                dataReplace.annualIncome.additionalWages =
+                  params.annualIncome.additionalWages;
+                dataReplace.annualIncome.less = params.annualIncome.less;
+              } else {
+                draft.data.push(params);
+              }
+            })
+          ),
         setAnnualIncome: (indexData: number, params: any) =>
           set(
             produce((draft) => {
