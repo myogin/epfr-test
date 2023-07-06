@@ -14,6 +14,9 @@ export const postPfr = async (group : any, data : any) => {
   return await http.post(`/create-pfr-lite/${group}`, data, { headers: authHeader() });
 }
 
+export const getAllCompany = async (params: any) => {
+  return await http.get(`company`, { headers: authHeader() });
+};
 // export const updatePfr = async (id : any, data : any) => {
 //   return await http.post(`/category/${id}`, data, { headers: authHeader() });
 // }
