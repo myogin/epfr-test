@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
-  setAnnualIncome: (indexData: number, params: any) => any;
+  setAnnualIncome: (clientType: number, name: string, value: any) => any;
   setData: (indexData: number, params: any) => any;
   setAnnualSurplus: (indexData: number, params: any) => any;
   setAnswer: (indexData: number, params: any) => any;
@@ -124,19 +124,19 @@ const cashFlow = create(
               }
             })
           ),
-        setAnnualIncome: (indexData: number, params: any) =>
+        setAnnualIncome: (clientType: number, name: string, value: any) =>
           set(
             produce((draft) => {
-              if (indexData === 0 && get().data?.length) {
-                let dataReplace = draft.data[indexData];
-                dataReplace.annualIncome.annualGrossIncome =
-                  params.annualGrossIncome;
-                dataReplace.annualIncome.additionalWages =
-                  params.additionalWages;
-                dataReplace.annualIncome.less = params.less;
-              } else {
-                draft.data.push(params);
-              }
+              let annualIncome = draft.data[clientType].annualIncome;
+              annualIncome[name] = value;
+
+              let getAnnualIncome = Number(get().data[clientType].annualIncome.annualGrossIncome);
+              let getAdditionalWadges = Number(get().data[clientType].annualIncome.additionalWages);
+              let getLess = Number(get().data[clientType].annualIncome.less);
+
+              let dataAnnualSurplus = draft.data[clientType].annualSurplus;
+              dataAnnualSurplus.annualSurplus = getAnnualIncome + (getAdditionalWadges - getLess);
+
             })
           ),
         setAnnualSurplus: (indexData: number, params: any) =>

@@ -20,39 +20,17 @@ const AnnualIncomeCashFlow = (props: Props) => {
     console.log(params);
   };
 
-  let { data } = useCashFlow();
+  let { data, setAnnualIncome } = useCashFlow();
 
-  let checkIndex = checkCountData(data);
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
 
-  let initialState: Datas = {
-    id: checkIndex,
-    annualIncome: {
-      annualGrossIncome: 0,
-      additionalWages: 0,
-      less: 0,
-      others: 0,
-    },
-    annualSurplus: {
-      annualSurplus: 0,
-    },
-    answer: {
-      state: "",
-      answer: "",
-    },
-    reasonForSurplus: "",
+    setAnnualIncome(0, name, value);
   };
 
-  let initialStateAnnualIncome: AnnualIncome = {
-    annualGrossIncome: 0,
-    additionalWages: 0,
-    less: 0,
-    others: 0,
-  };
+  const getNumber = () => {
 
-  const [newData, setNewData] = useState(initialState);
-  const [newAnnualIncome, setNewAnnualIncome] = useState(
-    initialStateAnnualIncome
-  );
+  }
 
   const [other, setOther] = useState<any>(0);
   const [cpfContribution, setCpfContribution] = useState<any>(0);
@@ -80,13 +58,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   className="my-4"
                   formStyle="text-right"
                   type="text"
-                  value={d.annualIncome.annualGrossIncome / 12}
-                  handleChange={(event) =>
-                    setNewAnnualIncome({
-                      ...newAnnualIncome,
-                      annualGrossIncome: Number(event.target.value),
-                    })
-                  }
+                  name="annualGrossIncome"
+                  value={d.annualIncome.annualGrossIncome}
+                  handleChange={handleInputChange}
                 />
               </div>
               <div>
@@ -94,10 +68,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   className="my-4"
                   formStyle="text-right"
                   type="text"
+                  name="annualGrossIncome"
                   value={d.annualIncome.annualGrossIncome * 12}
-                  handleChange={(event) =>
-                    setNewAnnualIncome({...newAnnualIncome, annualGrossIncome : Number(event.target.value)})
-                  }
+                  handleChange={handleInputChange}
                 />
               </div>
             </>
@@ -115,10 +88,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   className="my-4"
                   type="text"
                   formStyle="text-right"
-                  value={d.annualIncome.additionalWages / 12}
-                  handleChange={(event) =>
-                    setNewAnnualIncome({...newAnnualIncome, additionalWages : Number(event.target.value)})
-                  }
+                  name="additionalWages"
+                  value={d.annualIncome.additionalWages}
+                  handleChange={handleInputChange}
                 />
               </div>
               <div>
@@ -126,10 +98,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   className="my-4"
                   type="text"
                   formStyle="text-right"
+                  name="additionalWages"
                   value={d.annualIncome.additionalWages * 12}
-                  handleChange={(event) =>
-                    setNewAnnualIncome({...newAnnualIncome, additionalWages : Number(event.target.value)})
-                  }
+                  handleChange={handleInputChange}
                 />
               </div>
             </>
@@ -179,22 +150,20 @@ const AnnualIncomeCashFlow = (props: Props) => {
                 <Input
                   className="my-4"
                   type="text"
+                  name="less"
                   formStyle="text-right"
-                  value={cpfContribution}
-                  handleChange={(event) =>
-                    setCpfContribution(event.target.value)
-                  }
+                  value={d.annualIncome.less}
+                  handleChange={handleInputChange}
                 />
               </div>
               <div>
                 <Input
                   className="my-4"
                   type="text"
+                  name="less"
                   formStyle="text-right"
-                  value={cpfContribution}
-                  handleChange={(event) =>
-                    setCpfContribution(event.target.value)
-                  }
+                  value={d.annualIncome.less * 12}
+                  handleChange={handleInputChange}
                 />
               </div>
             </>
