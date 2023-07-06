@@ -21,18 +21,73 @@ const AnnualIncomeCashFlow = (props: Props) => {
     console.log(params);
   };
 
-  let { data, setAnnualIncome } = useCashFlow();
+  let { data, setAnnualIncome, setAnnualSurplus } = useCashFlow();
 
   let [annualData, setAnnualData] = useState(0);
   let [monthlyData, setMonthlyData] = useState(0);
+
+  let [annualWadgesData, setAnnualWadgesData] = useState(0);
+  let [monthlyWadgesData, setMonthlyWadgesData] = useState(0);
+
+  let [annualLessData, setAnnualLessData] = useState(0);
+  let [monthlyLessData, setMonthlyLessData] = useState(0);
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     const { groupdata } = event.target.dataset;
 
-    setAnnualData(value * 12);
+    switch (name) {
+      case "annualGrossIncome":
+        if (groupdata === "annualy") {
+          setAnnualData(value);
+          setMonthlyData(value / 12);
 
-    setAnnualIncome(0, name, value);
+          setAnnualIncome(0, name, value);
+        } else {
+          setAnnualData(value * 12);
+          setMonthlyData(value);
+
+          setAnnualIncome(0, name, value * 12);
+        }
+
+        break;
+      case "additionalWages":
+        if (groupdata === "annualy") {
+          setMonthlyWadgesData(value / 12);
+          setAnnualWadgesData(value);
+
+          setAnnualIncome(0, name, value);
+        } else {
+          setAnnualWadgesData(value * 12);
+          setMonthlyWadgesData(value);
+
+          setAnnualIncome(0, name, value * 12);
+        }
+        break;
+      case "less":
+        if (groupdata === "annualy") {
+          setMonthlyLessData(value / 12);
+          setAnnualLessData(value);
+
+          setAnnualIncome(0, name, value);
+        } else {
+          setAnnualLessData(value * 12);
+          setMonthlyLessData(value);
+
+          setAnnualIncome(0, name, value * 12);
+        }
+        break;
+      default:
+        if (groupdata === "annualy") {
+          setMonthlyData(value / 12);
+          setAnnualData(value);
+        } else {
+          setAnnualData(value * 12);
+          setMonthlyData(value);
+        }
+        setAnnualIncome(0, name, annualData);
+        break;
+    }
   };
 
   const getNumber = () => {};
@@ -59,7 +114,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
       </RowTripleGrid>
       <RowTripleGrid className="items-center">
         <div>
-          <TextSmall className="text-gray-light">Annual Gross Income</TextSmall>
+          <TextSmall className="text-gray-light">
+            Annual Gross Income {annualData ? annualData : 0}
+          </TextSmall>
         </div>
         {data?.length &&
           data.map((d, index) => (
@@ -71,7 +128,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   formStyle="text-right"
                   type="text"
                   name="annualGrossIncome"
-                  value={d.annualIncome.annualGrossIncome > 0 ? d.annualIncome.annualGrossIncome / 12 : monthlyData}
+                  value={
+                    monthlyData > 0
+                      ? monthlyData
+                      : d.annualIncome.annualGrossIncome / 12
+                  }
                   handleChange={handleInputChange}
                 />
               </div>
@@ -82,7 +143,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   formStyle="text-right"
                   type="text"
                   name="annualGrossIncome"
-                  value={d.annualIncome.annualGrossIncome > 0 ? d.annualIncome.annualGrossIncome : annualData}
+                  value={
+                    annualData > 0
+                      ? annualData
+                      : d.annualIncome.annualGrossIncome
+                  }
                   handleChange={handleInputChange}
                 />
               </div>
@@ -98,21 +163,31 @@ const AnnualIncomeCashFlow = (props: Props) => {
             <>
               <div>
                 <Input
+                  dataType="monthly"
                   className="my-4"
                   type="text"
                   formStyle="text-right"
                   name="additionalWages"
-                  value={d.annualIncome.additionalWages}
+                  value={
+                    monthlyWadgesData > 0
+                      ? monthlyWadgesData
+                      : d.annualIncome.additionalWages / 12
+                  }
                   handleChange={handleInputChange}
                 />
               </div>
               <div>
                 <Input
+                  dataType="annualy"
                   className="my-4"
                   type="text"
                   formStyle="text-right"
                   name="additionalWages"
-                  value={d.annualIncome.additionalWages * 12}
+                  value={
+                    annualWadgesData > 0
+                      ? annualWadgesData
+                      : d.annualIncome.additionalWages
+                  }
                   handleChange={handleInputChange}
                 />
               </div>
@@ -161,21 +236,29 @@ const AnnualIncomeCashFlow = (props: Props) => {
             <>
               <div>
                 <Input
+                  dataType="monthly"
                   className="my-4"
                   type="text"
                   name="less"
                   formStyle="text-right"
-                  value={d.annualIncome.less}
+                  value={
+                    monthlyLessData > 0
+                      ? monthlyLessData
+                      : d.annualIncome.less / 12
+                  }
                   handleChange={handleInputChange}
                 />
               </div>
               <div>
                 <Input
+                  dataType="annualy"
                   className="my-4"
                   type="text"
                   name="less"
                   formStyle="text-right"
-                  value={d.annualIncome.less * 12}
+                  value={
+                    annualLessData > 0 ? annualLessData : d.annualIncome.less
+                  }
                   handleChange={handleInputChange}
                 />
               </div>

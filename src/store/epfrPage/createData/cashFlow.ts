@@ -130,13 +130,6 @@ const cashFlow = create(
               let annualIncome = draft.data[clientType].annualIncome;
               annualIncome[name] = value;
 
-              let getAnnualIncome = Number(get().data[clientType].annualIncome.annualGrossIncome);
-              let getAdditionalWadges = Number(get().data[clientType].annualIncome.additionalWages);
-              let getLess = Number(get().data[clientType].annualIncome.less);
-
-              let dataAnnualSurplus = draft.data[clientType].annualSurplus;
-              dataAnnualSurplus.annualSurplus = getAnnualIncome + (getAdditionalWadges - getLess);
-
             })
           ),
         setAnnualSurplus: (indexData: number, params: any) =>
