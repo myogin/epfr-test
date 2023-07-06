@@ -21,8 +21,12 @@ const InsurancePortofolio = () => {
   // get client state
   let { clientInfo, dependant } = usePersonalInformation();
 
-  const [newData, setNewData] = useState<SummaryOfInsurance>({
-    editting: false,
+  let checkIndex = checkCountData(summaryOfInsurance);
+  let checkIndexTwo = checkCountData(summaryOfInsurance2);
+
+  let initialState: SummaryOfInsurance = {
+    id: checkIndex,
+    editting: true,
     client: "",
     insured: "",
     status: "",
@@ -41,10 +45,11 @@ const InsurancePortofolio = () => {
     cash: 0,
     medisave: 0,
     sourceOfFund: 0,
-  });
+  };
 
-  const [newDataInput2, setNewDataInput2] = useState<SummaryOfInsurance2>({
-    editting: false,
+  let initialState2: SummaryOfInsurance2 = {
+    id: checkIndex,
+    editting: true,
     client: "",
     insured: "",
     insurer: "",
@@ -58,7 +63,11 @@ const InsurancePortofolio = () => {
     medisave: 0,
     frequency: "",
     sourceOfFund: 0,
-  });
+  };
+
+  const [newData, setNewData] = useState<SummaryOfInsurance>(initialState);
+
+  const [newData2, setNewData2] = useState<SummaryOfInsurance2>(initialState2);
 
   let clients: Array<any> = getClientCustom(clientInfo);
   let insures : Array<any> = getInsuredCustom(clientInfo, dependant)
@@ -242,10 +251,10 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Policy Term"
                                     type="text"
-                                    value={newDataInput2.policyTerm}
+                                    value={newData2.policyTerm}
                                     handleChange={(event) =>
-                                      setNewDataInput2({
-                                        ...newDataInput2,
+                                      setNewData2({
+                                        ...newData2,
                                         policyTerm: event.target.value,
                                       })
                                     }
@@ -255,10 +264,10 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Type Of Hospital Covered"
                                     type="text"
-                                    value={newDataInput2.typeOfHosCovered}
+                                    value={newData2.typeOfHosCovered}
                                     handleChange={(event) =>
-                                      setNewDataInput2({
-                                        ...newDataInput2,
+                                      setNewData2({
+                                        ...newData2,
                                         typeOfHosCovered: event.target.value,
                                       })
                                     }
@@ -268,10 +277,10 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Year Of Purchase"
                                     type="text"
-                                    value={newDataInput2.purchaseYear}
+                                    value={newData2.purchaseYear}
                                     handleChange={(event) =>
-                                      setNewDataInput2({
-                                        ...newDataInput2,
+                                      setNewData2({
+                                        ...newData2,
                                         purchaseYear: Number(
                                           event.target.value
                                         ),
@@ -283,10 +292,10 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Premium Medisave"
                                     type="text"
-                                    value={newDataInput2.medisave}
+                                    value={newData2.medisave}
                                     handleChange={(event) =>
-                                      setNewDataInput2({
-                                        ...newDataInput2,
+                                      setNewData2({
+                                        ...newData2,
                                         medisave: Number(event.target.value),
                                       })
                                     }
@@ -412,10 +421,10 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Existing Hospitalization Plan (If Any)"
                                     type="text"
-                                    value={newDataInput2.existingHosPlan}
+                                    value={newData2.existingHosPlan}
                                     handleChange={(event) =>
-                                      setNewDataInput2({
-                                        ...newDataInput2,
+                                      setNewData2({
+                                        ...newData2,
                                         existingHosPlan: event.target.value,
                                       })
                                     }
@@ -424,10 +433,10 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Class Of Ward Covered"
                                     type="text"
-                                    value={newDataInput2.classOfWardCovered}
+                                    value={newData2.classOfWardCovered}
                                     handleChange={(event) =>
-                                      setNewDataInput2({
-                                        ...newDataInput2,
+                                      setNewData2({
+                                        ...newData2,
                                         classOfWardCovered: event.target.value,
                                       })
                                     }
@@ -436,10 +445,10 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Premium Cash"
                                     type="text"
-                                    value={newDataInput2.premium}
+                                    value={newData2.premium}
                                     handleChange={(event) =>
-                                      setNewDataInput2({
-                                        ...newDataInput2,
+                                      setNewData2({
+                                        ...newData2,
                                         premium: Number(event.target.value),
                                       })
                                     }
@@ -448,10 +457,10 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Frequency"
                                     type="text"
-                                    value={newDataInput2.frequency}
+                                    value={newData2.frequency}
                                     handleChange={(event) =>
-                                      setNewDataInput2({
-                                        ...newDataInput2,
+                                      setNewData2({
+                                        ...newData2,
                                         frequency: event.target.value,
                                       })
                                     }
@@ -623,5 +632,19 @@ const getInsuredCustom = (clients: any, dependents : any) => {
   return clientCustom;
 };
 
+function checkCountData(datas: any) {
+  let data: number = 0;
+  if (datas?.length) {
+    if (datas[0].client === "") {
+      data = datas.length;
+    } else {
+      data = datas.length + 1;
+    }
+  } else {
+    data = datas.length + 1;
+  }
+
+  return data;
+}
 
 export default InsurancePortofolio;

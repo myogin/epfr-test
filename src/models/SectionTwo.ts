@@ -38,11 +38,10 @@ export interface SummaryOfSavings {
 export interface SummaryOfInsurance {
   editting?: boolean;
   id?: number;
-  client: string;
-  insured: string;
-  status: string;
-  insurer: string;
-  policyType: string;
+  client: string; //same
+  insured: string; //same
+  insurer: string; //same
+  policyType: string; // same
   policyTypeOther: string;
   policyTerm: string;
   death: number;
@@ -56,6 +55,7 @@ export interface SummaryOfInsurance {
   cash: number;
   medisave: number;
   sourceOfFund: number;
+  status: string;
 }
 
 export interface SummaryOfInsurance2 {
