@@ -13,6 +13,7 @@ import AddLineIcon from "remixicon-react/AddLineIcon";
 
 interface Props {
   data?: any;
+  pfrType?: number;
 }
 
 const AnnualIncomeCashFlow = (props: Props) => {
@@ -22,15 +23,19 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   let { data, setAnnualIncome } = useCashFlow();
 
+  let [annualData, setAnnualData] = useState(0);
+  let [monthlyData, setMonthlyData] = useState(0);
+
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
+    const { groupdata } = event.target.dataset;
+
+    setAnnualData(value * 12);
 
     setAnnualIncome(0, name, value);
   };
 
-  const getNumber = () => {
-
-  }
+  const getNumber = () => {};
 
   const [other, setOther] = useState<any>(0);
   const [cpfContribution, setCpfContribution] = useState<any>(0);
@@ -38,13 +43,19 @@ const AnnualIncomeCashFlow = (props: Props) => {
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowTripleGrid>
         <div></div>
-        {data?.length &&
-          data.map((d, index) => (
-            <>
-              <div className="text-sm font-bold text-right">Monthly</div>
-              <div className="text-sm font-bold text-right">Annual</div>
-            </>
-          ))}
+        {props.pfrType == 1 ? (
+          <>
+            <div className="text-sm font-bold text-right">Monthly</div>
+            <div className="text-sm font-bold text-right">Annual</div>
+          </>
+        ) : (
+          <>
+            <div className="text-sm font-bold text-right">Monthly</div>
+            <div className="text-sm font-bold text-right">Annual</div>
+            <div className="text-sm font-bold text-right">Monthly</div>
+            <div className="text-sm font-bold text-right">Annual</div>
+          </>
+        )}
       </RowTripleGrid>
       <RowTripleGrid className="items-center">
         <div>
@@ -55,21 +66,23 @@ const AnnualIncomeCashFlow = (props: Props) => {
             <>
               <div>
                 <Input
+                  dataType="monthly"
                   className="my-4"
                   formStyle="text-right"
                   type="text"
                   name="annualGrossIncome"
-                  value={d.annualIncome.annualGrossIncome}
+                  value={d.annualIncome.annualGrossIncome > 0 ? d.annualIncome.annualGrossIncome / 12 : monthlyData}
                   handleChange={handleInputChange}
                 />
               </div>
               <div>
                 <Input
+                  dataType="annualy"
                   className="my-4"
                   formStyle="text-right"
                   type="text"
                   name="annualGrossIncome"
-                  value={d.annualIncome.annualGrossIncome * 12}
+                  value={d.annualIncome.annualGrossIncome > 0 ? d.annualIncome.annualGrossIncome : annualData}
                   handleChange={handleInputChange}
                 />
               </div>
