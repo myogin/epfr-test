@@ -436,11 +436,11 @@ const Client = (props : Props) => {
           className="mb-10"
           label="Sex"
           name="gender"
-          value={clientInfo[index].gender}
+          value={clientInfo[index] ? clientInfo[index].gender : ""}
           datas={clientSex}
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].gender === "" || clientInfo[index].gender ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].gender === "" || clientInfo[index].gender ==="-"  ? false : true : true}
         />
         {/* <Input
           className="mb-10"
@@ -455,11 +455,11 @@ const Client = (props : Props) => {
           label="Date of Birth"
           type="date"
           name="dateOfBirth"
-          value={clientInfo[index].dateOfBirth}
+          value={clientInfo[index] ? clientInfo[index].dateOfBirth : ""}
           placeholder="01 January 1998"
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].dateOfBirth === "" || clientInfo[index].dateOfBirth ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].dateOfBirth === "" || clientInfo[index].dateOfBirth ==="-"  ? false : true : true}
         />
         {/* <Select
           className="mb-10"
@@ -474,7 +474,7 @@ const Client = (props : Props) => {
           className="mb-10"
           label="Nationality"
           name="nationality"
-          value={clientInfo[index].nationality}
+          value={clientInfo[index] ? clientInfo[index].nationality : ""}
           datas={country}
           handleChange={handleInputChange}
         />
@@ -483,11 +483,11 @@ const Client = (props : Props) => {
           className="mb-10"
           label="Residency Status"
           name="residency"
-          value={clientInfo[index].residency}
+          value={clientInfo[index] ? clientInfo[index].residency : ""}
           datas={recidence}
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].residency === "" || clientInfo[index].residency ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].residency === "" || clientInfo[index].residency ==="-"  ? false : true : true}
         />
         {/* Selected Form */}
         {/* <Select
@@ -502,11 +502,11 @@ const Client = (props : Props) => {
           className="mb-10"
           label="Marital Status"
           name="marital"
-          value={clientInfo[index].marital}
+          value={clientInfo[index] ? clientInfo[index].marital : ""}
           datas={marital}
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].marital === "" || clientInfo[index].marital ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].marital === "" || clientInfo[index].marital ==="-"  ? false : true : true}
         />
         {/* Selected Form */}
         <Select
@@ -514,11 +514,11 @@ const Client = (props : Props) => {
           className="mb-10"
           name="employmentStatus"
           label="Employment Status"
-          value={clientInfo[index].employmentStatus}
+          value={clientInfo[index] ? clientInfo[index].employmentStatus : ""}
           datas={employment}
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].employmentStatus === "" || clientInfo[index].employmentStatus ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].employmentStatus === "" || clientInfo[index].employmentStatus ==="-"  ? false : true : true}
         />
         <Input
           dataType="clientInfo"
@@ -526,7 +526,7 @@ const Client = (props : Props) => {
           label="Occupation"
           type="text"
           name="occupation"
-          value={clientInfo[index].occupation}
+          value={clientInfo[index] ? clientInfo[index].occupation : ""}
           placeholder="Manager"
           handleChange={handleInputChange}
         />
@@ -536,7 +536,7 @@ const Client = (props : Props) => {
           className="mb-10"
           label="Employment Sector"
           name="businessNature"
-          value={clientInfo[index].businessNature}
+          value={clientInfo[index] ? clientInfo[index].businessNature : ""}
           datas={employmentSector}
           handleChange={handleInputChange}
         />
@@ -546,7 +546,7 @@ const Client = (props : Props) => {
           className="mb-10"
           name="companyName"
           label="Company Name"
-          value={clientInfo[index].companyName}
+          value={clientInfo[index] ? clientInfo[index].companyName : ""}
           datas={companyMaster}
           handleChange={handleInputChange}
         />
@@ -555,11 +555,11 @@ const Client = (props : Props) => {
           className="mb-10"
           label="Annual Income"
           name="annualIncome"
-          value={clientInfo[index].annualIncome}
+          value={clientInfo[index] ? clientInfo[index].annualIncome : ""}
           datas={annualIncome}
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].annualIncome === "" || clientInfo[index].annualIncome ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].annualIncome === "" || clientInfo[index].annualIncome ==="-"  ? false : true : true}
         />
         <Input
           dataType="clientInfo"
@@ -567,7 +567,7 @@ const Client = (props : Props) => {
           label="Contact Detail [Home]"
           type="text"
           name="contactHome"
-          value={clientInfo[index].contactHome}
+          value={clientInfo[index] ? clientInfo[index].contactHome :""}
           placeholder="981271291"
           handleChange={handleInputChange}
         />
@@ -577,11 +577,11 @@ const Client = (props : Props) => {
           label="Mobile Number"
           type="text"
           name="contactMobile"
-          value={clientInfo[index].contactMobile}
+          value={clientInfo[index] ? clientInfo[index].contactMobile : ""}
           placeholder="2121921298"
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].contactMobile === "" || clientInfo[index].contactMobile ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].contactMobile === "" || clientInfo[index].contactMobile ==="-"  ? false : true : true}
         />
         <Input
           dataType="clientInfo"
@@ -589,11 +589,11 @@ const Client = (props : Props) => {
           label="Registered Address"
           type="text"
           name="residentialAddr"
-          value={clientInfo[index].residentialAddr}
+          value={clientInfo[index] ? clientInfo[index].residentialAddr : ""}
           placeholder="Singapore"
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].residentialAddr === "" || clientInfo[index].residentialAddr ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].residentialAddr === "" || clientInfo[index].residentialAddr ==="-"  ? false : true : true}
         />
         <Input
           dataType="clientInfo"
@@ -601,7 +601,7 @@ const Client = (props : Props) => {
           label="Mailing Address"
           type="text"
           name="mailingAddr"
-          value={clientInfo[index].mailingAddr}
+          value={clientInfo[index] ? clientInfo[index].mailingAddr : ""}
           placeholder="Set as same like registered address"
           handleChange={handleInputChange}
         />
@@ -612,11 +612,11 @@ const Client = (props : Props) => {
           className="mb-10"
           label="Smoker"
           name="smoker"
-          value={clientInfo[index].smoker}
+          value={clientInfo[index] ? clientInfo[index].smoker : ""}
           datas={clientSmoker}
           handleChange={handleInputChange}
           needValidation={true}
-          logic={clientInfo[index].smoker === "" || clientInfo[index].smoker ==="-"  ? false : true}
+          logic={clientInfo[index] ? clientInfo[index].smoker === "" || clientInfo[index].smoker ==="-"  ? false : true : true}
         />
       </div>
       ))}

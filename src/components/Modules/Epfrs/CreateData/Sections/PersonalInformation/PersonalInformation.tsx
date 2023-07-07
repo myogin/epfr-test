@@ -14,6 +14,7 @@ import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import { getLength } from "@/libs/helper";
+import TextSmall from "@/components/Attributes/Typography/TextSmall";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -102,14 +103,29 @@ const PersonalInformation = (props: Props) => {
         </>
       ) : (
         <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
-            Section 1. Personal Information
-          </HeadingSecondarySection>
+        <div
+            id="section-header-1"
+            className={`sticky top-0 z-10 ${
+              scrollPosition === "okSec1"
+                ? "bg-white py-1 ease-in shadow-lg"
+                : ""
+            }`}
+          >
+            <HeadingPrimarySection
+              className={`mx-8 2xl:mx-60 ${
+                scrollPosition === "okSec1"
+                  ? "text-gray-light text-xl font-bold mb-5 mt-5"
+                  : "text-2xl font-bold mb-10 mt-10"
+              }`}
+            >
+              Section 1. Personal Information
+            </HeadingPrimarySection>
+          </div>
           <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
             {getPfrLength.map((data, index) => (
                 <div key={index}>
-                  meong
-                  <div className="flex flex-row items-center justify-between mb-10">
+                  <h3 className="w-full mb-10 text-base font-bold text-green-deep">Client {++index}</h3>
+                  <div className="flex flex-row items-center justify-between">
                     <button className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light">
                       <span className="flex">
                         <FlashlightLineIcon /> AUTOFILL PROFILE FORM
@@ -142,7 +158,7 @@ const PersonalInformation = (props: Props) => {
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         1.3 Client Accompainment Assestment
       </HeadingSecondarySection>
-      <Accompainment />
+      <Accompainment pfrType={props.pfrType} />
       {/* Sec 4 */}
       {checkAccompainment ? (
         <>
