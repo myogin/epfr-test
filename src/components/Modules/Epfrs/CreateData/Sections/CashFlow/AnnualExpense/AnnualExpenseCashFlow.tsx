@@ -1,8 +1,10 @@
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowDinamycGrid from "@/components/Attributes/Rows/Grids/RowDinamycGrid";
 import RowTripleGrid from "@/components/Attributes/Rows/Grids/RowTripleGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import Input from "@/components/Forms/Input";
+import { getLength } from "@/libs/helper";
 import { AnnualExpanse } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import React, { useState } from "react";
@@ -16,6 +18,8 @@ const AnnualExpenseCashFlow = (props: Props) => {
     console.log(params);
   };
 
+  let getPfrLength = getLength(props.pfrType);
+
   let { annualExpense } = useCashFlow();
 
   let arrPfrType: any[];
@@ -28,22 +32,22 @@ const AnnualExpenseCashFlow = (props: Props) => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <RowTripleGrid>
+      <RowDinamycGrid
+        className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        }`}
+      >
         <div></div>
-        {props.pfrType == 1 ? (
-          <>
-            <div className="text-sm font-bold text-right">Monthly</div>
-            <div className="text-sm font-bold text-right">Annual</div>
-          </>
-        ) : (
-          <>
-            <div className="text-sm font-bold text-right">Monthly</div>
-            <div className="text-sm font-bold text-right">Annual</div>
-            <div className="text-sm font-bold text-right">Monthly</div>
-            <div className="text-sm font-bold text-right">Annual</div>
-          </>
-        )}
-      </RowTripleGrid>
+        {getPfrLength?.length &&
+          getPfrLength.map((data, index) => (
+            <>
+              <div className="text-sm font-bold text-right">Monthly</div>
+              <div className="text-sm font-bold text-right">Annual</div>
+            </>
+          ))}
+      </RowDinamycGrid>
       {props.pfrType == 1 ? (
         <>
           {annualExpense.map((data, index) => (

@@ -22,7 +22,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
     console.log(params);
   };
 
-  let getLenght = getLength(props.pfrType);
+  let getPfrLength = getLength(props.pfrType);
 
   let { data, setAnnualIncome, setAnnualSurplus } = useCashFlow();
 
@@ -105,26 +105,26 @@ const AnnualIncomeCashFlow = (props: Props) => {
         }`}
       >
         <div></div>
-        {getLenght?.length &&
-          getLenght.map((data, index) => (
+        {getPfrLength?.length &&
+          getPfrLength.map((data, index) => (
             <>
               <div className="text-sm font-bold text-right">Monthly</div>
               <div className="text-sm font-bold text-right">Annual</div>
             </>
           ))}
       </RowDinamycGrid>
-      <RowDinamycGrid className={`${
+      <RowDinamycGrid
+        className={`${
           props.pfrType == 1
             ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-        } items-center`}>
+        } items-center`}
+      >
         <div>
-          <TextSmall className="text-gray-light">
-            Annual Gross Income
-          </TextSmall>
+          <TextSmall className="text-gray-light">Annual Gross Income</TextSmall>
         </div>
-        {data?.length &&
-          data.map((d, index) => (
+        {getPfrLength?.length &&
+          getPfrLength.map((d, index) => (
             <>
               <div>
                 <Input
@@ -136,7 +136,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   value={
                     monthlyData > 0
                       ? monthlyData
-                      : d.annualIncome.annualGrossIncome / 12
+                      : data[index]
+                      ? data[index].annualIncome.annualGrossIncome / 12
+                      : 0
                   }
                   handleChange={handleInputChange}
                 />
@@ -151,7 +153,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   value={
                     annualData > 0
                       ? annualData
-                      : d.annualIncome.annualGrossIncome
+                      : data[index]
+                      ? data[index].annualIncome.annualGrossIncome
+                      : 0
                   }
                   handleChange={handleInputChange}
                 />
@@ -159,16 +163,18 @@ const AnnualIncomeCashFlow = (props: Props) => {
             </>
           ))}
       </RowDinamycGrid>
-      <RowDinamycGrid className={`${
+      <RowDinamycGrid
+        className={`${
           props.pfrType == 1
             ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-        } items-center`}>
+        } items-center`}
+      >
         <div>
           <TextSmall className="text-gray-light">Additional Wages</TextSmall>
         </div>
-        {data?.length &&
-          data.map((d, index) => (
+        {getPfrLength?.length &&
+          getPfrLength.map((d, index) => (
             <>
               <div>
                 <Input
@@ -180,7 +186,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   value={
                     monthlyWadgesData > 0
                       ? monthlyWadgesData
-                      : d.annualIncome.additionalWages / 12
+                      : data[index]
+                      ? data[index].annualIncome.additionalWages / 12
+                      : 0
                   }
                   handleChange={handleInputChange}
                 />
@@ -195,7 +203,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   value={
                     annualWadgesData > 0
                       ? annualWadgesData
-                      : d.annualIncome.additionalWages
+                      : data[index]
+                      ? data[index].annualIncome.additionalWages
+                      : 0
                   }
                   handleChange={handleInputChange}
                 />
@@ -203,15 +213,21 @@ const AnnualIncomeCashFlow = (props: Props) => {
             </>
           ))}
       </RowDinamycGrid>
-      <RowTripleGrid className="items-center">
+      <RowDinamycGrid
+        className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        }`}
+      >
         <div className="flex items-center justify-start">
           <TextSmall className="text-gray-light">Others</TextSmall>
           <ButtonBox className="text-green-deep">
             <AddLineIcon size={14} />
           </ButtonBox>
         </div>
-        {data?.length &&
-          data.map((d, index) => (
+        {getPfrLength?.length &&
+          getPfrLength.map((d, index) => (
             <>
               <div>
                 <Input
@@ -233,15 +249,21 @@ const AnnualIncomeCashFlow = (props: Props) => {
               </div>
             </>
           ))}
-      </RowTripleGrid>
-      <RowTripleGrid className="items-center">
+      </RowDinamycGrid>
+      <RowDinamycGrid
+        className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        }`}
+      >
         <div>
           <TextSmall className="text-gray-light">
             Less Employee’s CPF Contribution
           </TextSmall>
         </div>
-        {data?.length &&
-          data.map((d, index) => (
+        {getPfrLength?.length &&
+          getPfrLength.map((d, index) => (
             <>
               <div>
                 <Input
@@ -253,7 +275,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   value={
                     monthlyLessData > 0
                       ? monthlyLessData
-                      : d.annualIncome.less / 12
+                      : data[index]
+                      ? data[index].annualIncome.less / 12
+                      : 0
                   }
                   handleChange={handleInputChange}
                 />
@@ -266,20 +290,30 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   name="less"
                   formStyle="text-right"
                   value={
-                    annualLessData > 0 ? annualLessData : d.annualIncome.less
+                    annualLessData > 0
+                      ? annualLessData
+                      : data[index]
+                      ? data[index].annualIncome.less
+                      : 0
                   }
                   handleChange={handleInputChange}
                 />
               </div>
             </>
           ))}
-      </RowTripleGrid>
-      <RowTripleGrid className="items-center">
+      </RowDinamycGrid>
+      <RowDinamycGrid
+        className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        }`}
+      >
         <div>
           <TextSmall className="text-green-deep">ANNUAL NET INCOME</TextSmall>
         </div>
-        {data?.length &&
-          data.map((d, index) => (
+        {getPfrLength?.length &&
+          getPfrLength.map((d, index) => (
             <>
               <div>
                 <Input
@@ -301,7 +335,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
               </div>
             </>
           ))}
-      </RowTripleGrid>
+      </RowDinamycGrid>
     </SectionCardSingleGrid>
   );
 };

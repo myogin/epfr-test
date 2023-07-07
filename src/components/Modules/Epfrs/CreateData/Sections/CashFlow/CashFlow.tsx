@@ -17,10 +17,11 @@ import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { postPfr } from "@/services/pfrService";
 import { SectionThree } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const CashFlow = (props: Props) => {
@@ -40,7 +41,7 @@ const CashFlow = (props: Props) => {
     showDetailData(params);
   };
 
-  let {need,reason, totalNetSurplus} = useCashFlow();
+  let { need, reason, totalNetSurplus } = useCashFlow();
 
   const [notReviewAll, setNotReviewAll] = useState(false);
 
@@ -66,13 +67,27 @@ const CashFlow = (props: Props) => {
       </div>
       {!notReviewAll ? (
         <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+          <HeadingSecondaryDynamicGrid
+            className={`mx-8 2xl:mx-60 ${
+              props.pfrType == 2
+                ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+                : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
+            }`}
+            pfrType={props.pfrType}
+          >
             3.1 Annual Income
-          </HeadingSecondarySection>
-          <AnnualIncomeCashFlow />
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+          </HeadingSecondaryDynamicGrid>
+          <AnnualIncomeCashFlow pfrType={props.pfrType} />
+          <HeadingSecondaryDynamicGrid
+            className={`mx-8 2xl:mx-60 ${
+              props.pfrType == 2
+                ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+                : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
+            }`}
+            pfrType={props.pfrType}
+          >
             3.2 Annual Expense
-          </HeadingSecondarySection>
+          </HeadingSecondaryDynamicGrid>
           <AnnualExpenseCashFlow pfrType={props.pfrType} />
         </>
       ) : (
