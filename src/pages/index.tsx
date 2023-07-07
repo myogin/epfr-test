@@ -7,10 +7,18 @@ import TitleMedium from "@/components/Attributes/Typography/TitleMedium";
 import Link from "next/link";
 import File3FillIcon from "remixicon-react/File3FillIcon";
 import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
+import { useLoginData } from "@/store/login/logindata";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
+  const { token, ownerId, setLogin } = useLoginData();
+  const router = useRouter();
+  useEffect(() => {
+    setLogin(router.query.ownerId, router.query.token);
+  });
   return (
     <>
       <Head>

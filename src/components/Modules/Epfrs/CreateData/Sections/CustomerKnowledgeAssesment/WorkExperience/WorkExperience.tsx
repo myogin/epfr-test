@@ -6,8 +6,11 @@ import TextThin from "@/components/Attributes/Typography/TextThin";
 import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
 import React from "react";
-
-const WorkExperience = () => {
+interface Props {
+  initData: any;
+  updateState: (index: number) => void;
+}
+const WorkExperience = (props: Props) => {
   let qa: Array<any> = [
     {
       id: 1,
@@ -31,32 +34,31 @@ const WorkExperience = () => {
       ],
     },
   ];
-
+  const checkValidate = (data: boolean) => data === false;
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      {qa?.length &&
-        qa.map((question, index) => (
-          <div key={question.id}>
-            <RowSingle>
-              <TitleSmall className="text-gray-light">
-                {question.question}
-              </TitleSmall>
-            </RowSingle>
-            <RowSingle className="py-6">
-              <span className="text-xs font-normal text-red">Required</span>
-            </RowSingle>
-            {question.answers?.length &&
-              question.answers.map(
-                (answer: any, indexAnswer: React.Key | undefined) => (
-                  <RowSingle key={answer.id}>
-                    <Checkbox />
-                    <TextThin className="text-gray-light">
-                      {answer.answer}
-                    </TextThin>
-                  </RowSingle>
-                )
-              )}
-          </div>
+      <RowSingle>
+        <TitleSmall className="text-gray-light">
+          Do you have at least 3 consecutive years of working experience for the
+          last 10 years in any of ther following? *
+        </TitleSmall>
+      </RowSingle>
+      {props.initData.every(checkValidate) ? (
+        <RowSingle className="py-6">
+          <span className="text-xs font-normal text-red">Required</span>
+        </RowSingle>
+      ) : (
+        ""
+      )}
+      {qa[0].answers?.length &&
+        qa[0].answers.map((answer: any, index: number) => (
+          <RowSingle key={answer.id}>
+            <Checkbox
+              onChange={() => props.updateState(index)}
+              isChecked={props.initData[index]}
+            />
+            <TextThin className="text-gray-light">{answer.answer}</TextThin>
+          </RowSingle>
         ))}
     </SectionCardSingleGrid>
   );
