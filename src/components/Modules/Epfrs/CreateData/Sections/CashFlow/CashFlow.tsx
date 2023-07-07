@@ -16,6 +16,7 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { postPfr } from "@/services/pfrService";
 import { SectionThree } from "@/models/SectionThree";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 
 interface Props {
   id?: any;
@@ -33,111 +34,15 @@ const CashFlow = (props: Props) => {
   ];
 
   let { showDetailData } = useNavigationSection();
+  const scrollPosition = useScrollPosition(3);
 
   const saveData = (params: any) => {
     showDetailData(params);
   };
 
+  let {need,reason, totalNetSurplus} = useCashFlow();
+
   const [notReviewAll, setNotReviewAll] = useState(false);
-
-  const [sectionThree, setSectionThree] = useState<SectionThree>({
-    id: 0,
-    need: [],
-    reason: [],
-    others: {
-      annualExpense: [
-        {
-          editting: false,
-          key: "",
-          values: [],
-        },
-      ],
-      annualIncome: [
-        {
-          editting: false,
-          key: "",
-          values: [],
-        },
-      ],
-    },
-    data: [
-      {
-        annualIncome: {
-          annualGrossIncome: 0,
-          additionalWages: 0,
-          less: 0,
-          others: 0,
-        },
-        annualSurplus: {
-          annualSurplus: 0,
-        },
-        answer: {
-          state: "",
-          answer: "",
-        },
-        reasonForSurplus: "",
-      },
-    ],
-    annualExpense: [
-      {
-        key: "household",
-        title: "household",
-        selected: false,
-        values: [1200, 0, 0, 0],
-      },
-      {
-        key: "transportation",
-        title: "transportation",
-        selected: false,
-        values: [2400, 0, 0, 0],
-      },
-      {
-        key: "telco",
-        title: "telco",
-        selected: false,
-        values: [3600, 0, 0, 0],
-      },
-      {
-        key: "dependents",
-        title: "dependents",
-        selected: false,
-        values: [4800, 0, 0, 0],
-      },
-      {
-        key: "personal",
-        title: "personal",
-        selected: false,
-        values: [6000, 0, 0, 0],
-      },
-      {
-        key: "luxury",
-        title: "luxury",
-        selected: false,
-        values: [7200, 0, 0, 0],
-      },
-      {
-        key: "insurancePremiums",
-        title: "Insurance Premiums",
-        selected: false,
-        values: [1200, 0, 0, 0],
-      },
-      {
-        key: "loanRepayments",
-        title: "Loan Repayments",
-        selected: false,
-        values: [12000, 0, 0, 0],
-      },
-    ],
-    issues: [],
-    totalNetSurplus: [230,345],
-    status: 0,
-  });
-
-  if (typeof window !== "undefined") {
-    localStorage.setItem("section3", JSON.stringify(sectionThree));
-  }
-
-  const scrollPosition = useScrollPosition(3);
 
   // let post = postPfr(1)
 
@@ -164,11 +69,11 @@ const CashFlow = (props: Props) => {
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             3.1 Annual Income
           </HeadingSecondarySection>
-          <AnnualIncomeCashFlow data={sectionThree.data[0]} />
+          <AnnualIncomeCashFlow />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             3.2 Annual Expense
           </HeadingSecondarySection>
-          <AnnualExpenseCashFlow data={sectionThree.annualExpense} />
+          <AnnualExpenseCashFlow pfrType={props.pfrType} />
         </>
       ) : (
         ""
@@ -200,7 +105,7 @@ const CashFlow = (props: Props) => {
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         3.3 Annual Net Cash Flow
       </HeadingSecondarySection>
-      <AnnualNetCashFlow data={sectionThree.totalNetSurplus} />
+      <AnnualNetCashFlow data={totalNetSurplus} />
       {!notReviewAll ? (
         <>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
