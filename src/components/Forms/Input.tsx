@@ -9,6 +9,7 @@ interface Props {
   className?: string;
   formStyle?: string;
   handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onWheel?: (event: React.WheelEvent<HTMLInputElement>) => void;
   readonly?: boolean;
   name?: string;
   dataType?:string;
@@ -25,6 +26,7 @@ const Input = (props: Props) => {
         ""
       )}
       <input
+        onWheel={props.onWheel}
         data-groupdata={props.dataType}
         name={props.name}
         type={props.type}

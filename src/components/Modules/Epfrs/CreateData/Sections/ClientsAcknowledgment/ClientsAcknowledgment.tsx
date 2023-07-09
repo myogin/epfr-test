@@ -6,9 +6,10 @@ import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSec
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
+import Input from "@/components/Forms/Input";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React from "react";
+import React, { useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 interface Props {
@@ -21,6 +22,59 @@ const ClientsAcknowledgment = (props: Props) => {
   const saveData = (params: any) => {
     showDetailData(params);
   };
+
+  const [sectionElevenData, setSectionElevenData] = useState([
+    [
+      [
+          false,
+          false,
+          false
+      ],
+      [
+          0
+      ],
+      [
+          false
+      ],
+      [
+          false,
+          false
+      ],
+      [
+          false,
+          false
+      ],
+      [
+          false
+      ],
+      [
+          true,
+          false
+      ],
+      [
+          false
+      ],
+      [
+          false
+      ],
+      [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+      ]
+  ]
+  ]);
 
   const scrollPosition = useScrollPosition(11)
 
@@ -156,6 +210,275 @@ const ClientsAcknowledgment = (props: Props) => {
               the contents within this document and has furnished me/us with the
               endorsed copy of this document as well as the following documents
               (where applicable):
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+
+        {/* 4.1 */}
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Insurance Application Form(s)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox lableStyle="text-xs text-red" label="Required" />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Benefit Illustration(s)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Product Summary(ies)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Your Guide to Life Insurance
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Your Guide to Health Insurance
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Your Guide to Investment-Linked Insurance Plans
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Fund Summary(ies)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Legacy FA Model Portfolio Fact Sheet(s)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Fund Fact Sheet(s)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Product Highlight Sheet(s)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Prospectus(es)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Navigator Schedule - Funds Investment
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Navigator Account Opening / Subscription Form
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            iFast Account Opening / Subscription Form
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Havenport Investment Account Opening Form
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+
+      </SectionCardSingleGrid>
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        5. PERSONAL DATA COLLECTION & MARKETING CONSENT
+      </HeadingSecondarySection>
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            I/we hereby give my/our consent to Legacy FA Pte Ltd to collect, use, and/or 
+            disclose my/our personal data for the purpose of performing financial needs 
+            analysis and planning, including providing financial advice, product 
+            recommendation and reviews of my/our financial plans.
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            I/we hereby give my/our consent to Legacy FA Pte Ltd to contact me/us regarding 
+            any marketing and promotional materials on financial products and services.
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+      </SectionCardSingleGrid>
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        6.
+      </HeadingSecondarySection>
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            I/We understand that the above recommendation(s) is/are based on the facts furnished 
+            in this "Personal Financial Record"; and any incomplete or inaccurate information 
+            provided by me/us may affect the suitability of the recommendation(s) made. 
+            If I/we choose not to provide information requested or do not accept my/our 
+            Legacy FA Representative's recommendation(s) and choose to purchase another product(s) 
+            which is/are not recommended by my/our Legacy FA Representative, it is 
+            my/our responsibility to ensure the suitability of the product(s) selected.
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+      </SectionCardSingleGrid>
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        7. MY / OUR LEGACY FA REPRESENTATIVE HAS EXPLAINED IN DETAIL THE RECOMMENDATION(S) MADE AND I/WE :
+      </HeadingSecondarySection>
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Accept the recommendation(s)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            Do not accept the recommendation(s) and wish to purchase my/our own choice of product(s)
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+      </SectionCardSingleGrid>
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        8.
+      </HeadingSecondarySection>
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            I/we hereby confirm that I/we am/are referred by Introducer
+            <input type="text" className="mx-2 border-t-0 border-b border-l-0 border-r-0"/> 
+            and that I/we am/are informed of the following:
+            </TextThin>
+          </div>
+          <div className="text-right">
+            <Checkbox />
+          </div>
+        </RowFourthGrid>
+        <TextThin>
+        (a) that the Introducer is not permitted to give advice or provide recommendations on any investment product to me/us, 
+        market any collective investment scheme, or arrange any contract of insurance in respect of life policies; and
+        </TextThin>
+        <TextThin>
+        (b) the amount of remuneration that the introducer may be entitled to receive/pass on for carrying out this introduction.
+        </TextThin>
+      </SectionCardSingleGrid>
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        9.
+      </HeadingSecondarySection>
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <TextThin>
+            I ACKNOWLEDGE AND AGREE TO THE PURCHASE OF FINANCIAL PRODUCTS USING REMOTE SIGNATURE IN THIS NON-FACE-TO-FACE TRANSACTION.
             </TextThin>
           </div>
           <div className="text-right">
