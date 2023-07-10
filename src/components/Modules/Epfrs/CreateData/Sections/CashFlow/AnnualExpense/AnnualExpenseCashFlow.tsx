@@ -22,14 +22,6 @@ const AnnualExpenseCashFlow = (props: Props) => {
 
   let { annualExpense } = useCashFlow();
 
-  let arrPfrType: any[];
-
-  if (props.pfrType == 1) {
-    arrPfrType = [0];
-  } else {
-    arrPfrType = [0, 1];
-  }
-
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowDinamycGrid
@@ -48,83 +40,52 @@ const AnnualExpenseCashFlow = (props: Props) => {
             </>
           ))}
       </RowDinamycGrid>
-      {props.pfrType == 1 ? (
-        <>
-          {annualExpense.map((data, index) => (
-            <RowTripleGrid className="items-center" key={index}>
-              <div>
-                <TextSmall className="text-gray-light">{data.title}</TextSmall>
-              </div>
-              <div>
-                <Input
-                  className="my-4"
-                  formStyle="text-right"
-                  type="text"
-                  value={data.values[0]}
-                  handleChange={(event) => setData(event.target.value)}
-                />
-              </div>
-              <div>
-                <Input
-                  className="my-4"
-                  formStyle="text-right"
-                  type="text"
-                  value={data.values[1]}
-                  handleChange={(event) => setData(event.target.value)}
-                />
-              </div>
-            </RowTripleGrid>
-          ))}
-        </>
-      ) : (
-        <>
-          {annualExpense.map((data, index) => (
-            <RowTripleGrid className="items-center" key={index}>
-              <div>
-                <TextSmall className="text-gray-light">{data.title}</TextSmall>
-              </div>
-              <div>
-                <Input
-                  className="my-4"
-                  formStyle="text-right"
-                  type="text"
-                  value={data.values[0]}
-                  handleChange={(event) => setData(event.target.value)}
-                />
-              </div>
-              <div>
-                <Input
-                  className="my-4"
-                  formStyle="text-right"
-                  type="text"
-                  value={data.values[1]}
-                  handleChange={(event) => setData(event.target.value)}
-                />
-              </div>
-              <div>
-                <Input
-                  className="my-4"
-                  formStyle="text-right"
-                  type="text"
-                  value={data.values[2]}
-                  handleChange={(event) => setData(event.target.value)}
-                />
-              </div>
-              <div>
-                <Input
-                  className="my-4"
-                  formStyle="text-right"
-                  type="text"
-                  value={data.values[3]}
-                  handleChange={(event) => setData(event.target.value)}
-                />
-              </div>
-            </RowTripleGrid>
-          ))}
-        </>
-      )}
 
-      <RowTripleGrid className="items-center">
+      {annualExpense.map((data, index) => (
+        <RowDinamycGrid
+          key={index}
+          className={`${
+            props.pfrType == 1
+              ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+              : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+          }`}
+        >
+          <div>
+            <TextSmall className="text-gray-light">{data.title}</TextSmall>
+          </div>
+          {getPfrLength?.length &&
+            getPfrLength.map((data, index) => (
+              <>
+                <div>
+                  <Input
+                    className="my-4"
+                    formStyle="text-right"
+                    type="text"
+                    value=""
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </div>
+                <div>
+                  <Input
+                    className="my-4"
+                    formStyle="text-right"
+                    type="text"
+                    value=""
+                    handleChange={(event) => setData(event.target.value)}
+                  />
+                </div>
+              </>
+            ))}
+        </RowDinamycGrid>
+      ))}
+
+      <RowDinamycGrid
+        className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        }`}
+      >
         <div className="flex items-center justify-start">
           <TextSmall className="text-gray-light">Others</TextSmall>
           <ButtonBox className="text-green-deep">
@@ -132,8 +93,8 @@ const AnnualExpenseCashFlow = (props: Props) => {
           </ButtonBox>
         </div>
 
-        {arrPfrType?.length &&
-          arrPfrType.map((dataValue, index) => (
+        {getPfrLength?.length &&
+          getPfrLength.map((data, index) => (
             <>
               <div>
                 <Input
@@ -155,14 +116,20 @@ const AnnualExpenseCashFlow = (props: Props) => {
               </div>
             </>
           ))}
-      </RowTripleGrid>
-      <RowTripleGrid className="items-center">
+      </RowDinamycGrid>
+      <RowDinamycGrid
+        className={`${
+          props.pfrType == 1
+            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+        }`}
+      >
         <div>
           <TextSmall className="text-green-deep">ANNUAL NET EXPENSE</TextSmall>
         </div>
 
-        {arrPfrType?.length &&
-          arrPfrType.map((dataValue, index) => (
+        {getPfrLength?.length &&
+          getPfrLength.map((data, index) => (
             <>
               <div>
                 <Input
@@ -184,7 +151,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
               </div>
             </>
           ))}
-      </RowTripleGrid>
+      </RowDinamycGrid>
     </SectionCardSingleGrid>
   );
 };

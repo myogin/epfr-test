@@ -18,6 +18,8 @@ import { postPfr } from "@/services/pfrService";
 import { SectionThree } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
+import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   id?: any;
@@ -28,6 +30,8 @@ const CashFlow = (props: Props) => {
   const setData = (params: any) => {
     console.log(params);
   };
+
+  let getPfrLength = getLength(props.pfrType);
 
   let fillInformation = [
     { id: 0, name: "No" },
@@ -116,11 +120,17 @@ const CashFlow = (props: Props) => {
       ) : (
         ""
       )}
-
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+      <HeadingSecondaryDynamicGrid
+        className={`mx-8 2xl:mx-60 ${
+          props.pfrType == 2
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
+        }`}
+        pfrType={props.pfrType}
+      >
         3.3 Annual Net Cash Flow
-      </HeadingSecondarySection>
-      <AnnualNetCashFlow data={totalNetSurplus} />
+      </HeadingSecondaryDynamicGrid>
+      <AnnualNetCashFlow pfrType={props.pfrType} />
       {!notReviewAll ? (
         <>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -133,32 +143,85 @@ const CashFlow = (props: Props) => {
                 holiday home, etc.) ?
               </p>
             </div>
-            <div>
-              <Select
-                value=""
-                className="my-4"
-                datas={fillInformation}
-                handleChange={(event) => setData(eval(event.target.value))}
-              />
-            </div>
+            <RowDouble>
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1" key={index}>
+                    {props.pfrType > 1 ? (
+                      <>
+                        <h3
+                          key={"heading-secondary-" + index}
+                          className="w-full text-base font-bold text-right text-green-deep"
+                        >
+                          Client {++index}
+                        </h3>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                    <Select
+                      value=""
+                      className="my-4"
+                      datas={fillInformation}
+                      handleChange={(event) =>
+                        setData(eval(event.target.value))
+                      }
+                    />
+                  </div>
+                ))}
+            </RowDouble>
           </SectionCardSingleGrid>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            <RowSingle>
-              <Checkbox
-                isChecked={notReviewAll}
-                onChange={() => setNotReviewAll(!notReviewAll)}
-                lableStyle="text-sm font-normal text-gray-light"
-                label="The Client would not like their cash flow to be taken into
+            <RowDouble>
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1" key={index}>
+                    <Checkbox
+                      isChecked={
+                        need ? (need[index] == 1 ? true : false) : false
+                      }
+                      onChange={() => setNotReviewAll(!notReviewAll)}
+                      lableStyle="text-sm font-normal text-gray-light"
+                      label="The Client would not like their cash flow to be taken into
             consideration for the Needs Analysis and Recommendation(s)"
-              />
-            </RowSingle>
-            <RowSingle>
-              <TextArea
-                className="my-4"
-                label="Reason is needed if Net Worth ≤ $0"
-                defaultValue="test text area"
-              />
-            </RowSingle>
+                    />
+                  </div>
+                ))}
+            </RowDouble>
+            <RowDouble>
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <>
+                    {need ? (
+                      need[index] == 1 ? (
+                        ""
+                      ) : (
+                        <div className="flex-1" key={index}>
+                          <TextArea
+                            className="my-4"
+                            defaultValue="test text area"
+                            needValidation={true}
+                            logic={
+                              need ? (need[index] == 1 ? true : false) : false
+                            }
+                          />
+                        </div>
+                      )
+                    ) : (
+                      <div className="flex-1" key={index}>
+                        <TextArea
+                          className="my-4"
+                          defaultValue="test text area"
+                          needValidation={true}
+                          logic={
+                            need ? (need[index] == 1 ? true : false) : false
+                          }
+                        />
+                      </div>
+                    )}
+                  </>
+                ))}
+            </RowDouble>
           </SectionCardSingleGrid>
         </>
       ) : (
