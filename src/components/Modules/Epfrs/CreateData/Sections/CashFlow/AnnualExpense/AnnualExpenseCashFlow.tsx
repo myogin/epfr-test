@@ -54,14 +54,14 @@ const AnnualExpenseCashFlow = (props: Props) => {
             <TextSmall className="text-gray-light">{data.title}</TextSmall>
           </div>
           {getPfrLength?.length &&
-            getPfrLength.map((data, index) => (
+            getPfrLength.map((dataTwo, index) => (
               <>
                 <div>
                   <Input
                     className="my-4"
                     formStyle="text-right"
                     type="text"
-                    value=""
+                    value={data.values[index]}
                     handleChange={(event) => setData(event.target.value)}
                   />
                 </div>
@@ -70,7 +70,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
                     className="my-4"
                     formStyle="text-right"
                     type="text"
-                    value=""
+                    value={data.values[index]}
                     handleChange={(event) => setData(event.target.value)}
                   />
                 </div>

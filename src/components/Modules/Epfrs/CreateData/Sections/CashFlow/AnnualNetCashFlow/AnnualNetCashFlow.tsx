@@ -82,7 +82,7 @@ const AnnualNetCashFlow = (props: Props) => {
             <div key={index}>
               <TextArea
                 className="my-4"
-                label="Reason is needed if Net Worth ≤ $0"
+                label="Reason is needed if Surplus Is ≤ $0"
                 defaultValue="test text area"
               />
             </div>
