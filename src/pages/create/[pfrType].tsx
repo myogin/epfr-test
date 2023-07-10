@@ -194,7 +194,7 @@ const CreatePfrPage: Page = () => {
               <Link href="/" className="flex text-green-deep">
                 <ArrowLeftSLineIcon /> Back
               </Link>
-              <TitleMedium>New EPFR Documents {pfrTypeId + " " + pfrType}</TitleMedium>
+              <TitleMedium>New EPFR Documents</TitleMedium>
             </div>
             <div id="dataPfr">
               {switchDisplay ? (
