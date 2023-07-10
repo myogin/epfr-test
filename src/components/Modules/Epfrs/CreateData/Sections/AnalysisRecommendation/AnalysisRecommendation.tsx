@@ -46,6 +46,8 @@ const AnalysisRecommendation = (props: Props) => {
     reasonForDeviation: EditorState.createEmpty()
   });
 
+  const [dataGroup, setGroup] = useState();
+
   const handleOverView1 = (editorState: any) => {
     setEditor({...editorData,overView1: editorState});
     setParent('overView1', draftToHtml(convertToRaw(editorData.overView1.getCurrentContent())));
@@ -72,7 +74,9 @@ const AnalysisRecommendation = (props: Props) => {
   };
 
   let { showDetailData } = useNavigationSection();
-  const showDetail = (params: any) => {
+  const showDetail = (params: any, data: any) => {
+    localStorage.setItem("s9_PfrId", '10640');
+    localStorage.setItem("s9_dataGroup", '0');
     localStorage.setItem("group_name", params);
 
     showDetailData(91);
@@ -187,7 +191,7 @@ const AnalysisRecommendation = (props: Props) => {
                   <Menu.Item>
                     {({ active }) => (
                       <a
-                        onClick={() => showDetail("Protection")}
+                        onClick={() => showDetail("Protection", 0)}
                         className={classNames(
                           active
                             ? "bg-gray-soft-light text-gray-light"
@@ -202,7 +206,7 @@ const AnalysisRecommendation = (props: Props) => {
                   <Menu.Item>
                     {({ active }) => (
                       <a
-                        onClick={() => showDetail("Term")}
+                        onClick={() => showDetail("Term", 0)}
                         className={classNames(
                           active
                             ? "bg-gray-soft-light text-gray-light"
@@ -217,7 +221,7 @@ const AnalysisRecommendation = (props: Props) => {
                   <Menu.Item>
                     {({ active }) => (
                       <a
-                        onClick={() => showDetail("Protection 2")}
+                        onClick={() => showDetail("Protection 2", 0)}
                         className={classNames(
                           active
                             ? "bg-gray-soft-light text-gray-light"

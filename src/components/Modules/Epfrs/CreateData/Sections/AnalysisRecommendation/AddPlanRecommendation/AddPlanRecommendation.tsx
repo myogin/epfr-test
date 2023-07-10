@@ -7,14 +7,58 @@ import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSec
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonRedMedium from "@/components/Forms/Buttons/ButtonRedMedium";
-import {getAllCompany} from "@/services/companyService";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import React, { useState, useEffect } from "react";
+import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/analysisRecommendationProduct";
+
+// Model
+import {getAllCompany} from "@/services/companyService";
+import {getWholeContext} from "@/services/pfrService";
+
+export class RecommendationStruct {
+  selected = false;
+  edit = false;
+  subjectId = 0;
+  name = "";
+  type = 0; // Insure / CIS
+  productType = 0; // product or rider
+  id = 0;
+  categoryId = 0;
+  policyTerm = '';
+  sumAssured = '';
+  premiumPaymentType = '0';
+  premium = 0;
+  premiumFrequency = 0;
+  funds =  [];
+  modelPortfolioRiskCategory:number = 0;
+  higherThanRiskProfile = 0;
+  nameOfOwner = 0;
+  nameOfInsure = "-1";
+  nameOfInsureOther = "";
+  benefit = [];
+  risk = [];
+  portfolio = 0;
+  fundName = "";
+  fundAmount = 0;
+  premiumForHospitalization = {
+    cash : 0,
+    cpfMedisave : 0
+  };
+  groupId = 0;
+  premiumType = null;
+  feature = "";
+}
 
 const AddPlanRecommendation = () => {
+  let {
+    section9Recommend,
+    setParent,
+    setProduct
+  } = useAnalysisRecommendationProduct();
+
   let benefits: Array<any> = [
     {
       id: 1,
@@ -125,16 +169,6 @@ const AddPlanRecommendation = () => {
     setProductSelect(params);
   };
 
-  let dataOwner: Array<any> = [
-    { id: 1, name: "Owner One" },
-    { id: 2, name: "Owner Two" },
-  ];
-
-  let dataCategory: Array<any> = [
-    { id: 1, name: "Category One" },
-    { id: 2, name: "Category Two" },
-  ];
-
   let dataProductName: Array<any> = [
     { id: 0, name: "Select Product" },
     { id: 1, name: "Product One" },
@@ -179,29 +213,155 @@ const AddPlanRecommendation = () => {
     { id: 2, name: "US Dollar" },
   ];
 
-  
+  let initPfrData = {
+    productId : null,
+    groupId : null,
+    pfrId : 0,
+    product : new RecommendationStruct,
+    riders : [],
+    extraRiders : [],
+  }
+
+  const [initWhole, setInitWhole] = useState<any>({});
+  // const [pfrData, setpfrData] = useState<any>(initPfrData);
+  const [dataOwner, setDataOwner] = useState<any>([{}]);
   const [dataCompany, setCompany] = useState<any>(null);
+  const [dataCategory, setCategory] = useState<any>([{}]);
+  const [getSelectProducts, setSelectProducts] = useState<any>([{}]);
   
+  const [getSelectedCategory, setSelectedCategory] = useState<any>(-1);
+  const [getSelectedCompany, setSelectedCompany] = useState<any>(-1);
+  const [getSelectedProduct, setSelectedProduct] = useState<any>(-1);
+  const [getIlpFundsOfCompany, setIlpFundsOfCompany] = useState<any>([{}]);
+
   useEffect(() => {
-    getAllCompany().then((data) => {
-      setCompany(data.companies)
+    const pfrId = localStorage.getItem("s9_PfrId");
+    const resultCateg: Array<any> = []
+    const resDataOwner: Array<any> = [];
+    getWholeContext(pfrId).then((data) => {
+      console.log('data', data)
+      setInitWhole(data);
+      setCompany(data.company)
+      
+      // Get Clients
+      data.clients.map((value: any, k: any) => {
+        value['name'] = value.clientName;
+        value['id'] = k;
+        resDataOwner.push(value);
+      });
+      setDataOwner(resDataOwner)
+
+      // Remap Get Categories
+      data.category.map((value: any, k: any) => {
+        resultCateg.push({
+          id: k, 
+          name: value.categoryName
+        })
+      })
+      setCategory(resultCateg)
     });
-  }, []);
 
-  const changeDataOwner = (params: any) => {
-    console.log("masuk sini owner");
+    console.log('initWhole', initWhole)
+    console.log('section9Recommend', section9Recommend)
+
+  }, [section9Recommend]);
+
+  const setProductData = (event: any) => {
+    const { name, value } = event.target;
+    setProduct(value, name, null)
   };
 
-  const changeDataCategory = (params: any) => {
-    console.log("masuk sini owner");
+  const changeDataCategory = (event: any) => {
+    const { name, value } = event.target;
+    var selectedProducts: Array<any> = [];
+    setSelectedCategory(value)
+    
+
+    const selectedCategoryType = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['type'] : null
+    const selectedCategoryId = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['id'] : null
+    console.log('selectedCategoryType', selectedCategoryType)
+    console.log('selectedCategoryId', selectedCategoryId)
+    var products = (initWhole.company[getSelectedCompany]) ? initWhole.company[getSelectedCompany]['products'] : null
+    if(selectedCategoryType == 1) {  // IF ILP
+      if(products){
+        products.map((product: any, k: any) => {
+          if(product['categoryId'] == selectedCategoryId
+          && product['ilp'] != null
+          && product['ilp']['platform']['fundType'] == section9Recommend.product.premiumType
+          && product['ilp']['riskCategory'] == initWhole.section5Result[section9Recommend.product.nameOfOwner]) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }else{
+      setProduct("", "premiumType", null)
+      if(products){
+        products.map((product: any, k: any) => {
+          console.log('categoryId', product['categoryId'])
+          if(product['categoryId'] == selectedCategoryId) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }
+
+    if(selectedCategoryType == 1){
+      section9Recommend.product.modelPortfolioRiskCategory = Number(initWhole.section5Result[section9Recommend.product.nameOfOwner])
+      const ilpFundsOfCompany = initWhole.ilpFunds.filter((fund:any, k:any) => {
+        return fund['company'] == initWhole.company[getSelectedCompany]['id']
+      })
+
+      setIlpFundsOfCompany(ilpFundsOfCompany);
+    }
+
+    setSelectProducts(selectedProducts);
   };
 
-  const changeDataRecommendation = (params: any) => {
-    console.log("masuk sini recommendation");
-  };
+  const changeDataProvider = (event: any) => {
+    const { name, value } = event.target;
+    var selectedProducts: Array<any> = [];
+    setSelectedCompany(value)
+    
+    console.log('getSelectedCategory', getSelectedCategory)
+    const selectedCategoryType = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['type'] : null
+    const selectedCategoryId = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['id'] : null
+    console.log('selectedCategoryType', selectedCategoryType)
+    console.log('selectedCategoryId', selectedCategoryId)
+    var products = (initWhole.company[getSelectedCompany]) ? initWhole.company[getSelectedCompany]['products'] : null
+    if(selectedCategoryType == 1) {  // IF ILP
+      if(products){
+        products.map((product: any, k: any) => {
+          if(product['categoryId'] == selectedCategoryId
+          && product['ilp'] != null
+          && product['ilp']['platform']['fundType'] == section9Recommend.product.premiumType
+          && product['ilp']['riskCategory'] == initWhole.section5Result[section9Recommend.product.nameOfOwner]) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }else{
+      setProduct("", "premiumType", null)
+      if(products){
+        products.map((product: any, k: any) => {
+          console.log('categoryId', product['categoryId'])
 
-  const changeDataProvider = (params: any) => {
-    console.log("masuk sini provider");
+          if(product['categoryId'] == selectedCategoryId) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }
+
+    if(selectedCategoryType == 1){
+      section9Recommend.product.modelPortfolioRiskCategory = Number(initWhole.section5Result[section9Recommend.product.nameOfOwner])
+      const ilpFundsOfCompany = initWhole.ilpFunds.filter((fund:any, k:any) => {
+        return fund['company'] == initWhole.company[getSelectedCompany]['id']
+      })
+
+      setIlpFundsOfCompany(ilpFundsOfCompany);
+    }
+
+    setSelectProducts(selectedProducts);
   };
 
   const changeDataNameOfInsured = (params: any) => {
@@ -236,7 +396,9 @@ const AddPlanRecommendation = () => {
               datas={dataOwner}
               label="Name of Owner"
               className="my-4"
-              handleChange={(event) => changeDataOwner(event.target.value)}
+              name="nameOfOwner"
+              value={section9Recommend.product.nameOfOwner}
+              handleChange={(event) => setProductData(event)}
             />
           </div>
           <div>
@@ -244,33 +406,49 @@ const AddPlanRecommendation = () => {
               datas={recomendationType}
               label="Recommendation Type"
               className="my-4"
+              name="type"
+              value={section9Recommend.product.type}
               handleChange={(event) =>
-                changeDataRecommendation(event.target.value)
+                setProductData(event)
               }
             />
           </div>
         </RowDoubleGrid>
 
         <RowDoubleGrid>
-            <div>
-              <Select
-                datas={dataCompany}
-                label="Provider Name"
-                className="my-4"
-                handleChange={(event) => changeDataProvider(event.target.value)}
-              />
-            </div>
-            <div>
+          <div>
             <Select
               datas={dataCategory}
               label="Category"
               className="my-4"
-              handleChange={(event) => changeDataCategory(event.target.value)}
+              name="category"
+              value={getSelectedCategory}
+              handleChange={(event) => changeDataCategory(event)}
             />
-            </div>
+          </div>
+          <div>
+            <Select
+              datas={dataCompany}
+              label="Provider Name"
+              className="my-4"
+              name="company"
+              value={getSelectedCompany}
+              handleChange={(event) => changeDataProvider(event)}
+            />
+          </div>
         </RowDoubleGrid>
 
         <RowDoubleGrid>
+          <div>
+            <Select
+              datas={getSelectProducts}
+              label="Product Name"
+              className="my-4"
+              handleChange={(event) =>
+                changeDataProductName(event.target.value)
+              }
+            />
+          </div>
           <div>
             <Select
               datas={dataProductName}

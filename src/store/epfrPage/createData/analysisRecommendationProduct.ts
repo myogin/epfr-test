@@ -1,45 +1,73 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { produce } from "immer";
-import { SectionNine } from "@/models/SectionNine";
+import { SectionNineRecommendation } from "@/models/SectionNineRecommendation";
+import { group } from "console";
 
 
 
-const initialState: SectionNine = {
-    section9: {
+const initialState: SectionNineRecommendation = {
+    section9Recommend: {
+        groupId: 0,
         pfrId: 0,
-        overView1: "",
-        overView2: "",
-        reasonForBenefit: "",
-        reasonForRisk: "",
-        reasonForDeviation: "",
-        checkedData: [
-            {
-                id: 0,
-                checked: 0
-            }
-        ],
-        issues: [],
-        deviates: [],
-        deviationChanged: false,
-        status: 1
+        product: {
+            selected: false,
+            edit: false,
+            subjectId: 0,
+            name: "",
+            type: 0,
+            productType: 0,
+            id: 0,
+            categoryId: 0,
+            policyTerm: "",
+            sumAssured: "",
+            premiumPaymentType: "",
+            premium: 0,
+            premiumFrequency: 0,
+            funds: [],
+            modelPortfolioRiskCategory: 0,
+            higherThanRiskProfile: 0,
+            nameOfOwner: 0,
+            nameOfInsure: null,
+            benefit: [],
+            risk: [],
+            portfolio: 0,
+            fundName: null,
+            fundAmount: 0,
+            premiumForHospitalization: {
+                cash: 0,
+                cpfMedisave: 0
+            },
+            groupId: 0,
+            premiumType: null,
+            feature: null
+        },
+        riders: [],
+        extraRiders: []
     }
 };
 
 type Actions = {
-    setParent: (name: string, value: any) => any;
+    setParent: (value: string, name: string, groupData: any) => any;
+    setProduct: (value: string, name: string, groupData: any) => any;
 };
 
-const AnalysisRecommendation = create(
-  devtools<SectionNine & Actions>((set, get) => ({
+const AnalysisRecommendationProduct = create(
+  devtools<SectionNineRecommendation & Actions>((set, get) => ({
     ...initialState,
-    setParent: (name: string, value: any) => set(
+    setParent: (value: string, name: string, groupData: any) => set(
         produce((draft) => {
-            draft.section9[name] = value;
+            draft.section9Recommend[name] = value;
+        })
+    ),
+    setProduct: (value: string, name: string, groupData: any) => set(
+        produce((draft) => {
+            console.log('name', name)
+            draft.section9Recommend.product[name] = value;
         })
     )
   }))
 
 );
 
-export const useAnalysisRecommendation = AnalysisRecommendation;
+export const useAnalysisRecommendationProduct = AnalysisRecommendationProduct;
