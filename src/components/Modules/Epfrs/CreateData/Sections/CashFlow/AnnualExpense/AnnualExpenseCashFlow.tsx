@@ -27,11 +27,11 @@ const AnnualExpenseCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
-        <div></div>
+        <div className={`col-span-3`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
@@ -46,11 +46,11 @@ const AnnualExpenseCashFlow = (props: Props) => {
           key={index}
           className={`${
             props.pfrType == 1
-              ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+              ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
               : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
           }`}
         >
-          <div>
+          <div className={`col-span-3`}>
             <TextSmall className="text-gray-light">{data.title}</TextSmall>
           </div>
           {getPfrLength?.length &&
@@ -82,16 +82,19 @@ const AnnualExpenseCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
+        <div className={`col-span-3`}>
         <div className="flex items-center justify-start">
           <TextSmall className="text-gray-light">Others</TextSmall>
           <ButtonBox className="text-green-deep">
             <AddLineIcon size={14} />
           </ButtonBox>
         </div>
+        </div>
+        
 
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
@@ -120,11 +123,11 @@ const AnnualExpenseCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
-        <div>
+        <div className={`col-span-3`}>
           <TextSmall className="text-green-deep">ANNUAL NET EXPENSE</TextSmall>
         </div>
 

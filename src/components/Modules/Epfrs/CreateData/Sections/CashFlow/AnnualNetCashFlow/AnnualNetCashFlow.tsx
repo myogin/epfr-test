@@ -27,11 +27,11 @@ const AnnualNetCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
-        <div></div>
+        <div className={`col-span-3`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
@@ -43,11 +43,11 @@ const AnnualNetCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
-        <div>
+        <div className={`col-span-3`}>
           <TextSmall className="text-green-deep">
             ANNUAL SURPLUS / SHORTFALL
           </TextSmall>

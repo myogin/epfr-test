@@ -5,10 +5,13 @@ import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import ButtonBorder from "@/components/Forms/Buttons/ButtonBorder";
 import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
+import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import { checkCountData, getLength } from "@/libs/helper";
 import { AnnualIncome, Datas } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import { Dialog, Transition } from "@headlessui/react";
 import React, { useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 
@@ -25,6 +28,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
   let { data, setAnnualIncome, setAnnualSurplus } = useCashFlow();
+
+  const [showModalOther, setShowModalOther] = useState(false)
 
   let [annualData, setAnnualData] = useState(0);
   let [monthlyData, setMonthlyData] = useState(0);
@@ -93,6 +98,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
     }
   };
 
+  const addOther = () => {
+    setShowModalOther(true);
+  };
+
+  const closeOther = () => {
+    setShowModalOther(false);
+  };
+
   const [other, setOther] = useState<any>(0);
   const [cpfContribution, setCpfContribution] = useState<any>(0);
   return (
@@ -100,11 +113,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
-        <div></div>
+        <div className={`col-span-3`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
@@ -116,11 +129,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         } items-center`}
       >
-        <div>
+        <div className={`col-span-3`}>
           <TextSmall className="text-gray-light">Annual Gross Income</TextSmall>
         </div>
         {getPfrLength?.length &&
@@ -166,11 +179,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         } items-center`}
       >
-        <div>
+        <div className={`col-span-3`}>
           <TextSmall className="text-gray-light">Additional Wages</TextSmall>
         </div>
         {getPfrLength?.length &&
@@ -216,16 +229,86 @@ const AnnualIncomeCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
-        <div className="flex items-center justify-start">
-          <TextSmall className="text-gray-light">Others</TextSmall>
-          <ButtonBox className="text-green-deep">
-            <AddLineIcon size={14} />
-          </ButtonBox>
+        <div className={`col-span-3`}>
+          <div className="flex items-center justify-start">
+            <TextSmall className="text-gray-light">Others</TextSmall>
+            <ButtonBox className="text-green-deep" onClick={addOther}>
+              <AddLineIcon size={14} />
+            </ButtonBox>
+          </div>
+          <Transition appear show={showModalOther}>
+            <Dialog as="div" className="relative z-10" onClose={closeOther}>
+              <Transition.Child
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0 bg-opacity-25 bg-gray-light" />
+              </Transition.Child>
+
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex items-center justify-center min-h-full p-4 text-center">
+                  <Transition.Child
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <Dialog.Panel className="w-full max-w-2xl p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                      <Dialog.Title
+                        as="h3"
+                        className="text-lg font-medium leading-6 text-gray-900"
+                      >
+                        Add More Assets
+                      </Dialog.Title>
+                      <div className="mt-2">
+                        <div className="flex justify-between gap-8">
+                          <Input
+                            className="my-4"
+                            type="text"
+                            placeholder="Asset"
+                            name="key"
+                          />
+                          <Input
+                            className="my-4"
+                            type="text"
+                            name="otherValue"
+                            placeholder="Cost"
+                          />
+                          <Input
+                            className="my-4"
+                            type="text"
+                            name="otherValue"
+                            placeholder="Cost"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4 mt-4">
+                        <ButtonGreenMedium>
+                          Save
+                        </ButtonGreenMedium>
+                        <ButtonTransparentMedium onClick={closeOther}>
+                          Cancel
+                        </ButtonTransparentMedium>
+                      </div>
+                    </Dialog.Panel>
+                  </Transition.Child>
+                </div>
+              </div>
+            </Dialog>
+          </Transition>
         </div>
+
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
             <>
@@ -253,11 +336,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
-        <div>
+        <div className={`col-span-3`}>
           <TextSmall className="text-gray-light">
             Less Employee’s CPF Contribution
           </TextSmall>
@@ -305,11 +388,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-3 sm:grid-cols-3 md:grid-cols-3"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
         }`}
       >
-        <div>
+        <div className={`col-span-3`}>
           <TextSmall className="text-green-deep">ANNUAL NET INCOME</TextSmall>
         </div>
         {getPfrLength?.length &&
