@@ -29,7 +29,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   let { data, setAnnualIncome, setAnnualSurplus } = useCashFlow();
 
-  const [showModalOther, setShowModalOther] = useState(false)
+  const [showModalOther, setShowModalOther] = useState(false);
 
   let [annualData, setAnnualData] = useState(0);
   let [monthlyData, setMonthlyData] = useState(0);
@@ -114,10 +114,12 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`col-span-3`}></div>
+        <div
+          className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}
+        ></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
@@ -130,10 +132,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         } items-center`}
       >
-        <div className={`col-span-3`}>
+        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
           <TextSmall className="text-gray-light">Annual Gross Income</TextSmall>
         </div>
         {getPfrLength?.length &&
@@ -180,10 +182,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         } items-center`}
       >
-        <div className={`col-span-3`}>
+        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
           <TextSmall className="text-gray-light">Additional Wages</TextSmall>
         </div>
         {getPfrLength?.length &&
@@ -230,10 +232,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`col-span-3`}>
+        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
           <div className="flex items-center justify-start">
             <TextSmall className="text-gray-light">Others</TextSmall>
             <ButtonBox className="text-green-deep" onClick={addOther}>
@@ -268,35 +270,38 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         as="h3"
                         className="text-lg font-medium leading-6 text-gray-900"
                       >
-                        Add More Assets
+                        Add Others
                       </Dialog.Title>
                       <div className="mt-2">
                         <div className="flex justify-between gap-8">
                           <Input
                             className="my-4"
                             type="text"
-                            placeholder="Asset"
+                            placeholder="Other"
                             name="key"
                           />
-                          <Input
-                            className="my-4"
-                            type="text"
-                            name="otherValue"
-                            placeholder="Cost"
-                          />
-                          <Input
-                            className="my-4"
-                            type="text"
-                            name="otherValue"
-                            placeholder="Cost"
-                          />
+                          {getPfrLength?.length &&
+                            getPfrLength.map((d, index) => (
+                              <>
+                                <Input
+                                  className="my-4"
+                                  type="text"
+                                  name="otherValue"
+                                  placeholder="Monthly"
+                                />
+                                <Input
+                                  className="my-4"
+                                  type="text"
+                                  name="otherValue"
+                                  placeholder="Annually"
+                                />
+                              </>
+                            ))}
                         </div>
                       </div>
 
                       <div className="flex gap-4 mt-4">
-                        <ButtonGreenMedium>
-                          Save
-                        </ButtonGreenMedium>
+                        <ButtonGreenMedium>Save</ButtonGreenMedium>
                         <ButtonTransparentMedium onClick={closeOther}>
                           Cancel
                         </ButtonTransparentMedium>
@@ -313,22 +318,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
           getPfrLength.map((d, index) => (
             <>
               <div>
-                <Input
-                  className="my-4"
-                  type="text"
-                  formStyle="text-right"
-                  value={other}
-                  handleChange={(event) => setOther(event.target.value)}
-                />
               </div>
               <div>
-                <Input
-                  className="my-4"
-                  type="text"
-                  formStyle="text-right"
-                  value={other}
-                  handleChange={(event) => setOther(event.target.value)}
-                />
               </div>
             </>
           ))}
@@ -337,10 +328,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`col-span-3`}>
+        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
           <TextSmall className="text-gray-light">
             Less Employee’s CPF Contribution
           </TextSmall>
@@ -389,32 +380,20 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`col-span-3`}>
+        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
           <TextSmall className="text-green-deep">ANNUAL NET INCOME</TextSmall>
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
             <>
-              <div>
-                <Input
-                  className="my-4"
-                  type="text"
-                  formStyle="text-right text-green-deep"
-                  value={cpfContribution}
-                  handleChange={(event) => setData(event.target.value)}
-                />
+              <div className="text-right">
+                <span className="text-green-deep">0</span>
               </div>
-              <div>
-                <Input
-                  className="my-4"
-                  type="text"
-                  formStyle="text-right text-green-deep"
-                  value={cpfContribution}
-                  handleChange={(event) => setData(event.target.value)}
-                />
+              <div className="text-right">
+                <span className="text-green-deep">0</span>
               </div>
             </>
           ))}

@@ -28,10 +28,10 @@ const AnnualNetCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`col-span-3`}></div>
+        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
@@ -44,10 +44,10 @@ const AnnualNetCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`col-span-3`}>
+        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
           <TextSmall className="text-green-deep">
             ANNUAL SURPLUS / SHORTFALL
           </TextSmall>
