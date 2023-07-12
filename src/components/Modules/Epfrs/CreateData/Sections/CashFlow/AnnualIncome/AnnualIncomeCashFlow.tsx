@@ -317,9 +317,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
             <>
-              <div>
+              <div className="text-right">
+                -
               </div>
-              <div>
+              <div className="text-right">
+                -
               </div>
             </>
           ))}

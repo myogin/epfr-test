@@ -187,10 +187,10 @@ const AnnualExpenseCashFlow = (props: Props) => {
           getPfrLength.map((data, index) => (
             <>
               <div className="text-right">
-                {/* <span className="text-gray-light">0</span> */}
+                -
               </div>
               <div className="text-right">
-                {/* <span className="text-gray-light">0</span> */}
+                -
               </div>
             </>
           ))}
