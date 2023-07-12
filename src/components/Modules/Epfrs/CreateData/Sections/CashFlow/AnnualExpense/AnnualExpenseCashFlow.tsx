@@ -137,9 +137,25 @@ const AnnualExpenseCashFlow = (props: Props) => {
                     <Dialog.Panel className="w-full max-w-2xl p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                       <Dialog.Title
                         as="h3"
-                        className="text-lg font-medium leading-6 text-gray-900"
+                        className="flex items-center justify-between text-lg font-medium leading-6 text-gray-900"
                       >
-                        Add Others
+                        <div className={`${props.pfrType == 1 ? "2/4" : "basis-2/6"}`}>Other Annual Expense</div>
+                        {props.pfrType == 1 ? (
+                          ""
+                        ) : (
+                          <>
+                            {getPfrLength?.length &&
+                              getPfrLength.map((d, index) => (
+                                <>
+                                  <div className={`text-sm ${props.pfrType == 1 ? "1/4" : "basis-1/6"} text-green-deep`}>
+                                    Client {++index}
+                                  </div>
+                                  <div className={`${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}></div>
+                                </>
+                              ))}
+                          </>
+                        )}
+                        
                       </Dialog.Title>
                       <div className="mt-2">
                         <div className="flex justify-between gap-8">
