@@ -382,8 +382,8 @@ const AddPlanRecommendation = () => {
       });
       
       if(resBenefit.length > 0){
+        var resBenefit2: Array<any> = [];
         resBenefit.filter((vData:any, index:any) => {
-          var resBenefit2: Array<any> = [];
           if(vData.benefitId != value){
             resBenefit2.push(vData);
           }
