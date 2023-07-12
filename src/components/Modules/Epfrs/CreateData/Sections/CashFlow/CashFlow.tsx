@@ -134,15 +134,6 @@ const CashFlow = (props: Props) => {
       {!notReviewAll ? (
         <>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            <div>
-              <p className="text-sm font-normal text-gray-light">
-                Do you have any plans or are there any factors within the next
-                12 months which may significantly increase or decrease your
-                current income and expenditure position (eg. Receiving an
-                inheritance or borrowing money for investment or purchase of a
-                holiday home, etc.) ?
-              </p>
-            </div>
             <RowDouble>
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
@@ -151,13 +142,26 @@ const CashFlow = (props: Props) => {
                       <>
                         <h3
                           key={"heading-secondary-" + index}
-                          className="w-full text-base font-bold text-right text-green-deep"
+                          className="w-full mb-4 text-base font-bold"
                         >
                           Client {++index}
                         </h3>
+                        <p className="text-sm font-normal text-gray-light">
+                          {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                        </p>
                       </>
                     ) : (
-                      ""
+                      <p className="text-sm font-normal text-gray-light">
+                          {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                        </p>
                     )}
                     <Select
                       value=""
@@ -176,6 +180,18 @@ const CashFlow = (props: Props) => {
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
                   <div className="flex-1" key={index}>
+                    {props.pfrType > 1 ? (
+                      <>
+                        <h3
+                          key={"heading-secondary-" + index}
+                          className="w-full mb-10 text-base font-bold"
+                        >
+                          Client {++index}
+                        </h3>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <Checkbox
                       isChecked={
                         need ? (need[index] == 1 ? true : false) : false
