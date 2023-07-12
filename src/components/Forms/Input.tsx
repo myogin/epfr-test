@@ -12,6 +12,7 @@ interface Props {
   readonly?: boolean;
   name?: string;
   dataType?: string;
+  indexData?: number;
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
@@ -29,6 +30,7 @@ const Input = (props: Props) => {
       )}
       <input
         data-groupdata={props.dataType}
+        data-indexdata={props.indexData}
         name={props.name}
         type={props.type}
         readOnly={props.readonly}

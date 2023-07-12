@@ -160,25 +160,28 @@ const AnnualExpenseCashFlow = (props: Props) => {
                       <div className="mt-2">
                         <div className="flex justify-between gap-8">
                           <Input
-                            className="my-4"
+                            label="Item"
+                            className={`my-4 ${props.pfrType == 1 ? "2/4" : "basis-2/6"}`}
                             type="text"
-                            placeholder="Other"
+                            placeholder="Add item here.."
                             name="key"
                           />
                           {getPfrLength?.length &&
                             getPfrLength.map((d, index) => (
                               <>
                                 <Input
-                                  className="my-4"
+                                  label="Monthly"
+                                  className={`my-4 ${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}
                                   type="text"
                                   name="otherValue"
-                                  placeholder="Monthly"
+                                  placeholder="0"
                                 />
                                 <Input
-                                  className="my-4"
+                                  label="Annual"
+                                  className={`my-4 ${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}
                                   type="text"
                                   name="otherValue"
-                                  placeholder="Annually"
+                                  placeholder="0"
                                 />
                               </>
                             ))}
