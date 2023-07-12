@@ -17,6 +17,7 @@ import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/an
 // Model
 import {getAllCompany} from "@/services/companyService";
 import {getWholeContext} from "@/services/pfrService";
+import {productFindOne} from "@/services/productService";
 
 export class RecommendationStruct {
   selected = false;
@@ -56,7 +57,9 @@ const AddPlanRecommendation = () => {
   let {
     section9Recommend,
     setParent,
-    setProduct
+    setProduct,
+    setProductArr,
+    setProductRiderArr
   } = useAnalysisRecommendationProduct();
 
   let benefits: Array<any> = [
@@ -148,25 +151,8 @@ const AddPlanRecommendation = () => {
     },
   ];
 
-  const [rider, setRider] = useState(null);
-  const [productSelect, setProductSelect] = useState(0);
-
-  let riderArray: Array<any> = [false];
-
-  const setRiderAction = (params: any, value: boolean) => {
-    console.log("Rider Select " + params + " value " + value);
-    setRider(params);
-
-    riderArray[params] = value 
-  };
-
   const changeData = (params: any) => {
     console.log("masuk sini nggak global one");
-  };
-
-  const changeDataProductName = (params: any) => {
-    console.log("masuk sini nggak ");
-    setProductSelect(params);
   };
 
   let dataProductName: Array<any> = [
@@ -181,11 +167,11 @@ const AddPlanRecommendation = () => {
   ];
 
   let dataPaymentFreq: Array<any> = [
-    { id: 1, name: "Monthly" },
-    { id: 2, name: "Quarterly" },
-    { id: 3, name: "Half-Yearly" },
-    { id: 4, name: "Annually" },
-    { id: 5, name: "Single" },
+    { id: 0, name: "Monthly" },
+    { id: 1, name: "Quarterly" },
+    { id: 2, name: "Half-Yearly" },
+    { id: 3, name: "Annually" },
+    { id: 4, name: "Single" },
   ];
 
   let dataProvider: Array<any> = [
@@ -194,18 +180,12 @@ const AddPlanRecommendation = () => {
     { id: 3, name: "Hoxing" },
   ];
 
-  let dataDependant: Array<any> = [
-    { id: 1, name: "Mayor Raja" },
-    { id: 2, name: "Mayor Jendral" },
-    { id: 3, name: "Sino" },
-    { id: 3, name: "Other" },
-  ];
-
   let dataPremiumType: Array<any> = [
-    { id: 1, name: "CASH" },
-    { id: 2, name: "CPFOA" },
-    { id: 3, name: "CPFSA" },
+    { id: 0, name: "CASH" },
+    { id: 1, name: "CPF OA" },
+    { id: 2, name: "CPF SA" },
     { id: 3, name: "CPF MEDISAVE" },
+    { id: 4, name: "SRS" },
   ];
 
   let dataCurrency: Array<any> = [
@@ -224,6 +204,7 @@ const AddPlanRecommendation = () => {
 
   const [initWhole, setInitWhole] = useState<any>({});
   // const [pfrData, setpfrData] = useState<any>(initPfrData);
+  const [dataDependant, setDataDependant] = useState<any>([{}]);
   const [dataOwner, setDataOwner] = useState<any>([{}]);
   const [dataCompany, setCompany] = useState<any>(null);
   const [dataCategory, setCategory] = useState<any>([{}]);
@@ -233,14 +214,27 @@ const AddPlanRecommendation = () => {
   const [getSelectedCompany, setSelectedCompany] = useState<any>(-1);
   const [getSelectedProduct, setSelectedProduct] = useState<any>(-1);
   const [getIlpFundsOfCompany, setIlpFundsOfCompany] = useState<any>([{}]);
+  const [productValueSelect, setProductValueSelect] = useState(0);
+  const [dataProductSelected, setDataProductSelected] = useState<any>({});
+  const [benefitArr, setBenefitArr] = useState<any>([]);
+  const [riderArr, setRiderArr] = useState<any>([]);
 
+  
   useEffect(() => {
     const pfrId = localStorage.getItem("s9_PfrId");
     const resultCateg: Array<any> = []
     const resDataOwner: Array<any> = [];
     getWholeContext(pfrId).then((data) => {
-      console.log('data', data)
       setInitWhole(data);
+      // Get Dependant
+      data.dependants.push({id: -1, name: "OTHER"})
+      setDataDependant(data.dependants);
+
+      // Get Company
+      data.company.map((value: any, k: any) => {
+        value['id'] = k;
+        return value;
+      });
       setCompany(data.company)
       
       // Get Clients
@@ -260,10 +254,9 @@ const AddPlanRecommendation = () => {
       })
       setCategory(resultCateg)
     });
-
-    console.log('initWhole', initWhole)
+    
     console.log('section9Recommend', section9Recommend)
-
+    
   }, [section9Recommend]);
 
   const setProductData = (event: any) => {
@@ -277,10 +270,9 @@ const AddPlanRecommendation = () => {
     setSelectedCategory(value)
     
 
-    const selectedCategoryType = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['type'] : null
-    const selectedCategoryId = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['id'] : null
-    console.log('selectedCategoryType', selectedCategoryType)
-    console.log('selectedCategoryId', selectedCategoryId)
+    const selectedCategoryType = (initWhole.category[value]) ? initWhole.category[value]['type'] : null
+    const selectedCategoryId = (initWhole.category[value]) ? initWhole.category[value]['id'] : null
+    
     var products = (initWhole.company[getSelectedCompany]) ? initWhole.company[getSelectedCompany]['products'] : null
     if(selectedCategoryType == 1) {  // IF ILP
       if(products){
@@ -297,7 +289,7 @@ const AddPlanRecommendation = () => {
       setProduct("", "premiumType", null)
       if(products){
         products.map((product: any, k: any) => {
-          console.log('categoryId', product['categoryId'])
+          // console.log('categoryId', product['categoryId'])
           if(product['categoryId'] == selectedCategoryId) {
             selectedProducts.push(product)
           }
@@ -319,15 +311,14 @@ const AddPlanRecommendation = () => {
 
   const changeDataProvider = (event: any) => {
     const { name, value } = event.target;
+    console.log('value', value)
     var selectedProducts: Array<any> = [];
     setSelectedCompany(value)
     
-    console.log('getSelectedCategory', getSelectedCategory)
     const selectedCategoryType = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['type'] : null
     const selectedCategoryId = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['id'] : null
-    console.log('selectedCategoryType', selectedCategoryType)
-    console.log('selectedCategoryId', selectedCategoryId)
-    var products = (initWhole.company[getSelectedCompany]) ? initWhole.company[getSelectedCompany]['products'] : null
+    var products = (initWhole.company[value]) ? initWhole.company[value]['products'] : null
+    
     if(selectedCategoryType == 1) {  // IF ILP
       if(products){
         products.map((product: any, k: any) => {
@@ -343,7 +334,7 @@ const AddPlanRecommendation = () => {
       setProduct("", "premiumType", null)
       if(products){
         products.map((product: any, k: any) => {
-          console.log('categoryId', product['categoryId'])
+          // console.log('categoryId', product['categoryId'])
 
           if(product['categoryId'] == selectedCategoryId) {
             selectedProducts.push(product)
@@ -364,21 +355,175 @@ const AddPlanRecommendation = () => {
     setSelectProducts(selectedProducts);
   };
 
-  const changeDataNameOfInsured = (params: any) => {
-    console.log("masuk sini insured name");
+  const changeDataProductName = (params: any) => {
+    setProductValueSelect(params);
+    // Get One Product
+    productFindOne(params).then((data) => {
+      setProduct(data.product.name, 'name', null)
+      setDataProductSelected(data)
+    });
+
   };
 
-  const changeDataPaymentFrequency = (params: any) => {
-    console.log("masuk sini freq");
-  };
+  const handleBenefits = (event: any, index: any) => {
+    const { name, value } = event.target;
+    var resBenefit: Array<any> = [];
+    dataProductSelected.benefits.map((valueBenefit: any, index: any) => {
+      if(valueBenefit.id == value){
+        resBenefit.push({benefitId:value,content:valueBenefit.content,title:valueBenefit.title})
+      }
+    });
 
-  const changeDataCurrency = (params: any) => {
-    console.log("masuk sini currency");
-  };
+    if(section9Recommend.product.benefit.length > 0){
+      section9Recommend.product.benefit.map((resBen: any, resIBen:any) => {
+        if(resBen.benefitId != value){
+          resBenefit.push({benefitId:resBen.benefitId,content:resBen.content,title:resBen.title});
+        }
+      });
+      
+      if(resBenefit.length > 0){
+        resBenefit.filter((vData:any, index:any) => {
+          var resBenefit2: Array<any> = [];
+          if(vData.benefitId != value){
+            resBenefit2.push(vData);
+          }
+        });
+        setProductArr(resBenefit2, 'benefit', null);
+      }
+    }else{
+      setProductArr(resBenefit, 'benefit', null);
+    }
+  }
 
-  const changeDataPaymentType = (params: any) => {
-    console.log("masuk sini payment type");
-  };
+  const checkBenefit = (data: any) => {
+    if(section9Recommend.product.benefit.length > 0){
+      section9Recommend.product.benefit.map((value: any, index: any) => {
+        if(data == value.benefitId){
+          return true;
+        }
+      })
+    }else{
+      return false;
+    }
+  }
+
+  const handleRisks = (event: any, index: any) => {
+    const { name, value } = event.target;
+    var resRisk: Array<any> = [];
+    dataProductSelected.risks.map((valueRisk: any, index: any) => {
+      if(valueRisk.id == value){
+        resRisk.push({riskId:value,content:valueRisk.content,title:valueRisk.title})
+      }
+    });
+
+    if(section9Recommend.product.risk.length > 0){
+      section9Recommend.product.risk.map((resProdRisk: any, resIRisk:any) => {
+        if(resProdRisk.riskId != value){
+          resRisk.push({riskId:resProdRisk.riskId,content:resProdRisk.content,title:resProdRisk.title});
+        }
+      });
+
+      if(resRisk.length > 0) {
+        var resRisk2: Array<any> = [];
+        resRisk.map((vData: any, index:any) => {
+          if(vData.riskId != value){
+            resRisk2.push(vData)
+          }
+        })
+        setProductArr(resRisk2, 'risk', null);
+      }
+    }else{
+      setProductArr(resRisk, 'risk', null);
+    }
+  }
+
+  const checkRisk = (data: any) => {
+    if(section9Recommend.product.risk.length > 0){
+      section9Recommend.product.risk.map((value: any, index: any) => {
+        if(data == value.riskId){
+          return true;
+        }
+      })
+    }else{
+      return false;
+    }
+  }
+
+  const setRiderAction = (event: any, index: any) => {
+    const { name, value } = event.target;
+    console.log('dataProductSelected', dataProductSelected)
+
+    var resRiders: Array<any> = [];
+    dataProductSelected.riders.map((dataVal: any, index: any) => {
+      if(dataVal.new_rider.id == value){
+        resRiders.push({
+          selected: false,
+          edit: false,
+          subjectId: value,
+          name: dataVal.new_rider.riderName,
+          type: 0, // Insure / CIS
+          productType: 0, // product or rider
+          id: 0,
+          categoryId: 0,
+          policyTerm: '',
+          sumAssured: '',
+          premiumPaymentType: '0',
+          premium: 0,
+          premiumFrequency: 0,
+          funds:  [],
+          modelPortfolioRiskCategory: 0,
+          higherThanRiskProfile: 0,
+          nameOfOwner: 0,
+          nameOfInsure: "-1",
+          nameOfInsureOther: "",
+          benefit: [],
+          risk: [],
+          portfolio: 0,
+          fundName: "",
+          fundAmount: 0,
+          premiumForHospitalization: {
+            cash: 0,
+            cpfMedisave: 0
+          },
+          groupId: 0,
+          premiumType: null,
+          feature: dataVal.new_rider.riderFeature,
+        })
+      }
+    });
+
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) != value){
+          resRiders.push(vRider);
+        }
+      });
+
+      if(resRiders.length > 0) {
+        var resRiders2: Array<any> = [];
+        resRiders.map((valueRes: any, index:any) => {
+          if(valueRes.subjectId.toString() != value.toString()){
+            resRiders2.push(valueRes);
+          }
+        })
+        setProductRiderArr(resRiders2, 'riders', null);
+      }
+    }else{
+      setProductRiderArr(resRiders, 'riders', null);
+    }
+  }
+
+  const checkRiders = (data: any) => {
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((value: any, index: any) => {
+        if(data == parseInt(value.subjectId)){
+          return true;
+        }
+      })
+    }else{
+      return false;
+    }
+  }
 
   let { showDetailData } = useNavigationSection();
 
@@ -389,7 +534,7 @@ const AddPlanRecommendation = () => {
   return (
     <>
       <HeadingSecondarySection className="mx-8 2xl:mx-60">Product Details</HeadingSecondarySection>
-      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+      <div className="grid grid-cols-1 mx-8 2xl:mx-60">
         <RowDoubleGrid>
           <div>
             <Select
@@ -414,258 +559,266 @@ const AddPlanRecommendation = () => {
             />
           </div>
         </RowDoubleGrid>
-
-        <RowDoubleGrid>
-          <div>
-            <Select
-              datas={dataCategory}
-              label="Category"
-              className="my-4"
-              name="category"
-              value={getSelectedCategory}
-              handleChange={(event) => changeDataCategory(event)}
-            />
-          </div>
-          <div>
-            <Select
-              datas={dataCompany}
-              label="Provider Name"
-              className="my-4"
-              name="company"
-              value={getSelectedCompany}
-              handleChange={(event) => changeDataProvider(event)}
-            />
-          </div>
-        </RowDoubleGrid>
-
-        <RowDoubleGrid>
-          <div>
-            <Select
-              datas={getSelectProducts}
-              label="Product Name"
-              className="my-4"
-              handleChange={(event) =>
-                changeDataProductName(event.target.value)
-              }
-            />
-          </div>
-          <div>
-            <Select
-              datas={dataProductName}
-              label="Product Name"
-              className="my-4"
-              handleChange={(event) =>
-                changeDataProductName(event.target.value)
-              }
-            />
-          </div>
-        </RowDoubleGrid>
-        
-        {productSelect > 0 ? (
-          <>
-            <RowDoubleGrid>
-              <div>
-                <Select
-                  datas={dataDependant}
-                  label="Name of Insured (If Different From Owner)"
-                  className="my-4"
-                  handleChange={(event) =>
-                    changeDataNameOfInsured(event.target.value)
-                  }
-                />
-                <Select
-                  datas={dataPaymentFreq}
-                  label="Payment Frequency"
-                  className="my-4"
-                  handleChange={(event) =>
-                    changeDataPaymentFrequency(event.target.value)
-                  }
-                />
-                <Input label="Policy Term Years" className="my-4" />
-                <Select
-                  datas={dataCurrency}
-                  label="Currency"
-                  className="my-4"
-                  handleChange={(event) =>
-                    changeDataCurrency(event.target.value)
-                  }
-                />
-              </div>
-              <div>
-                <Select
-                  datas={dataPremiumType}
-                  label="Premium Payment Type"
-                  className="my-4"
-                  handleChange={(event) =>
-                    changeDataPaymentType(event.target.value)
-                  }
-                />
-                <Input label="Premium Amounts" className="my-4" />
-                <Input label="Sum Assured" className="my-4" />
-              </div>
-            </RowDoubleGrid>
-            <RowSingleGrid>
-              <TextSmall>Product Feature</TextSmall>
-              <p className="text-sm text-gray-light">
-                {`MyRetirement is a life insurance endowment plan that aims to
-                provide a platform for accumulating retirement savings and
-                providing retirement income solutions. This is a participating
-                policy that participates in the performance of Singapore Life’s
-                Participating Fund in the form of non-guaranteed bonuses.
-                MyRetirement consists of two phases, the Accumulation Period and
-                the Retirement Income Period, and it provides coverage against
-                death and terminal illness. The plan provides limited premium
-                payment of 8 years OR limited premium payment of 10 years OR
-                regular premium payment up to 5 years before Policyholder's
-                selected Retirement Age.`}
-              </p>
-            </RowSingleGrid>
-          </>
-        ) : (
-          ""
-        )}
-      </SectionCardSingleGrid>
-      {productSelect > 0 ? (
-        <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">Benefit Details</HeadingSecondarySection>
-          <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
-            {benefits.length > 0 &&
-              benefits.map((benefit, index) => (
-                <div
-                  className="w-full p-5 border rounded-md border-gray-soft-strong"
-                  key={index}
-                >
-                  <div className="flex items-center justify-start gap-4 mb-5">
-                    <Checkbox label={benefit.name} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-light">
-                      {benefit.description}
-                    </p>
-                  </div>
+      </div>
+      {section9Recommend.product.type == 1 ? 
+          (<> 
+            <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+              <RowDoubleGrid>
+                <div>
+                  <Select
+                    datas={dataCategory}
+                    label="Category"
+                    className="my-4"
+                    name="category"
+                    value={getSelectedCategory}
+                    handleChange={(event) => changeDataCategory(event)}
+                  />
                 </div>
-              ))}
-          </SectionCardSingleGrid>
-
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">Risk Details</HeadingSecondarySection>
-          <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
-            {benefits.length > 0 &&
-              benefits.map((benefit, index) => (
-                <div
-                  className="w-full p-5 border rounded-md border-gray-soft-strong"
-                  key={index}
-                >
-                  <div className="flex items-center justify-start gap-4 mb-5">
-                    <Checkbox label={benefit.name} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-light">
-                      {benefit.description}
-                    </p>
-                  </div>
+                <div>
+                  <Select
+                    datas={dataCompany}
+                    label="Provider Name"
+                    className="my-4"
+                    name="company"
+                    value={getSelectedCompany}
+                    handleChange={(event) => changeDataProvider(event)}
+                  />
                 </div>
-              ))}
-          </SectionCardSingleGrid>
+              </RowDoubleGrid>
 
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">Rider Details</HeadingSecondarySection>
-          <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
-            {riders.length > 0 &&
-              riders.map((r, index) => (
-                <div
-                  className="w-full p-5 border rounded-md border-gray-soft-strong"
-                  key={index}
-                >
-                  <div className="flex mb-5">
-                    <Checkbox
-                      onChange={() => setRiderAction(r.id, !r.checked)}
-                      isChecked={riderArray[r.id]}
-                      label={r.name}
-                    />
-                  </div>
-                  <div className="mb-5">
-                    <p className="text-sm text-gray-light">{r.description}</p>
-                  </div>
-                  {riderArray[r.id] == true ? (
-                    <div className="space-y-10">
-                      <div className="w-full p-5 border rounded-md border-gray-soft-strong">
-                        <RowDoubleGrid>
-                          <div>
-                            <Input label="Policy Term" className="my-4" />
-                            <Input label="Premium ($)" className="my-4" />
-                          </div>
-                          <div>
-                            <Input label="Sum Assured" className="my-4" />
-                            <Input label="Name of Insured" className="my-4" />
-                          </div>
-                        </RowDoubleGrid>
+              <RowDoubleGrid>
+                <div>
+                  <Select
+                    datas={getSelectProducts}
+                    label="Product Name"
+                    className="my-4"
+                    name="productIndex"
+                    value={productValueSelect}
+                    handleChange={(event) => changeDataProductName(event.target.value)}
+                  />
+                </div>
+              </RowDoubleGrid> 
+
+              {productValueSelect > 0 ? (
+                  <>
+                    <RowDoubleGrid>
+                      <div>
+                        <div className={`w-full my-4 space-y-3`}>
+                          <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+                            Name of Insured (If Different From Owner)
+                          </label>
+                          <select placeholder="Please select data" value={section9Recommend.product.nameOfInsure} name="nameOfInsure"
+                            className="my-4 w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                            onChange={(event) => setProductData(event)}>
+                            <option value="-">Please select data</option>
+                            {dataDependant?.length &&
+                              dataDependant.map((val: any, index: any) => (
+                                <option key={index} value={val.name}>
+                                  {val.name}
+                                </option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
+                      <div>
+                        {section9Recommend.product.nameOfInsure == 'OTHER' ? 
+                          <Input label="Other" className="my-4" name="nameOfInsureOther" value={section9Recommend.product.nameOfInsureOther} handleChange={(event) => setProductData(event)}/>
+                        : ''} 
+                      </div>
+                    </RowDoubleGrid>
+                    <RowDoubleGrid>
+                      <div>
+                        <Select
+                          datas={dataCurrency}
+                          label="Currency"
+                          className=""
+                          name="currency"
+                          value={section9Recommend.product.currency} 
+                          handleChange={(event) => setProductData(event)}
+                        />
+                       
+                      </div>
+                      <div>
+                        <Select
+                          datas={dataPremiumType}
+                          label="Premium Payment Type"
+                          className=""
+                          name="premiumPaymentType"
+                          value={section9Recommend.product.premiumPaymentType} 
+                          handleChange={(event) => setProductData(event)}
+                        />
+                      </div>
+                    </RowDoubleGrid>
+                    <RowDoubleGrid>
+                      <div>
+                        <Input label="Premium Amounts" className="" name="premium" value={section9Recommend.product.premium} handleChange={(event) => setProductData(event)}/>
+                      </div>
+                      <div>
+                        <Input label="Sum Assured" className="" name="sumAssured" value={section9Recommend.product.sumAssured} handleChange={(event) => setProductData(event)}/>
+                      </div>
+                    </RowDoubleGrid>
+                    <RowDoubleGrid>
+                      <div>
+                        <Select
+                          datas={dataPaymentFreq}
+                          label="Payment Frequency"
+                          className=""
+                          name="premiumFrequency"
+                          value={section9Recommend.product.premiumFrequency} 
+                          handleChange={(event) => setProductData(event)}
+                        />
+                      </div>
+                      <div>
+                        <Input label="Policy Term Years" className="" name="policyTerm" value={section9Recommend.product.policyTerm} handleChange={(event) => setProductData(event)}/>
+                      </div>
+                    </RowDoubleGrid>
+                    <RowSingleGrid>
+                      <TextSmall>Product Feature</TextSmall>
+                      <p className="text-sm text-gray-light">
+                        {dataProductSelected.product?.feature}
+                      </p>
+                    </RowSingleGrid>
+                  </>
+                ) : (
+                  ""
+              )}
+            </SectionCardSingleGrid>
 
-                      <RowSingleGrid>
-                        <TextSmall>Rider Benefit</TextSmall>
+            {productValueSelect > 0 ? (
+              <>
+                <HeadingSecondarySection className="mx-8 2xl:mx-60">Benefit Details</HeadingSecondarySection>
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.benefits?.length > 0 &&
+                    dataProductSelected.benefits.map((benefit: any, index: any) => (
+                      <div
+                        className="w-full p-5 border rounded-md border-gray-soft-strong"
+                        key={index}
+                      >
+                        <div className="flex items-center justify-start gap-4 mb-5">
+                          <Checkbox label={benefit.title} name="benefitData" isChecked={checkBenefit(benefit.id)} value={benefit.id} onChange={(event) => handleBenefits(event, index) }/>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-light">
+                            {benefit.content}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                </SectionCardSingleGrid>
 
-                        {riderBenefits.length > 0 &&
-                          riderBenefits.map((rb, index) => (
-                            <div
-                              className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
-                              key={rb.id}
-                            >
-                              <div className="flex mb-5">
-                                <Checkbox
-                                  onChange={() => setRiderAction(rb.id)}
-                                  isChecked={rider == rb.id ? true : false}
-                                  label={rb.name}
-                                />
-                              </div>
-                              <div className="mb-5">
-                                <p className="text-sm text-gray-light">
-                                  {rb.description}
-                                </p>
-                              </div>
+                <HeadingSecondarySection className="mx-8 2xl:mx-60">Risk Details</HeadingSecondarySection>
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.risks?.length > 0 &&
+                    dataProductSelected.risks.map((risk: any, index: any) => (
+                      <div
+                        className="w-full p-5 border rounded-md border-gray-soft-strong"
+                        key={index}
+                      >
+                        <div className="flex items-center justify-start gap-4 mb-5">
+                          <Checkbox label={risk.title} name="riskData" isChecked={checkRisk(risk.id)} value={risk.id} onChange={(event) => handleRisks(event, index)}/>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-light">
+                            {risk.content}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                </SectionCardSingleGrid>
+
+                <HeadingSecondarySection className="mx-8 2xl:mx-60">Rider Details</HeadingSecondarySection>
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.riders?.length > 0 &&
+                    dataProductSelected.riders.map((value: any, index: any) => (
+                      <div
+                        className="w-full p-5 border rounded-md border-gray-soft-strong"
+                        key={index}
+                      >
+                        <div className="flex mb-5">
+                          <Checkbox label={value.new_rider.riderName} name="riskData" isChecked={checkRiders(value.new_rider.id)} value={value.new_rider.id} onChange={(event) => setRiderAction(event, index)}/>
+                        </div>
+                        <div className="mb-5">
+                          <p className="text-sm text-gray-light">{value.new_rider.riderFeature}</p>
+                        </div>
+                        {riderArr[index] === true ? (
+                          <div className="space-y-10">
+                            <div className="w-full p-5 border rounded-md border-gray-soft-strong">
+                              <RowDoubleGrid>
+                                <div>
+                                  <Input label="Policy Term" className="my-4" />
+                                  <Input label="Premium ($)" className="my-4" />
+                                </div>
+                                <div>
+                                  <Input label="Sum Assured" className="my-4" />
+                                  <Input label="Name of Insured" className="my-4" />
+                                </div>
+                              </RowDoubleGrid>
                             </div>
-                          ))}
-                      </RowSingleGrid>
 
-                      <RowSingleGrid>
-                        <TextSmall>Rider Risk</TextSmall>
+                            <RowSingleGrid>
+                              <TextSmall>Rider Benefit</TextSmall>
 
-                        {riderRisks.length > 0 &&
-                          riderRisks.map((rr, index) => (
-                            <div
-                              className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
-                              key={rr.id}
-                            >
-                              <div className="flex mb-5">
-                                <Checkbox
-                                  onChange={() => setRiderAction(rr.id)}
-                                  isChecked={rider == rr.id ? true : false}
-                                  label={rr.name}
-                                />
-                              </div>
-                              <div className="mb-5">
-                                <p className="text-sm text-gray-light">
-                                  {rr.description}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                      </RowSingleGrid>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              ))}
-          </SectionCardSingleGrid>
-          <SectionCardFooter className="mx-8 2xl:mx-60">
-            <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
-            <ButtonRedMedium>Cancel</ButtonRedMedium>
-          </SectionCardFooter>
-        </>
-      ) : (
-        ""
-      )}
+                              {value.new_rider.benefit?.length > 0 &&
+                                value.new_rider.benefit.map((valueBen: any, indexBen:any) => (
+                                  <div
+                                    className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
+                                    key={valueBen.id}
+                                  >
+                                    <div className="flex mb-5">
+                                      <Checkbox label={valueBen.title}
+                                      />
+                                    </div>
+                                    <div className="mb-5">
+                                      <p className="text-sm text-gray-light">
+                                        {valueBen.content}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                            </RowSingleGrid>
+
+                            <RowSingleGrid>
+                              <TextSmall>Rider Risk</TextSmall>
+
+                              {value.new_rider.risk?.length > 0 &&
+                                value.new_rider.risk.map((valueRisk:any, indexRisk: any) => (
+                                  <div
+                                    className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
+                                    key={valueRisk.id}
+                                  >
+                                    <div className="flex mb-5">
+                                      <Checkbox label={valueRisk.title}
+                                      />
+                                    </div>
+                                    <div className="mb-5">
+                                      <p className="text-sm text-gray-light">
+                                        {valueRisk.content}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                            </RowSingleGrid>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    ))}
+                </SectionCardSingleGrid>
+                <SectionCardFooter className="mx-8 2xl:mx-60">
+                  <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
+                  <ButtonRedMedium>Cancel</ButtonRedMedium>
+                </SectionCardFooter>
+              </>
+            ) : (
+              ""
+            )}    
+          
+          </>)
+
+        : ('')}
     </>
-  );
+    );
 };
 
 export default AddPlanRecommendation;

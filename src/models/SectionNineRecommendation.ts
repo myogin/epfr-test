@@ -17,7 +17,9 @@ interface Product {
     modelPortfolioRiskCategory: number;
     higherThanRiskProfile:      number;
     nameOfOwner:                number;
-    nameOfInsure:               null;
+    nameOfInsure:               string;
+    nameOfInsureOther:          string; 
+    currency:                   string; 
     benefit:                    Benefit[];
     risk:                       Risk[];
     portfolio:                  number;
