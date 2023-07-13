@@ -34,9 +34,18 @@ export const getClientCustom = (clients: any) => {
   return clientCustom;
 };
 
-
-export const getLength = (params : any) => {
-
-  let arr = [...Array(params)]
+export const getLength = (params: any) => {
+  let arr = [...Array(params)];
   return arr;
+};
+
+export const clientIdentity = (params: any) => {
+  switch (params) {
+    case 0:
+      return "Client 1";
+    case 1:
+      return "Client 2";
+    default:
+      return "Client 1";
+  }
 };

@@ -19,7 +19,7 @@ import { SectionThree } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
-import { getLength } from "@/libs/helper";
+import { clientIdentity, getLength } from "@/libs/helper";
 
 interface Props {
   id?: any;
@@ -40,10 +40,6 @@ const CashFlow = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
   const scrollPosition = useScrollPosition(3);
-
-  const saveData = (params: any) => {
-    showDetailData(params);
-  };
 
   let { need, reason, totalNetSurplus } = useCashFlow();
 
@@ -144,7 +140,7 @@ const CashFlow = (props: Props) => {
                           key={"heading-secondary-" + index}
                           className="w-full mb-4 text-base font-bold"
                         >
-                          Client {++index}
+                          {clientIdentity(index)}
                         </h3>
                         <p className="text-sm font-normal text-gray-light">
                           {`Do you have any plans or are there any factors within
@@ -186,7 +182,7 @@ const CashFlow = (props: Props) => {
                           key={"heading-secondary-" + index}
                           className="w-full mb-10 text-base font-bold"
                         >
-                          Client {++index}
+                          {clientIdentity(index)}
                         </h3>
                       </>
                     ) : (

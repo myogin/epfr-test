@@ -5,7 +5,6 @@ import { produce } from "immer";
 
 type Actions = {
   setClient: (clientType: number, name: string, value: any) => any;
-  setPfrType: (pfrType: number) => any;
   setDependent: (indexData: number, params: any) => any;
   removeDependent: (params: any) => any;
   patchDependent: (params: any) => any;
@@ -19,6 +18,33 @@ const initialState: SectionOne = {
   type: 0,
   id: 0,
   clientInfo: [
+    {
+      clientTitle: "",
+      clientName: "",
+      otherName: "",
+      relationship: "",
+      gender: "",
+      passportNo: "",
+      nationality: "",
+      residency: "",
+      residencyTwo: "",
+      residencyOther: "",
+      dateOfBirth: "",
+      marital: "",
+      smoker: "",
+      employmentStatus: "",
+      occupation: "",
+      companyName: "",
+      businessNature: "",
+      annualIncome: "",
+      contactHome: "",
+      contactMobile: "",
+      contactOffice: "",
+      contactFax: "",
+      email: "",
+      residentialAddr: "",
+      mailingAddr: "",
+    },
     {
       clientTitle: "",
       clientName: "",
@@ -65,6 +91,12 @@ const initialState: SectionOne = {
       english_written: "",
       education_level: "",
     },
+    {
+      age: 0,
+      english_spoken: "",
+      english_written: "",
+      education_level: "",
+    },
   ],
   trustedIndividuals: {
     condition1: false,
@@ -91,42 +123,6 @@ const personalInformation = create(
     persist<SectionOne & Actions>(
       (set, get) => ({
         ...initialState,
-        setPfrType: (pfrType: number) =>
-          set(
-            produce((draft) => {
-              if (get().clientInfo?.length === 1 && pfrType > 1) {
-                let newData = {
-                  clientTitle: "",
-                  clientName: "",
-                  otherName: "",
-                  relationship: "",
-                  gender: "",
-                  passportNo: "",
-                  nationality: "",
-                  residency: "",
-                  residencyTwo: "",
-                  residencyOther: "",
-                  dateOfBirth: "",
-                  marital: "",
-                  smoker: "",
-                  employmentStatus: "",
-                  occupation: "",
-                  companyName: "",
-                  businessNature: "",
-                  annualIncome: "",
-                  contactHome: "",
-                  contactMobile: "",
-                  contactOffice: "",
-                  contactFax: "",
-                  email: "",
-                  residentialAddr: "",
-                  mailingAddr: "",
-                };
-
-                draft.clientInfo.push(newData);
-              }
-            })
-          ),
         setClient: (clientType: number, name: string, value: any) =>
           set(
             produce((draft) => {

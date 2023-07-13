@@ -12,7 +12,7 @@ interface Props {
 const Client = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
-  let { id, clientInfo, reviewDate, setClient, setAccompaniment, setGlobal, setPfrType } =
+  let { id, clientInfo, reviewDate, setClient, setAccompaniment, setGlobal } =
     usePersonalInformation();
 
   const handleInputChange = (event: any) => {
@@ -24,7 +24,7 @@ const Client = (props: Props) => {
         setClient(indexdata, name, value);
 
         if (name === "dateOfBirth") {
-          countAgeClient(value);
+          countAgeClient(indexdata, value);
         }
 
         if (name === "clientTitle") {
@@ -40,7 +40,7 @@ const Client = (props: Props) => {
     }
   };
 
-  const countAgeClient = (params: Date) => {
+  const countAgeClient = (index : number, params: Date) => {
     let dob = new Date(params);
     let currentDate = new Date();
 
@@ -60,7 +60,13 @@ const Client = (props: Props) => {
         calculatedAge--;
       }
 
-      setAccompaniment(0, "age", calculatedAge);
+      let groupAge : number = 0
+
+      if(calculatedAge >= 62) {
+        groupAge = 1
+      }
+
+      setAccompaniment(index, "age", groupAge);
     }
   };
 
@@ -139,10 +145,6 @@ const Client = (props: Props) => {
     { id: 5, name: "300,000 ~" },
   ];
 
-  useEffect(() => {
-    setPfrType(props.pfrType ? props.pfrType : 1)
-  })
-  
 
   return (
     <SectionCardDoubleGrid className="mx-8 2xl:mx-60">

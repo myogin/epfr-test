@@ -13,7 +13,7 @@ import Client from "./Clients/Client";
 import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
-import { getLength } from "@/libs/helper";
+import { clientIdentity, getLength } from "@/libs/helper";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 interface Props {
   id?: any;
@@ -124,7 +124,7 @@ const PersonalInformation = (props: Props) => {
           <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
             {getPfrLength.map((data, index) => (
                 <div key={index}>
-                  <h3 className="w-full mb-10 text-base font-bold text-green-deep">Client {++index}</h3>
+                  <h3 className="w-full mb-10 text-base font-bold text-green-deep">{clientIdentity(index)}</h3>
                   <div className="flex flex-row items-center justify-between">
                     <button className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light">
                       <span className="flex">

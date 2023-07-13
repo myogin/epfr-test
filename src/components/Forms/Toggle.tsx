@@ -11,7 +11,7 @@ interface Props {
 const Toggle = (prop: Props) => {
   return (
     <div className="flex items-center justify-start gap-4">
-      {prop.toggleName ? (<span className="text-sm font-bold text-gray-light">{prop.toggleName}</span>) : ""}
+      {prop.toggleName ? (<div className="text-sm font-bold text-gray-light">{prop.toggleName}</div>) : ""}
       <Switch
         checked={prop.isChecked}
         onChange={prop.onChange}
@@ -21,7 +21,7 @@ const Toggle = (prop: Props) => {
             : "bg-gray-soft-strong border-gray-soft-strong"
         } relative inline-flex h-[23px] w-[46px] shrink-0 cursor-pointer rounded-full border-2 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
       >
-        <span
+        <div
           aria-hidden="true"
           className={`${
             prop.isChecked

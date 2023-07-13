@@ -1,4 +1,4 @@
-import { getLength } from "@/libs/helper";
+import { clientIdentity, getLength } from "@/libs/helper";
 import React from "react";
 
 interface Props {
@@ -25,7 +25,7 @@ const HeadingSecondaryDynamicGrid = (props: Props) => {
                 key={"heading-secondary-" + index}
                 className="w-full text-base font-bold text-right text-green-deep"
               >
-                Client {++index}
+                {clientIdentity(index)}
               </h3>
               </>
               

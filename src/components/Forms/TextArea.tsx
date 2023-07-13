@@ -37,9 +37,9 @@ const TextArea = (props: Props) => {
 
       {/* Error Validation */}
       {props.needValidation && !props.logic ? (
-        <span className="w-full text-xs text-left text-red">
+        <div className="w-full text-xs text-left text-red">
           {props.textError ? props.textError : "Required field"}
-        </span>
+        </div>
       ) : null}
     </div>
   );
