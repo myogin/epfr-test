@@ -41,10 +41,16 @@ const CashFlow = (props: Props) => {
   let { showDetailData } = useNavigationSection();
   const scrollPosition = useScrollPosition(3);
 
-  let { need, reason, totalNetSurplus } = useCashFlow();
+  let { need, reason, totalNetSurplus, setNeed } = useCashFlow();
 
-  const [notReviewAll, setNotReviewAll] = useState(false);
+  const [reviewAll, setReviewAll] = useState(true);
 
+  const handleReview = (index: number, params: any) => {
+
+    console.log("masuk snini nggak " + index + " " + params)
+
+    setNeed(index, params);
+  };
   // let post = postPfr(1)
 
   return (
@@ -65,7 +71,7 @@ const CashFlow = (props: Props) => {
           Section 3. Cash Flow
         </HeadingPrimarySection>
       </div>
-      {!notReviewAll ? (
+      {reviewAll ? (
         <>
           <HeadingSecondaryDynamicGrid
             className={`mx-8 2xl:mx-60 ${
@@ -94,12 +100,12 @@ const CashFlow = (props: Props) => {
         ""
       )}
 
-      {notReviewAll ? (
+      {!reviewAll ? (
         <SectionCardSingleGrid className="mx-8 2xl:mx-60">
           <RowSingle>
             <Checkbox
-              isChecked={notReviewAll}
-              onChange={() => setNotReviewAll(!notReviewAll)}
+              isChecked={reviewAll}
+              onChange={() => setReviewAll(!reviewAll)}
               lableStyle="text-sm font-normal text-gray-light"
               label="The Client would not like their cash flow to be taken into
             consideration for the Needs Analysis and Recommendation(s)"
@@ -127,7 +133,7 @@ const CashFlow = (props: Props) => {
         3.3 Annual Net Cash Flow
       </HeadingSecondaryDynamicGrid>
       <AnnualNetCashFlow pfrType={props.pfrType} />
-      {!notReviewAll ? (
+      {reviewAll ? (
         <>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
             <RowDouble>
@@ -152,12 +158,12 @@ const CashFlow = (props: Props) => {
                       </>
                     ) : (
                       <p className="text-sm font-normal text-gray-light">
-                          {`Do you have any plans or are there any factors within
+                        {`Do you have any plans or are there any factors within
                           the next 12 months which may significantly increase or
                           decrease your current income and expenditure position
                           (eg. Receiving an inheritance or borrowing money for
                           investment or purchase of a holiday home, etc.) ?`}
-                        </p>
+                      </p>
                     )}
                     <Select
                       value=""
@@ -192,7 +198,12 @@ const CashFlow = (props: Props) => {
                       isChecked={
                         need ? (need[index] == 1 ? true : false) : false
                       }
-                      onChange={() => setNotReviewAll(!notReviewAll)}
+                      onChange={() =>
+                        handleReview(
+                          index,
+                          need ? (need[index] == 0 ? 1 : 0) : 0
+                        )
+                      }
                       lableStyle="text-sm font-normal text-gray-light"
                       label="The Client would not like their cash flow to be taken into
             consideration for the Needs Analysis and Recommendation(s)"
@@ -206,7 +217,7 @@ const CashFlow = (props: Props) => {
                   <>
                     {need ? (
                       need[index] == 1 ? (
-                        ""
+                        <div className="flex-1"></div>
                       ) : (
                         <div className="flex-1" key={index}>
                           <TextArea

@@ -27,7 +27,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   let getPfrLength = getLength(props.pfrType);
 
-  let { data, setAnnualIncome, setAnnualSurplus } = useCashFlow();
+  let { need, data, setAnnualIncome, setAnnualSurplus } = useCashFlow();
 
   const [showModalOther, setShowModalOther] = useState(false);
 
@@ -123,8 +123,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
-              <div className="text-sm font-bold text-right">Monthly</div>
-              <div className="text-sm font-bold text-right">Annual</div>
+              {need ? (
+                need[index] == 1 ? (
+                  <>
+                    <div className="text-sm font-bold text-right">Monthly</div>
+                    <div className="text-sm font-bold text-right">Annual</div>
+                  </>
+                ) : null
+              ) : null}
             </>
           ))}
       </RowDinamycGrid>
@@ -141,40 +147,46 @@ const AnnualIncomeCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
             <>
-              <div>
-                <Input
-                  dataType="monthly"
-                  className="my-4"
-                  formStyle="text-right"
-                  type="text"
-                  name="annualGrossIncome"
-                  value={
-                    monthlyData > 0
-                      ? monthlyData
-                      : data[index]
-                      ? data[index].annualIncome.annualGrossIncome / 12
-                      : 0
-                  }
-                  handleChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Input
-                  dataType="annualy"
-                  className="my-4"
-                  formStyle="text-right"
-                  type="text"
-                  name="annualGrossIncome"
-                  value={
-                    annualData > 0
-                      ? annualData
-                      : data[index]
-                      ? data[index].annualIncome.annualGrossIncome
-                      : 0
-                  }
-                  handleChange={handleInputChange}
-                />
-              </div>
+              {need ? (
+                need[index] == 1 ? (
+                  <>
+                    <div>
+                      <Input
+                        dataType="monthly"
+                        className="my-4"
+                        formStyle="text-right"
+                        type="text"
+                        name="annualGrossIncome"
+                        value={
+                          monthlyData > 0
+                            ? monthlyData
+                            : data[index]
+                            ? data[index].annualIncome.annualGrossIncome / 12
+                            : 0
+                        }
+                        handleChange={handleInputChange}
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        dataType="annualy"
+                        className="my-4"
+                        formStyle="text-right"
+                        type="text"
+                        name="annualGrossIncome"
+                        value={
+                          annualData > 0
+                            ? annualData
+                            : data[index]
+                            ? data[index].annualIncome.annualGrossIncome
+                            : 0
+                        }
+                        handleChange={handleInputChange}
+                      />
+                    </div>
+                  </>
+                ) : null
+              ) : null}
             </>
           ))}
       </RowDinamycGrid>
@@ -191,40 +203,46 @@ const AnnualIncomeCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
             <>
-              <div>
-                <Input
-                  dataType="monthly"
-                  className="my-4"
-                  type="text"
-                  formStyle="text-right"
-                  name="additionalWages"
-                  value={
-                    monthlyWadgesData > 0
-                      ? monthlyWadgesData
-                      : data[index]
-                      ? data[index].annualIncome.additionalWages / 12
-                      : 0
-                  }
-                  handleChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Input
-                  dataType="annualy"
-                  className="my-4"
-                  type="text"
-                  formStyle="text-right"
-                  name="additionalWages"
-                  value={
-                    annualWadgesData > 0
-                      ? annualWadgesData
-                      : data[index]
-                      ? data[index].annualIncome.additionalWages
-                      : 0
-                  }
-                  handleChange={handleInputChange}
-                />
-              </div>
+              {need ? (
+                need[index] == 1 ? (
+                  <>
+                    <div>
+                      <Input
+                        dataType="monthly"
+                        className="my-4"
+                        type="text"
+                        formStyle="text-right"
+                        name="additionalWages"
+                        value={
+                          monthlyWadgesData > 0
+                            ? monthlyWadgesData
+                            : data[index]
+                            ? data[index].annualIncome.additionalWages / 12
+                            : 0
+                        }
+                        handleChange={handleInputChange}
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        dataType="annualy"
+                        className="my-4"
+                        type="text"
+                        formStyle="text-right"
+                        name="additionalWages"
+                        value={
+                          annualWadgesData > 0
+                            ? annualWadgesData
+                            : data[index]
+                            ? data[index].annualIncome.additionalWages
+                            : 0
+                        }
+                        handleChange={handleInputChange}
+                      />
+                    </div>
+                  </>
+                ) : null
+              ) : null}
             </>
           ))}
       </RowDinamycGrid>
@@ -270,7 +288,13 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         as="h3"
                         className="flex items-center justify-between text-lg font-medium leading-6 text-gray-900"
                       >
-                        <div className={`${props.pfrType == 1 ? "2/4" : "basis-2/6"}`}>Other Annual Income</div>
+                        <div
+                          className={`${
+                            props.pfrType == 1 ? "2/4" : "basis-2/6"
+                          }`}
+                        >
+                          Other Annual Income
+                        </div>
                         {props.pfrType == 1 ? (
                           ""
                         ) : (
@@ -278,10 +302,18 @@ const AnnualIncomeCashFlow = (props: Props) => {
                             {getPfrLength?.length &&
                               getPfrLength.map((d, index) => (
                                 <>
-                                  <div className={`text-sm ${props.pfrType == 1 ? "1/4" : "basis-1/6"} text-green-deep`}>
+                                  <div
+                                    className={`text-sm ${
+                                      props.pfrType == 1 ? "1/4" : "basis-1/6"
+                                    } text-green-deep`}
+                                  >
                                     Client {++index}
                                   </div>
-                                  <div className={`${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}></div>
+                                  <div
+                                    className={`${
+                                      props.pfrType == 1 ? "1/4" : "basis-1/6"
+                                    }`}
+                                  ></div>
                                 </>
                               ))}
                           </>
@@ -291,7 +323,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         <div className="flex justify-between gap-4">
                           <Input
                             label="Item"
-                            className={`my-4 ${props.pfrType == 1 ? "2/4" : "basis-2/6"}`}
+                            className={`my-4 ${
+                              props.pfrType == 1 ? "2/4" : "basis-2/6"
+                            }`}
                             type="text"
                             placeholder="Add item here.."
                             name="key"
@@ -299,22 +333,36 @@ const AnnualIncomeCashFlow = (props: Props) => {
                           {getPfrLength?.length &&
                             getPfrLength.map((d, index) => (
                               <>
-                                <Input
-                                  label="Monthly"
-                                  className={`my-4 ${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}
-                                  type="text"
-                                  name="otherValue"
-                                  placeholder="0"
-                                  formStyle="text-left"
-                                />
-                                <Input
-                                  label="Annual"
-                                  className={`my-4 ${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}
-                                  type="text"
-                                  name="otherValue"
-                                  placeholder="0"
-                                  formStyle="text-left"
-                                />
+                                {need ? (
+                                  need[index] == 1 ? (
+                                    <>
+                                      <Input
+                                        label="Monthly"
+                                        className={`my-4 ${
+                                          props.pfrType == 1
+                                            ? "1/4"
+                                            : "basis-1/6"
+                                        }`}
+                                        type="text"
+                                        name="otherValue"
+                                        placeholder="0"
+                                        formStyle="text-left"
+                                      />
+                                      <Input
+                                        label="Annual"
+                                        className={`my-4 ${
+                                          props.pfrType == 1
+                                            ? "1/4"
+                                            : "basis-1/6"
+                                        }`}
+                                        type="text"
+                                        name="otherValue"
+                                        placeholder="0"
+                                        formStyle="text-left"
+                                      />
+                                    </>
+                                  ) : null
+                                ) : null}
                               </>
                             ))}
                         </div>
@@ -337,12 +385,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
             <>
-              <div className="text-right">
-                -
-              </div>
-              <div className="text-right">
-                -
-              </div>
+              <div className="text-right">-</div>
+              <div className="text-right">-</div>
             </>
           ))}
       </RowDinamycGrid>

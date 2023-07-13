@@ -9,6 +9,7 @@ type Actions = {
   setData: (indexData: number, params: any) => any;
   setAnnualSurplus: (indexData: number, params: any) => any;
   setAnswer: (indexData: number, params: any) => any;
+  setNeed: (indexData: number, params: any) => any;
 };
 
 const initialState: SectionThree = {
@@ -177,6 +178,16 @@ const cashFlow = create(
               } else {
                 draft.data.push(params);
               }
+            })
+          ),
+        setNeed: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+
+              console.log("Masuk sini nggak")
+
+              let need = draft.need;
+              need[indexData] = params;
             })
           ),
       }),
