@@ -46,8 +46,7 @@ const CashFlow = (props: Props) => {
   const [reviewAll, setReviewAll] = useState(true);
 
   const handleReview = (index: number, params: any) => {
-
-    console.log("masuk snini nggak " + index + " " + params)
+    console.log("masuk snini nggak " + index + " " + params);
 
     setNeed(index, params);
   };
@@ -142,19 +141,29 @@ const CashFlow = (props: Props) => {
                   <div className="flex-1" key={index}>
                     {props.pfrType > 1 ? (
                       <>
-                        <h3
-                          key={"heading-secondary-" + index}
-                          className="w-full mb-4 text-base font-bold"
-                        >
-                          {clientIdentity(index)}
-                        </h3>
-                        <p className="text-sm font-normal text-gray-light">
-                          {`Do you have any plans or are there any factors within
+                        {need ? (
+                          need[index] ? (
+                            <>
+                              <h3
+                                key={"heading-secondary-" + index}
+                                className="w-full mb-4 text-base font-bold"
+                              >
+                                {clientIdentity(index)}
+                              </h3>
+                              <p className="text-sm font-normal text-gray-light">
+                                {`Do you have any plans or are there any factors within
                           the next 12 months which may significantly increase or
                           decrease your current income and expenditure position
                           (eg. Receiving an inheritance or borrowing money for
                           investment or purchase of a holiday home, etc.) ?`}
-                        </p>
+                              </p>
+                            </>
+                          ) : (
+                            ""
+                          )
+                        ) : (
+                          ""
+                        )}
                       </>
                     ) : (
                       <p className="text-sm font-normal text-gray-light">
@@ -165,14 +174,23 @@ const CashFlow = (props: Props) => {
                           investment or purchase of a holiday home, etc.) ?`}
                       </p>
                     )}
-                    <Select
-                      value=""
-                      className="my-4"
-                      datas={fillInformation}
-                      handleChange={(event) =>
-                        setData(eval(event.target.value))
-                      }
-                    />
+
+                    {need ? (
+                      need[index] ? (
+                        <Select
+                          value=""
+                          className="my-4"
+                          datas={fillInformation}
+                          handleChange={(event) =>
+                            setData(eval(event.target.value))
+                          }
+                        />
+                      ) : (
+                        ""
+                      )
+                    ) : (
+                      ""
+                    )}
                   </div>
                 ))}
             </RowDouble>

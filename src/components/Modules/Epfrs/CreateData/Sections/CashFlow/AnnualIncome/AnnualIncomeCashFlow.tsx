@@ -123,14 +123,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
-              {need ? (
-                need[index] == 1 ? (
-                  <>
-                    <div className="text-sm font-bold text-right">Monthly</div>
-                    <div className="text-sm font-bold text-right">Annual</div>
-                  </>
-                ) : null
-              ) : null}
+              <div className="text-sm font-bold text-right">Monthly</div>
+              <div className="text-sm font-bold text-right">Annual</div>
             </>
           ))}
       </RowDinamycGrid>
@@ -185,8 +179,18 @@ const AnnualIncomeCashFlow = (props: Props) => {
                       />
                     </div>
                   </>
-                ) : null
-              ) : null}
+                ) : (
+                  <>
+                    <div className="text-right">-</div>
+                    <div className="text-right">-</div>
+                  </>
+                )
+              ) : (
+                <>
+                  <div className="text-right">-</div>
+                  <div className="text-right">-</div>
+                </>
+              )}
             </>
           ))}
       </RowDinamycGrid>
@@ -241,8 +245,18 @@ const AnnualIncomeCashFlow = (props: Props) => {
                       />
                     </div>
                   </>
-                ) : null
-              ) : null}
+                ) : (
+                  <>
+                    <div className="text-right">-</div>
+                    <div className="text-right">-</div>
+                  </>
+                )
+              ) : (
+                <>
+                  <div className="text-right">-</div>
+                  <div className="text-right">-</div>
+                </>
+              )}
             </>
           ))}
       </RowDinamycGrid>
@@ -361,8 +375,18 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                         formStyle="text-left"
                                       />
                                     </>
-                                  ) : null
-                                ) : null}
+                                  ) : (
+                                    <>
+                                      <div className="text-right">-</div>
+                                      <div className="text-right">-</div>
+                                    </>
+                                  )
+                                ) : (
+                                  <>
+                                    <div className="text-right">-</div>
+                                    <div className="text-right">-</div>
+                                  </>
+                                )}
                               </>
                             ))}
                         </div>
@@ -405,40 +429,52 @@ const AnnualIncomeCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
             <>
-              <div>
-                <Input
-                  dataType="monthly"
-                  className="my-4"
-                  type="text"
-                  name="less"
-                  formStyle="text-right"
-                  value={
-                    monthlyLessData > 0
-                      ? monthlyLessData
-                      : data[index]
-                      ? data[index].annualIncome.less / 12
-                      : 0
-                  }
-                  handleChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Input
-                  dataType="annualy"
-                  className="my-4"
-                  type="text"
-                  name="less"
-                  formStyle="text-right"
-                  value={
-                    annualLessData > 0
-                      ? annualLessData
-                      : data[index]
-                      ? data[index].annualIncome.less
-                      : 0
-                  }
-                  handleChange={handleInputChange}
-                />
-              </div>
+              {need ? (
+                need[index] == 1 ? (
+                  <>
+                    <Input
+                      dataType="monthly"
+                      className="my-4"
+                      type="text"
+                      name="less"
+                      formStyle="text-right"
+                      value={
+                        monthlyLessData > 0
+                          ? monthlyLessData
+                          : data[index]
+                          ? data[index].annualIncome.less / 12
+                          : 0
+                      }
+                      handleChange={handleInputChange}
+                    />
+                    <Input
+                      dataType="annualy"
+                      className="my-4"
+                      type="text"
+                      name="less"
+                      formStyle="text-right"
+                      value={
+                        annualLessData > 0
+                          ? annualLessData
+                          : data[index]
+                          ? data[index].annualIncome.less
+                          : 0
+                      }
+                      handleChange={handleInputChange}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="text-right">-</div>
+                    <div className="text-right">-</div>
+                  </>
+                )
+              ) : (
+                <>
+                  <div className="text-right">-</div>
+                  <div className="text-right">-</div>
+                </>
+              )}
             </>
           ))}
       </RowDinamycGrid>
@@ -455,12 +491,36 @@ const AnnualIncomeCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
             <>
-              <div className="text-right">
-                <span className="text-green-deep">0</span>
-              </div>
-              <div className="text-right">
-                <span className="text-green-deep">0</span>
-              </div>
+              {need ? (
+                need[index] ? (
+                  <>
+                    <div className="text-right">
+                      <span className="text-green-deep">0</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-green-deep">0</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-right">
+                      <span className="text-green-deep">-</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-green-deep">-</span>
+                    </div>
+                  </>
+                )
+              ) : (
+                <>
+                  <div className="text-right">
+                    <span className="text-green-deep">-</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-green-deep">-</span>
+                  </div>
+                </>
+              )}
             </>
           ))}
       </RowDinamycGrid>

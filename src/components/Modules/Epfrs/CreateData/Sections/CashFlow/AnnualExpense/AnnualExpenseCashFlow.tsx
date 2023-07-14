@@ -25,7 +25,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
 
   let getPfrLength = getLength(props.pfrType);
 
-  let { annualExpense } = useCashFlow();
+  let { need, annualExpense } = useCashFlow();
 
   const addOther = () => {
     setShowModalOther(true);
@@ -34,7 +34,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
   const closeOther = () => {
     setShowModalOther(false);
   };
-  
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowDinamycGrid
@@ -73,24 +73,40 @@ const AnnualExpenseCashFlow = (props: Props) => {
           {getPfrLength?.length &&
             getPfrLength.map((dataTwo, index) => (
               <>
-                <div>
-                  <Input
-                    className="my-4"
-                    formStyle="text-right"
-                    type="text"
-                    value={data.values[index]}
-                    handleChange={(event) => setData(event.target.value)}
-                  />
-                </div>
-                <div>
-                  <Input
-                    className="my-4"
-                    formStyle="text-right"
-                    type="text"
-                    value={data.values[index]}
-                    handleChange={(event) => setData(event.target.value)}
-                  />
-                </div>
+                {need ? (
+                  need[index] ? (
+                    <>
+                      <div>
+                        <Input
+                          className="my-4"
+                          formStyle="text-right"
+                          type="text"
+                          value={data.values[index]}
+                          handleChange={(event) => setData(event.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          className="my-4"
+                          formStyle="text-right"
+                          type="text"
+                          value={data.values[index]}
+                          handleChange={(event) => setData(event.target.value)}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-right">-</div>
+                      <div className="text-right">-</div>
+                    </>
+                  )
+                ) : (
+                  <>
+                    <div className="text-right">-</div>
+                    <div className="text-right">-</div>
+                  </>
+                )}
               </>
             ))}
         </RowDinamycGrid>
@@ -139,7 +155,13 @@ const AnnualExpenseCashFlow = (props: Props) => {
                         as="h3"
                         className="flex items-center justify-between text-lg font-medium leading-6 text-gray-900"
                       >
-                        <div className={`${props.pfrType == 1 ? "2/4" : "basis-2/6"}`}>Other Annual Expense</div>
+                        <div
+                          className={`${
+                            props.pfrType == 1 ? "2/4" : "basis-2/6"
+                          }`}
+                        >
+                          Other Annual Expense
+                        </div>
                         {props.pfrType == 1 ? (
                           ""
                         ) : (
@@ -147,21 +169,30 @@ const AnnualExpenseCashFlow = (props: Props) => {
                             {getPfrLength?.length &&
                               getPfrLength.map((d, index) => (
                                 <>
-                                  <div className={`text-sm ${props.pfrType == 1 ? "1/4" : "basis-1/6"} text-green-deep`}>
+                                  <div
+                                    className={`text-sm ${
+                                      props.pfrType == 1 ? "1/4" : "basis-1/6"
+                                    } text-green-deep`}
+                                  >
                                     Client {++index}
                                   </div>
-                                  <div className={`${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}></div>
+                                  <div
+                                    className={`${
+                                      props.pfrType == 1 ? "1/4" : "basis-1/6"
+                                    }`}
+                                  ></div>
                                 </>
                               ))}
                           </>
                         )}
-                        
                       </Dialog.Title>
                       <div className="mt-2">
                         <div className="flex justify-between gap-8">
                           <Input
                             label="Item"
-                            className={`my-4 ${props.pfrType == 1 ? "2/4" : "basis-2/6"}`}
+                            className={`my-4 ${
+                              props.pfrType == 1 ? "2/4" : "basis-2/6"
+                            }`}
                             type="text"
                             placeholder="Add item here.."
                             name="key"
@@ -171,14 +202,18 @@ const AnnualExpenseCashFlow = (props: Props) => {
                               <>
                                 <Input
                                   label="Monthly"
-                                  className={`my-4 ${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}
+                                  className={`my-4 ${
+                                    props.pfrType == 1 ? "1/4" : "basis-1/6"
+                                  }`}
                                   type="text"
                                   name="otherValue"
                                   placeholder="0"
                                 />
                                 <Input
                                   label="Annual"
-                                  className={`my-4 ${props.pfrType == 1 ? "1/4" : "basis-1/6"}`}
+                                  className={`my-4 ${
+                                    props.pfrType == 1 ? "1/4" : "basis-1/6"
+                                  }`}
                                   type="text"
                                   name="otherValue"
                                   placeholder="0"
@@ -205,12 +240,8 @@ const AnnualExpenseCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
-              <div className="text-right">
-                -
-              </div>
-              <div className="text-right">
-                -
-              </div>
+              <div className="text-right">-</div>
+              <div className="text-right">-</div>
             </>
           ))}
       </RowDinamycGrid>
@@ -228,12 +259,36 @@ const AnnualExpenseCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
-              <div className="text-right">
-                <span className="text-green-deep">0</span>
-              </div>
-              <div className="text-right">
-                <span className="text-green-deep">0</span>
-              </div>
+              {need ? (
+                need[index] ? (
+                  <>
+                    <div className="text-right">
+                      <span className="text-green-deep">0</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-green-deep">0</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-right">
+                      <span className="text-green-deep">-</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-green-deep">-</span>
+                    </div>
+                  </>
+                )
+              ) : (
+                <>
+                  <div className="text-right">
+                    <span className="text-green-deep">-</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-green-deep">-</span>
+                  </div>
+                </>
+              )}
             </>
           ))}
       </RowDinamycGrid>
