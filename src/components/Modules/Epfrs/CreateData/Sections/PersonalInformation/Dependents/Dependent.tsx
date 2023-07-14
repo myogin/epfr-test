@@ -12,7 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { DependantInformation } from "@/models/SectionOne";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import moment from "moment";
-import { checkCountData } from "@/libs/helper";
+import { answerYesNo, checkCountData } from "@/libs/helper";
 
 interface Props {
   datas?: Array<any>;
@@ -43,6 +43,9 @@ const Dependent = (props: Props) => {
   const [actionDatatId, setActionDataId] = useState(0);
   const [actionDatatIndex, setActionDataIndex] = useState(0);
   const [saveType, setSaveType] = useState("");
+
+  const [checkCertNumber, setCheckCertNumber] = useState(false);
+  const [checkNric, setCheckNric] = useState(false);
 
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
@@ -86,6 +89,7 @@ const Dependent = (props: Props) => {
           gender: "1",
           relationship: params,
         });
+        setCheckCertNumber(true);
         break;
       case "DAUGHTER":
         setNewData({
@@ -93,6 +97,7 @@ const Dependent = (props: Props) => {
           gender: "2",
           relationship: params,
         });
+        setCheckCertNumber(true);
         break;
       default:
         setNewData({
@@ -100,6 +105,33 @@ const Dependent = (props: Props) => {
           gender: "1",
           relationship: params,
         });
+        setCheckCertNumber(false);
+        break;
+    }
+  };
+
+  const checkSponsoredChild = (params: any) => {
+    switch (params) {
+      case "1":
+        setNewData({
+          ...newData,
+          sponsored: params,
+        });
+        setCheckNric(true);
+        break;
+      case "2":
+        setNewData({
+          ...newData,
+          sponsored: params,
+        });
+        setCheckNric(false);
+        break;
+      default:
+        setNewData({
+          ...newData,
+          sponsored: params,
+        });
+        setCheckNric(false);
         break;
     }
   };
@@ -270,20 +302,25 @@ const Dependent = (props: Props) => {
                                 : true
                             }
                           />
-                          <Input
-                            className="my-4"
-                            label="Birth Cert Number"
-                            type="number"
-                            name="certNumber"
-                            value={newData.certNumber}
-                            placeholder="Please input cert number"
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                certNumber: event.target.value,
-                              })
-                            }
-                          />
+                          {checkCertNumber ? (
+                            <Input
+                              className="my-4"
+                              label="Birth Cert Number"
+                              type="number"
+                              name="certNumber"
+                              value={newData.certNumber}
+                              placeholder="Please input cert number"
+                              handleChange={(event) =>
+                                setNewData({
+                                  ...newData,
+                                  certNumber: event.target.value,
+                                })
+                              }
+                            />
+                          ) : (
+                            ""
+                          )}
+
                           <Input
                             className="my-4"
                             label="Years To Support"
@@ -334,33 +371,34 @@ const Dependent = (props: Props) => {
                             value={newData.sponsored}
                             datas={sponsors}
                             handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                sponsored: event.target.value,
-                              })
+                              checkSponsoredChild(event.target.value)
                             }
                             needValidation={true}
                             logic={
-                              newData.sponsored === "" || newData.sponsored === "-"
+                              newData.sponsored === "" ||
+                              newData.sponsored === "-"
                                 ? false
                                 : true
                             }
                           />
-                           <Input
-                            className="my-4"
-                            label="NRIC / FIN"
-                            type="number"
-                            name="nric"
-                            value={newData.nric}
-                            placeholder="Input NRIC here"
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                nric: event.target.value,
-                              })
-                            }
-                          />
-                          
+                          {checkNric ? (
+                            <Input
+                              className="my-4"
+                              label="NRIC / FIN"
+                              type="number"
+                              name="nric"
+                              value={newData.nric}
+                              placeholder="Input NRIC here"
+                              handleChange={(event) =>
+                                setNewData({
+                                  ...newData,
+                                  nric: event.target.value,
+                                })
+                              }
+                            />
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </div>
                     </div>
@@ -460,8 +498,11 @@ const Dependent = (props: Props) => {
                 <th className="px-2 py-5">Relationship</th>
                 <th className="px-2 py-5">Date Of Birth</th>
                 <th className="px-2 py-5">Age</th>
+                <th className="px-2 py-5">Birth Cert Number</th>
                 <th className="px-2 py-5">Sex</th>
                 <th className="px-2 py-5">Years to Support</th>
+                <th className="px-2 py-5">Sponsored Child</th>
+                <th className="px-2 py-5">NRIC / FIN</th>
                 <th className="px-2 py-5"></th>
               </tr>
             </thead>
@@ -474,8 +515,11 @@ const Dependent = (props: Props) => {
                     <td className="px-2 py-5">{data.relationship}</td>
                     <td className="px-2 py-5">{data.dateOfBirth}</td>
                     <td className="px-2 py-5">{data.age}</td>
+                    <td className="px-2 py-5">{data.certNumber}</td>
                     <td className="px-2 py-5">{genderStatus(data.gender)}</td>
                     <td className="px-2 py-5">{data.year}</td>
+                    <td className="px-2 py-5">{answerYesNo(data.sponsored)}</td>
+                    <td className="px-2 py-5">{data.nric}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
                         <ButtonBox

@@ -49,3 +49,14 @@ export const clientIdentity = (params: any) => {
       return "Client 1";
   }
 };
+
+export const answerYesNo = (params: any) => {
+  switch (params) {
+    case "1":
+      return "Yes";
+    case "2":
+      return "No";
+    default:
+      return "No";
+  }
+};
