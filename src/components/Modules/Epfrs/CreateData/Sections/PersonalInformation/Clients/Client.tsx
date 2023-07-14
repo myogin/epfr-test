@@ -551,31 +551,7 @@ const Client = (props: Props) => {
                       : true
                   }
                 />
-                {index === 1 ? (
-                  <Select
-                    dataType="clientInfo"
-                    className="mb-10"
-                    label="Relationship To Client 1"
-                    name="relationship"
-                    indexData={index}
-                    value={
-                      clientInfo[index] ? clientInfo[index].relationship : ""
-                    }
-                    datas={relationships}
-                    handleChange={handleInputChange}
-                    needValidation={true}
-                    logic={
-                      clientInfo[index]
-                        ? clientInfo[index].relationship === "" ||
-                          clientInfo[index].relationship === "-"
-                          ? false
-                          : true
-                        : true
-                    }
-                  />
-                ) : (
-                  ""
-                )}
+
                 <Input
                   dataType="clientInfo"
                   className="mb-10"
@@ -696,7 +672,9 @@ const Client = (props: Props) => {
                   label="Residency Status"
                   name="residency"
                   indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].residencyTwo : ""}
+                  value={
+                    clientInfo[index] ? clientInfo[index].residencyTwo : ""
+                  }
                   datas={recidence}
                   handleChange={handleInputChange}
                   needValidation={true}
@@ -911,20 +889,51 @@ const Client = (props: Props) => {
                       : true
                   }
                 />
+                {index === 0 ? (
+                  <Input
+                    dataType="generalInfo"
+                    className="mb-10"
+                    label="Review Date"
+                    type="date"
+                    name="reviewDate"
+                    value={reviewDate}
+                    placeholder="01 January 1998"
+                    handleChange={handleInputChange}
+                    needValidation={true}
+                    logic={
+                      reviewDate === "" || reviewDate === "-" ? false : true
+                    }
+                  />
+                ) : (
+                  ""
+                )}
+                {index === 1 ? (
+                  <Select
+                    dataType="clientInfo"
+                    className="mb-10"
+                    label="Relationship To Client 1"
+                    name="relationship"
+                    indexData={index}
+                    value={
+                      clientInfo[index] ? clientInfo[index].relationship : ""
+                    }
+                    datas={relationships}
+                    handleChange={handleInputChange}
+                    needValidation={true}
+                    logic={
+                      clientInfo[index]
+                        ? clientInfo[index].relationship === "" ||
+                          clientInfo[index].relationship === "-"
+                          ? false
+                          : true
+                        : true
+                    }
+                  />
+                ) : (
+                  ""
+                )}
               </div>
             ))}
-          <Input
-            dataType="generalInfo"
-            className="mb-10"
-            label="Review Date"
-            type="date"
-            name="reviewDate"
-            value={reviewDate}
-            placeholder="01 January 1998"
-            handleChange={handleInputChange}
-            needValidation={true}
-            logic={reviewDate === "" || reviewDate === "-" ? false : true}
-          />
         </>
       )}
     </SectionCardDoubleGrid>
