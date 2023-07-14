@@ -696,14 +696,14 @@ const Client = (props: Props) => {
                   label="Residency Status"
                   name="residency"
                   indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].residency : ""}
+                  value={clientInfo[index] ? clientInfo[index].residencyTwo : ""}
                   datas={recidence}
                   handleChange={handleInputChange}
                   needValidation={true}
                   logic={
                     clientInfo[index]
-                      ? clientInfo[index].residency === "" ||
-                        clientInfo[index].residency === "-"
+                      ? clientInfo[index].residencyTwo === "" ||
+                        clientInfo[index].residencyTwo === "-"
                         ? false
                         : true
                       : true

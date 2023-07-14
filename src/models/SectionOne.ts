@@ -33,6 +33,9 @@ export interface DependantInformation {
   name: string;
   relationship: string;
   dateOfBirth: string;
+  certNumber: string;
+  sponsored: string;
+  nric: string;
   age: number;
   gender: string;
   year: string;

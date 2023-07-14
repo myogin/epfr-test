@@ -25,6 +25,7 @@ const initialState: SectionOne = {
       relationship: "",
       race: "",
       gender: "",
+      birthCountryId: 0,
       passportNo: "",
       nationality: "",
       residency: "",
@@ -53,6 +54,7 @@ const initialState: SectionOne = {
       relationship: "",
       race: "",
       gender: "",
+      birthCountryId: 0,
       passportNo: "",
       nationality: "",
       residency: "",
@@ -84,6 +86,9 @@ const initialState: SectionOne = {
       age: 0,
       gender: "0",
       year: "0",
+      certNumber: "",
+      nric: "",
+      sponsored: ""
     },
   ],
   accompaniment: [
@@ -169,6 +174,9 @@ const personalInformation = create(
                 dependentReplace.age = params.age;
                 dependentReplace.gender = params.gender;
                 dependentReplace.year = params.year;
+                dependentReplace.certNumber = params.certNumber;
+                dependentReplace.sponsored = params.sponsored;
+                dependentReplace.nric = params.nric;
               } else {
                 draft.dependant.push(params);
               }
@@ -213,6 +221,9 @@ const personalInformation = create(
                 dependentReplace.age = 0;
                 dependentReplace.gender = "0";
                 dependentReplace.year = "0";
+                dependentReplace.certNumber = "";
+                dependentReplace.sponsored = "";
+                dependentReplace.nric = "";
               }
             })
           ),
@@ -229,6 +240,9 @@ const personalInformation = create(
               dependant.age = params.age;
               dependant.gender = params.gender;
               dependant.year = params.year;
+              dependant.certNumber = params.certNumber;
+              dependant.sponsored = params.sponsored;
+              dependant.nric = params.nric;
             })
           ),
         setAccompaniment: (clientType: number, name: string, value: any) =>

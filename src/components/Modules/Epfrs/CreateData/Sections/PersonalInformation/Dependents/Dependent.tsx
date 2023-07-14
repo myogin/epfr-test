@@ -33,6 +33,9 @@ const Dependent = (props: Props) => {
     age: 0,
     gender: "",
     year: "",
+    certNumber: "",
+    sponsored: "",
+    nric: "",
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -57,6 +60,11 @@ const Dependent = (props: Props) => {
   let genders: Array<any> = [
     { id: "1", name: "MALE" },
     { id: "2", name: "FEMALE" },
+  ];
+
+  let sponsors: Array<any> = [
+    { id: "1", name: "Yes" },
+    { id: "2", name: "No" },
   ];
 
   const genderStatus = (params: any) => {
@@ -263,12 +271,32 @@ const Dependent = (props: Props) => {
                             }
                           />
                           <Input
-                            readonly
                             className="my-4"
-                            label="Age"
+                            label="Birth Cert Number"
                             type="number"
-                            name="age"
-                            value={newData.age}
+                            name="certNumber"
+                            value={newData.certNumber}
+                            placeholder="Please input cert number"
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                certNumber: event.target.value,
+                              })
+                            }
+                          />
+                          <Input
+                            className="my-4"
+                            label="Years To Support"
+                            type="number"
+                            name="year"
+                            value={newData.year}
+                            placeholder="Years To Support"
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                year: event.target.value,
+                              })
+                            }
                           />
                         </div>
                         <div>
@@ -292,19 +320,47 @@ const Dependent = (props: Props) => {
                             }
                           />
                           <Input
+                            readonly
                             className="my-4"
-                            label="Years To Support"
+                            label="Age"
                             type="number"
-                            name="year"
-                            value={newData.year}
-                            placeholder="Years To Support"
+                            name="age"
+                            value={newData.age}
+                          />
+                          <Select
+                            className="my-4"
+                            label="Sponsored Child"
+                            name="sponsored"
+                            value={newData.sponsored}
+                            datas={sponsors}
                             handleChange={(event) =>
                               setNewData({
                                 ...newData,
-                                year: event.target.value,
+                                sponsored: event.target.value,
+                              })
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.sponsored === "" || newData.sponsored === "-"
+                                ? false
+                                : true
+                            }
+                          />
+                           <Input
+                            className="my-4"
+                            label="NRIC / FIN"
+                            type="number"
+                            name="nric"
+                            value={newData.nric}
+                            placeholder="Input NRIC here"
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                nric: event.target.value,
                               })
                             }
                           />
+                          
                         </div>
                       </div>
                     </div>
