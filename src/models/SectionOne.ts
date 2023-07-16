@@ -1,4 +1,4 @@
-export interface PersonalInformation {
+export interface Clientformation {
   id?: string;
   clientTitle: string;
   clientName: string;
@@ -64,7 +64,7 @@ export interface SectionOne {
   ownerId?: number;
   type?: number;
   id?: number;
-  clientInfo: PersonalInformation[];
+  clientInfo: Clientformation[];
   dependant: DependantInformation[];
   accompaniment: Accompaniment[];
   trustedIndividuals: TrustedIndividual;

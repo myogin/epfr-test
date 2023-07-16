@@ -9,6 +9,7 @@ interface Props {
   datas?: Array<any>;
   className?: string;
   dataType?: string;
+  indexData?: number;
   intro?: string;
   needValidation?: boolean;
   logic?: boolean;
@@ -33,6 +34,7 @@ const Select = (props: Props) => {
 
       <select
         data-groupdata={props.dataType}
+        data-indexdata={props.indexData}
         placeholder={props.placeholder}
         value={props.value}
         name={props.name}

@@ -285,10 +285,10 @@ const AssetBalance = (props: Props) => {
       </RowDoubleGrid>
       <RowDoubleGrid>
         <div>
-          <TextSmall className="text-gray-light flex justify-between">
+          <TextSmall className="flex justify-between text-gray-light">
             Other(s)
             <ButtonBox className="text-green-deep" onClick={openModal}>
-              <AddLineIcon />
+              <AddLineIcon size={14} />
             </ButtonBox>
           </TextSmall>
           <Transition appear show={showModal}>

@@ -47,7 +47,7 @@ const EpfrPage: Page = () => {
               </Link>
             </div>
             <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
-              <Link href="create/join">
+              <Link href="create/joint">
                 <button className="mb-3">
                   <File3FillIcon className="text-green-deep" size={50} />
                 </button>

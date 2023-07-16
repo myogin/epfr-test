@@ -23,7 +23,7 @@ const Dependent = (props: Props) => {
   let { dependant, setDependent, removeDependent, patchDependent } =
     usePersonalInformation();
 
-    let checkIndex = checkCountData(dependant);
+  let checkIndex = checkCountData(dependant);
   // Initiate new local state for new data
   let initialState: DependantInformation = {
     id: checkIndex,
@@ -40,6 +40,7 @@ const Dependent = (props: Props) => {
   const [actionDatatId, setActionDataId] = useState(0);
   const [actionDatatIndex, setActionDataIndex] = useState(0);
   const [saveType, setSaveType] = useState("");
+
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
 
@@ -149,7 +150,6 @@ const Dependent = (props: Props) => {
   };
 
   const modalRemoveData = (params: any) => {
-
     setShowModalRemove(true);
     setActionDataId(params);
   };
