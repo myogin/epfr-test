@@ -9,10 +9,15 @@ export interface SectionFour {
 
 export interface Others {
   asset: assetInterface[];
-  liability: assetInterface[];
+  liability: assetInterface2[];
 }
 
 export interface assetInterface {
   key?: string;
   otherValue?: number[];
+}
+
+export interface assetInterface2 {
+  key?: string;
+  otherValue?: [number, number];
 }

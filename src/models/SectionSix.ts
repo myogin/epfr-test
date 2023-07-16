@@ -6,7 +6,7 @@ export interface SectionSix {
   outcome: boolean[];
   issues: any[];
   outcomeChanged: boolean;
-  status: boolean;
+  status: number;
 }
 
 export interface Answer {

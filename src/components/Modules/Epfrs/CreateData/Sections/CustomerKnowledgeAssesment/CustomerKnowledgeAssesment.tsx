@@ -65,7 +65,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
     outcome: [],
     outcomeChanged: true,
     issues: [],
-    status: false,
+    status: 0,
   });
 
   if (typeof window !== "undefined") {
@@ -74,6 +74,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
 
   const checkboxChange = (event: any) => {
     setIsReview(!isReview);
+
     setSectionSix((prevState) => {
       return { ...prevState, ["need"]: [!isReview] };
     });
@@ -91,6 +92,16 @@ const CustomerKnowledgeAssesment = (props: Props) => {
   const handleReasonChange = (e: any, user: number) => {
     const { name, value } = e.target;
     let newReason = sectionSix.reason;
+    if (value != "") {
+      setSectionSix((prevState) => {
+        return { ...prevState, status: 1 };
+      });
+    } else {
+      setSectionSix((prevState) => {
+        return { ...prevState, status: 0 };
+      });
+    }
+
     newReason[user] = value;
 
     setSectionSix((prevState) => {
@@ -207,29 +218,19 @@ const CustomerKnowledgeAssesment = (props: Props) => {
     handleHaveMet();
 
     const checkValidate = () => {
-      console.log(sectionSix.reason[0]);
-
-      // if (sectionSix.need[0]) {
-      //   if (sectionSix.reason[0] === "") {
-      //     return false;
-      //   }
-      //   return true;
-      // } else {
-      //   if (sectionSix.answers.education[0].every((e) => e === false)) {
-      //     return false;
-      //   }
-      //   if (sectionSix.answers.education[1].every((e) => e === false)) {
-      //     return false;
-      //   }
-      //   if (sectionSix.answers.investment.every((e) => e === false)) {
-      //     return false;
-      //   }
-      //   if (sectionSix.answers.work.every((e) => e === false)) {
-      //     return false;
-      //   }
-      //   return true;
-      // }
-      return false;
+      if (sectionSix.answers.education[0].every((e) => e === false)) {
+        return 0;
+      }
+      if (sectionSix.answers.education[1].every((e) => e === false)) {
+        return 0;
+      }
+      if (sectionSix.answers.investment.every((e) => e === false)) {
+        return 0;
+      }
+      if (sectionSix.answers.work.every((e) => e === false)) {
+        return 0;
+      }
+      return 1;
     };
     const updateStatusSection6 = () => {
       setSectionSix((prevState) => {

@@ -8,7 +8,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import TextArea from "@/components/Forms/TextArea";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import AssetBalance from "./AssetBalance/AssetBalance";
 import LiabilityBalance from "./LiabilityBalance/LiabilityBalance";
@@ -18,6 +18,9 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionFour, assetInterface } from "@/models/SectionFour";
 import { log } from "console";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import { getLength } from "@/libs/helper";
+import axios from "axios";
 
 interface Props {
   id?: any;
@@ -26,7 +29,35 @@ interface Props {
 
 const BalanceSheet = (props: Props) => {
   const [notReviewAll, setNotReviewAll] = useState(false);
+  const [dataS4, setDataS4] = useState(null);
+  const [pfrData, setPfrData] = useState({
+    clients: [
+      // property:0,
+      // investment:0
+    ],
+  });
+  useEffect(() => {
+    const headers = {
+      Authorization:
+        "$2y$10$yQoEFyhzHdojmueU8TZZQu4EOZH3pcrYem9iMn5KyIM1qlD0DLd3W",
+    };
+    async function getDataS4() {
+      await axios
+        .get(`http://203.85.37.54:8000/api/pfr/get/s4/11011`, {
+          headers: headers,
+        })
+        .then((res) => {
+          setDataS4(res.data);
+          // console.log(res.data);
 
+          retrieveClientData(res.data);
+        });
+    }
+    getDataS4();
+  });
+  function retrieveClientData(data: any) {
+    data.sumaryOfProperty;
+  }
   const scrollPosition = useScrollPosition(4);
 
   const [sectionFour, setSectionFour] = useState<SectionFour>({
@@ -88,32 +119,8 @@ const BalanceSheet = (props: Props) => {
     });
   }
 
-  function updateLiabilities(assets: assetInterface) {
-    setSectionFour((prevState) => {
-      return {
-        ...prevState,
-        others: {
-          ...prevState.others,
-          asset: [...prevState.others.asset, assets],
-        },
-      };
-    });
-  }
-
-  function deleteLiabilities(index: number) {
-    setSectionFour((prevState) => {
-      let newAsset = prevState.others.asset;
-      newAsset.splice(index, 1);
-
-      return {
-        ...prevState,
-        others: {
-          ...prevState.others,
-          asset: newAsset,
-        },
-      };
-    });
-  }
+  // zustand
+  const { others, addLiability } = useBalanceSheet();
 
   return (
     <div id={props.id}>
@@ -139,24 +146,19 @@ const BalanceSheet = (props: Props) => {
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.1 Assets
           </HeadingSecondarySection>
-          <AssetBalance
-            updateassets={updateAssets}
-            assetDatas={sectionFour.others.asset}
-            deleteAssets={deleteAssets}
-          />
+          <AssetBalance pfrType={props.pfrType} dataS4={dataS4} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.2 Liabilities
           </HeadingSecondarySection>
-          <LiabilityBalance />
+          <LiabilityBalance pfrType={props.pfrType} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.3 Net Worth
           </HeadingSecondarySection>
-          <NetWorthBalance />
+          <NetWorthBalance pfrType={props.pfrType} />
         </>
       ) : (
         ""
       )}
-
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
           <Checkbox
