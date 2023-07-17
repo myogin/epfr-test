@@ -4,15 +4,16 @@ import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import Input from "@/components/Forms/Input";
-import React from "react";
+import { getLength, usdFormat } from "@/libs/helper";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import React, { Fragment } from "react";
 interface Props {
   pfrType?: any;
 }
 const NetWorthBalance = (props: Props) => {
-  const setData = (params: any) => {
-    console.log(params);
-  };
-
+  // zustand
+  const { totalCalc } = useBalanceSheet();
+  let getPfrLength = getLength(props.pfrType);
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowDoubleGrid>
@@ -22,14 +23,15 @@ const NetWorthBalance = (props: Props) => {
         <div>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div></div>
-            <div className="text-right">
-              <TextSmall className="text-green-deep">$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall className="text-green-deep">$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e, i) => (
+              <Fragment key={i}>
+                <div className="text-right">
+                  <TextSmall className="text-green-deep">
+                    {usdFormat(totalCalc?.network[i])}
+                  </TextSmall>
+                </div>
+              </Fragment>
+            ))}
           </RowSingleJointGrid>
         </div>
       </RowDoubleGrid>

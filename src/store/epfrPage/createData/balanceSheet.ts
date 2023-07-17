@@ -5,14 +5,19 @@ import { SectionFour } from "@/models/SectionFour";
 
 const initialState: SectionFour = {
   id: 0,
-  need: [false, false],
-  reason: [],
+  need: [1, 0],
+  reason: [null, null],
   others: {
     asset: [],
     liability: [],
   },
   issues: [],
-  status: 0,
+  status: 1,
+  totalCalc: {
+    asset: [0, 0],
+    liability: [0, 0],
+    network: [0, 0],
+  },
 };
 
 type Actions = {
@@ -22,9 +27,11 @@ type Actions = {
   addLiability: (data: any) => any;
   deleteLiability: (index: number) => any;
   updateLiability: (index: number, data: any) => any;
+  calcTotal: (api?: any) => any;
+  updateNeed: (value: Array<number>) => any;
 };
 
-const balanceSheet = (set: any) => ({
+const balanceSheet = (set: any, get: any) => ({
   ...initialState,
   addAsset: (data: any) =>
     set(
@@ -62,6 +69,41 @@ const balanceSheet = (set: any) => ({
         drafts.others.liability[index] = data;
       })
     ),
+  calcTotal: (api?: any) =>
+    set(
+      produce((drafts: any) => {
+        let newClientAsset: Array<number> = [0, 0];
+        drafts.others.asset.forEach((e: any, i: any) => {
+          e.otherValue.forEach((e2: any, i2: any) => {
+            newClientAsset[i2] += parseInt(e2);
+          });
+        });
+        drafts.totalCalc.asset = newClientAsset;
+
+        let newClientLiability: Array<number> = [0, 0];
+        drafts.others.liability.forEach((e: any, i: any) => {
+          e.otherValue.forEach((e2: any, i2: any) => {
+            newClientLiability[i2] += parseInt(e2);
+          });
+        });
+
+        drafts.totalCalc.liability = newClientLiability;
+
+        let client1Network =
+          drafts.totalCalc.asset[0] + drafts.totalCalc.liability[0];
+        let client2Network =
+          drafts.totalCalc.asset[1] + drafts.totalCalc.liability[1];
+        drafts.totalCalc.network = [client1Network, client2Network];
+      })
+    ),
+  updateNeed: (value: Array<number>) => {
+    set(
+      produce((drafts: any) => {
+        drafts.need = value;
+        console.log(drafts.need);
+      })
+    );
+  },
 });
 
 export const useBalanceSheet = create(

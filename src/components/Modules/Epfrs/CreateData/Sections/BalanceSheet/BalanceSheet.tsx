@@ -21,6 +21,7 @@ import { log } from "console";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import { getLength } from "@/libs/helper";
 import axios from "axios";
+import { Asset } from "next/font/google";
 
 interface Props {
   id?: any;
@@ -28,33 +29,33 @@ interface Props {
 }
 
 const BalanceSheet = (props: Props) => {
-  const [notReviewAll, setNotReviewAll] = useState(false);
-  const [dataS4, setDataS4] = useState(null);
-  const [pfrData, setPfrData] = useState({
-    clients: [
-      // property:0,
-      // investment:0
-    ],
-  });
-  useEffect(() => {
-    const headers = {
-      Authorization:
-        "$2y$10$yQoEFyhzHdojmueU8TZZQu4EOZH3pcrYem9iMn5KyIM1qlD0DLd3W",
-    };
-    async function getDataS4() {
-      await axios
-        .get(`http://203.85.37.54:8000/api/pfr/get/s4/11011`, {
-          headers: headers,
-        })
-        .then((res) => {
-          setDataS4(res.data);
-          // console.log(res.data);
+  // zustand
+  const { others, calcTotal } = useBalanceSheet();
 
-          retrieveClientData(res.data);
-        });
-    }
-    getDataS4();
-  });
+  const [notReviewAll, setNotReviewAll] = useState([false, false]);
+  const [dataS4, setDataS4] = useState(null);
+
+  useEffect(() => {
+    // const headers = {
+    //   Authorization:
+    //     "$2y$10$yQoEFyhzHdojmueU8TZZQu4EOZH3pcrYem9iMn5KyIM1qlD0DLd3W",
+    // };
+    // async function getDataS4() {
+    //   await axios
+    //     .get(`http://203.85.37.54:8000/api/pfr/get/s4/11011`, {
+    //       headers: headers,
+    //     })
+    //     .then((res) => {
+    //       setDataS4(res.data);
+    //       // console.log(res.data);
+
+    //       retrieveClientData(res.data);
+    //     });
+    // }
+    // getDataS4();
+
+    calcTotal();
+  }, [others]);
   function retrieveClientData(data: any) {
     data.sumaryOfProperty;
   }
@@ -62,7 +63,7 @@ const BalanceSheet = (props: Props) => {
 
   const [sectionFour, setSectionFour] = useState<SectionFour>({
     id: 0,
-    need: [false, false],
+    need: [0, 0],
     reason: [],
     others: {
       asset: [],
@@ -85,42 +86,16 @@ const BalanceSheet = (props: Props) => {
     });
   };
 
-  const checkboxChange = (event: any) => {
-    setNotReviewAll(!notReviewAll);
-    setSectionFour((prevState) => {
-      return { ...prevState, ["need"]: [!notReviewAll] };
-    });
+  const checkboxChange = (event: any, index: number) => {
+    console.log(notReviewAll[0]);
+
+    let newNeed = notReviewAll;
+    newNeed[index] = !notReviewAll[index];
+    setNotReviewAll(newNeed);
+    // setSectionFour((prevState) => {
+    //   return { ...prevState, ["need"]: [!notReviewAll] };
+    // });
   };
-
-  function updateAssets(assets: assetInterface) {
-    setSectionFour((prevState) => {
-      return {
-        ...prevState,
-        others: {
-          ...prevState.others,
-          asset: [...prevState.others.asset, assets],
-        },
-      };
-    });
-  }
-
-  function deleteAssets(index: number) {
-    setSectionFour((prevState) => {
-      let newAsset = prevState.others.asset;
-      newAsset.splice(index, 1);
-
-      return {
-        ...prevState,
-        others: {
-          ...prevState.others,
-          asset: newAsset,
-        },
-      };
-    });
-  }
-
-  // zustand
-  const { others, addLiability } = useBalanceSheet();
 
   return (
     <div id={props.id}>
@@ -141,7 +116,7 @@ const BalanceSheet = (props: Props) => {
         </HeadingPrimarySection>
       </div>
 
-      {!notReviewAll ? (
+      {!notReviewAll[0] ? (
         <>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.1 Assets
@@ -162,8 +137,10 @@ const BalanceSheet = (props: Props) => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
           <Checkbox
-            isChecked={notReviewAll}
-            onChange={checkboxChange}
+            isChecked={true}
+            onChange={(e) => {
+              checkboxChange(e, 0);
+            }}
             lableStyle="text-sm font-normal text-gray-light"
             label="No, The Client would not like their existing portfolio to be taken
             into consideration for the Needs Analysis and Recommendation(s)?"

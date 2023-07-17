@@ -7,7 +7,7 @@ import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
-import { getLength } from "@/libs/helper";
+import { getLength, usdFormat } from "@/libs/helper";
 import { assetInterface } from "@/models/SectionFour";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import { Dialog, Transition } from "@headlessui/react";
@@ -20,6 +20,9 @@ interface Props {
   pfrType?: any;
 }
 const LiabilityBalance = (props: Props) => {
+  // zustand
+  const { others, addLiability, deleteLiability, totalCalc } =
+    useBalanceSheet();
   const [showModal, setShowModal] = useState(false);
   const [asset, setAsset] = useState<assetInterface>({
     key: "",
@@ -66,8 +69,6 @@ const LiabilityBalance = (props: Props) => {
       return false;
     }
   };
-  // zustand
-  const { others, addLiability, deleteLiability } = useBalanceSheet();
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -160,8 +161,8 @@ const LiabilityBalance = (props: Props) => {
         <div>
           <TextSmall className="text-gray-light flex ">
             Other(s)
-            <ButtonBox className="text-green-deep ml-1" onClick={openModal}>
-              <AddLineIcon />
+            <ButtonBox className="text-green-deep ml-2" onClick={openModal}>
+              <AddLineIcon size={14} />
             </ButtonBox>
           </TextSmall>
           {/* Open Modal */}
@@ -263,13 +264,13 @@ const LiabilityBalance = (props: Props) => {
                 </TextSmall>
                 <div className="text-right">
                   <TextSmall className="flex justify-end">
-                    ${assetsData.otherValue[0]}
+                    {usdFormat(assetsData.otherValue[0])}
                   </TextSmall>
                 </div>
                 {props.pfrType == 2 && (
                   <div className="text-right">
                     <TextSmall className="flex justify-end">
-                      ${assetsData.otherValue[1]}
+                      {usdFormat(assetsData.otherValue[1])}
                     </TextSmall>
                   </div>
                 )}
@@ -285,14 +286,15 @@ const LiabilityBalance = (props: Props) => {
         <div>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div></div>
-            <div className="text-right">
-              <TextSmall className="text-green-deep">$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall className="text-green-deep">$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e, i) => (
+              <Fragment key={i}>
+                <div className="text-right">
+                  <TextSmall className="text-green-deep">
+                    {usdFormat(totalCalc?.liability[i])}
+                  </TextSmall>
+                </div>
+              </Fragment>
+            ))}
           </RowSingleJointGrid>
         </div>
       </RowDoubleGrid>

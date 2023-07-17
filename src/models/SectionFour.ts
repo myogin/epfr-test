@@ -1,23 +1,25 @@
 export interface SectionFour {
   id: number;
-  need: boolean[];
-  reason: string[];
+  need: Array<number>;
+  reason: Array<string | null>;
   others: Others;
   issues: any[];
   status: number;
+  totalCalc?: totalCalc;
 }
 
 export interface Others {
   asset: assetInterface[];
-  liability: assetInterface2[];
+  liability: assetInterface[];
 }
 
 export interface assetInterface {
-  key?: string;
-  otherValue?: number[];
+  key: string;
+  otherValue: number[];
 }
 
-export interface assetInterface2 {
-  key?: string;
-  otherValue?: [number, number];
+export interface totalCalc {
+  asset: Array<number>;
+  liability: Array<number>;
+  network: Array<number>;
 }

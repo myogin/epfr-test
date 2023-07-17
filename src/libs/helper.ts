@@ -34,9 +34,14 @@ export const getClientCustom = (clients: any) => {
   return clientCustom;
 };
 
-
-export const getLength = (params : any) => {
-
-  let arr = [...Array(params)]
+export const getLength = (params: any) => {
+  let arr = [...Array(params)];
   return arr;
+};
+
+export const usdFormat = (currency: any) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(currency);
 };
