@@ -1,7 +1,7 @@
 export interface SectionFour {
   id: number;
   need: Array<number>;
-  reason: Array<string | null>;
+  reason: Array<string | undefined>;
   others: Others;
   issues: any[];
   status: number;

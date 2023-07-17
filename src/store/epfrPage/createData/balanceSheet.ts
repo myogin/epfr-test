@@ -5,8 +5,8 @@ import { SectionFour } from "@/models/SectionFour";
 
 const initialState: SectionFour = {
   id: 0,
-  need: [1, 0],
-  reason: [null, null],
+  need: [0, 0],
+  reason: [undefined, undefined],
   others: {
     asset: [],
     liability: [],
@@ -28,7 +28,8 @@ type Actions = {
   deleteLiability: (index: number) => any;
   updateLiability: (index: number, data: any) => any;
   calcTotal: (api?: any) => any;
-  updateNeed: (value: Array<number>) => any;
+  updateNeed: (client: number, value: number) => any;
+  updateReason: (client: number, reason: string) => any;
 };
 
 const balanceSheet = (set: any, get: any) => ({
@@ -96,11 +97,17 @@ const balanceSheet = (set: any, get: any) => ({
         drafts.totalCalc.network = [client1Network, client2Network];
       })
     ),
-  updateNeed: (value: Array<number>) => {
+  updateNeed: (client: number, value: number) => {
     set(
       produce((drafts: any) => {
-        drafts.need = value;
-        console.log(drafts.need);
+        drafts.need[client] = value;
+      })
+    );
+  },
+  updateReason: (client: number, reason: string) => {
+    set(
+      produce((drafts: any) => {
+        drafts.reason[client] = reason;
       })
     );
   },

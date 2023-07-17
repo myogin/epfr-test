@@ -1,38 +1,32 @@
-import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
-import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
+
+import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
-import TextSmall from "@/components/Attributes/Typography/TextSmall";
-import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
-import Input from "@/components/Forms/Input";
 import TextArea from "@/components/Forms/TextArea";
 import React, { useEffect, useState } from "react";
-import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import AssetBalance from "./AssetBalance/AssetBalance";
 import LiabilityBalance from "./LiabilityBalance/LiabilityBalance";
 import NetWorthBalance from "./NetWorthBalance/NetWorthBalance";
-import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { SectionFour, assetInterface } from "@/models/SectionFour";
-import { log } from "console";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import { getLength } from "@/libs/helper";
 import axios from "axios";
-import { Asset } from "next/font/google";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const BalanceSheet = (props: Props) => {
+  let getPfrLength = getLength(props.pfrType);
   // zustand
-  const { others, calcTotal } = useBalanceSheet();
+  const { others, calcTotal, need, updateNeed, reason, updateReason } =
+    useBalanceSheet();
 
-  const [notReviewAll, setNotReviewAll] = useState([false, false]);
   const [dataS4, setDataS4] = useState(null);
 
   useEffect(() => {
@@ -61,42 +55,6 @@ const BalanceSheet = (props: Props) => {
   }
   const scrollPosition = useScrollPosition(4);
 
-  const [sectionFour, setSectionFour] = useState<SectionFour>({
-    id: 0,
-    need: [0, 0],
-    reason: [],
-    others: {
-      asset: [],
-      liability: [],
-    },
-    issues: [],
-    status: 0,
-  });
-
-  if (typeof window !== "undefined") {
-    localStorage.setItem("section4", JSON.stringify(sectionFour));
-  }
-
-  // handle input change / state change
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
-
-    setSectionFour((prevState) => {
-      return { ...prevState, [name]: value };
-    });
-  };
-
-  const checkboxChange = (event: any, index: number) => {
-    console.log(notReviewAll[0]);
-
-    let newNeed = notReviewAll;
-    newNeed[index] = !notReviewAll[index];
-    setNotReviewAll(newNeed);
-    // setSectionFour((prevState) => {
-    //   return { ...prevState, ["need"]: [!notReviewAll] };
-    // });
-  };
-
   return (
     <div id={props.id}>
       <div
@@ -116,7 +74,7 @@ const BalanceSheet = (props: Props) => {
         </HeadingPrimarySection>
       </div>
 
-      {!notReviewAll[0] ? (
+      {!need[0] || !need[1] ? (
         <>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.1 Assets
@@ -134,32 +92,58 @@ const BalanceSheet = (props: Props) => {
       ) : (
         ""
       )}
+
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowSingle>
-          <Checkbox
-            isChecked={true}
-            onChange={(e) => {
-              checkboxChange(e, 0);
-            }}
-            lableStyle="text-sm font-normal text-gray-light"
-            label="No, The Client would not like their existing portfolio to be taken
+        <RowSingleORDouble pfrType={props.pfrType}>
+          {getPfrLength.map((e, index) => (
+            <div className="flex-1" key={index}>
+              {props.pfrType > 1 ? (
+                <>
+                  <h3
+                    key={"heading-secondary-" + index}
+                    className="w-full mb-10 text-base font-bold"
+                  >
+                    Client {index + 1}
+                  </h3>
+                </>
+              ) : (
+                ""
+              )}
+              <Checkbox
+                isChecked={need ? (need[index] == 1 ? true : false) : false}
+                onChange={() => {
+                  updateNeed(index, need[index] == 1 ? 0 : 1);
+                }}
+                lableStyle="text-sm font-normal text-gray-light"
+                label="No, The Client would not like their existing portfolio to be taken
             into consideration for the Needs Analysis and Recommendation(s)?"
-          />
-        </RowSingle>
-        {notReviewAll ? (
-          <>
-            <RowSingle>
-              <TextArea
-                handleChange={handleInputChange}
-                className="my-4"
-                label="The Reason"
-                name="reason"
               />
-            </RowSingle>
-          </>
-        ) : (
-          ""
-        )}
+            </div>
+          ))}
+        </RowSingleORDouble>
+
+        {/*  */}
+
+        <RowSingleORDouble pfrType={props.pfrType}>
+          {getPfrLength.map((e, index) => (
+            <div className="flex-1" key={index}>
+              {need[index] == 1 ? (
+                <TextArea
+                  // handleChange={}
+                  className="my-4"
+                  label="The Reason"
+                  name="reason"
+                  value={reason[index]}
+                  handleChange={(e) => {
+                    updateReason(index, e.target.value);
+                  }}
+                />
+              ) : (
+                ""
+              )}
+            </div>
+          ))}
+        </RowSingleORDouble>
       </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
