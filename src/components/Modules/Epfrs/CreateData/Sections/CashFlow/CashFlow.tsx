@@ -138,7 +138,7 @@ const CashFlow = (props: Props) => {
             <RowDouble>
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1" key={index}>
+                  <div className="flex-1" key={"cashflow-qa-"+index}>
                     {props.pfrType > 1 ? (
                       <>
                         {need ? (

@@ -269,7 +269,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            ? "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
             : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >

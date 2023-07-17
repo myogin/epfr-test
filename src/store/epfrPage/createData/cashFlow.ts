@@ -79,37 +79,37 @@ const initialState: SectionThree = {
   annualExpense: [
     {
       key: "household",
-      title: "household",
+      title: "Household",
       selected: false,
       values: [1200, 0, 0, 0],
     },
     {
       key: "transportation",
-      title: "transportation",
+      title: "Transportation",
       selected: false,
       values: [2400, 0, 0, 0],
     },
     {
       key: "telco",
-      title: "telco",
+      title: "Telco",
       selected: false,
       values: [3600, 0, 0, 0],
     },
     {
       key: "dependents",
-      title: "dependents",
+      title: "Dependents",
       selected: false,
       values: [4800, 0, 0, 0],
     },
     {
       key: "personal",
-      title: "personal",
+      title: "Personal",
       selected: false,
       values: [6000, 0, 0, 0],
     },
     {
       key: "luxury",
-      title: "luxury",
+      title: "Luxury",
       selected: false,
       values: [7200, 0, 0, 0],
     },
