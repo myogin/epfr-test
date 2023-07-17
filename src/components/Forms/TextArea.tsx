@@ -8,7 +8,7 @@ interface Props {
   rows?: number;
   name?: string;
   handleChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  value?: string;
+  value?: string | undefined;
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
@@ -31,9 +31,8 @@ const TextArea = (props: Props) => {
         placeholder={props.placeholder}
         name={props.name}
         onChange={props.handleChange}
-      >
-        {props.value}
-      </textarea>
+        value={props.value}
+      ></textarea>
 
       {/* Error Validation */}
       {props.needValidation && !props.logic ? (
