@@ -5,8 +5,10 @@ export default function authHeader() {
   } else {
     token = `${process.env.NEXT_PUBLIC_KEY}`;
   }
+
+  console.log("Token: ",token);
   if (token) {
-    return { Authorization: "Bearer " + token };
+    return { Authorization: token };
   } else {
     return {};
   }
