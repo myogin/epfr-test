@@ -23,6 +23,7 @@ const Checkbox = (props: Props) => {
       <div className="flex items-start justify-start gap-4">
         <input
           type="checkbox"
+          disabled={props.isDisabled}
           checked={props.isChecked}
           onChange={props.onChange}
           value={props.value}
