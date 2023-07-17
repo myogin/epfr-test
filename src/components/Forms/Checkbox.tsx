@@ -2,6 +2,7 @@ import React from "react";
 
 interface Props {
   isChecked?: boolean;
+  isDisabled?: boolean;
   className?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
@@ -13,6 +14,7 @@ interface Props {
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
+  class?: string;
 }
 
 const Checkbox = (props: Props) => {
