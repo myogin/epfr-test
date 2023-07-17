@@ -97,14 +97,14 @@ const AnnualExpenseCashFlow = (props: Props) => {
                     </>
                   ) : (
                     <>
-                      <div className="text-right">-</div>
-                      <div className="text-right">-</div>
+                      <div className="text-right">0</div>
+                      <div className="text-right">0</div>
                     </>
                   )
                 ) : (
                   <>
-                    <div className="text-right">-</div>
-                    <div className="text-right">-</div>
+                    <div className="text-right">0</div>
+                    <div className="text-right">0</div>
                   </>
                 )}
               </>
@@ -240,8 +240,8 @@ const AnnualExpenseCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
-              <div className="text-right">-</div>
-              <div className="text-right">-</div>
+              <div className="text-right">0</div>
+              <div className="text-right">0</div>
             </>
           ))}
       </RowDinamycGrid>
@@ -272,20 +272,20 @@ const AnnualExpenseCashFlow = (props: Props) => {
                 ) : (
                   <>
                     <div className="text-right">
-                      <span className="text-green-deep">-</span>
+                      <span className="text-green-deep">0</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-green-deep">-</span>
+                      <span className="text-green-deep">0</span>
                     </div>
                   </>
                 )
               ) : (
                 <>
                   <div className="text-right">
-                    <span className="text-green-deep">-</span>
+                    <span className="text-green-deep">0</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-green-deep">-</span>
+                    <span className="text-green-deep">0</span>
                   </div>
                 </>
               )}

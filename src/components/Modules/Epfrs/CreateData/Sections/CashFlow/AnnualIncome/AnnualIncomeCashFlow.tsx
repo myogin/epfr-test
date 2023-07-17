@@ -14,6 +14,8 @@ import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
+import CloseLineIcon from "remixicon-react/CloseLineIcon";
+import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 interface Props {
   data?: any;
@@ -27,7 +29,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   let getPfrLength = getLength(props.pfrType);
 
-  let { need, data, setAnnualIncome, setAnnualSurplus } = useCashFlow();
+  let { need, data, others, setAnnualIncome, setAnnualSurplus } = useCashFlow();
 
   const [showModalOther, setShowModalOther] = useState(false);
 
@@ -106,6 +108,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
     setShowModalOther(false);
   };
 
+  const editOther = (params: string) => {
+    setShowModalOther(true);
+  };
+
   const [other, setOther] = useState<any>(0);
   const [cpfContribution, setCpfContribution] = useState<any>(0);
   return (
@@ -181,14 +187,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   </>
                 ) : (
                   <>
-                    <div className="text-right">-</div>
-                    <div className="text-right">-</div>
+                    <div className="text-right">0</div>
+                    <div className="text-right">0</div>
                   </>
                 )
               ) : (
                 <>
-                  <div className="text-right">-</div>
-                  <div className="text-right">-</div>
+                  <div className="text-right">0</div>
+                  <div className="text-right">0</div>
                 </>
               )}
             </>
@@ -247,14 +253,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   </>
                 ) : (
                   <>
-                    <div className="text-right">-</div>
-                    <div className="text-right">-</div>
+                    <div className="text-right">0</div>
+                    <div className="text-right">0</div>
                   </>
                 )
               ) : (
                 <>
-                  <div className="text-right">-</div>
-                  <div className="text-right">-</div>
+                  <div className="text-right">0</div>
+                  <div className="text-right">0</div>
                 </>
               )}
             </>
@@ -267,12 +273,18 @@ const AnnualIncomeCashFlow = (props: Props) => {
             : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
-          <div className="flex items-center justify-start">
-            <TextSmall className="text-gray-light">Others</TextSmall>
-            <ButtonBox className="text-green-deep" onClick={addOther}>
-              <AddLineIcon size={14} />
-            </ButtonBox>
+        <div className={`col-span-2`}>
+          <div className="flex items-start justify-start">
+            <div className="flex-1">
+              <div className="flex items-center gap-4">
+                <h3 className="px-0 py-2 text-sm font-bold text-gray-light">
+                  Other(s)
+                </h3>
+                <ButtonBox className="text-green-deep" onClick={addOther}>
+                  <AddLineIcon size={14} />
+                </ButtonBox>
+              </div>
+            </div>
           </div>
           <Transition appear show={showModalOther}>
             <Dialog as="div" className="relative z-10" onClose={closeOther}>
@@ -405,14 +417,56 @@ const AnnualIncomeCashFlow = (props: Props) => {
             </Dialog>
           </Transition>
         </div>
-
-        {getPfrLength?.length &&
-          getPfrLength.map((d, index) => (
-            <>
-              <div className="text-right">-</div>
-              <div className="text-right">-</div>
-            </>
-          ))}
+        {others?.annualIncome.length ? (
+          <>
+            {others.annualIncome.map((data, index) => (
+              <div className="col-span-3" key={"annualIncome-"+index}>
+                <div className="col-span-1">
+                  <div>{data.key}</div>
+                  {data.key !== "" ? (
+                    <div>
+                      <ButtonBox
+                        className="text-green-deep"
+                        onClick={() => editOther(data.key)}
+                      >
+                        <PencilLineIcon size={14} />
+                      </ButtonBox>
+                      <ButtonBox
+                        className="text-red"
+                        onClick={() => editOther(data.key)}
+                      >
+                        <CloseLineIcon size={14} />
+                      </ButtonBox>
+                    </div>
+                  ) : null}
+                </div>
+                <div className="col-span-1">
+                  {getPfrLength?.length &&
+                    getPfrLength.map((d, indexB) => (
+                      <>
+                        <div className="text-right">
+                          {data.values[indexB] ? data.values[indexB] : "0"}
+                        </div>
+                        <div className="text-right">
+                          {data.values[indexB] ? data.values[indexB] : "0"}
+                        </div>
+                      </>
+                    ))}
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <>
+            {getPfrLength?.length &&
+              getPfrLength.map((d, index) => (
+                <>
+                  <div className="text-right">0</div>
+                  <div className="text-right">0</div>
+                </>
+              ))}
+          </>
+        )}
       </RowDinamycGrid>
       <RowDinamycGrid
         className={`${
@@ -465,14 +519,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   </>
                 ) : (
                   <>
-                    <div className="text-right">-</div>
-                    <div className="text-right">-</div>
+                    <div className="text-right">0</div>
+                    <div className="text-right">0</div>
                   </>
                 )
               ) : (
                 <>
-                  <div className="text-right">-</div>
-                  <div className="text-right">-</div>
+                  <div className="text-right">0</div>
+                  <div className="text-right">0</div>
                 </>
               )}
             </>
@@ -504,20 +558,20 @@ const AnnualIncomeCashFlow = (props: Props) => {
                 ) : (
                   <>
                     <div className="text-right">
-                      <span className="text-green-deep">-</span>
+                      <span className="text-green-deep">0</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-green-deep">-</span>
+                      <span className="text-green-deep">0</span>
                     </div>
                   </>
                 )
               ) : (
                 <>
                   <div className="text-right">
-                    <span className="text-green-deep">-</span>
+                    <span className="text-green-deep">0</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-green-deep">-</span>
+                    <span className="text-green-deep">0</span>
                   </div>
                 </>
               )}

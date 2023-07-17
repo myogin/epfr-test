@@ -17,15 +17,23 @@ const initialState: SectionThree = {
   need: [1, 1],
   reason: ["", ""],
   others: {
-    annualExpense: [
-      {
-        editting: false,
-        key: "",
-        values: [],
-      },
-    ],
     annualIncome: [
       {
+        id: 1,
+        editting: false,
+        key: "Test Other A",
+        values: [10,20],
+      },
+      {
+        id: 2,
+        editting: false,
+        key: "Test Other C",
+        values: [10,20],
+      },
+    ],
+    annualExpense: [
+      {
+        id: 0,
         editting: false,
         key: "",
         values: [],
