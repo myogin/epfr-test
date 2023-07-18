@@ -138,7 +138,7 @@ const CashFlow = (props: Props) => {
             <RowDouble>
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1" key={"cashflow-qa-"+index}>
+                  <div className="flex-1" key={"cashflow-qa-" + index}>
                     {props.pfrType > 1 ? (
                       <>
                         {need ? (
@@ -159,7 +159,21 @@ const CashFlow = (props: Props) => {
                               </p>
                             </>
                           ) : (
-                            ""
+                            <>
+                              <h3
+                                key={"heading-secondary-" + index}
+                                className="w-full mb-4 text-base font-bold text-gray-soft-strong"
+                              >
+                                {clientIdentity(index)}
+                              </h3>
+                              <p className="text-sm font-normal text-gray-soft-strong">
+                                {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                              </p>
+                            </>
                           )
                         ) : (
                           ""
@@ -186,7 +200,15 @@ const CashFlow = (props: Props) => {
                           }
                         />
                       ) : (
-                        ""
+                        <Select
+                          disabled={true}
+                          value=""
+                          className="my-4"
+                          datas={fillInformation}
+                          handleChange={(event) =>
+                            setData(eval(event.target.value))
+                          }
+                        />
                       )
                     ) : (
                       ""

@@ -273,7 +273,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
             : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`${props.pfrType == 1 ? "col-span-2" : "col-span-2"}`}>
+        <div className={`${props.pfrType == 1 ? "col-span-2" : ""}`}>
           <div className="flex items-center gap-4">
             <h3 className="px-0 py-2 text-sm font-bold text-gray-light">
               Other(s)
@@ -415,9 +415,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
           </Transition>
         </div>
         {others?.annualIncome.length ? (
-          <div className="col-span-3">
+          <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-5"}`}>
             {others.annualIncome.map((data, index) => (
-              <div className="grid grid-cols-3 gap-8 space-y-4" key={"annualIncome-" + index}>
+              <div className={`${props.pfrType == 1 ? "grid-cols-3" : "grid-cols-5"} grid gap-8 space-y-4`} key={"annualIncome-" + index}>
                 <div>
                   <div className="flex items-center gap-4">
                     <div>{data.key}</div>

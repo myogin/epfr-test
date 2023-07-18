@@ -14,6 +14,7 @@ interface Props {
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
+  disabled?: boolean
 }
 
 const Select = (props: Props) => {
@@ -40,6 +41,7 @@ const Select = (props: Props) => {
         name={props.name}
         className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
         onChange={props.handleChange}
+        disabled={props.disabled}
       >
         <option value="-">
           {props.intro ? props.intro : "Please select data"}
