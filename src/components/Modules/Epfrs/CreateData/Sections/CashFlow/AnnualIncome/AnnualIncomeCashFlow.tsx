@@ -269,23 +269,20 @@ const AnnualIncomeCashFlow = (props: Props) => {
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
-            ? "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
             : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
         }`}
       >
-        <div className={`col-span-2`}>
-          <div className="flex items-start justify-start">
-            <div className="flex-1">
-              <div className="flex items-center gap-4">
-                <h3 className="px-0 py-2 text-sm font-bold text-gray-light">
-                  Other(s)
-                </h3>
-                <ButtonBox className="text-green-deep" onClick={addOther}>
-                  <AddLineIcon size={14} />
-                </ButtonBox>
-              </div>
-            </div>
+        <div className={`${props.pfrType == 1 ? "col-span-2" : "col-span-2"}`}>
+          <div className="flex items-center gap-4">
+            <h3 className="px-0 py-2 text-sm font-bold text-gray-light">
+              Other(s)
+            </h3>
+            <ButtonBox className="text-green-deep" onClick={addOther}>
+              <AddLineIcon size={14} />
+            </ButtonBox>
           </div>
+
           <Transition appear show={showModalOther}>
             <Dialog as="div" className="relative z-10" onClose={closeOther}>
               <Transition.Child
@@ -418,44 +415,44 @@ const AnnualIncomeCashFlow = (props: Props) => {
           </Transition>
         </div>
         {others?.annualIncome.length ? (
-          <>
+          <div className="col-span-3">
             {others.annualIncome.map((data, index) => (
-              <div className="col-span-3" key={"annualIncome-"+index}>
-                <div className="col-span-1">
-                  <div>{data.key}</div>
-                  {data.key !== "" ? (
-                    <div>
-                      <ButtonBox
-                        className="text-green-deep"
-                        onClick={() => editOther(data.key)}
-                      >
-                        <PencilLineIcon size={14} />
-                      </ButtonBox>
-                      <ButtonBox
-                        className="text-red"
-                        onClick={() => editOther(data.key)}
-                      >
-                        <CloseLineIcon size={14} />
-                      </ButtonBox>
-                    </div>
-                  ) : null}
+              <div className="grid grid-cols-3 gap-8 space-y-4" key={"annualIncome-" + index}>
+                <div>
+                  <div className="flex items-center gap-4">
+                    <div>{data.key}</div>
+                    {data.key !== "" ? (
+                      <div className="space-x-2">
+                        <ButtonBox
+                          className="text-green-deep"
+                          onClick={() => editOther(data.key)}
+                        >
+                          <PencilLineIcon size={14} />
+                        </ButtonBox>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => editOther(data.key)}
+                        >
+                          <CloseLineIcon size={14} />
+                        </ButtonBox>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-                <div className="col-span-1">
-                  {getPfrLength?.length &&
-                    getPfrLength.map((d, indexB) => (
-                      <>
-                        <div className="text-right">
-                          {data.values[indexB] ? data.values[indexB] : "0"}
-                        </div>
-                        <div className="text-right">
-                          {data.values[indexB] ? data.values[indexB] : "0"}
-                        </div>
-                      </>
-                    ))}
-                </div>
+                {getPfrLength?.length &&
+                  getPfrLength.map((d, indexB) => (
+                    <>
+                      <div className="text-right">
+                        {data.values[indexB] ? data.values[indexB] : "0"}
+                      </div>
+                      <div className="text-right">
+                        {data.values[indexB] ? data.values[indexB] : "0"}
+                      </div>
+                    </>
+                  ))}
               </div>
             ))}
-          </>
+          </div>
         ) : (
           <>
             {getPfrLength?.length &&
