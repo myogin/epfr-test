@@ -120,11 +120,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
         <div
-          className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}
+          className={`col-span-3`}
         ></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
@@ -138,10 +138,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         } items-center`}
       >
-        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
+        <div className={`col-span-3`}>
           <TextSmall className="text-gray-light">Annual Gross Income</TextSmall>
         </div>
         {getPfrLength?.length &&
@@ -204,10 +204,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         } items-center`}
       >
-        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
+        <div className={`col-span-3`}>
           <TextSmall className="text-gray-light">Additional Wages</TextSmall>
         </div>
         {getPfrLength?.length &&
@@ -270,7 +270,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
         <div className={`${props.pfrType == 1 ? "col-span-2" : ""}`}>
@@ -415,10 +415,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
           </Transition>
         </div>
         {others?.annualIncome.length ? (
-          <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-5"}`}>
+          <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-6"}`}>
             {others.annualIncome.map((data, index) => (
-              <div className={`${props.pfrType == 1 ? "grid-cols-3" : "grid-cols-5"} grid gap-8 space-y-4`} key={"annualIncome-" + index}>
-                <div>
+              <div className={`${props.pfrType == 1 ? "grid-cols-3" : "grid-cols-6"} grid gap-8 space-y-4`} key={"annualIncome-" + index}>
+                <div className="col-span-2">
                   <div className="flex items-center gap-4">
                     <div>{data.key}</div>
                     {data.key !== "" ? (
@@ -469,10 +469,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
-        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
+        <div className={`col-span-3`}>
           <TextSmall className="text-gray-light">
             Less Employee’s CPF Contribution
           </TextSmall>
@@ -533,10 +533,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
-        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
+        <div className={`col-span-3`}>
           <TextSmall className="text-green-deep">ANNUAL NET INCOME</TextSmall>
         </div>
         {getPfrLength?.length &&

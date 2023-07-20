@@ -75,7 +75,7 @@ const CashFlow = (props: Props) => {
           <HeadingSecondaryDynamicGrid
             className={`mx-8 2xl:mx-60 ${
               props.pfrType == 2
-                ? "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+                ? "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
                 : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
             }`}
             pfrType={props.pfrType}

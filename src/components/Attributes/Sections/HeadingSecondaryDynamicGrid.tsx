@@ -14,7 +14,7 @@ const HeadingSecondaryDynamicGrid = (props: Props) => {
     <div
       className={`grid ${props.className} grid-cols-1 gap-8 mb-10 items-center`}
     >
-      <h2 className={`text-xl font-bold ${props.pfrType > 1 ? "col-span-2" : "col-span-3"}`}>{props.children}</h2>
+      <h2 className={`text-xl font-bold col-span-3`}>{props.children}</h2>
       {props.pfrType > 1 ? (
         <>
           {getPfrLength?.length &&
