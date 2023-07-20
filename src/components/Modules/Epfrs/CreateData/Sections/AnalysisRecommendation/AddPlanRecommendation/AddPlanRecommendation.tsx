@@ -548,13 +548,20 @@ const AddPlanRecommendation = () => {
 
           setDataPaymentFreq(dataFq)
         }
-        
-        var dataFunds = new Array(dataProduct.length).fill({
-          allocation: '',
-          fundId: '',
-          groupId: '',
-          name: '',
-        });
+
+        var lengthData = 0;
+        var dataFunds: Array<any> = [];
+
+        if(dataProduct.ilp.platform.funds.length > 0){
+          dataProduct.ilp.platform.funds.map((valueRes:any, indexRes:any) => {
+            dataFunds.push({
+              allocation: valueRes.allocation,
+              fundId: valueRes.fundId,
+              groupId: valueRes.fund.groupId,
+              name: valueRes.fund.name,
+            });
+          })
+        }
 
         setProductArr(dataFunds, 'funds', null);
       }   
@@ -1107,16 +1114,12 @@ const AddPlanRecommendation = () => {
 
   }
 
-  const checkFundValues = (event: any, dataI:any) => {
-    const { name, value } = event.target;
-    console.log('name', name)
-    console.log('value', value)
-    console.log('event', event)
-    // if(section9Recommend.product.funds.length > 0){
-    //   return section9Recommend.product?.funds[dataI].fundId;
-    // }else{
-    //   return "";
-    // }
+  const checkFundValues = (dataI:any) => {
+    if(section9Recommend.product.funds.length > 0){
+      return section9Recommend.product?.funds[dataI].fundId;
+    }else{
+      return "";
+    }
   }
 
   let { showDetailData } = useNavigationSection();
@@ -1315,7 +1318,7 @@ const AddPlanRecommendation = () => {
                                     </td>
                                     <td>
                                       <select
-                                        value=""
+                                        value={checkFundValues(indexPlatform)}
                                         name="dataFund"
                                         className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
                                         onChange={(event) => setProductFund(event, dataPlatform.allocation, dataPlatform.fund.groupId, indexPlatform)}
