@@ -26,9 +26,7 @@ export const getClientCustom = (clients: any) => {
   let clientCustom: any[] = [];
 
   if (clients?.length) {
-    clients.map((data: any, index: any) => {
-      clientCustom.push({ id: index, name: data.clientName });
-    });
+    clients.map((data: any, index: any) => {});
   }
 
   return clientCustom;
@@ -43,5 +41,12 @@ export const usdFormat = (currency: any) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
+  }).format(currency);
+};
+
+export const sgdFormat = (currency: any) => {
+  return new Intl.NumberFormat("en-SG", {
+    style: "currency",
+    currency: "SGD",
   }).format(currency);
 };
