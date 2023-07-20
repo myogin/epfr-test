@@ -6,7 +6,7 @@ interface Props {
   pfrType?: number;
 }
 
-const RowDinamycGrid = ({ children, className, pfrType }: Props) => {
+const RowSingleJointGrid = ({ children, className, pfrType }: Props) => {
   if (pfrType == 2) {
     return (
       <div
@@ -25,4 +25,4 @@ const RowDinamycGrid = ({ children, className, pfrType }: Props) => {
   );
 };
 
-export default RowDinamycGrid;
+export default RowSingleJointGrid;

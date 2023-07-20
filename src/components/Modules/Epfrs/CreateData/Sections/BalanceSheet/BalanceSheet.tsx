@@ -76,17 +76,71 @@ const BalanceSheet = (props: Props) => {
 
       {!need[0] || !need[1] ? (
         <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
-            4.1 Assets
-          </HeadingSecondarySection>
+          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
+            <div className="grid col-span-2">
+              <h2 className="text-xl font-bold">4.1 Assets</h2>
+            </div>
+            <div className="grid grid-cols-2">
+              {getPfrLength.map((e, index) => (
+                <>
+                  {props.pfrType > 1 ? (
+                    <h3
+                      key={"heading-secondary-" + index}
+                      className="w-full text-base font-bold text-right text-green-deep"
+                    >
+                      Client {++index}
+                    </h3>
+                  ) : (
+                    ""
+                  )}
+                </>
+              ))}
+            </div>
+          </div>
           <AssetBalance pfrType={props.pfrType} dataS4={dataS4} />
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
-            4.2 Liabilities
-          </HeadingSecondarySection>
+          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
+            <div className="grid col-span-2">
+              <h2 className="text-xl font-bold">4.2 Liabilities</h2>
+            </div>
+            <div className="grid grid-cols-2">
+              {getPfrLength.map((e, index) => (
+                <>
+                  {props.pfrType > 1 ? (
+                    <h3
+                      key={"heading-secondary-" + index}
+                      className="w-full text-base font-bold text-right text-green-deep"
+                    >
+                      Client {++index}
+                    </h3>
+                  ) : (
+                    ""
+                  )}
+                </>
+              ))}
+            </div>
+          </div>
           <LiabilityBalance pfrType={props.pfrType} />
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
-            4.3 Net Worth
-          </HeadingSecondarySection>
+          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
+            <div className="grid col-span-2">
+              <h2 className="text-xl font-bold"> 4.3 Net Worth</h2>
+            </div>
+            <div className="grid grid-cols-2">
+              {getPfrLength.map((e, index) => (
+                <>
+                  {props.pfrType > 1 ? (
+                    <h3
+                      key={"heading-secondary-" + index}
+                      className="w-full text-base font-bold text-right text-green-deep"
+                    >
+                      Client {++index}
+                    </h3>
+                  ) : (
+                    ""
+                  )}
+                </>
+              ))}
+            </div>
+          </div>
           <NetWorthBalance pfrType={props.pfrType} />
         </>
       ) : (
