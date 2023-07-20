@@ -41,7 +41,7 @@ const initialState: SectionNineRecommendation = {
                 cpfMedisave: 0
             },
             groupId: 0,
-            premiumType: null,
+            premiumType: -1,
             feature: null
         },
         riders: [],
@@ -54,6 +54,8 @@ type Actions = {
     setProduct: (value: string, name: string, groupData: any) => any;
     setProductArr: (value: any, name: string, groupData: any) => any;
     setProductRiderArr: (value: any, name: string, groupData: any) => any;
+    setProductRiderBenefitArr: (value: any, riderId: string) => any;
+    setProductRiderRiskArr: (value: any, riderId: string) => any;
 };
 
 const AnalysisRecommendationProduct = create(
@@ -78,6 +80,32 @@ const AnalysisRecommendationProduct = create(
     setProductRiderArr: (value: any, name: string, groupData: any) => set(
         produce((draft) => {
             draft.section9Recommend[name] = value;
+        })
+    ),
+    setProductRiderBenefitArr: (value: any, riderId: string) => set(
+        produce((draft) => {
+            if(draft.section9Recommend.riders.length > 0){
+                draft.section9Recommend.riders.filter((valueRider:any, indexRider:any) => {
+                    if(valueRider == riderId){
+                        draft.section9Recommend.riders[indexRider].benefit = value
+                    }else{
+                        draft.section9Recommend.riders[indexRider].benefit = value
+                    }
+                })
+            }
+        })
+    ),
+    setProductRiderRiskArr: (value: any, riderId: string) => set(
+        produce((draft) => {
+            if(draft.section9Recommend.riders.length > 0){
+                draft.section9Recommend.riders.filter((valueRider:any, indexRider:any) => {
+                    if(valueRider == riderId){
+                        draft.section9Recommend.riders[indexRider].risk = value
+                    }else{
+                        draft.section9Recommend.riders[indexRider].risk = value
+                    }
+                })
+            }
         })
     )
   }))

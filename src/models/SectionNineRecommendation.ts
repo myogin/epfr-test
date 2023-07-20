@@ -27,7 +27,7 @@ interface Product {
     fundAmount:                 number;
     premiumForHospitalization:  PremiumForHospitalization;
     groupId:                    number;
-    premiumType:                null;
+    premiumType:                number;
     feature:                    null;
 }
 

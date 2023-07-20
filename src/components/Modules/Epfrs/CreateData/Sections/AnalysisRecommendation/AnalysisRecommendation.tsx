@@ -75,7 +75,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
   const showDetail = (params: any, data: any) => {
-    localStorage.setItem("s9_PfrId", '10640');
+    localStorage.setItem("s9_PfrId", '10653');
     localStorage.setItem("s9_dataGroup", '0');
     localStorage.setItem("group_name", params);
 
