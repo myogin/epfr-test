@@ -43,11 +43,11 @@ const CashFlow = (props: Props) => {
 
   let { need, reason, totalNetSurplus, setNeed } = useCashFlow();
 
+  let checkNeedData = checkAllNeed(need);
+
   const [reviewAll, setReviewAll] = useState(true);
 
   const handleReview = (index: number, params: any) => {
-    console.log("masuk snini nggak " + index + " " + params);
-
     setNeed(index, params);
   };
   // let post = postPfr(1)
@@ -139,9 +139,11 @@ const CashFlow = (props: Props) => {
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
                   <div className="flex-1" key={"cashflow-qa-" + index}>
+
+                    {/* For Joint */}
                     {props.pfrType > 1 ? (
                       <>
-                        {need ? (
+                        {need && checkNeedData > 0 ? (
                           need[index] ? (
                             <>
                               <h3
@@ -179,7 +181,7 @@ const CashFlow = (props: Props) => {
                           ""
                         )}
                       </>
-                    ) : (
+                    ) : ( // For single
                       <p className="text-sm font-normal text-gray-light">
                         {`Do you have any plans or are there any factors within
                           the next 12 months which may significantly increase or
@@ -189,29 +191,43 @@ const CashFlow = (props: Props) => {
                       </p>
                     )}
 
-                    {need ? (
-                      need[index] ? (
-                        <Select
-                          value=""
-                          className="my-4"
-                          datas={fillInformation}
-                          handleChange={(event) =>
-                            setData(eval(event.target.value))
-                          }
-                        />
-                      ) : (
-                        <Select
-                          disabled={true}
-                          value=""
-                          className="my-4"
-                          datas={fillInformation}
-                          handleChange={(event) =>
-                            setData(eval(event.target.value))
-                          }
-                        />
-                      )
-                    ) : (
-                      ""
+                    {/* For Joint */}
+                    {props.pfrType > 1 ? (
+                      <>
+                        {need && checkNeedData > 0 ? (
+                          need[index] ? (
+                            <Select
+                              value=""
+                              className="my-4"
+                              datas={fillInformation}
+                              handleChange={(event) =>
+                                setData(eval(event.target.value))
+                              }
+                            />
+                          ) : (
+                            <Select
+                              disabled={true}
+                              value=""
+                              className="my-4"
+                              datas={fillInformation}
+                              handleChange={(event) =>
+                                setData(eval(event.target.value))
+                              }
+                            />
+                          )
+                        ) : (
+                          ""
+                        )}
+                      </>
+                    ) : ( // For single
+                      <Select
+                        value=""
+                        className="my-4"
+                        datas={fillInformation}
+                        handleChange={(event) =>
+                          setData(eval(event.target.value))
+                        }
+                      />
                     )}
                   </div>
                 ))}
@@ -298,6 +314,19 @@ const CashFlow = (props: Props) => {
       </SectionCardFooter> */}
     </div>
   );
+};
+
+const checkAllNeed = (params: any) => {
+  let checkTotal = 0;
+  if (params?.length) {
+    params.map((data: any, index: any) => {
+      if (data == 1) {
+        checkTotal = 1;
+      }
+    });
+  }
+
+  return checkTotal;
 };
 
 export default CashFlow;

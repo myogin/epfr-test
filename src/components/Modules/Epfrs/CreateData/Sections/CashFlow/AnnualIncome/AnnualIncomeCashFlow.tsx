@@ -418,7 +418,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
           <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-6"}`}>
             {others.annualIncome.map((data, index) => (
               <div className={`${props.pfrType == 1 ? "grid-cols-3" : "grid-cols-6"} grid gap-8 space-y-4`} key={"annualIncome-" + index}>
-                <div className="col-span-2">
+                <div className={`${props.pfrType ==  1 ? "" : "col-span-2"}`}>
                   <div className="flex items-center gap-4">
                     <div>{data.key}</div>
                     {data.key !== "" ? (
