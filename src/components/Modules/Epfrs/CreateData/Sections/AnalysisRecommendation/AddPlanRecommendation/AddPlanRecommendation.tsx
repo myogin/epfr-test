@@ -61,7 +61,8 @@ const AddPlanRecommendation = () => {
     setProductArr,
     setProductRiderArr,
     setProductRiderBenefitArr,
-    setProductRiderRiskArr
+    setProductRiderRiskArr,
+    setProductHospital
   } = useAnalysisRecommendationProduct();
 
   let benefits: Array<any> = [
@@ -210,6 +211,7 @@ const AddPlanRecommendation = () => {
   const [riderArr, setRiderArr] = useState<any>([]);
   const [riderBenefit, setRiderBenefit] = useState<any>(false);
   const [dataSelectedCategoryType, setDataSelectedCategoryType] = useState<any>(-1);
+  const [dataSelectedCategoryId, setDataSelectedCategoryId] = useState<any>(-1);
 
   let dataPremiumTypeIlp: Array<any> = [
     { id: 0, name: "Single" },
@@ -291,7 +293,7 @@ const AddPlanRecommendation = () => {
     const selectedCategoryType = (initWhole.category[value]) ? initWhole.category[value]['type'] : null
     setDataSelectedCategoryType(selectedCategoryType)
     const selectedCategoryId = (initWhole.category[value]) ? initWhole.category[value]['id'] : null
-
+    setDataSelectedCategoryId(selectedCategoryId)
     // Check Product Company
     var pushComp: Array<any> = [];
     // 
@@ -552,20 +554,28 @@ const AddPlanRecommendation = () => {
         var lengthData = 0;
         var dataFunds: Array<any> = [];
 
-        if(dataProduct.ilp.platform.funds.length > 0){
-          dataProduct.ilp.platform.funds.map((valueRes:any, indexRes:any) => {
-            dataFunds.push({
-              allocation: valueRes.allocation,
-              fundId: valueRes.fundId,
-              groupId: valueRes.fund.groupId,
-              name: valueRes.fund.name,
-            });
-          })
+        if(dataProduct?.ilp){
+          if(dataProduct.ilp.platform.funds.length > 0){
+            dataProduct.ilp.platform.funds.map((valueRes:any, indexRes:any) => {
+              dataFunds.push({
+                allocation: valueRes.allocation,
+                fundId: valueRes.fundId,
+                groupId: valueRes.fund.groupId,
+                name: valueRes.fund.name,
+              });
+            })
+          }
         }
 
         setProductArr(dataFunds, 'funds', null);
       }   
       setDataProductSelected(data)
+
+      // Hospitalization
+      if(dataSelectedCategoryId == 8 || dataSelectedCategoryId == 5){
+        setProductHospital(0, 'cash');
+        setProductHospital(0, 'cpfMedisave');
+      }
     });
 
     
@@ -1127,6 +1137,11 @@ const AddPlanRecommendation = () => {
   const saveData = (params: any) => {
     showDetailData(params);
   };
+
+  const handleHospilization = (event:any) => {
+    const { name, value } = event.target;
+    setProductHospital(value, name);
+  }
   
   return (
     <>
@@ -1283,65 +1298,94 @@ const AddPlanRecommendation = () => {
                         needValidation={true} logic={section9Recommend.product.policyTerm === "" || section9Recommend.product.policyTerm === "-"  ? false : true}/>
                       </div>
                     </RowDoubleGrid>
-                    <RowSingleGrid>
-                      <TextSmall>FUND NAME & PERCENTAGE</TextSmall>
-                      <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-                        <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-                          <thead className="bg-white-bone">
-                            <tr className="border-b border-gray-soft-strong">
-                              <td className='align-top'>
-                                <TextSmall className="uppercase text-gray-light">
-                                  GROUP NAME
-                                </TextSmall>
-                              </td>
-                              <td className='align-top'>
-                                <TextSmall className="uppercase text-gray-light">
-                                  ALLOCATION(%)
-                                </TextSmall>
-                              </td>
-                              <td className='align-top'>
-                                <TextSmall className="uppercase text-gray-light">
-                                  FUND NAME
-                                </TextSmall>
-                              </td>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {getSelectProductone?.ilp &&
-                                  getSelectProductone.ilp.platform.funds.map((dataPlatform: any, indexPlatform:any) => (
-                                  <tr>
-                                    <td>
-                                      <span>{getFundName(dataPlatform.fund.groupId)}</span>
-                                    </td>
-                                    <td>
-                                      <span>{dataPlatform.allocation}</span>
-                                    </td>
-                                    <td>
-                                      <select
-                                        value={checkFundValues(indexPlatform)}
-                                        name="dataFund"
-                                        className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
-                                        onChange={(event) => setProductFund(event, dataPlatform.allocation, dataPlatform.fund.groupId, indexPlatform)}
-                                        disabled={getSelectProductone.ilp.platform.fixed == 1 ? true : false}
-                                      >
-                                        <option value="-">Please select data</option>
-                                        {checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).length &&
-                                          checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).map((val:any, indexVal:any) => (
-                                              <option key={indexVal} value={val.id}>
-                                                {val.name}
-                                              </option>
-                                          ))
-                                        }
-                                      </select>
-                                    </td>
-                                  </tr> 
+                    {(section9Recommend.product.funds.length > 0) ? (<>
+                      <RowSingleGrid>
+                        <TextSmall>FUND NAME & PERCENTAGE</TextSmall>
+                        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+                          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+                            <thead className="bg-white-bone">
+                              <tr className="border-b border-gray-soft-strong">
+                                <td className='align-top px-2 py-2'>
+                                  <TextSmall className="uppercase text-gray-light">
+                                    GROUP NAME
+                                  </TextSmall>
+                                </td>
+                                <td className='align-top px-2 py-2'>
+                                  <TextSmall className="uppercase text-gray-light">
+                                    ALLOCATION(%)
+                                  </TextSmall>
+                                </td>
+                                <td className='align-top px-2 py-2'>
+                                  <TextSmall className="uppercase text-gray-light">
+                                    FUND NAME
+                                  </TextSmall>
+                                </td>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {getSelectProductone?.ilp &&
+                                    getSelectProductone.ilp.platform.funds.map((dataPlatform: any, indexPlatform:any) => (
+                                    <tr>
+                                      <td className="px-2 py-2">
+                                        <span>{getFundName(dataPlatform.fund.groupId)}</span>
+                                      </td>
+                                      <td className="px-2 py-2">
+                                        <span>{dataPlatform.allocation}</span>
+                                      </td>
+                                      <td className="px-2 py-2">
+                                        <select
+                                          value={checkFundValues(indexPlatform)}
+                                          name="dataFund"
+                                          className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                                          onChange={(event) => setProductFund(event, dataPlatform.allocation, dataPlatform.fund.groupId, indexPlatform)}
+                                          disabled={getSelectProductone.ilp.platform.fixed == 1 ? true : false}
+                                        >
+                                          <option value="-">Please select data</option>
+                                          {checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).length &&
+                                            checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).map((val:any, indexVal:any) => (
+                                                <option key={indexVal} value={val.id}>
+                                                  {val.name}
+                                                </option>
+                                            ))
+                                          }
+                                        </select>
+                                      </td>
+                                    </tr> 
+                                  )
                                 )
-                              )
-                            }
-                          </tbody>
-                        </table>
-                      </div>
-                    </RowSingleGrid>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      </RowSingleGrid>
+                    </>) : ''}
+                    
+                    {dataSelectedCategoryId == 8 || dataSelectedCategoryId == 5 ? (
+                      <>
+                        <RowSingleGrid>
+                        <TextSmall>PREMIUM FREQUENCY</TextSmall>
+                        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+                          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+                            <tbody className="bg-white-bone">
+                              <tr>
+                                <td className="px-2 py-2">CASH</td>
+                                <td className="px-2 py-2">
+                                  <Input className="" name="cash" value={section9Recommend.product.premiumForHospitalization.cash} handleChange={(event) => handleHospilization(event)} needValidation={true} logic={section9Recommend.product.premiumForHospitalization.cash === null || section9Recommend.product.premiumForHospitalization.cash === 0 ? false : true}/>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="px-2 py-2">CPF MEDISAVE</td>
+                                <td className="px-2 py-2">
+                                  <Input className="" name="cpfMedisave" value={section9Recommend.product.premiumForHospitalization.cpfMedisave} handleChange={(event) => handleHospilization(event)} needValidation={true} logic={section9Recommend.product.premiumForHospitalization.cpfMedisave === null || section9Recommend.product.premiumForHospitalization.cpfMedisave === 0 ? false : true}/>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        </RowSingleGrid>
+                      </>
+                    ): ''}
+
                     <RowSingleGrid>
                       <TextSmall>Product Feature</TextSmall>
                       <p className="text-sm text-gray-light">

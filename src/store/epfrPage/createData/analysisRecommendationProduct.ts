@@ -56,6 +56,7 @@ type Actions = {
     setProductRiderArr: (value: any, name: string, groupData: any) => any;
     setProductRiderBenefitArr: (value: any, riderId: string) => any;
     setProductRiderRiskArr: (value: any, riderId: string) => any;
+    setProductHospital: (value: any, name: string) => any;
 };
 
 const AnalysisRecommendationProduct = create(
@@ -106,6 +107,11 @@ const AnalysisRecommendationProduct = create(
                     }
                 })
             }
+        })
+    ),
+    setProductHospital: (value: any, name: string) => set(
+        produce((draft) => {
+            draft.section9Recommend.product.premiumForHospitalization[name] = value;
         })
     )
   }))
