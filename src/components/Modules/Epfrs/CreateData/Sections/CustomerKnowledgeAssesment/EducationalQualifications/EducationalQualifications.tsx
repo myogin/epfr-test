@@ -6,9 +6,11 @@ import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
 import React, { useEffect, useState } from "react";
 import MultipleCheckbox from "../components/MultipleCheckbox";
+import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
 interface Props {
   initData: any;
   updateState: (index1: number, index2: number) => void;
+  pfrType: number;
 }
 
 const EducationalQualifications = (props: Props) => {
@@ -76,14 +78,15 @@ const EducationalQualifications = (props: Props) => {
 
       {qa[0].answers?.length &&
         qa[0].answers.map((answer: any, index: number) => (
-          <RowSingle key={answer.id}>
+          <RowSingleJointGrid pfrType={props.pfrType} key={index}>
+            <TextThin className="text-gray-light">{answer.answer}</TextThin>
             <Checkbox
               onChange={() => props.updateState(0, index)}
               isChecked={props.initData[0][index]}
             />
-            <TextThin className="text-gray-light">{answer.answer}</TextThin>
-          </RowSingle>
+          </RowSingleJointGrid>
         ))}
+
       {/*  */}
       <RowSingle>
         <TitleSmall className="text-gray-light">

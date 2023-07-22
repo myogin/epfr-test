@@ -13,15 +13,16 @@ import TextArea from "@/components/Forms/TextArea";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionSix } from "@/models/SectionSix";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const CustomerKnowledgeAssesment = (props: Props) => {
   const [isReview, setIsReview] = useState(false);
-
+  let getPfrLength = getLength(props.pfrType);
   const scrollPosition = useScrollPosition(6);
 
   const [sectionSix, setSectionSix] = useState<SectionSix>({
@@ -259,12 +260,33 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       </div>
       {!isReview ? (
         <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
-            6.1 Educational Qualifications
-          </HeadingSecondarySection>
+          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
+            <div className="grid col-span-2">
+              <h2 className="text-xl font-bold">
+                6.1 Educational Qualifications
+              </h2>
+            </div>
+            <div className="grid grid-cols-2">
+              {getPfrLength.map((e, index) => (
+                <>
+                  {props.pfrType > 1 ? (
+                    <h3
+                      key={"heading-secondary-" + index}
+                      className="w-full text-base font-bold text-right text-green-deep"
+                    >
+                      Client {++index}
+                    </h3>
+                  ) : (
+                    ""
+                  )}
+                </>
+              ))}
+            </div>
+          </div>
           <EducationalQualifications
             initData={sectionSix.answers.education}
             updateState={eqChange}
+            pfrType={props.pfrType}
           />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.2 Investment Experience
