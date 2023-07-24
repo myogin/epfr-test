@@ -123,9 +123,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
             : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
-        <div
-          className={`col-span-3`}
-        ></div>
+        <div className={`col-span-3`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
@@ -386,8 +384,26 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                     </>
                                   ) : (
                                     <>
-                                      <div className="text-right">-</div>
-                                      <div className="text-right">-</div>
+                                      <div
+                                        className={`my-4 space-y-3 text-right ${
+                                          props.pfrType == 1
+                                            ? "1/4"
+                                            : "basis-1/6"
+                                        }`}
+                                      >
+                                        <div className="w-full text-left">Monthly</div>
+                                        <div className="py-2 text-left">0</div>
+                                      </div>
+                                      <div
+                                        className={`my-4 space-y-3 text-right ${
+                                          props.pfrType == 1
+                                            ? "1/4"
+                                            : "basis-1/6"
+                                        }`}
+                                      >
+                                        <div className="w-full text-left">Annual</div>
+                                        <div className="py-2 text-left">0</div>
+                                      </div>
                                     </>
                                   )
                                 ) : (
@@ -415,10 +431,17 @@ const AnnualIncomeCashFlow = (props: Props) => {
           </Transition>
         </div>
         {others?.annualIncome.length ? (
-          <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-6"}`}>
+          <div
+            className={`${props.pfrType == 1 ? "col-span-3" : "col-span-6"}`}
+          >
             {others.annualIncome.map((data, index) => (
-              <div className={`${props.pfrType == 1 ? "grid-cols-3" : "grid-cols-6"} grid gap-8 space-y-4`} key={"annualIncome-" + index}>
-                <div className={`${props.pfrType ==  1 ? "" : "col-span-2"}`}>
+              <div
+                className={`${
+                  props.pfrType == 1 ? "grid-cols-3" : "grid-cols-6"
+                } grid gap-8 space-y-4`}
+                key={"annualIncome-" + index}
+              >
+                <div className={`${props.pfrType == 1 ? "" : "col-span-2"}`}>
                   <div className="flex items-center gap-4">
                     <div>{data.key}</div>
                     {data.key !== "" ? (
