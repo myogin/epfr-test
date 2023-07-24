@@ -12,7 +12,7 @@ import { checkCountData, getLength } from "@/libs/helper";
 import { AnnualIncome, Datas } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { Dialog, Transition } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
@@ -32,6 +32,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
   let { need, data, others, setAnnualIncome, setAnnualSurplus } = useCashFlow();
 
   const [showModalOther, setShowModalOther] = useState(false);
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [actionDatatId, setActionDataId] = useState(0);
 
   let [annualData, setAnnualData] = useState(0);
   let [monthlyData, setMonthlyData] = useState(0);
@@ -110,6 +112,16 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   const editOther = (params: string) => {
     setShowModalOther(true);
+  };
+
+  const removeDataAction = (params: any) => {
+    // removeDependent(params);
+    setShowModalRemove(false);
+  };
+
+  const modalRemoveData = (params: any) => {
+    setShowModalRemove(true);
+    setActionDataId(params);
   };
 
   const [other, setOther] = useState<any>(0);
@@ -391,8 +403,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                             : "basis-1/6"
                                         }`}
                                       >
-                                        <div className="w-full text-left">Monthly</div>
-                                        <div className="py-2 text-left">0</div>
+                                        <div className="w-full text-sm font-bold text-left text-gray-light">Monthly</div>
+                                        <div className="py-2 text-sm text-left text-gray-light">0</div>
                                       </div>
                                       <div
                                         className={`my-4 space-y-3 text-right ${
@@ -401,8 +413,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                             : "basis-1/6"
                                         }`}
                                       >
-                                        <div className="w-full text-left">Annual</div>
-                                        <div className="py-2 text-left">0</div>
+                                        <div className="w-full text-sm font-bold text-left text-gray-light">Annual</div>
+                                        <div className="py-2 text-sm text-left text-gray-light">0</div>
                                       </div>
                                     </>
                                   )
@@ -429,6 +441,72 @@ const AnnualIncomeCashFlow = (props: Props) => {
               </div>
             </Dialog>
           </Transition>
+
+          {/* Modal Delete */}
+        <Transition appear show={showModalRemove} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModalRemove(false)}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-full p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Remove Data
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Are you sure to remove this data.?
+                      </p>
+                    </div>
+
+                    <div className="mt-4 space-x-2">
+                      <button
+                        type="button"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border rounded-md text-red border-red"
+                        onClick={() => removeDataAction(actionDatatId)}
+                      >
+                        Remove
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border rounded-md text-gray-light border-gray-light"
+                        onClick={() => setShowModalRemove(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
         </div>
         {others?.annualIncome.length ? (
           <div
@@ -454,7 +532,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         </ButtonBox>
                         <ButtonBox
                           className="text-red"
-                          onClick={() => editOther(data.key)}
+                          onClick={() => modalRemoveData(data.id)}
                         >
                           <CloseLineIcon size={14} />
                         </ButtonBox>
