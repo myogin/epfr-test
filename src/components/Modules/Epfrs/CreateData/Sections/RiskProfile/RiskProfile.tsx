@@ -449,7 +449,7 @@ const RiskProfile = (props: Props) => {
                   {props.pfrType > 1 ? (
                     <h3
                       key={"heading-secondary-" + index}
-                      className="w-full text-base font-bold text-right text-green-deep"
+                      className="w-full text-base font-bold text-left text-green-deep"
                     >
                       Client {++index}
                     </h3>

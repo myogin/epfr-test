@@ -2,13 +2,15 @@ import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSing
 import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
 import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
+import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
+import { getLength } from "@/libs/helper";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 import React from "react";
 interface Props {
-  initData: any;
-  updateState: (index: number) => void;
+  pfrType: number;
 }
 const InvestmentExperience = (props: Props) => {
   let qa: Array<any> = [
@@ -23,7 +25,10 @@ const InvestmentExperience = (props: Props) => {
       ],
     },
   ];
-  const checkValidate = (data: boolean) => data === false;
+  let getPfrLength = getLength(props.pfrType);
+
+  // zustand
+  const { answers, updateInvestment } = useCustomerKnowledgeAssesment();
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowSingle>
@@ -33,22 +38,31 @@ const InvestmentExperience = (props: Props) => {
           years?
         </TitleSmall>
       </RowSingle>
-      {props.initData.every(checkValidate) ? (
-        <RowSingle className="py-6">
+      {/* {props.initData.every(checkValidate) ? (
+        <RowSingleJointGrid pfrType={2} className="py-6">
+          <div className="col-span-2"></div>
           <span className="text-xs font-normal text-red">Required</span>
-        </RowSingle>
+        </RowSingleJointGrid>
       ) : (
         ""
-      )}
+      )} */}
       {qa[0].answers?.length &&
         qa[0].answers.map((answer: any, index: number) => (
-          <RowSingle key={answer.id}>
-            <Checkbox
-              onChange={() => props.updateState(index)}
-              isChecked={props.initData[index]}
-            />
-            <TextThin className="text-gray-light">{answer.answer}</TextThin>
-          </RowSingle>
+          <RowSingleJointGrid pfrType={2} key={index}>
+            <div className="col-span-2 text-gray-light">{answer.answer}</div>
+            <div className="grid-cols-2 grid">
+              {getPfrLength.map((e2, userIndex) => (
+                <>
+                  <Checkbox
+                    onChange={() => {
+                      updateInvestment(userIndex, index);
+                    }}
+                    isChecked={answers[userIndex].investment[index]}
+                  />
+                </>
+              ))}
+            </div>
+          </RowSingleJointGrid>
         ))}
     </SectionCardSingleGrid>
   );

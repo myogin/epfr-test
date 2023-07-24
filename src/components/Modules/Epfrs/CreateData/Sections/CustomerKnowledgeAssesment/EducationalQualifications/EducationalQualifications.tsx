@@ -7,9 +7,9 @@ import Checkbox from "@/components/Forms/Checkbox";
 import React, { useEffect, useState } from "react";
 import MultipleCheckbox from "../components/MultipleCheckbox";
 import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
+import { getLength } from "@/libs/helper";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 interface Props {
-  initData: any;
-  updateState: (index1: number, index2: number) => void;
   pfrType: number;
 }
 
@@ -56,8 +56,10 @@ const EducationalQualifications = (props: Props) => {
       ],
     },
   ];
+  let getPfrLength = getLength(props.pfrType);
 
-  const checkValidate = (data: boolean) => data === false;
+  // zustand
+  const { answers, updateEducation } = useCustomerKnowledgeAssesment();
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -68,22 +70,31 @@ const EducationalQualifications = (props: Props) => {
         </TitleSmall>
       </RowSingle>
 
-      {props.initData[0].every(checkValidate) ? (
-        <RowSingle className="py-6">
+      {/* {props.initData[0].every(checkValidate) ? (
+        <RowSingleJointGrid pfrType={2} className="py-6">
+          <div className="col-span-2"></div>
           <span className="text-xs font-normal text-red">Required</span>
-        </RowSingle>
+        </RowSingleJointGrid>
       ) : (
         ""
-      )}
+      )} */}
 
       {qa[0].answers?.length &&
         qa[0].answers.map((answer: any, index: number) => (
-          <RowSingleJointGrid pfrType={props.pfrType} key={index}>
-            <TextThin className="text-gray-light">{answer.answer}</TextThin>
-            <Checkbox
-              onChange={() => props.updateState(0, index)}
-              isChecked={props.initData[0][index]}
-            />
+          <RowSingleJointGrid pfrType={2} key={index}>
+            <div className="col-span-2 text-gray-light">{answer.answer}</div>
+            <div className="grid-cols-2 grid">
+              {getPfrLength.map((e2, userIndex) => (
+                <>
+                  <Checkbox
+                    onChange={() => {
+                      updateEducation(userIndex, 0, index);
+                    }}
+                    isChecked={answers[userIndex].education[0][index]}
+                  />
+                </>
+              ))}
+            </div>
           </RowSingleJointGrid>
         ))}
 
@@ -94,22 +105,31 @@ const EducationalQualifications = (props: Props) => {
           of the following?
         </TitleSmall>
       </RowSingle>
-      {props.initData[1].every(checkValidate) ? (
-        <RowSingle className="py-6">
+      {/* {props.initData[1].every(checkValidate) ? (
+        <RowSingleJointGrid pfrType={2} className="py-6">
+          <div className="col-span-2"></div>
           <span className="text-xs font-normal text-red">Required</span>
-        </RowSingle>
+        </RowSingleJointGrid>
       ) : (
         ""
-      )}
+      )} */}
       {qa[1].answers?.length &&
         qa[1].answers.map((answer: any, index: number) => (
-          <RowSingle key={answer.id}>
-            <Checkbox
-              onChange={() => props.updateState(1, index)}
-              isChecked={props.initData[1][index]}
-            />
-            <TextThin className="text-gray-light">{answer.answer}</TextThin>
-          </RowSingle>
+          <RowSingleJointGrid pfrType={2} key={index}>
+            <div className="col-span-2 text-gray-light">{answer.answer}</div>
+            <div className="grid-cols-2 grid">
+              {getPfrLength.map((e2, userIndex) => (
+                <>
+                  <Checkbox
+                    onChange={() => {
+                      updateEducation(userIndex, 1, index);
+                    }}
+                    isChecked={answers[userIndex].education[1][index]}
+                  />
+                </>
+              ))}
+            </div>
+          </RowSingleJointGrid>
         ))}
     </SectionCardSingleGrid>
   );
