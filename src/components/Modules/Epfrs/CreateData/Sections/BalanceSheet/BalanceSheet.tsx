@@ -166,7 +166,7 @@ const BalanceSheet = (props: Props) => {
               <Checkbox
                 isChecked={need ? (need[index] == 1 ? true : false) : false}
                 onChange={() => {
-                  updateNeed(index, need[index] == 1 ? 0 : 1);
+                  updateNeed(index, need[index] == 1 ? 0 : 1, props.pfrType);
                 }}
                 lableStyle="text-sm font-normal text-gray-light"
                 label="No, The Client would not like their existing portfolio to be taken
@@ -189,8 +189,17 @@ const BalanceSheet = (props: Props) => {
                   name="reason"
                   value={reason[index]}
                   handleChange={(e) => {
-                    updateReason(index, e.target.value);
+                    updateReason(index, e.target.value, props.pfrType);
                   }}
+                  needValidation={true}
+                  logic={
+                    reason[index] === "" ||
+                    reason[index] === "-" ||
+                    reason[index] === null ||
+                    reason[index] === undefined
+                      ? false
+                      : true
+                  }
                 />
               ) : (
                 ""

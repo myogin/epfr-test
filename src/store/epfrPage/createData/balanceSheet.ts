@@ -28,8 +28,8 @@ type Actions = {
   deleteLiability: (index: number) => any;
   updateLiability: (index: number, data: any) => any;
   calcTotal: (api?: any) => any;
-  updateNeed: (client: number, value: number) => any;
-  updateReason: (client: number, reason: string) => any;
+  updateNeed: (client: number, value: number, pfrType: number) => any;
+  updateReason: (client: number, reason: string, pfrType: number) => any;
 };
 
 const balanceSheet = (set: any, get: any) => ({
@@ -97,17 +97,60 @@ const balanceSheet = (set: any, get: any) => ({
         drafts.totalCalc.network = [client1Network, client2Network];
       })
     ),
-  updateNeed: (client: number, value: number) => {
+  updateNeed: (client: number, value: number, pfrType: number) => {
     set(
       produce((drafts: any) => {
         drafts.need[client] = value;
+
+        let validation = [0, 0];
+        for (let index = 0; index < pfrType; index++) {
+          if (drafts.need[index] === 1) {
+            if (
+              drafts.reason[index] == "" ||
+              drafts.reason[index] == undefined ||
+              drafts.reason[index] == null
+            ) {
+              validation[index] = 0;
+            } else {
+              validation[index] = 1;
+            }
+          } else {
+            validation[index] = 1;
+          }
+        }
+        if (validation.every((e) => e == 1)) {
+          drafts.status = 1;
+        } else {
+          drafts.status = 0;
+        }
       })
     );
   },
-  updateReason: (client: number, reason: string) => {
+  updateReason: (client: number, reason: string, pfrType: number) => {
     set(
       produce((drafts: any) => {
         drafts.reason[client] = reason;
+        let validation = [0, 0];
+        for (let index = 0; index < pfrType; index++) {
+          if (drafts.need[index] === 1) {
+            if (
+              drafts.reason[index] == "" ||
+              drafts.reason[index] == undefined ||
+              drafts.reason[index] == null
+            ) {
+              validation[index] = 0;
+            } else {
+              validation[index] = 1;
+            }
+          } else {
+            validation[index] = 1;
+          }
+        }
+        if (validation.every((e) => e == 1)) {
+          drafts.status = 1;
+        } else {
+          drafts.status = 0;
+        }
       })
     );
   },
