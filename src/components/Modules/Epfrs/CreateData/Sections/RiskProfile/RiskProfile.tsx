@@ -29,6 +29,7 @@ import {
 import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
 import { getLength } from "@/libs/helper";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 interface Props {
   id?: any;
   pfrType: number;
@@ -437,30 +438,9 @@ const RiskProfile = (props: Props) => {
       </div>
       {!notReviewAll ? (
         <>
-          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
-            <div className="grid col-span-2">
-              <h2 className="text-xl font-bold">
-                5.1 Risk Profile Questionarie
-              </h2>
-            </div>
-            <div className="grid grid-cols-2">
-              {getPfrLength.map((e, index) => (
-                <>
-                  {props.pfrType > 1 ? (
-                    <h3
-                      key={"heading-secondary-" + index}
-                      className="w-full text-base font-bold text-left text-green-deep"
-                    >
-                      Client {++index}
-                    </h3>
-                  ) : (
-                    ""
-                  )}
-                </>
-              ))}
-            </div>
-          </div>
-
+          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+            5.1 Risk Profile Questionarie
+          </HeadingSecondarySection>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
             {/* Question 1 */}
             <RowSingle className="mb-4">
@@ -468,26 +448,34 @@ const RiskProfile = (props: Props) => {
                 {qa[0].question}
               </TitleSmall>
             </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[0].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ0Change(el, index, index2);
+                          handleQ0Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q0State[index].u1 : q0State[index].u2
+                          userIndex == 0 ? q0State[index].u1 : q0State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
             {/* Question 2 */}
             <RowSingle className="mb-4">
@@ -495,26 +483,35 @@ const RiskProfile = (props: Props) => {
                 {qa[1].question}
               </TitleSmall>
             </RowSingle>
+
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[1].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ1Change(el, index, index2);
+                          handleQ1Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q1State[index].u1 : q1State[index].u2
+                          userIndex == 0 ? q1State[index].u1 : q1State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
             {/* Question 3 */}
             <RowSingle className="mb-4">
@@ -522,26 +519,35 @@ const RiskProfile = (props: Props) => {
                 {qa[2].question}
               </TitleSmall>
             </RowSingle>
+
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[2].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ2Change(el, index, index2);
+                          handleQ2Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q2State[index].u1 : q2State[index].u2
+                          userIndex == 0 ? q2State[index].u1 : q2State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
             {/* Question 4 */}
             <RowSingle className="mb-4">
@@ -549,26 +555,35 @@ const RiskProfile = (props: Props) => {
                 {qa[3].question}
               </TitleSmall>
             </RowSingle>
+
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[3].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ3Change(el, index, index2);
+                          handleQ3Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q3State[index].u1 : q3State[index].u2
+                          userIndex == 0 ? q3State[index].u1 : q3State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
             {/* Question 5 */}
             <RowSingle className="mb-4">
@@ -576,80 +591,71 @@ const RiskProfile = (props: Props) => {
                 {qa[4].question}
               </TitleSmall>
             </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[4].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ4Change(el, index, index2);
+                          handleQ4Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q4State[index].u1 : q4State[index].u2
+                          userIndex == 0 ? q4State[index].u1 : q4State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
-            {/* Question 5 */}
-            <RowSingle className="mb-4">
-              <TitleSmall className="text-gray-light">
-                {qa[5].question}
-              </TitleSmall>
-            </RowSingle>
-            {qa[5].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
-                      <Checkbox
-                        value={e.score}
-                        onChange={(el) => {
-                          handleQ5Change(el, index, index2);
-                        }}
-                        dataId={index}
-                        isChecked={
-                          index2 == 0 ? q5State[index].u1 : q5State[index].u2
-                        }
-                      />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
-            ))}
+
             {/* Question 6 */}
             <RowSingle className="mb-4">
               <TitleSmall className="text-gray-light">
                 {qa[5].question}
               </TitleSmall>
             </RowSingle>
+
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[5].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ5Change(el, index, index2);
+                          handleQ5Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q5State[index].u1 : q5State[index].u2
+                          userIndex == 0 ? q5State[index].u1 : q5State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
             {/* Question 7 */}
             <RowSingle className="mb-4">
@@ -657,26 +663,34 @@ const RiskProfile = (props: Props) => {
                 {qa[6].question}
               </TitleSmall>
             </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[6].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ6Change(el, index, index2);
+                          handleQ6Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q6State[index].u1 : q6State[index].u2
+                          userIndex == 0 ? q6State[index].u1 : q6State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
             {/* Question 8 */}
             <RowSingle className="mb-4">
@@ -684,26 +698,34 @@ const RiskProfile = (props: Props) => {
                 {qa[7].question}
               </TitleSmall>
             </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[7].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ7Change(el, index, index2);
+                          handleQ7Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q7State[index].u1 : q7State[index].u2
+                          userIndex == 0 ? q7State[index].u1 : q7State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
             {/* Question 9 */}
             <RowSingle className="mb-4">
@@ -711,26 +733,34 @@ const RiskProfile = (props: Props) => {
                 {qa[8].question}
               </TitleSmall>
             </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
             {qa[8].answers.map((e: any, index: number) => (
-              <RowSingleJointGrid pfrType={2} key={index}>
-                <div className="col-span-2">{e.answer}</div>
-                <div className="grid-cols-2 grid">
-                  {getPfrLength.map((e2, index2) => (
-                    <>
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
                       <Checkbox
                         value={e.score}
                         onChange={(el) => {
-                          handleQ8Change(el, index, index2);
+                          handleQ8Change(el, index, userIndex);
                         }}
                         dataId={index}
                         isChecked={
-                          index2 == 0 ? q8State[index].u1 : q8State[index].u2
+                          userIndex == 0 ? q8State[index].u1 : q8State[index].u2
                         }
+                        label={e.answer}
                       />
-                    </>
-                  ))}
-                </div>
-              </RowSingleJointGrid>
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
             ))}
           </SectionCardSingleGrid>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
@@ -757,7 +787,9 @@ const RiskProfile = (props: Props) => {
                   <div>
                     {riskAttitude[i]} {statusRiskAttitude[i]}
                   </div>
-                  <div>{resultAttitude[i]}</div>
+                  <div className="w-full  text-green-deep">
+                    {resultAttitude[i]}
+                  </div>
                 </RowFourthGrid>
               </>
             ))}
