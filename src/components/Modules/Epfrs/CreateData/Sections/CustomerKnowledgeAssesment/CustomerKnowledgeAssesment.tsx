@@ -13,232 +13,22 @@ import TextArea from "@/components/Forms/TextArea";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionSix } from "@/models/SectionSix";
+import { getLength } from "@/libs/helper";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const CustomerKnowledgeAssesment = (props: Props) => {
   const [isReview, setIsReview] = useState(false);
-
+  let getPfrLength = getLength(props.pfrType);
   const scrollPosition = useScrollPosition(6);
-
-  const [sectionSix, setSectionSix] = useState<SectionSix>({
-    id: 0,
-    need: [],
-    reason: ["", ""],
-    answers: {
-      education: [
-        [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ],
-        [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ],
-      ],
-      investment: [false, false, false],
-      work: [false, false, false, false, false, false, false],
-    },
-
-    outcome: [],
-    outcomeChanged: true,
-    issues: [],
-    status: 0,
-  });
-
-  if (typeof window !== "undefined") {
-    localStorage.setItem("section6", JSON.stringify(sectionSix));
-  }
-
-  const checkboxChange = (event: any) => {
-    setIsReview(!isReview);
-
-    setSectionSix((prevState) => {
-      return { ...prevState, ["need"]: [!isReview] };
-    });
-  };
-
-  // handle input change / state change
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
-
-    setSectionSix((prevState) => {
-      return { ...prevState, [name]: value };
-    });
-  };
-
-  const handleReasonChange = (e: any, user: number) => {
-    const { name, value } = e.target;
-    let newReason = sectionSix.reason;
-    if (value != "") {
-      setSectionSix((prevState) => {
-        return { ...prevState, status: 1 };
-      });
-    } else {
-      setSectionSix((prevState) => {
-        return { ...prevState, status: 0 };
-      });
-    }
-
-    newReason[user] = value;
-
-    setSectionSix((prevState) => {
-      return { ...prevState, reason: newReason };
-    });
-  };
-
-  // Educational Qualifications
-  const eqChange = (question: number, index2: number) => {
-    let tempVal = sectionSix.answers.education;
-
-    if (
-      (question === 0 && index2 === 11) ||
-      (question === 1 && index2 === 10)
-    ) {
-      if (sectionSix.answers.education[question][index2] === false) {
-        tempVal[question] = tempVal[question].map((e) => {
-          return false;
-        });
-      }
-    }
-
-    if (question === 0 && index2 !== 11) {
-      if (sectionSix.answers.education[question][index2] != true) {
-        tempVal[question][11] = false;
-      }
-    }
-    if (question === 1 && index2 !== 10) {
-      if (sectionSix.answers.education[question][index2] != true) {
-        tempVal[question][10] = false;
-      }
-    }
-
-    tempVal[question][index2] = !tempVal[question][index2];
-
-    setSectionSix((prevState) => {
-      return {
-        ...prevState,
-        answers: {
-          ...prevState.answers,
-          education: tempVal,
-        },
-      };
-    });
-  };
-
-  // 6.2 Investment Experience
-  const ieChange = (index: number) => {
-    let tempVal = sectionSix.answers.investment;
-    if (index === 2) {
-      if (sectionSix.answers.investment[index] === false) {
-        tempVal = tempVal.map((e) => {
-          return false;
-        });
-      }
-    }
-
-    if (index !== 2) {
-      if (sectionSix.answers.investment[index] != true) {
-        tempVal[2] = false;
-      }
-    }
-    tempVal[index] = !tempVal[index];
-
-    setSectionSix((prevState) => {
-      return {
-        ...prevState,
-        answers: {
-          ...prevState.answers,
-          investment: tempVal,
-        },
-      };
-    });
-  };
-  const wChange = (index: number) => {
-    let tempVal = sectionSix.answers.work;
-    if (index === 6) {
-      if (sectionSix.answers.work[index] === false) {
-        tempVal = tempVal.map((e) => {
-          return false;
-        });
-      }
-    }
-
-    if (index !== 6) {
-      if (sectionSix.answers.work[index] != true) {
-        tempVal[6] = false;
-      }
-    }
-    tempVal[index] = !tempVal[index];
-
-    setSectionSix((prevState) => {
-      return {
-        ...prevState,
-        answers: {
-          ...prevState.answers,
-          work: tempVal,
-        },
-      };
-    });
-  };
-  const [haveMet, setHaveMet] = useState(false);
-
-  useEffect(() => {
-    const handleHaveMet = () => {
-      let tempAnswer = [];
-      tempAnswer.push(sectionSix.answers.education[0][11]);
-      tempAnswer.push(sectionSix.answers.education[0][10]);
-      tempAnswer.push(sectionSix.answers.investment[2]);
-      tempAnswer.push(sectionSix.answers.work[6]);
-
-      setHaveMet(tempAnswer.every((e) => e === false));
-    };
-    handleHaveMet();
-
-    const checkValidate = () => {
-      if (sectionSix.answers.education[0].every((e) => e === false)) {
-        return 0;
-      }
-      if (sectionSix.answers.education[1].every((e) => e === false)) {
-        return 0;
-      }
-      if (sectionSix.answers.investment.every((e) => e === false)) {
-        return 0;
-      }
-      if (sectionSix.answers.work.every((e) => e === false)) {
-        return 0;
-      }
-      return 1;
-    };
-    const updateStatusSection6 = () => {
-      setSectionSix((prevState) => {
-        return { ...prevState, ["status"]: checkValidate() };
-      });
-    };
-    updateStatusSection6();
-  }, [sectionSix.reason, sectionSix.answers, sectionSix.need]);
+  // zustand
+  const { need, updateNeed, reason, updateReason } =
+    useCustomerKnowledgeAssesment();
   return (
     <div id={props.id}>
       <div
@@ -262,31 +52,22 @@ const CustomerKnowledgeAssesment = (props: Props) => {
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.1 Educational Qualifications
           </HeadingSecondarySection>
-          <EducationalQualifications
-            initData={sectionSix.answers.education}
-            updateState={eqChange}
-          />
+          <EducationalQualifications pfrType={props.pfrType} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.2 Investment Experience
           </HeadingSecondarySection>
-          <InvestmentExperience
-            initData={sectionSix.answers.investment}
-            updateState={ieChange}
-          />
+          <InvestmentExperience pfrType={props.pfrType} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.3 Work Experience
           </HeadingSecondarySection>
-          <WorkExperience
-            initData={sectionSix.answers.work}
-            updateState={wChange}
-          />
+          <WorkExperience pfrType={props.pfrType} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             Customer Knowledge Assesment Outcome
           </HeadingSecondarySection>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
             <div className="space-y-5">
               <span className="text-green-deep">
-                {haveMet ? "YOU HAVE MET" : "YOU HAVE NOT MET"}
+                {/* {haveMet ? "YOU HAVE MET" : "YOU HAVE NOT MET"} */}
               </span>
               <p className="text-sm text-gray-light">
                 The Customer Knowledge Assessment criteria and are deemed to
@@ -300,30 +81,56 @@ const CustomerKnowledgeAssesment = (props: Props) => {
         ""
       )}
 
-      <SectionCardSingleGrid className="mx-8 space-y-5 2xl:mx-60">
-        <div>
-          <Checkbox
-            isChecked={isReview}
-            onChange={checkboxChange}
-            lableStyle="text-sm font-normal text-gray-light"
-            label="Not applicable"
-          />
-        </div>
-        {isReview ? (
-          <div>
-            <TextArea
-              handleChange={(e) => {
-                handleReasonChange(e, 0);
-              }}
-              className="my-4"
-              label="The Reason"
-              value={sectionSix.reason[0]}
-              rows={3}
-            />
-          </div>
-        ) : (
-          ""
-        )}
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowSingleORDouble pfrType={props.pfrType}>
+          {getPfrLength.map((e, index) => (
+            <div className="flex-1" key={index}>
+              {props.pfrType > 1 ? (
+                <>
+                  <h3
+                    key={"heading-secondary-" + index}
+                    className="w-full mb-10 text-base font-bold"
+                  >
+                    Client {index + 1}
+                  </h3>
+                </>
+              ) : (
+                ""
+              )}
+              <Checkbox
+                isChecked={need ? (need[index] == 1 ? true : false) : false}
+                onChange={() => {
+                  updateNeed(index, need[index] == 1 ? 0 : 1);
+                }}
+                lableStyle="text-sm font-normal text-gray-light"
+                label="Not applicable"
+              />
+            </div>
+          ))}
+        </RowSingleORDouble>
+
+        {/*  */}
+
+        <RowSingleORDouble pfrType={props.pfrType}>
+          {getPfrLength.map((e, index) => (
+            <div className="flex-1" key={index}>
+              {need[index] == 1 ? (
+                <TextArea
+                  // handleChange={}
+                  className="my-4"
+                  label="The Reason"
+                  name="reason"
+                  value={reason[index]}
+                  handleChange={(e) => {
+                    updateReason(index, e.target.value);
+                  }}
+                />
+              ) : (
+                ""
+              )}
+            </div>
+          ))}
+        </RowSingleORDouble>
       </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
