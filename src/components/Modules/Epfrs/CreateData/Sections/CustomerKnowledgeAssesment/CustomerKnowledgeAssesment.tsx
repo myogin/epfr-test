@@ -49,29 +49,9 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       </div>
       {!isReview ? (
         <>
-          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
-            <div className="grid col-span-2">
-              <h2 className="text-xl font-bold">
-                6.1 Educational Qualifications
-              </h2>
-            </div>
-            <div className="grid grid-cols-2">
-              {getPfrLength.map((e, index) => (
-                <>
-                  {props.pfrType > 1 ? (
-                    <h3
-                      key={"heading-secondary-" + index}
-                      className="w-full text-base font-bold text-left text-green-deep"
-                    >
-                      Client {++index}
-                    </h3>
-                  ) : (
-                    ""
-                  )}
-                </>
-              ))}
-            </div>
-          </div>
+          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+            6.1 Educational Qualifications
+          </HeadingSecondarySection>
           <EducationalQualifications pfrType={props.pfrType} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.2 Investment Experience

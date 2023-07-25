@@ -9,6 +9,7 @@ import MultipleCheckbox from "../components/MultipleCheckbox";
 import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
 import { getLength } from "@/libs/helper";
 import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 interface Props {
   pfrType: number;
 }
@@ -78,24 +79,32 @@ const EducationalQualifications = (props: Props) => {
       ) : (
         ""
       )} */}
+      {props.pfrType > 1 ? (
+        <RowSingleORDouble pfrType={props.pfrType}>
+          <div>Client 1</div>
+          <div>Client 2</div>
+        </RowSingleORDouble>
+      ) : (
+        ""
+      )}
 
       {qa[0].answers?.length &&
         qa[0].answers.map((answer: any, index: number) => (
-          <RowSingleJointGrid pfrType={2} key={index}>
-            <div className="col-span-2 text-gray-light">{answer.answer}</div>
-            <div className="grid-cols-2 grid">
-              {getPfrLength.map((e2, userIndex) => (
-                <>
+          <RowSingleORDouble pfrType={props.pfrType} key={index}>
+            {getPfrLength.map((e2, userIndex) => (
+              <>
+                <div>
                   <Checkbox
                     onChange={() => {
                       updateEducation(userIndex, 0, index);
                     }}
                     isChecked={answers[userIndex].education[0][index]}
+                    label={answer.answer}
                   />
-                </>
-              ))}
-            </div>
-          </RowSingleJointGrid>
+                </div>
+              </>
+            ))}
+          </RowSingleORDouble>
         ))}
 
       {/*  */}
@@ -105,31 +114,32 @@ const EducationalQualifications = (props: Props) => {
           of the following?
         </TitleSmall>
       </RowSingle>
-      {/* {props.initData[1].every(checkValidate) ? (
-        <RowSingleJointGrid pfrType={2} className="py-6">
-          <div className="col-span-2"></div>
-          <span className="text-xs font-normal text-red">Required</span>
-        </RowSingleJointGrid>
+      {props.pfrType > 1 ? (
+        <RowSingleORDouble pfrType={props.pfrType}>
+          <div>Client 1</div>
+          <div>Client 2</div>
+        </RowSingleORDouble>
       ) : (
         ""
-      )} */}
+      )}
+
       {qa[1].answers?.length &&
         qa[1].answers.map((answer: any, index: number) => (
-          <RowSingleJointGrid pfrType={2} key={index}>
-            <div className="col-span-2 text-gray-light">{answer.answer}</div>
-            <div className="grid-cols-2 grid">
-              {getPfrLength.map((e2, userIndex) => (
-                <>
+          <RowSingleORDouble pfrType={props.pfrType} key={index}>
+            {getPfrLength.map((e2, userIndex) => (
+              <>
+                <div>
                   <Checkbox
                     onChange={() => {
                       updateEducation(userIndex, 1, index);
                     }}
                     isChecked={answers[userIndex].education[1][index]}
+                    label={answer.answer}
                   />
-                </>
-              ))}
-            </div>
-          </RowSingleJointGrid>
+                </div>
+              </>
+            ))}
+          </RowSingleORDouble>
         ))}
     </SectionCardSingleGrid>
   );

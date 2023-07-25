@@ -3,6 +3,7 @@ import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
 import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
@@ -46,23 +47,32 @@ const InvestmentExperience = (props: Props) => {
       ) : (
         ""
       )} */}
+      {props.pfrType > 1 ? (
+        <RowSingleORDouble pfrType={props.pfrType}>
+          <div>Client 1</div>
+          <div>Client 2</div>
+        </RowSingleORDouble>
+      ) : (
+        ""
+      )}
+
       {qa[0].answers?.length &&
         qa[0].answers.map((answer: any, index: number) => (
-          <RowSingleJointGrid pfrType={2} key={index}>
-            <div className="col-span-2 text-gray-light">{answer.answer}</div>
-            <div className="grid-cols-2 grid">
-              {getPfrLength.map((e2, userIndex) => (
-                <>
+          <RowSingleORDouble pfrType={props.pfrType} key={index}>
+            {getPfrLength.map((e2, userIndex) => (
+              <>
+                <div>
                   <Checkbox
                     onChange={() => {
                       updateInvestment(userIndex, index);
                     }}
                     isChecked={answers[userIndex].investment[index]}
+                    label={answer.answer}
                   />
-                </>
-              ))}
-            </div>
-          </RowSingleJointGrid>
+                </div>
+              </>
+            ))}
+          </RowSingleORDouble>
         ))}
     </SectionCardSingleGrid>
   );
