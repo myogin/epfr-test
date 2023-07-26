@@ -12,6 +12,9 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 import Client from "./Clients/Client";
 import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
+import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
+import { getLength } from "@/libs/helper";
+import TextSmall from "@/components/Attributes/Typography/TextSmall";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -19,6 +22,8 @@ interface Props {
 
 const PersonalInformation = (props: Props) => {
   const [showAddDependent, setShowAddDependent] = useState(false);
+
+  let getPfrLength = getLength(props.pfrType);
 
   const handleShowAddDependent = (params: boolean) => {
     setShowAddDependent(params);
@@ -54,42 +59,89 @@ const PersonalInformation = (props: Props) => {
     }
   }, [dependant]);
 
+  console.log(getPfrLength);
+
   return (
     <div id={props.id}>
       {/* Sec 1 */}
-      <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60">
-        <button
-          className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-strong"
-          onClick={() => showDetail(100)}
-        >
-          <span className="flex">
-            <FlashlightLineIcon /> AUTOFILL PROFILE FORM
-          </span>
-          <span className="px-4 py-3 text-white rounded-lg bg-green-deep">
-            Import
-          </span>
-        </button>
-      </div>
-      <div
-        id="section-header-1"
-        className={`sticky top-0 z-10 ${
-          scrollPosition === "okSec1" ? "bg-white py-1 ease-in shadow-lg" : ""
-        }`}
-      >
-        <HeadingPrimarySection
-          className={`mx-8 2xl:mx-60 ${
-            scrollPosition === "okSec1"
-              ? "text-gray-light text-xl font-bold mb-5 mt-5"
-              : "text-2xl font-bold mb-10 mt-10"
-          }`}
-        >
-          Section 1. Personal Information
-        </HeadingPrimarySection>
-      </div>
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">
-        1.1 Client Details
-      </HeadingSecondarySection>
-      <Client />
+      {props.pfrType === 1 ? (
+        <>
+          <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60">
+            <button
+              className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-strong"
+              onClick={() => showDetail(100)}
+            >
+              <span className="flex">
+                <FlashlightLineIcon /> AUTOFILL PROFILE FORM
+              </span>
+              <span className="px-4 py-3 text-white rounded-lg bg-green-deep">
+                Import
+              </span>
+            </button>
+          </div>
+          <div
+            id="section-header-1"
+            className={`sticky top-0 z-10 ${
+              scrollPosition === "okSec1"
+                ? "bg-white py-1 ease-in shadow-lg"
+                : ""
+            }`}
+          >
+            <HeadingPrimarySection
+              className={`mx-8 2xl:mx-60 ${
+                scrollPosition === "okSec1"
+                  ? "text-gray-light text-xl font-bold mb-5 mt-5"
+                  : "text-2xl font-bold mb-10 mt-10"
+              }`}
+            >
+              Section 1. Personal Information
+            </HeadingPrimarySection>
+          </div>
+          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+            1.1 Client Details
+          </HeadingSecondarySection>
+        </>
+      ) : (
+        <>
+        <div
+            id="section-header-1"
+            className={`sticky top-0 z-10 ${
+              scrollPosition === "okSec1"
+                ? "bg-white py-1 ease-in shadow-lg"
+                : ""
+            }`}
+          >
+            <HeadingPrimarySection
+              className={`mx-8 2xl:mx-60 ${
+                scrollPosition === "okSec1"
+                  ? "text-gray-light text-xl font-bold mb-5 mt-5"
+                  : "text-2xl font-bold mb-10 mt-10"
+              }`}
+            >
+              Section 1. Personal Information
+            </HeadingPrimarySection>
+          </div>
+          <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
+            {getPfrLength.map((data, index) => (
+                <div key={index}>
+                  <h3 className="w-full mb-10 text-base font-bold text-green-deep">Client {++index}</h3>
+                  <div className="flex flex-row items-center justify-between">
+                    <button className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light">
+                      <span className="flex">
+                        <FlashlightLineIcon /> AUTOFILL PROFILE FORM
+                      </span>
+                      <span className="px-4 py-3 text-white rounded-lg bg-green-deep">
+                        Import
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </SectionCardDoubleGrid>
+        </>
+      )}
+      <Client pfrType={props.pfrType} />
+      
       {/* Sec 2 */}
       <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
         <div className="text-xl font-bold">1.2 Dependent Information</div>
@@ -106,7 +158,7 @@ const PersonalInformation = (props: Props) => {
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         1.3 Client Accompainment Assestment
       </HeadingSecondarySection>
-      <Accompainment />
+      <Accompainment pfrType={props.pfrType} />
       {/* Sec 4 */}
       {checkAccompainment ? (
         <>

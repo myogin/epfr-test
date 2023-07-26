@@ -193,6 +193,26 @@ const LoanPortofolio = () => {
                           />
                           <Select
                             className="my-4"
+                            name="typeOfVehicle"
+                            label="Type Of Vehicle"
+                            value={newData.typeOfVehicle}
+                            datas={typeOfLoans}
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                typeOfLoan: event.target.value,
+                              })
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.typeOfLoan === "" ||
+                              newData.typeOfLoan === "-"
+                                ? false
+                                : true
+                            }
+                          />
+                          <Select
+                            className="my-4"
                             name="loanTerm"
                             label="Loan Term"
                             value={newData.loanTerm}
@@ -387,6 +407,7 @@ const LoanPortofolio = () => {
                 <th className="px-2 py-5">Loan Term</th>
                 <th className="px-2 py-5">Year Of Loan Taken</th>
                 <th className="px-2 py-5">Amount Borrowed ($)</th>
+                <th className="px-2 py-5">Type Of Vehicle</th>
                 <th className="px-2 py-5">Current Outstanding Loan ($)</th>
                 <th className="px-2 py-5">Lender</th>
                 <th className="px-2 py-5">Interest Rate</th>

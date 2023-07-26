@@ -12,6 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { DependantInformation } from "@/models/SectionOne";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import moment from "moment";
+import { checkCountData } from "@/libs/helper";
 
 interface Props {
   datas?: Array<any>;
@@ -22,7 +23,7 @@ const Dependent = (props: Props) => {
   let { dependant, setDependent, removeDependent, patchDependent } =
     usePersonalInformation();
 
-  let checkIndex = checkDependentData(dependant);
+    let checkIndex = checkCountData(dependant);
   // Initiate new local state for new data
   let initialState: DependantInformation = {
     id: checkIndex,
@@ -443,21 +444,6 @@ const Dependent = (props: Props) => {
       ) : null}
     </>
   );
-};
-
-const checkDependentData = (dependant: any) => {
-  let data: number = 0;
-  if (dependant?.length) {
-    if (dependant[0].name === "") {
-      data = dependant.length;
-    } else {
-      data = dependant.length + 1;
-    }
-  } else {
-    data = dependant.length + 1;
-  }
-
-  return data;
 };
 
 const checkButtonActive = (newData: any) => {

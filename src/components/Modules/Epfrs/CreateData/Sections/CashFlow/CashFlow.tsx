@@ -16,10 +16,14 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { postPfr } from "@/services/pfrService";
 import { SectionThree } from "@/models/SectionThree";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
+import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const CashFlow = (props: Props) => {
@@ -27,117 +31,23 @@ const CashFlow = (props: Props) => {
     console.log(params);
   };
 
+  let getPfrLength = getLength(props.pfrType);
+
   let fillInformation = [
     { id: 0, name: "No" },
     { id: 1, name: "Yes" },
   ];
 
   let { showDetailData } = useNavigationSection();
+  const scrollPosition = useScrollPosition(3);
 
   const saveData = (params: any) => {
     showDetailData(params);
   };
 
+  let { need, reason, totalNetSurplus } = useCashFlow();
+
   const [notReviewAll, setNotReviewAll] = useState(false);
-
-  const [sectionThree, setSectionThree] = useState<SectionThree>({
-    id: 0,
-    need: [],
-    reason: [],
-    others: {
-      annualExpense: [
-        {
-          editting: false,
-          key: "",
-          values: [],
-        },
-      ],
-      annualIncome: [
-        {
-          editting: false,
-          key: "",
-          values: [],
-        },
-      ],
-    },
-    data: [
-      {
-        annualIncome: {
-          annualGrossIncome: 0,
-          additionalWages: 0,
-          less: 0,
-          others: 0,
-        },
-        annualSurplus: {
-          annualSurplus: 0,
-        },
-        answer: {
-          state: "",
-          answer: "",
-        },
-        reasonForSurplus: "",
-      },
-    ],
-    annualExpense: [
-      {
-        key: "household",
-        title: "household",
-        selected: false,
-        values: [1200, 0, 0, 0],
-      },
-      {
-        key: "transportation",
-        title: "transportation",
-        selected: false,
-        values: [2400, 0, 0, 0],
-      },
-      {
-        key: "telco",
-        title: "telco",
-        selected: false,
-        values: [3600, 0, 0, 0],
-      },
-      {
-        key: "dependents",
-        title: "dependents",
-        selected: false,
-        values: [4800, 0, 0, 0],
-      },
-      {
-        key: "personal",
-        title: "personal",
-        selected: false,
-        values: [6000, 0, 0, 0],
-      },
-      {
-        key: "luxury",
-        title: "luxury",
-        selected: false,
-        values: [7200, 0, 0, 0],
-      },
-      {
-        key: "insurancePremiums",
-        title: "Insurance Premiums",
-        selected: false,
-        values: [1200, 0, 0, 0],
-      },
-      {
-        key: "loanRepayments",
-        title: "Loan Repayments",
-        selected: false,
-        values: [12000, 0, 0, 0],
-      },
-    ],
-    issues: [],
-    totalNetSurplus: [230,345],
-    status: 0,
-  });
-
-  if (typeof window !== "undefined") {
-    localStorage.setItem("section3", JSON.stringify(sectionThree));
-  }
-
-  const scrollPosition = useScrollPosition(3);
 
   // let post = postPfr(1)
 
@@ -161,14 +71,28 @@ const CashFlow = (props: Props) => {
       </div>
       {!notReviewAll ? (
         <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+          <HeadingSecondaryDynamicGrid
+            className={`mx-8 2xl:mx-60 ${
+              props.pfrType == 2
+                ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+                : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
+            }`}
+            pfrType={props.pfrType}
+          >
             3.1 Annual Income
-          </HeadingSecondarySection>
-          <AnnualIncomeCashFlow data={sectionThree.data[0]} />
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+          </HeadingSecondaryDynamicGrid>
+          <AnnualIncomeCashFlow pfrType={props.pfrType} />
+          <HeadingSecondaryDynamicGrid
+            className={`mx-8 2xl:mx-60 ${
+              props.pfrType == 2
+                ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+                : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
+            }`}
+            pfrType={props.pfrType}
+          >
             3.2 Annual Expense
-          </HeadingSecondarySection>
-          <AnnualExpenseCashFlow data={sectionThree.annualExpense} />
+          </HeadingSecondaryDynamicGrid>
+          <AnnualExpenseCashFlow pfrType={props.pfrType} />
         </>
       ) : (
         ""
@@ -196,11 +120,17 @@ const CashFlow = (props: Props) => {
       ) : (
         ""
       )}
-
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+      <HeadingSecondaryDynamicGrid
+        className={`mx-8 2xl:mx-60 ${
+          props.pfrType == 2
+            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
+        }`}
+        pfrType={props.pfrType}
+      >
         3.3 Annual Net Cash Flow
-      </HeadingSecondarySection>
-      <AnnualNetCashFlow data={sectionThree.totalNetSurplus} />
+      </HeadingSecondaryDynamicGrid>
+      <AnnualNetCashFlow pfrType={props.pfrType} />
       {!notReviewAll ? (
         <>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -213,32 +143,85 @@ const CashFlow = (props: Props) => {
                 holiday home, etc.) ?
               </p>
             </div>
-            <div>
-              <Select
-                value=""
-                className="my-4"
-                datas={fillInformation}
-                handleChange={(event) => setData(eval(event.target.value))}
-              />
-            </div>
+            <RowDouble>
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1" key={index}>
+                    {props.pfrType > 1 ? (
+                      <>
+                        <h3
+                          key={"heading-secondary-" + index}
+                          className="w-full text-base font-bold text-right text-green-deep"
+                        >
+                          Client {++index}
+                        </h3>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                    <Select
+                      value=""
+                      className="my-4"
+                      datas={fillInformation}
+                      handleChange={(event) =>
+                        setData(eval(event.target.value))
+                      }
+                    />
+                  </div>
+                ))}
+            </RowDouble>
           </SectionCardSingleGrid>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            <RowSingle>
-              <Checkbox
-                isChecked={notReviewAll}
-                onChange={() => setNotReviewAll(!notReviewAll)}
-                lableStyle="text-sm font-normal text-gray-light"
-                label="The Client would not like their cash flow to be taken into
+            <RowDouble>
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1" key={index}>
+                    <Checkbox
+                      isChecked={
+                        need ? (need[index] == 1 ? true : false) : false
+                      }
+                      onChange={() => setNotReviewAll(!notReviewAll)}
+                      lableStyle="text-sm font-normal text-gray-light"
+                      label="The Client would not like their cash flow to be taken into
             consideration for the Needs Analysis and Recommendation(s)"
-              />
-            </RowSingle>
-            <RowSingle>
-              <TextArea
-                className="my-4"
-                label="Reason is needed if Net Worth ≤ $0"
-                defaultValue="test text area"
-              />
-            </RowSingle>
+                    />
+                  </div>
+                ))}
+            </RowDouble>
+            <RowDouble>
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <>
+                    {need ? (
+                      need[index] == 1 ? (
+                        ""
+                      ) : (
+                        <div className="flex-1" key={index}>
+                          <TextArea
+                            className="my-4"
+                            defaultValue="test text area"
+                            needValidation={true}
+                            logic={
+                              need ? (need[index] == 1 ? true : false) : false
+                            }
+                          />
+                        </div>
+                      )
+                    ) : (
+                      <div className="flex-1" key={index}>
+                        <TextArea
+                          className="my-4"
+                          defaultValue="test text area"
+                          needValidation={true}
+                          logic={
+                            need ? (need[index] == 1 ? true : false) : false
+                          }
+                        />
+                      </div>
+                    )}
+                  </>
+                ))}
+            </RowDouble>
           </SectionCardSingleGrid>
         </>
       ) : (

@@ -33,10 +33,11 @@ export interface Others {
 }
 
 export interface Datas {
+  id?: number;
   annualIncome: AnnualIncome;
   annualSurplus: AnnualSurplus;
   answer: Answers;
-  reasonForSurplus: any;
+  reasonForSurplus?: any;
 }
 
 export interface SectionThree {

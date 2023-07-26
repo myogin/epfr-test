@@ -8,6 +8,7 @@ interface Props {
   rows?: number;
   name?: string;
   handleChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  value?: string;
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
@@ -30,11 +31,15 @@ const TextArea = (props: Props) => {
         placeholder={props.placeholder}
         name={props.name}
         onChange={props.handleChange}
-      ></textarea>
+      >
+        {props.value}
+      </textarea>
 
       {/* Error Validation */}
       {props.needValidation && !props.logic ? (
-        <span className="w-full text-xs text-left text-red">{props.textError ? props.textError : "Required field"}</span>
+        <span className="w-full text-xs text-left text-red">
+          {props.textError ? props.textError : "Required field"}
+        </span>
       ) : null}
     </div>
   );

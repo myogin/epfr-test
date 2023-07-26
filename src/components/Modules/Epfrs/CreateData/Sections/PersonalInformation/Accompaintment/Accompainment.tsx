@@ -1,10 +1,16 @@
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
+import { getLength } from "@/libs/helper";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React from "react";
 
-const Accompainment = () => {
+interface Props {
+  pfrType?: number;
+}
+const Accompainment = (props: Props) => {
+  let getPfrLength = getLength(props.pfrType);
+
   let { accompaniment, setAccompaniment } = usePersonalInformation();
 
   let englishLevel: Array<any> = [
@@ -34,42 +40,88 @@ const Accompainment = () => {
 
   return (
     <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
-      <div>
-        <Input
-          className="mb-10"
-          label="Age"
-          type="text"
-          readonly
-          placeholder="Below 62"
-          value={accompaniment[0].age}
-        />
-        <Select
-          className="mb-10"
-          label="Spoken English Language Proficiency"
-          value={accompaniment[0].english_spoken}
-          name="english_spoken"
-          datas={englishLevel}
-          handleChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <Select
-          className="mb-10"
-          label="Education Level"
-          value={accompaniment[0].education_level}
-          name="education_level"
-          datas={educationLevel}
-          handleChange={handleInputChange}
-        />
-        <Select
-          className="mb-10"
-          label="Written English Language Proficiency"
-          value={accompaniment[0].english_written}
-          datas={englishLevel}
-          name="english_written"
-          handleChange={handleInputChange}
-        />
-      </div>
+      {props.pfrType === 1 ? (
+        <>
+          <div>
+            <Input
+              className="mb-10"
+              label="Age"
+              type="text"
+              readonly
+              placeholder="Below 62"
+              value={accompaniment[0].age}
+            />
+            <Select
+              className="mb-10"
+              label="Spoken English Language Proficiency"
+              value={accompaniment[0].english_spoken}
+              name="english_spoken"
+              datas={englishLevel}
+              handleChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <Select
+              className="mb-10"
+              label="Education Level"
+              value={accompaniment[0].education_level}
+              name="education_level"
+              datas={educationLevel}
+              handleChange={handleInputChange}
+            />
+            <Select
+              className="mb-10"
+              label="Written English Language Proficiency"
+              value={accompaniment[0].english_written}
+              datas={englishLevel}
+              name="english_written"
+              handleChange={handleInputChange}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          {getPfrLength?.length &&
+            getPfrLength.map((data, index) => (
+              <div key={index}>
+                <h3 className="w-full mb-10 text-base font-bold text-green-deep">Client {++index}</h3>
+                
+                <Input
+                  className="mb-10"
+                  label="Age"
+                  type="text"
+                  readonly
+                  placeholder="Below 62"
+                  value={accompaniment[index] ? accompaniment[index].age : ""}
+                />
+                <Select
+                  className="mb-10"
+                  label="Spoken English Language Proficiency"
+                  value={accompaniment[index] ? accompaniment[index].english_spoken : ""}
+                  name="english_spoken"
+                  datas={englishLevel}
+                  handleChange={handleInputChange}
+                />
+                <Select
+                  className="mb-10"
+                  label="Education Level"
+                  value={accompaniment[index] ? accompaniment[index].education_level : ""}
+                  name="education_level"
+                  datas={educationLevel}
+                  handleChange={handleInputChange}
+                />
+                <Select
+                  className="mb-10"
+                  label="Written English Language Proficiency"
+                  value={accompaniment[index] ? accompaniment[index].english_written : ""}
+                  datas={englishLevel}
+                  name="english_written"
+                  handleChange={handleInputChange}
+                />
+              </div>
+            ))}
+        </>
+      )}
     </SectionCardDoubleGrid>
   );
 };

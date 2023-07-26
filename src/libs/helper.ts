@@ -33,3 +33,10 @@ export const getClientCustom = (clients: any) => {
 
   return clientCustom;
 };
+
+
+export const getLength = (params : any) => {
+
+  let arr = [...Array(params)]
+  return arr;
+};
