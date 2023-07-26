@@ -33,7 +33,9 @@ const TextArea = (props: Props) => {
       <textarea
         defaultValue={props.defaultValue}
         rows={props.rows}
-        className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong"
+        className={`w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong ${
+          props.isDisabled && "text-gray-soft-strong"
+        }`}
         placeholder={props.placeholder}
         name={props.name}
         onChange={props.handleChange}
