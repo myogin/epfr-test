@@ -9,6 +9,7 @@ type Actions = {
   setData: (indexData: number, params: any) => any;
   setAnnualSurplus: (indexData: number, params: any) => any;
   setAnswer: (indexData: number, params: any) => any;
+  setNeed: (indexData: number, params: any) => any;
 };
 
 const initialState: SectionThree = {
@@ -16,15 +17,23 @@ const initialState: SectionThree = {
   need: [1, 1],
   reason: ["", ""],
   others: {
-    annualExpense: [
-      {
-        editting: false,
-        key: "",
-        values: [],
-      },
-    ],
     annualIncome: [
       {
+        id: 1,
+        editting: false,
+        key: "Test Other A",
+        values: [10,20],
+      },
+      {
+        id: 2,
+        editting: false,
+        key: "Test Other C",
+        values: [10,20],
+      },
+    ],
+    annualExpense: [
+      {
+        id: 0,
         editting: false,
         key: "",
         values: [],
@@ -70,37 +79,37 @@ const initialState: SectionThree = {
   annualExpense: [
     {
       key: "household",
-      title: "household",
+      title: "Household",
       selected: false,
       values: [1200, 0, 0, 0],
     },
     {
       key: "transportation",
-      title: "transportation",
+      title: "Transportation",
       selected: false,
       values: [2400, 0, 0, 0],
     },
     {
       key: "telco",
-      title: "telco",
+      title: "Telco",
       selected: false,
       values: [3600, 0, 0, 0],
     },
     {
       key: "dependents",
-      title: "dependents",
+      title: "Dependents",
       selected: false,
       values: [4800, 0, 0, 0],
     },
     {
       key: "personal",
-      title: "personal",
+      title: "Personal",
       selected: false,
       values: [6000, 0, 0, 0],
     },
     {
       key: "luxury",
-      title: "luxury",
+      title: "Luxury",
       selected: false,
       values: [7200, 0, 0, 0],
     },
@@ -177,6 +186,16 @@ const cashFlow = create(
               } else {
                 draft.data.push(params);
               }
+            })
+          ),
+        setNeed: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+
+              console.log("Masuk sini nggak")
+
+              let need = draft.need;
+              need[indexData] = params;
             })
           ),
       }),

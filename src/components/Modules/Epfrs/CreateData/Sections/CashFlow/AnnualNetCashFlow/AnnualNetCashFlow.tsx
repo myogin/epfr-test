@@ -20,19 +20,22 @@ const AnnualNetCashFlow = (props: Props) => {
 
   let getPfrLength = getLength(props.pfrType);
 
-  let { totalNetSurplus } = useCashFlow();
+  let { need, totalNetSurplus } = useCashFlow();
 
+  const handleInputChange = () => {
+
+  }
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowDinamycGrid
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
         <div
-          className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}
+          className={`col-span-3`}
         ></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
@@ -46,10 +49,10 @@ const AnnualNetCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
-        <div className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}>
+        <div className={`col-span-3`}>
           <TextSmall className="text-green-deep">
             ANNUAL SURPLUS / SHORTFALL
           </TextSmall>
@@ -57,12 +60,48 @@ const AnnualNetCashFlow = (props: Props) => {
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
             <>
-              <div className="text-right">
-                <span className="text-green-deep">0</span>
-              </div>
-              <div className="text-right">
-                <span className="text-green-deep">0</span>
-              </div>
+              {need ? (
+                need[index] ? (
+                  <>
+                    <div className="text-right">
+                      <span className="text-green-deep">0</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-green-deep">0</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Input
+                      dataType="monthly"
+                      className="my-4"
+                      type="text"
+                      name="less"
+                      formStyle="text-right"
+                      value=""
+                      handleChange={handleInputChange}
+                    />
+                    <Input
+                      dataType="annualy"
+                      className="my-4"
+                      type="text"
+                      name="less"
+                      formStyle="text-right"
+                      value=""
+                      handleChange={handleInputChange}
+                    />
+                  </>
+                )
+              ) : (
+                <>
+                  <div className="text-right">
+                    <span className="text-green-deep">-</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-green-deep">-</span>
+                  </div>
+                </>
+              )}
             </>
           ))}
       </RowDinamycGrid>
@@ -70,12 +109,12 @@ const AnnualNetCashFlow = (props: Props) => {
         className={`${
           props.pfrType == 1
             ? "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
-            : "lg:grid-cols-6 sm:grid-cols-6 md:grid-cols-6"
+            : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
         {props.pfrType > 1 ? (
           <div
-            className={`${props.pfrType == 1 ? "col-span-3" : "col-span-2"}`}
+            className={`col-span-3`}
           ></div>
         ) : null}
 

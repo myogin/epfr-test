@@ -32,19 +32,19 @@ const Checkbox = (props: Props) => {
           ref={props.innerRef}
           className={`p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1 `}
         />
-        <span
+        <div
           className={`${props.lableStyle} ${
             props.isDisabled && "text-gray-soft-strong"
           }`}
         >
           {props.label}
-        </span>
+        </div>
       </div>
       {props.needValidation && !props.logic ? (
         <div className="flex items-start">
-          <span className="w-full text-xs text-left text-red">
+          <div className="w-full text-xs text-left text-red">
             {props.textError ? props.textError : "Required field"}
-          </span>
+          </div>
         </div>
       ) : null}
     </div>

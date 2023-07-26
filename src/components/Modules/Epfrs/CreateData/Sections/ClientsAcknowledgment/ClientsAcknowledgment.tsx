@@ -19,7 +19,7 @@ interface Props {
   pfrType?: number;
 }
 
-const pfrId = 12016;
+const pfrId = 10343;
 const pfrType = 1;
 
 const ClientsAcknowledgment = (props: Props) => {
@@ -112,7 +112,6 @@ const ClientsAcknowledgment = (props: Props) => {
   ]);
 
   const fetchData = async () => {
-    const pfr:any = await getAllPfrData(pfrId);
     const s12Res:any = await getPfrStep(12, pfrId);
     const s10Res:any = await getPfrStep(10, pfrId);
     const s13Res:any = await getPfrStep(13, pfrId);
@@ -264,11 +263,17 @@ const ClientsAcknowledgment = (props: Props) => {
     });
   }
 
+  const scrollPosition = useScrollPosition(11)
+
   useEffect(() => {
-    fetchData();
+
+    if(scrollPosition === "okSec11") {
+      fetchData();
+    }
+    
   }, []);
 
-  const scrollPosition = useScrollPosition(11)
+  
 
   return (
     <div id={props.id}>
@@ -486,10 +491,11 @@ const ClientsAcknowledgment = (props: Props) => {
         <RowFourthGrid>
           <div className="col-span-3">
             <TextThin>
-            I/we hereby give my/our consent to Legacy FA Pte Ltd to collect, use, and/or 
+              {`I/we hereby give my/our consent to Legacy FA Pte Ltd to collect, use, and/or 
             disclose my/our personal data for the purpose of performing financial needs 
             analysis and planning, including providing financial advice, product 
-            recommendation and reviews of my/our financial plans.
+            recommendation and reviews of my/our financial plans.`}
+            
             </TextThin>
           </div>
           <div className="text-right">
@@ -524,13 +530,14 @@ const ClientsAcknowledgment = (props: Props) => {
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         <RowFourthGrid>
           <div className="col-span-3">
-            6. I/We understand that the above recommendation(s) is/are based on the facts furnished 
+            {`6. I/We understand that the above recommendation(s) is/are based on the facts furnished 
             in this "Personal Financial Record"; and any incomplete or inaccurate information 
             provided by me/us may affect the suitability of the recommendation(s) made. 
             If I/we choose not to provide information requested or do not accept my/our 
             Legacy FA Representative's recommendation(s) and choose to purchase another product(s) 
             which is/are not recommended by my/our Legacy FA Representative, it is 
-            my/our responsibility to ensure the suitability of the product(s) selected.
+            my/our responsibility to ensure the suitability of the product(s) selected.`}
+            
           </div>
           <div className="text-right">
           {(() => {
@@ -592,17 +599,18 @@ const ClientsAcknowledgment = (props: Props) => {
           </div>
         </RowFourthGrid>
         <TextThin>
-        (a) that the Introducer is not permitted to give advice or provide recommendations on any investment product to me/us, 
-        market any collective investment scheme, or arrange any contract of insurance in respect of life policies; and
+          {`(a) that the Introducer is not permitted to give advice or provide recommendations on any investment product to me/us, 
+        market any collective investment scheme, or arrange any contract of insurance in respect of life policies; and`}
         </TextThin>
         <TextThin>
-        (b) the amount of remuneration that the introducer may be entitled to receive/pass on for carrying out this introduction.
+          {`(b) the amount of remuneration that the introducer may be entitled to receive/pass on for carrying out this introduction.`}
+        
         </TextThin>
       </SectionCardSingleGrid>
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
       <RowFourthGrid>
           <div className="col-span-3">
-            9. I Acknowledge and Agree to The Purchase of Financial Products Using Remote Signature in This Non-Face-To-Face Transaction
+            {`9. I Acknowledge and Agree to The Purchase of Financial Products Using Remote Signature in This Non-Face-To-Face Transaction`}
           </div>
           <div className="text-right">
           {(() => {

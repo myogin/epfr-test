@@ -4,6 +4,7 @@ export interface Clientformation {
   clientName: string;
   otherName: string;
   relationship: string;
+  race: string;
   gender: string;
   passportNo: string;
   nationality: string;
@@ -11,6 +12,7 @@ export interface Clientformation {
   residencyTwo: string;
   residencyOther: string;
   dateOfBirth: string;
+  birthCountryId: number;
   marital: string;
   smoker: string;
   employmentStatus: string;
@@ -31,6 +33,9 @@ export interface DependantInformation {
   name: string;
   relationship: string;
   dateOfBirth: string;
+  certNumber: string;
+  sponsored: string;
+  nric: string;
   age: number;
   gender: string;
   year: string;

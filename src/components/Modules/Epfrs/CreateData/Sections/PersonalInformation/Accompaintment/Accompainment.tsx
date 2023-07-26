@@ -1,7 +1,7 @@
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
-import { getLength } from "@/libs/helper";
+import { clientIdentity, getLength } from "@/libs/helper";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React from "react";
 
@@ -49,7 +49,7 @@ const Accompainment = (props: Props) => {
               type="text"
               readonly
               placeholder="Below 62"
-              value={accompaniment[0].age}
+              value={accompaniment[0].age == 0 ? "Below 62" : "62 or above"}
             />
             <Select
               className="mb-10"
@@ -84,15 +84,15 @@ const Accompainment = (props: Props) => {
           {getPfrLength?.length &&
             getPfrLength.map((data, index) => (
               <div key={index}>
-                <h3 className="w-full mb-10 text-base font-bold text-green-deep">Client {++index}</h3>
+                <h3 className="w-full mb-10 text-base font-bold text-green-deep">{clientIdentity(index)}</h3>
                 
                 <Input
                   className="mb-10"
                   label="Age"
                   type="text"
                   readonly
-                  placeholder="Below 62"
-                  value={accompaniment[index] ? accompaniment[index].age : ""}
+                  placeholder={`Below 62 ${index}`}
+                  value={accompaniment[index] ? accompaniment[index].age == 0 ? "Below 62" : "62 or above" : ""}
                 />
                 <Select
                   className="mb-10"

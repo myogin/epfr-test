@@ -37,6 +37,28 @@ export const getLength = (params: any) => {
   return arr;
 };
 
+export const clientIdentity = (params: any) => {
+  switch (params) {
+    case 0:
+      return "Client 1";
+    case 1:
+      return "Client 2";
+    default:
+      return "Client 1";
+  }
+};
+
+export const answerYesNo = (params: any) => {
+  switch (params) {
+    case "1":
+      return "Yes";
+    case "2":
+      return "No";
+    default:
+      return "No";
+  }
+};
+
 export const usdFormat = (currency: any) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

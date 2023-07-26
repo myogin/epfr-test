@@ -5,7 +5,6 @@ import { produce } from "immer";
 
 type Actions = {
   setClient: (clientType: number, name: string, value: any) => any;
-  setPfrType: (pfrType: number) => any;
   setDependent: (indexData: number, params: any) => any;
   removeDependent: (params: any) => any;
   patchDependent: (params: any) => any;
@@ -24,7 +23,38 @@ const initialState: SectionOne = {
       clientName: "",
       otherName: "",
       relationship: "",
+      race: "",
       gender: "",
+      birthCountryId: 0,
+      passportNo: "",
+      nationality: "",
+      residency: "",
+      residencyTwo: "",
+      residencyOther: "",
+      dateOfBirth: "",
+      marital: "",
+      smoker: "",
+      employmentStatus: "",
+      occupation: "",
+      companyName: "",
+      businessNature: "",
+      annualIncome: "",
+      contactHome: "",
+      contactMobile: "",
+      contactOffice: "",
+      contactFax: "",
+      email: "",
+      residentialAddr: "",
+      mailingAddr: "",
+    },
+    {
+      clientTitle: "",
+      clientName: "",
+      otherName: "",
+      relationship: "",
+      race: "",
+      gender: "",
+      birthCountryId: 0,
       passportNo: "",
       nationality: "",
       residency: "",
@@ -56,9 +86,18 @@ const initialState: SectionOne = {
       age: 0,
       gender: "0",
       year: "0",
+      certNumber: "",
+      nric: "",
+      sponsored: ""
     },
   ],
   accompaniment: [
+    {
+      age: 0,
+      english_spoken: "",
+      english_written: "",
+      education_level: "",
+    },
     {
       age: 0,
       english_spoken: "",
@@ -91,42 +130,6 @@ const personalInformation = create(
     persist<SectionOne & Actions>(
       (set, get) => ({
         ...initialState,
-        setPfrType: (pfrType: number) =>
-          set(
-            produce((draft) => {
-              if (get().clientInfo?.length === 1 && pfrType > 1) {
-                let newData = {
-                  clientTitle: "",
-                  clientName: "",
-                  otherName: "",
-                  relationship: "",
-                  gender: "",
-                  passportNo: "",
-                  nationality: "",
-                  residency: "",
-                  residencyTwo: "",
-                  residencyOther: "",
-                  dateOfBirth: "",
-                  marital: "",
-                  smoker: "",
-                  employmentStatus: "",
-                  occupation: "",
-                  companyName: "",
-                  businessNature: "",
-                  annualIncome: "",
-                  contactHome: "",
-                  contactMobile: "",
-                  contactOffice: "",
-                  contactFax: "",
-                  email: "",
-                  residentialAddr: "",
-                  mailingAddr: "",
-                };
-
-                draft.clientInfo.push(newData);
-              }
-            })
-          ),
         setClient: (clientType: number, name: string, value: any) =>
           set(
             produce((draft) => {
@@ -171,6 +174,9 @@ const personalInformation = create(
                 dependentReplace.age = params.age;
                 dependentReplace.gender = params.gender;
                 dependentReplace.year = params.year;
+                dependentReplace.certNumber = params.certNumber;
+                dependentReplace.sponsored = params.sponsored;
+                dependentReplace.nric = params.nric;
               } else {
                 draft.dependant.push(params);
               }
@@ -215,6 +221,9 @@ const personalInformation = create(
                 dependentReplace.age = 0;
                 dependentReplace.gender = "0";
                 dependentReplace.year = "0";
+                dependentReplace.certNumber = "";
+                dependentReplace.sponsored = "";
+                dependentReplace.nric = "";
               }
             })
           ),
@@ -231,6 +240,9 @@ const personalInformation = create(
               dependant.age = params.age;
               dependant.gender = params.gender;
               dependant.year = params.year;
+              dependant.certNumber = params.certNumber;
+              dependant.sponsored = params.sponsored;
+              dependant.nric = params.nric;
             })
           ),
         setAccompaniment: (clientType: number, name: string, value: any) =>

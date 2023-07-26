@@ -1,4 +1,5 @@
 export interface AnnualGeneral {
+  id?: number;
   editting: boolean;
   key: string;
   values: Array<any>;

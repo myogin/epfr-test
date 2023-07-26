@@ -12,7 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { DependantInformation } from "@/models/SectionOne";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import moment from "moment";
-import { checkCountData } from "@/libs/helper";
+import { answerYesNo, checkCountData } from "@/libs/helper";
 
 interface Props {
   datas?: Array<any>;
@@ -33,6 +33,9 @@ const Dependent = (props: Props) => {
     age: 0,
     gender: "",
     year: "",
+    certNumber: "",
+    sponsored: "",
+    nric: "",
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -40,6 +43,9 @@ const Dependent = (props: Props) => {
   const [actionDatatId, setActionDataId] = useState(0);
   const [actionDatatIndex, setActionDataIndex] = useState(0);
   const [saveType, setSaveType] = useState("");
+
+  const [checkCertNumber, setCheckCertNumber] = useState(false);
+  const [checkNric, setCheckNric] = useState(false);
 
   // inject initial state to useState
   const [newData, setNewData] = useState(initialState);
@@ -57,6 +63,11 @@ const Dependent = (props: Props) => {
   let genders: Array<any> = [
     { id: "1", name: "MALE" },
     { id: "2", name: "FEMALE" },
+  ];
+
+  let sponsors: Array<any> = [
+    { id: "1", name: "Yes" },
+    { id: "2", name: "No" },
   ];
 
   const genderStatus = (params: any) => {
@@ -78,6 +89,7 @@ const Dependent = (props: Props) => {
           gender: "1",
           relationship: params,
         });
+        setCheckCertNumber(true);
         break;
       case "DAUGHTER":
         setNewData({
@@ -85,6 +97,7 @@ const Dependent = (props: Props) => {
           gender: "2",
           relationship: params,
         });
+        setCheckCertNumber(true);
         break;
       default:
         setNewData({
@@ -92,6 +105,33 @@ const Dependent = (props: Props) => {
           gender: "1",
           relationship: params,
         });
+        setCheckCertNumber(false);
+        break;
+    }
+  };
+
+  const checkSponsoredChild = (params: any) => {
+    switch (params) {
+      case "1":
+        setNewData({
+          ...newData,
+          sponsored: params,
+        });
+        setCheckNric(true);
+        break;
+      case "2":
+        setNewData({
+          ...newData,
+          sponsored: params,
+        });
+        setCheckNric(false);
+        break;
+      default:
+        setNewData({
+          ...newData,
+          sponsored: params,
+        });
+        setCheckNric(false);
         break;
     }
   };
@@ -262,13 +302,38 @@ const Dependent = (props: Props) => {
                                 : true
                             }
                           />
+                          {checkCertNumber ? (
+                            <Input
+                              className="my-4"
+                              label="Birth Cert Number"
+                              type="number"
+                              name="certNumber"
+                              value={newData.certNumber}
+                              placeholder="Please input cert number"
+                              handleChange={(event) =>
+                                setNewData({
+                                  ...newData,
+                                  certNumber: event.target.value,
+                                })
+                              }
+                            />
+                          ) : (
+                            ""
+                          )}
+
                           <Input
-                            readonly
                             className="my-4"
-                            label="Age"
+                            label="Years To Support"
                             type="number"
-                            name="age"
-                            value={newData.age}
+                            name="year"
+                            value={newData.year}
+                            placeholder="Years To Support"
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                year: event.target.value,
+                              })
+                            }
                           />
                         </div>
                         <div>
@@ -292,19 +357,48 @@ const Dependent = (props: Props) => {
                             }
                           />
                           <Input
+                            readonly
                             className="my-4"
-                            label="Years To Support"
+                            label="Age"
                             type="number"
-                            name="year"
-                            value={newData.year}
-                            placeholder="Years To Support"
+                            name="age"
+                            value={newData.age}
+                          />
+                          <Select
+                            className="my-4"
+                            label="Sponsored Child"
+                            name="sponsored"
+                            value={newData.sponsored}
+                            datas={sponsors}
                             handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                year: event.target.value,
-                              })
+                              checkSponsoredChild(event.target.value)
+                            }
+                            needValidation={true}
+                            logic={
+                              newData.sponsored === "" ||
+                              newData.sponsored === "-"
+                                ? false
+                                : true
                             }
                           />
+                          {checkNric ? (
+                            <Input
+                              className="my-4"
+                              label="NRIC / FIN"
+                              type="number"
+                              name="nric"
+                              value={newData.nric}
+                              placeholder="Input NRIC here"
+                              handleChange={(event) =>
+                                setNewData({
+                                  ...newData,
+                                  nric: event.target.value,
+                                })
+                              }
+                            />
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </div>
                     </div>
@@ -371,17 +465,17 @@ const Dependent = (props: Props) => {
                       </p>
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-4 space-x-2">
                       <button
                         type="button"
-                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border rounded-md text-red border-red"
                         onClick={() => removeDataAction(actionDatatId)}
                       >
                         Remove
                       </button>
                       <button
                         type="button"
-                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border rounded-md text-gray-light border-gray-light"
                         onClick={() => setShowModalRemove(false)}
                       >
                         Cancel
@@ -404,8 +498,11 @@ const Dependent = (props: Props) => {
                 <th className="px-2 py-5">Relationship</th>
                 <th className="px-2 py-5">Date Of Birth</th>
                 <th className="px-2 py-5">Age</th>
+                <th className="px-2 py-5">Birth Cert Number</th>
                 <th className="px-2 py-5">Sex</th>
                 <th className="px-2 py-5">Years to Support</th>
+                <th className="px-2 py-5">Sponsored Child</th>
+                <th className="px-2 py-5">NRIC / FIN</th>
                 <th className="px-2 py-5"></th>
               </tr>
             </thead>
@@ -418,8 +515,11 @@ const Dependent = (props: Props) => {
                     <td className="px-2 py-5">{data.relationship}</td>
                     <td className="px-2 py-5">{data.dateOfBirth}</td>
                     <td className="px-2 py-5">{data.age}</td>
+                    <td className="px-2 py-5">{data.certNumber}</td>
                     <td className="px-2 py-5">{genderStatus(data.gender)}</td>
                     <td className="px-2 py-5">{data.year}</td>
+                    <td className="px-2 py-5">{answerYesNo(data.sponsored)}</td>
+                    <td className="px-2 py-5">{data.nric}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
                         <ButtonBox

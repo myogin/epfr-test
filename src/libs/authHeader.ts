@@ -1,14 +1,15 @@
 export default function authHeader() {
-  let token = null;
-  if (localStorage.getItem("token")) {
-    token = localStorage.getItem("token");
+  let checkToken = localStorage.getItem("login") ? localStorage.getItem("login") : "";
+  let tokenFix = null;
+  if (checkToken) {
+    let token = JSON.parse(checkToken);
+    tokenFix = token.state.token;
   } else {
-    token = `${process.env.NEXT_PUBLIC_KEY}`;
+    tokenFix = `${process.env.NEXT_PUBLIC_KEY}`;
   }
 
-  console.log("Token: ",token);
-  if (token) {
-    return { Authorization: token };
+  if (tokenFix) {
+    return { Authorization: tokenFix };
   } else {
     return {};
   }
