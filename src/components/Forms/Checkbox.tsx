@@ -30,9 +30,15 @@ const Checkbox = (props: Props) => {
           data-id={props.dataId}
           name={props.name}
           ref={props.innerRef}
-          className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+          className={`p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1 `}
         />
-        <div className={`${props.lableStyle}`}>{props.label}</div>
+        <div
+          className={`${props.lableStyle} ${
+            props.isDisabled && "text-gray-soft-strong"
+          }`}
+        >
+          {props.label}
+        </div>
       </div>
       {props.needValidation && !props.logic ? (
         <div className="flex items-start">

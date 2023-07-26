@@ -1,7 +1,7 @@
 export interface SectionSix {
   id: number;
-  need: number[];
-  reason: any[];
+  need: boolean[];
+  reason: Array<string | undefined | null>;
   answers: Array<Answer>;
   outcome: boolean[];
   issues: any[];

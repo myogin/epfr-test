@@ -29,24 +29,32 @@ const InvestmentExperience = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
   // zustand
-  const { answers, updateInvestment } = useCustomerKnowledgeAssesment();
+  const { answers, updateInvestment, need } = useCustomerKnowledgeAssesment();
+  const checkValidate = (e: any) => e == false;
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowSingle>
-        <TitleSmall className="text-gray-light">
+        <TitleSmall className="text-gray-light ">
           Have you transacted at least 6 times in a Collective Investment Scheme
           (eg. Unit Trust) or Investment Linked Policy (ILP) in the last 3
           years?
         </TitleSmall>
       </RowSingle>
-      {/* {props.initData.every(checkValidate) ? (
-        <RowSingleJointGrid pfrType={2} className="py-6">
-          <div className="col-span-2"></div>
-          <span className="text-xs font-normal text-red">Required</span>
-        </RowSingleJointGrid>
-      ) : (
-        ""
-      )} */}
+
+      <RowSingleORDouble pfrType={props.pfrType}>
+        {getPfrLength.map((e2, userIndex) => (
+          <>
+            {answers[userIndex].investment.every(checkValidate) &&
+            need[userIndex] ? (
+              <div className="text-xs font-normal text-red">Required</div>
+            ) : (
+              <div></div>
+            )}
+          </>
+        ))}
+      </RowSingleORDouble>
+
       {props.pfrType > 1 ? (
         <RowSingleORDouble pfrType={props.pfrType}>
           <div>Client 1</div>
@@ -63,8 +71,9 @@ const InvestmentExperience = (props: Props) => {
               <>
                 <div>
                   <Checkbox
+                    isDisabled={!need[userIndex]}
                     onChange={() => {
-                      updateInvestment(userIndex, index);
+                      updateInvestment(userIndex, index, props.pfrType);
                     }}
                     isChecked={answers[userIndex].investment[index]}
                     label={answer.answer}
