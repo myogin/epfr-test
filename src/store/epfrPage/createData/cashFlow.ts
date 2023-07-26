@@ -33,11 +33,17 @@ const initialState: SectionThree = {
     ],
     annualExpense: [
       {
-        id: 0,
+        id: 1,
         editting: false,
-        key: "",
-        values: [],
+        key: "Test Other expense A",
+        values: [10,30],
       },
+      {
+        id: 2,
+        editting: false,
+        key: "Test Other expense B",
+        values: [10,20],
+      }
     ],
   },
   data: [

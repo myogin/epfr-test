@@ -28,7 +28,7 @@ const Client = (props: Props) => {
         }
 
         if (name === "clientTitle") {
-          updateGender(value);
+          updateGender(indexdata,value);
         }
         break;
       case "generalInfo":
@@ -69,11 +69,11 @@ const Client = (props: Props) => {
     }
   };
 
-  const updateGender = (value: number) => {
-    if (value == 2 || value == 4 || value == 5) {
-      setClient(0, "gender", 2);
-    } else if (value == 3) {
-      setClient(0, "gender", 1);
+  const updateGender = (index: number, value: number) => {
+    if (value == 1 || value == 3 || value == 4) {
+      setClient(index, "gender", 1);
+    } else if (value == 2) {
+      setClient(index, "gender", 0);
     }
   };
 
@@ -670,7 +670,7 @@ const Client = (props: Props) => {
                   dataType="clientInfo"
                   className="mb-10"
                   label="Residency Status"
-                  name="residency"
+                  name="residencyTwo"
                   indexData={index}
                   value={
                     clientInfo[index] ? clientInfo[index].residencyTwo : ""

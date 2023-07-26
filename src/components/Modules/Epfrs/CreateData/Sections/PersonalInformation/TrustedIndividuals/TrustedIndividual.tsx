@@ -13,12 +13,6 @@ const TrustedIndividual = () => {
 
   let { trustedIndividuals, setTrustedIndividuals } = usePersonalInformation();
 
-  const changeData = (params: any) => {};
-
-  const setData = (params: any) => {
-    console.log(params);
-  };
-
   let languages: Array<any> = [
     { id: 1, name: "English" },
     { id: 2, name: "Mandarin" },
@@ -29,7 +23,7 @@ const TrustedIndividual = () => {
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
-
+    console.log("Masuk sini nggak")
     setTrustedIndividuals(name, value);
   };
 
