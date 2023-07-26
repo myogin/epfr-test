@@ -48,7 +48,7 @@ const Select = (props: Props) => {
         </option>
         {props.datas?.length &&
           props.datas.map((val, index) => (
-            <option key={index} value={val.id}>
+            <option key={"select-box"+index} value={val.id}>
               {val.name}
             </option>
           ))}

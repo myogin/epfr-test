@@ -14,3 +14,7 @@
     @apply text-white opacity-100;
   }
 }
+
+input[disabled] {
+  background: rgb(204 204 204 / var(--tw-border-opacity)) !important;
+}

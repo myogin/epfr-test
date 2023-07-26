@@ -10,14 +10,23 @@ import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
 import { useLoginData } from "@/store/login/logindata";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { getAllPfrData } from "@/services/pfrService";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
-  const { token, ownerId, setLogin } = useLoginData();
+  const { setLogin } = useLoginData();
   const router = useRouter();
+
+  const getGeneralData =async () => {
+    if(router.query.edit) {
+      const pfr:any = await getAllPfrData(router.query.pfrId);
+    } 
+  }
+
   useEffect(() => {
-    setLogin(router.query.ownerId, router.query.token);
+    getGeneralData();
+    setLogin(router.query.token,router.query.ownerId);
   });
   return (
     <>

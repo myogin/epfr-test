@@ -26,9 +26,13 @@ import {
   getStatusRiskAttitude,
   getResultStatus,
 } from "./data/questions";
+import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
+import { getLength } from "@/libs/helper";
+import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const RiskProfile = (props: Props) => {
@@ -55,7 +59,7 @@ const RiskProfile = (props: Props) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("section5", JSON.stringify(sectionFive));
   }
-
+  let getPfrLength = getLength(props.pfrType);
   // handle input change / state change
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -157,12 +161,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ0Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q0State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q0State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q0State[index].u1 };
+          } else {
+            return { ...item, u2: !q0State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -178,12 +190,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ1Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q1State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q1State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q1State[index].u1 };
+          } else {
+            return { ...item, u2: !q1State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -199,12 +219,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ2Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q2State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q2State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q2State[index].u1 };
+          } else {
+            return { ...item, u2: !q2State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -220,12 +248,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ3Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q3State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q3State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q3State[index].u1 };
+          } else {
+            return { ...item, u2: !q3State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -241,12 +277,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ4Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q4State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q4State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q4State[index].u1 };
+          } else {
+            return { ...item, u2: !q4State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -262,12 +306,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ5Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q5State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q5State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q5State[index].u1 };
+          } else {
+            return { ...item, u2: !q5State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -283,12 +335,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ6Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q6State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q6State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q6State[index].u1 };
+          } else {
+            return { ...item, u2: !q6State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -304,12 +364,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ7Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q7State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q7State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q7State[index].u1 };
+          } else {
+            return { ...item, u2: !q7State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -325,12 +393,20 @@ const RiskProfile = (props: Props) => {
 
   const handleQ8Change = (event: any, position: any, user: number) => {
     const resetCheckedState = q8State.map((e: any) => {
-      return { ...e, u1: false };
+      if (user == 0) {
+        return { ...e, u1: false };
+      } else {
+        return { ...e, u2: false };
+      }
     });
     const updatedCheckedState = resetCheckedState.map(
       (item: Object, index: number) => {
         if (index === position) {
-          return { ...item, u1: !q8State[index].u1 };
+          if (user == 0) {
+            return { ...item, u1: !q8State[index].u1 };
+          } else {
+            return { ...item, u2: !q8State[index].u2 };
+          }
         } else {
           return { ...item };
         }
@@ -366,184 +442,326 @@ const RiskProfile = (props: Props) => {
             5.1 Risk Profile Questionarie
           </HeadingSecondarySection>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            {qa?.length &&
-              qa.map((qs, index) => (
-                <div className="mb-4" key={index}>
-                  <RowSingle>
-                    <TitleSmall className="text-gray-light">
-                      {qs.question}
-                    </TitleSmall>
-                  </RowSingle>
-                  <RowSingle className="py-6">
-                    <span className="text-xs font-normal text-red">
-                      Required
-                    </span>
-                  </RowSingle>
-                  {qs.answers.map((answer: any, indexB: any) => (
-                    <RowSingle key={index + indexB}>
-                      {(() => {
-                        switch (index) {
-                          case 0:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ0Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q0State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          case 1:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ1Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q1State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          case 2:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ2Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q2State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          case 3:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ3Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q3State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          case 4:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ4Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q4State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          case 5:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ5Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q5State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          case 6:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ6Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q6State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          case 7:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ7Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q7State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          case 8:
-                            return (
-                              <>
-                                <Checkbox
-                                  value={answer.score}
-                                  onChange={(e) => {
-                                    handleQ8Change(e, indexB, 0);
-                                  }}
-                                  dataId={indexB}
-                                  isChecked={q8State[indexB].u1}
-                                />
-
-                                <TextThin className="text-gray-light">
-                                  {answer.answer}
-                                </TextThin>
-                              </>
-                            );
-                          default:
-                            return null;
+            {/* Question 1 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[0].question}
+              </TitleSmall>
+            </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[0].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ0Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q0State[index].u1 : q0State[index].u2
                         }
-                      })()}
-                    </RowSingle>
-                  ))}
-                </div>
-              ))}
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
+            {/* Question 2 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[1].question}
+              </TitleSmall>
+            </RowSingle>
+
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[1].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ1Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q1State[index].u1 : q1State[index].u2
+                        }
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
+            {/* Question 3 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[2].question}
+              </TitleSmall>
+            </RowSingle>
+
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[2].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ2Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q2State[index].u1 : q2State[index].u2
+                        }
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
+            {/* Question 4 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[3].question}
+              </TitleSmall>
+            </RowSingle>
+
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[3].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ3Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q3State[index].u1 : q3State[index].u2
+                        }
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
+            {/* Question 5 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[4].question}
+              </TitleSmall>
+            </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[4].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ4Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q4State[index].u1 : q4State[index].u2
+                        }
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
+
+            {/* Question 6 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[5].question}
+              </TitleSmall>
+            </RowSingle>
+
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[5].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ5Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q5State[index].u1 : q5State[index].u2
+                        }
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
+            {/* Question 7 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[6].question}
+              </TitleSmall>
+            </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[6].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ6Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q6State[index].u1 : q6State[index].u2
+                        }
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
+            {/* Question 8 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[7].question}
+              </TitleSmall>
+            </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[7].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ7Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q7State[index].u1 : q7State[index].u2
+                        }
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
+            {/* Question 9 */}
+            <RowSingle className="mb-4">
+              <TitleSmall className="text-gray-light">
+                {qa[8].question}
+              </TitleSmall>
+            </RowSingle>
+            {props.pfrType > 1 ? (
+              <RowSingleORDouble pfrType={props.pfrType}>
+                <div>Client 1</div>
+                <div>Client 2</div>
+              </RowSingleORDouble>
+            ) : (
+              ""
+            )}
+            {qa[8].answers.map((e: any, index: number) => (
+              <RowSingleORDouble pfrType={props.pfrType} key={index}>
+                {getPfrLength.map((e2, userIndex) => (
+                  <>
+                    <div>
+                      <Checkbox
+                        value={e.score}
+                        onChange={(el) => {
+                          handleQ8Change(el, index, userIndex);
+                        }}
+                        dataId={index}
+                        isChecked={
+                          userIndex == 0 ? q8State[index].u1 : q8State[index].u2
+                        }
+                        label={e.answer}
+                      />
+                    </div>
+                  </>
+                ))}
+              </RowSingleORDouble>
+            ))}
           </SectionCardSingleGrid>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             5.2 Scoring Criteria
@@ -555,16 +773,26 @@ const RiskProfile = (props: Props) => {
               <div>Risk Attitude</div>
               <div></div>
             </RowFourthGrid>
-            <RowFourthGrid>
-              <div>Result of Risk Profile</div>
-              <div>
-                {riskCapacity[0]} {statusRiskCapacity[0]}
-              </div>
-              <div>
-                {riskAttitude[0]} {statusRiskAttitude[0]}
-              </div>
-              <div>{resultAttitude[0]}</div>
-            </RowFourthGrid>
+            {getPfrLength.map((e, i) => (
+              <>
+                <RowFourthGrid>
+                  {props.pfrType > 1 ? (
+                    <div>Client {i + 1}</div>
+                  ) : (
+                    <div>Result of Risk Profile</div>
+                  )}
+                  <div>
+                    {riskCapacity[i]} {statusRiskCapacity[i]}
+                  </div>
+                  <div>
+                    {riskAttitude[i]} {statusRiskAttitude[i]}
+                  </div>
+                  <div className="w-full  text-green-deep">
+                    {resultAttitude[i]}
+                  </div>
+                </RowFourthGrid>
+              </>
+            ))}
           </SectionCardSingleGrid>
         </>
       ) : (
