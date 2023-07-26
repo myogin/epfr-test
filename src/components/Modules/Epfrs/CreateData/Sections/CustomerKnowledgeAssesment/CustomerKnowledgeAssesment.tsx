@@ -29,9 +29,18 @@ const CustomerKnowledgeAssesment = (props: Props) => {
   const { answers, need, updateNeed, reason, updateReason } =
     useCustomerKnowledgeAssesment();
 
+  const [showSection, setShowSection] = useState(false);
   useEffect(() => {
-    function updateOutcome() {}
-  }, [answers]);
+    if (props.pfrType == 1) {
+      setShowSection(need[0]);
+    } else {
+      if (need[0] || need[1]) {
+        setShowSection(true);
+      } else {
+        setShowSection(false);
+      }
+    }
+  }, [need, props.pfrType]);
 
   return (
     <div id={props.id}>
@@ -51,7 +60,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
           Section 6. Customer Knowledge Assesment
         </HeadingPrimarySection>
       </div>
-      {need[0] || need[1] ? (
+      {showSection ? (
         <>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.1 Educational Qualifications
@@ -118,28 +127,25 @@ const CustomerKnowledgeAssesment = (props: Props) => {
         <RowSingleORDouble pfrType={props.pfrType}>
           {getPfrLength.map((e, index) => (
             <div className="flex-1" key={index}>
-              {!need[index] ? (
-                <TextArea
-                  className="my-4"
-                  label="The Reason"
-                  name="reason"
-                  value={reason[index]}
-                  handleChange={(e) => {
-                    updateReason(index, e.target.value, props.pfrType);
-                  }}
-                  needValidation={true}
-                  logic={
-                    reason[index] === "" ||
-                    reason[index] === "-" ||
-                    reason[index] === null ||
-                    reason[index] === undefined
-                      ? false
-                      : true
-                  }
-                />
-              ) : (
-                ""
-              )}
+              <TextArea
+                isDisabled={need[index]}
+                className="my-4"
+                label="The Reason"
+                name="reason"
+                value={reason[index]}
+                handleChange={(e) => {
+                  updateReason(index, e.target.value, props.pfrType);
+                }}
+                needValidation={!need[index]}
+                logic={
+                  reason[index] === "" ||
+                  reason[index] === "-" ||
+                  reason[index] === null ||
+                  reason[index] === undefined
+                    ? false
+                    : true
+                }
+              />
             </div>
           ))}
         </RowSingleORDouble>

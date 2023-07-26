@@ -3,6 +3,7 @@ import React from "react";
 interface Props {
   label?: string;
   placeholder?: any;
+  isDisabled?: boolean;
   defaultValue?: any;
   className?: string;
   rows?: number;
@@ -18,7 +19,12 @@ const TextArea = (props: Props) => {
   return (
     <div className={`w-full space-y-3 ${props.className}`}>
       {props.label ? (
-        <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+        <label
+          htmlFor=""
+          className={`w-full text-sm font-bold text-gray-light ${
+            props.isDisabled && "text-gray-soft-strong"
+          }`}
+        >
           {props.label}
         </label>
       ) : (
@@ -32,6 +38,7 @@ const TextArea = (props: Props) => {
         name={props.name}
         onChange={props.handleChange}
         value={props.value == null ? "" : props.value}
+        disabled={props.isDisabled}
       ></textarea>
 
       {/* Error Validation */}
