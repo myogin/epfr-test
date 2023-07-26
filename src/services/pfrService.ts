@@ -29,6 +29,20 @@ export const getWholeContext = async (id: any) => {
   return data;
 };
 
+export const pfrSection = async (section:any, id:any) => {
+  const headers = {'Authorization': 'Bearer $2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'};
+  const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/get/s${section}/${id}`, 
+      {
+          'headers':{
+              'Authorization': '$2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'
+          }
+      }
+  );
+  const data = await response.json();
+  
+  return data;
+};
 // export const updatePfr = async (id : any, data : any) => {
 //   return await http.post(`/category/${id}`, data, { headers: authHeader() });
 // }

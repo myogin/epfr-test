@@ -16,8 +16,9 @@ import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/an
 
 // Model
 import {getAllCompany} from "@/services/companyService";
-import {getWholeContext} from "@/services/pfrService";
+import {getWholeContext, pfrSection} from "@/services/pfrService";
 import {productFindOne} from "@/services/productService";
+// import {getPfrSection} from "@/services/getPfrSection";
 
 export class RecommendationStruct {
   selected = false;
@@ -212,6 +213,18 @@ const AddPlanRecommendation = () => {
   const [riderBenefit, setRiderBenefit] = useState<any>(false);
   const [dataSelectedCategoryType, setDataSelectedCategoryType] = useState<any>(-1);
   const [dataSelectedCategoryId, setDataSelectedCategoryId] = useState<any>(-1);
+  const [dataOutcomes, setDataOutcomes] = useState<any>([{}]);
+  const [cisData, setCisData] = useState<any>([{}]);
+
+  const [annualPayorBudget, setAnnualPayor] = useState<any>([
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ]);
+
+  const [singlePayorBudget, setSinglePayorBudget] = useState<any>([
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ]);
 
   let dataPremiumTypeIlp: Array<any> = [
     { id: 0, name: "Single" },
@@ -223,8 +236,19 @@ const AddPlanRecommendation = () => {
     const resultCateg: Array<any> = []
     const resDataOwner: Array<any> = [];
     getWholeContext(pfrId).then((data) => {
-      
+      console.log('data', data)
       setInitWhole(data);
+
+      // For Cis
+      if(data.product.type == 1) {
+        let cisData = data.cis.findIndex((cis: any) => {
+          return cis['id'] == section9Recommend.product.portfolio
+        });
+
+        setCisData(cisData)
+      }
+       console.log('cisData',cisData)
+
       // Get Dependant
       data.dependants.push({id: -1, name: "OTHER"})
       setDataDependant(data.dependants);
@@ -273,7 +297,29 @@ const AddPlanRecommendation = () => {
         })
       })
       setCategory(resultCateg)
+
+      const section6Outcome: Array<any> = []
+      data.outcomes.map((outcome:any, i: any) => {
+        section6Outcome.push(outcome['outcome']);
+      })
+      setDataOutcomes(section6Outcome)
     });
+    
+    pfrSection(8, pfrId).then((data) => {
+      let payorBudgets = data['payorBudgets']
+      payorBudgets.map((budget:any) => {
+        console.log('budget', budget)
+        if(budget['selection'] != 0) {
+          let clientId = budget['clientType']
+          let type = budget['type']
+          annualPayorBudget[clientId][type] = budget['annual']
+          singlePayorBudget[clientId][type] = budget['single']
+
+          setAnnualPayor(annualPayorBudget)
+          setSinglePayorBudget(singlePayorBudget)
+        }
+      })
+    })
     
     console.log('section9Recommend', section9Recommend)
   }, [section9Recommend]);
@@ -365,15 +411,14 @@ const AddPlanRecommendation = () => {
 
   const changeDataProvider = (event: any) => {
     const { name, value } = event.target;
-    
     var selectedProducts: Array<any> = [];
     setSelectedCompany(value)
     
     const selectedCategoryType = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['type'] : null
     setDataSelectedCategoryType(selectedCategoryType)
+
     const selectedCategoryId = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['id'] : null
     var products = (initWhole.company[value]) ? initWhole.company[value]['products'] : null
-    
     if(selectedCategoryType == 1) {  // IF ILP
       if(section9Recommend.product.premiumType == -1){
         setProduct('0', 'premiumType', null)
@@ -1142,7 +1187,47 @@ const AddPlanRecommendation = () => {
     const { name, value } = event.target;
     setProductHospital(value, name);
   }
-  
+
+  /// CIS
+  const [cisDataProduct, setCisDataProduct] = useState<any>([{}]);
+  const [cisDataProductIndex, setCisDataProductIndex] = useState<any>(-1);
+  const [cisDataProvider, setCisDataProvider] = useState<any>(-1);
+
+  const changeCisDataProvider = (event: any) => {
+    const { name, value } = event.target;
+    const dataArr: Array<any> = [];
+
+    setCisDataProvider(value);
+    
+    console.log('initWhole', initWhole)
+    console.log('singlePayorBudget', singlePayorBudget)
+    cisData.map((dataCis: any, indexCis:any) => {
+      console.log('dataCis', dataCis)
+      if(
+        (dataOutcomes[section9Recommend.product.nameOfOwner] == 1 || dataCis.platform.mustPassCKA == 0) && 
+        value == dataCis.platform.companyId &&
+        ((dataCis.maxBudget == 0 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] <= 29999) ||
+        (dataCis.maxBudget == 1 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 29999 && 
+        dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory) ||
+        (dataCis.maxBudget == 2 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 19999 &&
+        dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory))){
+
+          dataArr.push(dataCis)
+
+      }
+    })
+    console.log('dataArr', dataArr)
+    setCisDataProduct(dataArr)
+  }
+
+  const changeCISDataProductName = (event: any) => {
+    const { name, value } = event.target;
+    console.log('value', value)
+    // if(cisDataProductIndex >= 1){
+    //   selectedProduct
+    // }
+  }
+
   return (
     <>
       <HeadingSecondarySection className="mx-8 2xl:mx-60">Product Details</HeadingSecondarySection>
@@ -1552,7 +1637,295 @@ const AddPlanRecommendation = () => {
           
           </>)
 
-        : ('')}
+      : ''}
+
+      {section9Recommend.product.type > 1 ? (<>
+        (
+        <>
+          <div className="grid grid-cols-1 mx-8 2xl:mx-60">
+            <RowDoubleGrid>
+              <div>
+                <Select
+                  datas={dataCompany}
+                  label="Provider Name"
+                  className="my-4"
+                  name="company"
+                  value={cisDataProvider}
+                  handleChange={(event) => changeCisDataProvider(event)}
+                />
+              </div>
+              <div>
+                  <Select
+                    datas={cisDataProduct}
+                    label="Product Name"
+                    className="my-4"
+                    name="productIndex"
+                    value={productValueSelect}
+                    handleChange={(event) => changeCISDataProductName(event.target.value)}
+                  />
+                </div>
+            </RowDoubleGrid>
+            <RowDoubleGrid>
+              <div>
+                <Select
+                  datas={getSelectProducts}
+                  label="Model Portofolio Risk Category"
+                  className="my-4"
+                  name="modelPortfolioRiskCategory"
+                  value={productValueSelect}
+                  handleChange={(event) => changeDataProductName(event.target.value)}
+                />
+              </div>
+              <div>
+                <Select
+                  datas={getSelectProducts}
+                  label="Higher Than Client Risk Profile"
+                  className="my-4"
+                  name="higherThanClientRiskProfile"
+                  value={productValueSelect}
+                  handleChange={(event) => changeDataProductName(event.target.value)}
+                />
+              </div>
+            </RowDoubleGrid>
+            
+            {(section9Recommend.product.funds.length > 0) ? (<>
+              <RowSingleGrid>
+                <TextSmall>FUND NAME & PERCENTAGE</TextSmall>
+                <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+                  <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+                    <thead className="bg-white-bone">
+                      <tr className="border-b border-gray-soft-strong">
+                        <td className='align-top px-2 py-2'>
+                          <TextSmall className="uppercase text-gray-light">
+                            GROUP NAME
+                          </TextSmall>
+                        </td>
+                        <td className='align-top px-2 py-2'>
+                          <TextSmall className="uppercase text-gray-light">
+                            ALLOCATION(%)
+                          </TextSmall>
+                        </td>
+                        <td className='align-top px-2 py-2'>
+                          <TextSmall className="uppercase text-gray-light">
+                            FUND NAME
+                          </TextSmall>
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getSelectProductone?.ilp &&
+                            getSelectProductone.ilp.platform.funds.map((dataPlatform: any, indexPlatform:any) => (
+                            <tr>
+                              <td className="px-2 py-2">
+                                <span>{getFundName(dataPlatform.fund.groupId)}</span>
+                              </td>
+                              <td className="px-2 py-2">
+                                <span>{dataPlatform.allocation}</span>
+                              </td>
+                              <td className="px-2 py-2">
+                                <select
+                                  value={checkFundValues(indexPlatform)}
+                                  name="dataFund"
+                                  className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                                  onChange={(event) => setProductFund(event, dataPlatform.allocation, dataPlatform.fund.groupId, indexPlatform)}
+                                  disabled={getSelectProductone.ilp.platform.fixed == 1 ? true : false}
+                                >
+                                  <option value="-">Please select data</option>
+                                  {checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).length &&
+                                    checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).map((val:any, indexVal:any) => (
+                                        <option key={indexVal} value={val.id}>
+                                          {val.name}
+                                        </option>
+                                    ))
+                                  }
+                                </select>
+                              </td>
+                            </tr> 
+                          )
+                        )
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </RowSingleGrid>
+            </>) : ''}
+
+            <RowDoubleGrid>
+              <div>
+                <Input label="Premium Payment Type" className="" name="premium" value={section9Recommend.product.premium} handleChange={(event) => setProductData(event)} needValidation={true} logic={section9Recommend.product.premium === null || section9Recommend.product.premium === 0 ? false : true}/>
+              </div>
+              <div>
+                <Select
+                  datas={dataPremiumType}
+                  label="Payment Frequency"
+                  className=""
+                  name="premiumPaymentType"
+                  value={section9Recommend.product.premiumPaymentType} 
+                  handleChange={(event) => setProductData(event)}
+                />
+              </div>
+            </RowDoubleGrid>
+            <RowSingleGrid>
+              <div>
+                <Input label="Premium ($)" className="" name="premium" value={section9Recommend.product.premium} handleChange={(event) => setProductData(event)} needValidation={true} logic={section9Recommend.product.premium === null || section9Recommend.product.premium === 0 ? false : true}/>
+              </div>
+            </RowSingleGrid>
+
+            {productValueSelect > 0 ? (
+              <>
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.benefits?.length > 0 ? 
+                    (<>
+                    <div className="flex flex-row items-center justify-between">
+                      <h2 className="text-xl font-bold">Benefit Details</h2>
+                    </div>
+                    {dataProductSelected.benefits.map((benefit: any, index: any) => (
+                      <div className="w-full p-5 border rounded-md border-gray-soft-strong" key={index}>
+                        <div className="flex items-center justify-start gap-4 mb-5">
+                          <Checkbox label={benefit.title} name="benefitData" isChecked={checkBenefit(benefit.id)} value={benefit.id} onChange={(event) => handleBenefits(event, index) }/>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-light">
+                            {benefit.content}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    </>)
+                    : ''
+                  }
+                </SectionCardSingleGrid>
+
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.risks?.length > 0 ? (<>
+                    <div className="flex flex-row items-center justify-between">
+                      <h2 className="text-xl font-bold">Risk Details</h2>
+                    </div>
+                    {dataProductSelected.risks.map((risk: any, index: any) => (
+                      <div
+                        className="w-full p-5 border rounded-md border-gray-soft-strong"
+                        key={index}
+                      >
+                        <div className="flex items-center justify-start gap-4 mb-5">
+                          <Checkbox label={risk.title} name="riskData" isChecked={checkRisk(risk.id)} value={risk.id} onChange={(event) => handleRisks(event, index)}/>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-light">
+                            {risk.content}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </>) 
+                  : ''}
+                </SectionCardSingleGrid>
+
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.riders?.length > 0 ? (<>
+                    <div className="flex flex-row items-center justify-between">
+                      <h2 className="text-xl font-bold">Rider Details</h2>
+                    </div>
+                    {dataProductSelected.riders.map((value: any, index: any) => (
+                      <div
+                        className="w-full p-5 border rounded-md border-gray-soft-strong"
+                        key={index}
+                      >
+                        <div className="flex mb-5">
+                          <Checkbox label={value.new_rider.riderName} name="riderData" isChecked={checkRiders(value.new_rider.id)} value={value.new_rider.id} onChange={(event) => setRiderAction(event, index)}/>
+                        </div>
+                        <div className="mb-5">
+                          <p className="text-sm text-gray-light">{value.new_rider.riderFeature}</p>
+                        </div>
+                        {riderArr[value.new_rider.riderName] === true ? (
+                          <div className="space-y-10">
+                            <div className="w-full p-5 border rounded-md border-gray-soft-strong">
+                              <RowDoubleGrid>
+                                <div>
+                                  <Input label="Policy Term" className="my-4" name="policyTerm" value={getRiderValue(value.new_rider.id, 'policyTerm')} handleChange={(event) => handleRiderProduct(event, value.new_rider.id)} needValidation={true} logic={getRiderValue(value.new_rider.id, 'policyTerm') === "" || getRiderValue(value.new_rider.id, 'policyTerm') === "-" || !getRiderValue(value.new_rider.id, 'policyTerm')  ? false : true}/>
+                                  <Input label="Premium ($)" className="my-4" name="premium" value={getRiderValue(value.new_rider.id, 'premium')} handleChange={(event) => handleRiderProduct(event, value.new_rider.id)} needValidation={true} logic={getRiderValue(value.new_rider.id, 'policyTerm') === "" || getRiderValue(value.new_rider.id, 'premium') === "-" || !getRiderValue(value.new_rider.id, 'premium')  ? false : true}/>
+                                </div>
+                                <div>
+                                  <Input label="Sum Assured" className="my-4" name="sumAssured" value={getRiderValue(value.new_rider.id, 'sumAssured')} handleChange={(event) => handleRiderProduct(event, value.new_rider.id)} needValidation={true} logic={getRiderValue(value.new_rider.id, 'policyTerm') === "" || getRiderValue(value.new_rider.id, 'sumAssured') === "-" || !getRiderValue(value.new_rider.id, 'sumAssured')  ? false : true}/>
+                                  <Input label="Name of Insured" className="my-4" name="nameOfInsure" readonly value={getRiderValue(value.new_rider.id, 'nameOfInsure')}  handleChange={(event) => handleRiderProduct(event, value.new_rider.id)}/>
+                                </div>
+                              </RowDoubleGrid>
+                            </div>
+
+                            <RowSingleGrid>
+                              <TextSmall>Rider Benefit</TextSmall>
+                              
+                              {riderBenefitValidation(value.new_rider.id) == false ? 
+                                (<>
+                                  <span className="w-full text-xs text-left text-red">Required Field</span>
+                                </>) 
+                                : ''
+                              }
+                              
+                              {value.new_rider.benefit?.length > 0 &&
+                                value.new_rider.benefit.map((valueBen: any, indexBen:any) => (
+                                  <div
+                                    className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
+                                    key={valueBen.id}
+                                  >
+                                    <div className="flex mb-5">
+                                      <Checkbox label={valueBen.title} name="riderBenefitData" isChecked={checkRiderBenefit(valueBen.id, value.new_rider.id)} value={valueBen.id} onChange={(event) => setRiderBenefitAction(event, value.new_rider.id, valueBen.id)}/>
+                                    </div>
+                                    <div className="mb-5">
+                                      <p className="text-sm text-gray-light">
+                                        {valueBen.content}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                            </RowSingleGrid>
+
+                            <RowSingleGrid>
+                              <TextSmall>Rider Risk</TextSmall>
+                              
+                              {riderRiskValidation(value.new_rider.id) == false ? 
+                                (<>
+                                  <span className="w-full text-xs text-left text-red">Required Field</span>
+                                </>) 
+                                : ''
+                              }
+                              {value.new_rider.risk?.length > 0 &&
+                                value.new_rider.risk.map((valueRisk:any, indexRisk: any) => (
+                                  <div
+                                    className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
+                                    key={valueRisk.id}
+                                  >
+                                    <div className="flex mb-5">
+                                      <Checkbox label={valueRisk.title}  name="riderRiskData" isChecked={checkRiderRisk(valueRisk.id, value.new_rider.id)} value={valueRisk.id} onChange={(event) => setRiderRiskAction(event, value.new_rider.id, valueRisk.id)}/>
+                                    </div>
+                                    <div className="mb-5">
+                                      <p className="text-sm text-gray-light">
+                                        {valueRisk.content}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                            </RowSingleGrid>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    ))}
+                  </>) 
+                  : '' }
+                </SectionCardSingleGrid>
+                <SectionCardFooter className="mx-8 2xl:mx-60">
+                  <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
+                  <ButtonRedMedium>Cancel</ButtonRedMedium>
+                </SectionCardFooter>
+              </>
+            ) : (
+              ""
+            )}  
+          </div>
+        </>
+        )
+      </>) : ''}
     </>
     );
 };
