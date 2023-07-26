@@ -23,12 +23,25 @@ interface Props {
 }
 
 const CustomerKnowledgeAssesment = (props: Props) => {
-  const [isReview, setIsReview] = useState(false);
   let getPfrLength = getLength(props.pfrType);
   const scrollPosition = useScrollPosition(6);
   // zustand
-  const { need, updateNeed, reason, updateReason } =
+  const { answers, need, updateNeed, reason, updateReason } =
     useCustomerKnowledgeAssesment();
+
+  const [showSection, setShowSection] = useState(false);
+  useEffect(() => {
+    if (props.pfrType == 1) {
+      setShowSection(need[0]);
+    } else {
+      if (need[0] || need[1]) {
+        setShowSection(true);
+      } else {
+        setShowSection(false);
+      }
+    }
+  }, [need, props.pfrType]);
+
   return (
     <div id={props.id}>
       <div
@@ -47,7 +60,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
           Section 6. Customer Knowledge Assesment
         </HeadingPrimarySection>
       </div>
-      {!isReview ? (
+      {showSection ? (
         <>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.1 Educational Qualifications
@@ -98,9 +111,9 @@ const CustomerKnowledgeAssesment = (props: Props) => {
                 ""
               )}
               <Checkbox
-                isChecked={need ? (need[index] == 1 ? true : false) : false}
+                isChecked={!need[index]}
                 onChange={() => {
-                  updateNeed(index, need[index] == 1 ? 0 : 1);
+                  updateNeed(index, need[index], props.pfrType);
                 }}
                 lableStyle="text-sm font-normal text-gray-light"
                 label="Not applicable"
@@ -114,20 +127,25 @@ const CustomerKnowledgeAssesment = (props: Props) => {
         <RowSingleORDouble pfrType={props.pfrType}>
           {getPfrLength.map((e, index) => (
             <div className="flex-1" key={index}>
-              {need[index] == 1 ? (
-                <TextArea
-                  // handleChange={}
-                  className="my-4"
-                  label="The Reason"
-                  name="reason"
-                  value={reason[index]}
-                  handleChange={(e) => {
-                    updateReason(index, e.target.value);
-                  }}
-                />
-              ) : (
-                ""
-              )}
+              <TextArea
+                isDisabled={need[index]}
+                className="my-4"
+                label="The Reason"
+                name="reason"
+                value={reason[index]}
+                handleChange={(e) => {
+                  updateReason(index, e.target.value, props.pfrType);
+                }}
+                needValidation={!need[index]}
+                logic={
+                  reason[index] === "" ||
+                  reason[index] === "-" ||
+                  reason[index] === null ||
+                  reason[index] === undefined
+                    ? false
+                    : true
+                }
+              />
             </div>
           ))}
         </RowSingleORDouble>

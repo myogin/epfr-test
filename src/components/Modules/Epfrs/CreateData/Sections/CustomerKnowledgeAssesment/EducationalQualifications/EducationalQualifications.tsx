@@ -60,25 +60,31 @@ const EducationalQualifications = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
   // zustand
-  const { answers, updateEducation } = useCustomerKnowledgeAssesment();
+  const { answers, updateEducation, need } = useCustomerKnowledgeAssesment();
 
+  const checkValidate = (e: any) => e == false;
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowSingle>
-        <TitleSmall className="text-gray-light">
+        <TitleSmall className="text-gray-light ">
           1. Do you have a Diploma or higher qualication(s) in any of the
           following?
         </TitleSmall>
       </RowSingle>
 
-      {/* {props.initData[0].every(checkValidate) ? (
-        <RowSingleJointGrid pfrType={2} className="py-6">
-          <div className="col-span-2"></div>
-          <span className="text-xs font-normal text-red">Required</span>
-        </RowSingleJointGrid>
-      ) : (
-        ""
-      )} */}
+      <RowSingleORDouble pfrType={props.pfrType}>
+        {getPfrLength.map((e2, userIndex) => (
+          <>
+            {answers[userIndex].education[0].every(checkValidate) &&
+            need[userIndex] ? (
+              <div className="text-xs font-normal text-red">Required</div>
+            ) : (
+              <div></div>
+            )}
+          </>
+        ))}
+      </RowSingleORDouble>
+
       {props.pfrType > 1 ? (
         <RowSingleORDouble pfrType={props.pfrType}>
           <div>Client 1</div>
@@ -95,8 +101,9 @@ const EducationalQualifications = (props: Props) => {
               <>
                 <div>
                   <Checkbox
+                    isDisabled={!need[userIndex]}
                     onChange={() => {
-                      updateEducation(userIndex, 0, index);
+                      updateEducation(userIndex, 0, index, props.pfrType);
                     }}
                     isChecked={answers[userIndex].education[0][index]}
                     label={answer.answer}
@@ -109,18 +116,30 @@ const EducationalQualifications = (props: Props) => {
 
       {/*  */}
       <RowSingle>
-        <TitleSmall className="text-gray-light">
+        <TitleSmall className="text-gray-light ">
           2. Do you have a professional finanace-related qualification(s) in any
           of the following?
         </TitleSmall>
       </RowSingle>
-      {props.pfrType > 1 ? (
+
+      <RowSingleORDouble pfrType={props.pfrType}>
+        {getPfrLength.map((e2, userIndex) => (
+          <>
+            {answers[userIndex].education[1].every(checkValidate) &&
+            need[userIndex] ? (
+              <div className="text-xs font-normal text-red">Required</div>
+            ) : (
+              <div></div>
+            )}
+          </>
+        ))}
+      </RowSingleORDouble>
+
+      {props.pfrType > 1 && (
         <RowSingleORDouble pfrType={props.pfrType}>
           <div>Client 1</div>
           <div>Client 2</div>
         </RowSingleORDouble>
-      ) : (
-        ""
       )}
 
       {qa[1].answers?.length &&
@@ -130,8 +149,9 @@ const EducationalQualifications = (props: Props) => {
               <>
                 <div>
                   <Checkbox
+                    isDisabled={!need[userIndex]}
                     onChange={() => {
-                      updateEducation(userIndex, 1, index);
+                      updateEducation(userIndex, 1, index, props.pfrType);
                     }}
                     isChecked={answers[userIndex].education[1][index]}
                     label={answer.answer}

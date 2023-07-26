@@ -6,7 +6,7 @@ import { SectionFour } from "@/models/SectionFour";
 const initialState: SectionFour = {
   id: 0,
   need: [0, 0],
-  reason: [undefined, undefined],
+  reason: [null, null],
   others: {
     asset: [],
     liability: [],
