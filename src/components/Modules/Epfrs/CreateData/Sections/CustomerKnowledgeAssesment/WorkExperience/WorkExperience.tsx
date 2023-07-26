@@ -40,15 +40,30 @@ const WorkExperience = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
   // zustand
-  const { answers, updateWork } = useCustomerKnowledgeAssesment();
+  const { answers, updateWork, need } = useCustomerKnowledgeAssesment();
+
+  const checkValidate = (e: any) => e == false;
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowSingle>
-        <TitleSmall className="text-gray-light">
+        <TitleSmall className="text-gray-light ">
           Do you have at least 3 consecutive years of working experience for the
           last 10 years in any of ther following? *
         </TitleSmall>
       </RowSingle>
+
+      <RowSingleORDouble pfrType={props.pfrType}>
+        {getPfrLength.map((e2, userIndex) => (
+          <>
+            {answers[userIndex].work.every(checkValidate) && need[userIndex] ? (
+              <div className="text-xs font-normal text-red">Required</div>
+            ) : (
+              <div></div>
+            )}
+          </>
+        ))}
+      </RowSingleORDouble>
 
       {props.pfrType > 1 ? (
         <RowSingleORDouble pfrType={props.pfrType}>
@@ -66,8 +81,9 @@ const WorkExperience = (props: Props) => {
               <>
                 <div>
                   <Checkbox
+                    isDisabled={!need[userIndex]}
                     onChange={() => {
-                      updateWork(userIndex, index);
+                      updateWork(userIndex, index, props.pfrType);
                     }}
                     isChecked={answers[userIndex].work[index]}
                     label={answer.answer}
