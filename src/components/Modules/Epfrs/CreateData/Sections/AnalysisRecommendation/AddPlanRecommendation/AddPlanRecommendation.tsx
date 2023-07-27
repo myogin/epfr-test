@@ -11,9 +11,60 @@ import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/analysisRecommendationProduct";
+
+// Model
+import {getAllCompany} from "@/services/companyService";
+import {getWholeContext} from "@/services/pfrService";
+import {productFindOne} from "@/services/productService";
+
+export class RecommendationStruct {
+  selected = false;
+  edit = false;
+  subjectId = 0;
+  name = "";
+  type = 0; // Insure / CIS
+  productType = 0; // product or rider
+  id = 0;
+  categoryId = 0;
+  policyTerm = '';
+  sumAssured = '';
+  premiumPaymentType = '0';
+  premium = 0;
+  premiumFrequency = 0;
+  funds =  [];
+  modelPortfolioRiskCategory:number = 0;
+  higherThanRiskProfile = 0;
+  nameOfOwner = 0;
+  nameOfInsure = "-1";
+  nameOfInsureOther = "";
+  benefit = [];
+  risk = [];
+  portfolio = 0;
+  fundName = "";
+  fundAmount = 0;
+  premiumForHospitalization = {
+    cash : 0,
+    cpfMedisave : 0
+  };
+  groupId = 0;
+  premiumType = null;
+  feature = "";
+}
 
 const AddPlanRecommendation = () => {
+  let {
+    section9Recommend,
+    setParent,
+    setProduct,
+    setProductArr,
+    setProductRiderArr,
+    setProductRiderBenefitArr,
+    setProductRiderRiskArr,
+    setProductHospital
+  } = useAnalysisRecommendationProduct();
+
   let benefits: Array<any> = [
     {
       id: 1,
@@ -103,36 +154,9 @@ const AddPlanRecommendation = () => {
     },
   ];
 
-  const [rider, setRider] = useState(null);
-  const [productSelect, setProductSelect] = useState(0);
-
-  let riderArray: Array<any> = [false];
-
-  const setRiderAction = (params: any, value: boolean) => {
-    console.log("Rider Select " + params + " value " + value);
-    setRider(params);
-
-    riderArray[params] = value 
-  };
-
   const changeData = (params: any) => {
-    console.log("masuk sini nggak global one");
+    
   };
-
-  const changeDataProductName = (params: any) => {
-    console.log("masuk sini nggak ");
-    setProductSelect(params);
-  };
-
-  let dataOwner: Array<any> = [
-    { id: 1, name: "Owner One" },
-    { id: 2, name: "Owner Two" },
-  ];
-
-  let dataCategory: Array<any> = [
-    { id: 1, name: "Category One" },
-    { id: 2, name: "Category Two" },
-  ];
 
   let dataProductName: Array<any> = [
     { id: 0, name: "Select Product" },
@@ -145,13 +169,6 @@ const AddPlanRecommendation = () => {
     { id: 2, name: "CIS" },
   ];
 
-  let dataPaymentFreq: Array<any> = [
-    { id: 1, name: "Monthly" },
-    { id: 2, name: "Quarterly" },
-    { id: 3, name: "Half-Yearly" },
-    { id: 4, name: "Annually" },
-    { id: 5, name: "Single" },
-  ];
 
   let dataProvider: Array<any> = [
     { id: 1, name: "Singlife" },
@@ -159,58 +176,961 @@ const AddPlanRecommendation = () => {
     { id: 3, name: "Hoxing" },
   ];
 
-  let dataDependant: Array<any> = [
-    { id: 1, name: "Mayor Raja" },
-    { id: 2, name: "Mayor Jendral" },
-    { id: 3, name: "Sino" },
-    { id: 3, name: "Other" },
-  ];
-
-  let dataPremiumType: Array<any> = [
-    { id: 1, name: "CASH" },
-    { id: 2, name: "CPFOA" },
-    { id: 3, name: "CPFSA" },
-    { id: 3, name: "CPF MEDISAVE" },
-  ];
-
+  
   let dataCurrency: Array<any> = [
     { id: 1, name: "Singapore Dollar" },
     { id: 2, name: "US Dollar" },
   ];
 
-  console.log("data " + productSelect);
+  let initPfrData = {
+    productId : null,
+    groupId : null,
+    pfrId : 0,
+    product : new RecommendationStruct,
+    riders : [],
+    extraRiders : [],
+  }
 
-  const changeDataOwner = (params: any) => {
-    console.log("masuk sini owner");
+  const [initWhole, setInitWhole] = useState<any>({});
+  const [dataPremiumType, setDataPremiumType]  = useState<any>([{ id: 0, name: "CASH" },{ id: 1, name: "CPF OA" },{ id: 2, name: "CPF SA" },{ id: 3, name: "CPF MEDISAVE" },{ id: 4, name: "SRS" }]);
+  const [dataPaymentFreq, setDataPaymentFreq] = useState<any>([{ id: 0, name: "Monthly" },{ id: 1, name: "Quarterly" },{ id: 2, name: "Half-Yearly" },{ id: 3, name: "Annually" },{ id: 4, name: "Single" }])
+
+  // const [pfrData, setpfrData] = useState<any>(initPfrData);
+  const [dataDependant, setDataDependant] = useState<any>([{}]);
+  const [dataOwner, setDataOwner] = useState<any>([{}]);
+  const [dataCompany, setCompany] = useState<any>(null);
+  const [dataCategory, setCategory] = useState<any>([{}]);
+  const [getSelectProducts, setSelectProducts] = useState<any>([{}]);
+  const [getSelectProductone, setSelectProductOne] = useState<any>([{}]);
+  
+  const [getSelectedCategory, setSelectedCategory] = useState<any>(-1);
+  const [getSelectedCompany, setSelectedCompany] = useState<any>(-1);
+  const [getIlpFundsOfCompany, setIlpFundsOfCompany] = useState<any>([{}]);
+  const [productValueSelect, setProductValueSelect] = useState(0);
+  const [dataProductSelected, setDataProductSelected] = useState<any>({});
+  const [riderArr, setRiderArr] = useState<any>([]);
+  const [riderBenefit, setRiderBenefit] = useState<any>(false);
+  const [dataSelectedCategoryType, setDataSelectedCategoryType] = useState<any>(-1);
+  const [dataSelectedCategoryId, setDataSelectedCategoryId] = useState<any>(-1);
+
+  let dataPremiumTypeIlp: Array<any> = [
+    { id: 0, name: "Single" },
+    { id: 1, name: "Regular" },
+  ];
+  
+  useEffect(() => {
+    const pfrId = localStorage.getItem("s9_PfrId");
+    const resultCateg: Array<any> = []
+    const resDataOwner: Array<any> = [];
+    getWholeContext(pfrId).then((data) => {
+      
+      setInitWhole(data);
+      // Get Dependant
+      data.dependants.push({id: -1, name: "OTHER"})
+      setDataDependant(data.dependants);
+
+      // Get Company
+      var setDataArrs: Array<any> = [];
+      data.company.map((value: any, k: any) => {
+        value['idReal'] = value.id;
+        value['id'] = k;
+        if(value.products.length > 0){
+          value.products.map((valueProds: any, indexProds: any) => {
+            if(valueProds.rider.length > 0){
+              valueProds.rider.map((valueRider: any, indexRide: any) => {
+                if(section9Recommend.riders.length > 0){
+                  section9Recommend.riders.map((valSectRide: any, indexSectRide: any) => {
+                    if(parseInt(valSectRide.subjectId) == parseInt(valueRider.riderId)){
+                      var Arrs: Array<any> = [];
+                      setDataArrs[valueRider.rider.riderName] = true;
+                      // setRiderArr(Arrs);
+                    }
+                  })
+                }
+              });
+            }
+          });
+        }
+        return value;
+      });
+      // 
+      setRiderArr(setDataArrs);
+      setCompany(data.company)
+      
+      // Get Clients
+      data.clients.map((value: any, k: any) => {
+        value['name'] = value.clientName;
+        value['id'] = k;
+        resDataOwner.push(value);
+      });
+      setDataOwner(resDataOwner)
+
+      // Remap Get Categories
+      data.category.map((value: any, k: any) => {
+        resultCateg.push({
+          id: k, 
+          name: value.categoryName
+        })
+      })
+      setCategory(resultCateg)
+    });
+    
+    console.log('section9Recommend', section9Recommend)
+  }, [section9Recommend]);
+
+  const setProductData = (event: any) => {
+    const { name, value } = event.target;
+    setProduct(value, name, null)
   };
 
-  const changeDataCategory = (params: any) => {
-    console.log("masuk sini owner");
+  const changeDataCategory = (event: any) => {
+    const { name, value } = event.target;
+    var selectedProducts: Array<any> = [];
+    setSelectedCategory(value)
+    setSelectedCompany("")
+    setProductValueSelect(0);
+    
+    const selectedCategoryType = (initWhole.category[value]) ? initWhole.category[value]['type'] : null
+    setDataSelectedCategoryType(selectedCategoryType)
+    const selectedCategoryId = (initWhole.category[value]) ? initWhole.category[value]['id'] : null
+    setDataSelectedCategoryId(selectedCategoryId)
+    // Check Product Company
+    var pushComp: Array<any> = [];
+    // 
+    
+    const pfrId = localStorage.getItem("s9_PfrId");
+    getWholeContext(pfrId).then((data) => {
+      data.company.map((valueComp: any, indexComp:any) => {
+        valueComp['id'] = indexComp;
+        if(valueComp.products.length > 0){
+          var pushProd: Array<any> = [];
+          valueComp.products.map((valueFil: any, indexFil: any) => {
+            if(valueFil.categoryId == selectedCategoryId){
+              pushProd.push(valueFil);
+            }
+          });
+         
+          valueComp.products = pushProd;
+  
+          if(valueComp.products.length > 0){
+            pushComp.push(valueComp);
+          }
+        }
+      });
+      // 
+      setCompany(pushComp)
+    });
+    
+    
+    var products = (initWhole.company[getSelectedCompany]) ? initWhole.company[getSelectedCompany]['products'] : null
+    if(selectedCategoryType == 1) {  // IF ILP
+      if(section9Recommend.product.premiumType == -1){
+        setProduct('0', 'premiumType', null)
+      }
+      if(products){
+        products.map((product: any, k: any) => {
+          if(product['categoryId'] == selectedCategoryId
+          && product['ilp'] != null
+          && product['ilp']['platform']['fundType'] == section9Recommend.product.premiumType
+          && product['ilp']['riskCategory'] == initWhole.section5Result[section9Recommend.product.nameOfOwner]) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }else{
+      setProduct('-1', "premiumType", null)
+      if(products){
+        products.map((product: any, k: any) => {
+          // 
+          if(product['categoryId'] == selectedCategoryId) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }
+
+    if(selectedCategoryType == 1){
+      var modelPortfolioRiskCategory = Number(initWhole.section5Result[section9Recommend.product.nameOfOwner])
+      setProduct(modelPortfolioRiskCategory.toString(), 'modelPortfolioRiskCategory', null)
+      const ilpFundsOfCompany = initWhole.ilpFunds.filter((fund:any, k:any) => {
+        if(initWhole.company[getSelectedCompany]){
+          return fund['companyId'] == initWhole.company[getSelectedCompany]['idReal']
+        }
+      })
+      setIlpFundsOfCompany(ilpFundsOfCompany);
+    }
+
+    setSelectProducts(selectedProducts);
   };
 
-  const changeDataRecommendation = (params: any) => {
-    console.log("masuk sini recommendation");
+  const changeDataProvider = (event: any) => {
+    const { name, value } = event.target;
+    
+    var selectedProducts: Array<any> = [];
+    setSelectedCompany(value)
+    
+    const selectedCategoryType = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['type'] : null
+    setDataSelectedCategoryType(selectedCategoryType)
+    const selectedCategoryId = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['id'] : null
+    var products = (initWhole.company[value]) ? initWhole.company[value]['products'] : null
+    
+    if(selectedCategoryType == 1) {  // IF ILP
+      if(section9Recommend.product.premiumType == -1){
+        setProduct('0', 'premiumType', null)
+      }
+
+      if(products){
+        products.map((product: any, k: any) => {
+          if(product['categoryId'] == selectedCategoryId
+          && product['ilp'] != null
+          && product['ilp']['platform']['fundType'] == section9Recommend.product.premiumType
+          && product['ilp']['riskCategory'] == initWhole.section5Result[section9Recommend.product.nameOfOwner]) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }else{
+      setProduct('-1', "premiumType", null)
+      if(products){
+        products.map((product: any, k: any) => {
+          // 
+
+          if(product['categoryId'] == selectedCategoryId) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }
+
+    if(selectedCategoryType == 1){
+      var modelPortfolioRiskCategory = Number(initWhole.section5Result[section9Recommend.product.nameOfOwner])
+      setProduct(modelPortfolioRiskCategory.toString(), 'modelPortfolioRiskCategory', null)
+      const ilpFundsOfCompany = initWhole.ilpFunds.filter((fund:any, k:any) => {
+        if(initWhole.company[getSelectedCompany]){
+          return fund['companyId'] == initWhole.company[getSelectedCompany]['idReal']
+        }
+      })
+      
+      setIlpFundsOfCompany(ilpFundsOfCompany);
+    }
+    
+    setSelectProducts(selectedProducts);
   };
 
-  const changeDataProvider = (params: any) => {
-    console.log("masuk sini provider");
+  const changeDataPremiumType = (event: any) => {
+    const { name, value } = event.target;
+    
+    setProduct(value, 'premiumType', null)
+    
+    var selectedProducts: Array<any> = [];
+    
+    const selectedCategoryType = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['type'] : null
+    setDataSelectedCategoryType(selectedCategoryType)
+    const selectedCategoryId = (initWhole.category[getSelectedCategory]) ? initWhole.category[getSelectedCategory]['id'] : null
+    var products = (initWhole.company[getSelectedCompany]) ? initWhole.company[getSelectedCompany]['products'] : null
+    
+    if(selectedCategoryType == 1) {  // IF ILP
+      if(section9Recommend.product.premiumType == -1){
+        
+        setProduct('0', 'premiumType', null)
+      }
+
+      if(products){
+        products.map((product: any, k: any) => {
+          if(product['categoryId'] == selectedCategoryId
+          && product['ilp'] != null
+          && product['ilp']['platform']['fundType'] == value
+          && product['ilp']['riskCategory'] == initWhole.section5Result[section9Recommend.product.nameOfOwner]) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }else{
+      setProduct('-1', "premiumType", null)
+      if(products){
+        products.map((product: any, k: any) => {
+          // 
+
+          if(product['categoryId'] == selectedCategoryId) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }
+
+    if(selectedCategoryType == 1){
+      var modelPortfolioRiskCategory = Number(initWhole.section5Result[section9Recommend.product.nameOfOwner])
+      setProduct(modelPortfolioRiskCategory.toString(), 'modelPortfolioRiskCategory', null)
+      const ilpFundsOfCompany = initWhole.ilpFunds.filter((fund:any, k:any) => {
+        if(initWhole.company[getSelectedCompany]){
+          console.log('initWhole.company[getSelectedCompany]',initWhole.company[getSelectedCompany]['id'] )
+          console.log('fund',fund)
+          return fund['companyId'] == initWhole.company[getSelectedCompany]['idReal']
+        }
+      })
+      console.log('ilpFundsOfCompany', ilpFundsOfCompany)
+      setIlpFundsOfCompany(ilpFundsOfCompany);
+    }
+    console.log('initWhole', initWhole)
+    console.log('dataProductSelected', dataProductSelected)
+    console.log('selectedProducts', selectedProducts)
+    setSelectProducts(selectedProducts);
   };
 
-  const changeDataNameOfInsured = (params: any) => {
-    console.log("masuk sini insured name");
+  const changeDataProductName = (params: any) => {
+    
+    setProductValueSelect(params);
+    // Get One Product
+    productFindOne(params).then((data) => {
+      setProduct(data.product.name, 'name', null)
+      // Handle Premium Type
+      var dataProduct: Array<any> = []
+      if(data.product.name){
+        if(getSelectProducts.length > 0){
+          getSelectProducts.map((valueProd:any) => {
+            if(valueProd.name == data.product.name){
+              dataProduct = valueProd;
+            }
+          })
+        }
+        setSelectProductOne(dataProduct);
+        console.log('getSelectProductone', getSelectProductone)
+        
+        // Set Premium Type
+        if(dataSelectedCategoryType == 1){
+          let dataPt: Array<any> = [];
+          if(getSelectProductone?.ilp){
+            if(getSelectProductone['ilp'].paymentType == 0){
+              dataPt = [
+                { id: 0, name: "CASH" },
+              ];
+            }else if(getSelectProductone['ilp'].paymentType == 1){
+              dataPt = [
+                { id: 1, name: "CPF OA" },
+              ];
+            }else if(getSelectProductone['ilp'].paymentType == 2){
+              dataPt = [
+                { id: 2, name: "CPF SA" },
+              ];
+            }else if(getSelectProductone['ilp'].paymentType == 3){
+              dataPt = [
+                { id: 3, name: "CPF MEDISAVE" },
+              ];
+            }else if(getSelectProductone['ilp'].paymentType == 4){
+              dataPt = [
+                { id: 4, name: "SRS" },
+              ];
+            }
+            setDataPremiumType(dataPt);
+          }
+        }
+
+        // Set Premium Frequency
+        if(dataSelectedCategoryType != 1){
+          let dataFq: Array<any> = [];
+          if(section9Recommend.product.premiumType == 1){
+            dataFq.push({ id: 0, name: "Monthly" })
+          }
+          
+          if(section9Recommend.product.premiumType == 1){
+            dataFq.push({ id: 1, name: "Quarterly" })
+          }
+          
+          if(section9Recommend.product.premiumType == 1){
+            dataFq.push({ id: 2, name: "Half-Yearly" })
+          }
+          
+          if(section9Recommend.product.premiumType == 1){
+            dataFq.push({ id: 3, name: "Annually" })
+          }
+          
+          if(section9Recommend.product.premiumType == 0){
+            dataFq.push({ id: 4, name: "Single Payment" })
+          }
+
+          setDataPaymentFreq(dataFq)
+        }
+
+        var lengthData = 0;
+        var dataFunds: Array<any> = [];
+
+        if(dataProduct?.ilp){
+          if(dataProduct.ilp.platform.funds.length > 0){
+            dataProduct.ilp.platform.funds.map((valueRes:any, indexRes:any) => {
+              dataFunds.push({
+                allocation: valueRes.allocation,
+                fundId: valueRes.fundId,
+                groupId: valueRes.fund.groupId,
+                name: valueRes.fund.name,
+              });
+            })
+          }
+        }
+
+        setProductArr(dataFunds, 'funds', null);
+      }   
+      setDataProductSelected(data)
+
+      // Hospitalization
+      if(dataSelectedCategoryId == 8 || dataSelectedCategoryId == 5){
+        setProductHospital(0, 'cash');
+        setProductHospital(0, 'cpfMedisave');
+      }
+    });
+
+    
   };
 
-  const changeDataPaymentFrequency = (params: any) => {
-    console.log("masuk sini freq");
-  };
+  const handleBenefits = (event: any, index: any) => {
+    const { name, value } = event.target;
+    
+    var dataBenVal = -1;
+    if(section9Recommend.product.benefit.length > 0){
+      section9Recommend.product.benefit.map((resBen: any, resIBen:any) => {
+        if(resBen.benefitId == value){
+          dataBenVal = resIBen
+        }
+      });
+    }
 
-  const changeDataCurrency = (params: any) => {
-    console.log("masuk sini currency");
-  };
+    if(dataBenVal >= 0){
+      var resBenefit: Array<any> = [];
+      section9Recommend.product.benefit.map((resBen: any, resIBen:any) => {
+        if(resBen.benefitId != value){
+          resBenefit.push({benefitId:resBen.benefitId,content:resBen.content,title:resBen.title});
+        }
+      });
+      setProductArr(resBenefit, 'benefit', null);
+    }else{
+      var resBenefit: Array<any> = [];
+      section9Recommend.product.benefit.map((resBen: any, resIBen:any) => {
+          resBenefit.push({benefitId:resBen.benefitId,content:resBen.content,title:resBen.title});
+      });
+      dataProductSelected.benefits.map((valueBenefit: any, index: any) => {
+        if(valueBenefit.id == value){
+          resBenefit.push({benefitId:value,content:valueBenefit.content,title:valueBenefit.title})
+        }
+      });
+      setProductArr(resBenefit, 'benefit', null);
+    }
+  }
 
-  const changeDataPaymentType = (params: any) => {
-    console.log("masuk sini payment type");
-  };
+  const checkBenefit = (data: any) => {
+    if(section9Recommend.product.benefit.length > 0){
+      section9Recommend.product.benefit.map((value: any, index: any) => {
+        if(data == value.benefitId){
+          return true;
+        }
+      })
+    }else{
+      return false;
+    }
+  }
+
+  const handleRisks = (event: any, index: any) => {
+    const { name, value } = event.target;
+
+    var resIndexRiskVal = -1;
+    if(section9Recommend.product.risk.length > 0){
+      section9Recommend.product.risk.map((resProdRisk: any, resIRisk:any) => {
+        if(resProdRisk.riskId != value){
+          resIndexRiskVal = resIRisk;
+        }
+      });
+    }
+
+    if(resIndexRiskVal >= 0){
+      var resRisk: Array<any> = [];
+      section9Recommend.product.risk.map((resProdRisk: any, resIRisk:any) => {
+        if(resProdRisk.riskId != value){
+          resRisk.push({riskId:resProdRisk.riskId,content:resProdRisk.content,title:resProdRisk.title});
+        }
+      });
+      setProductArr(resRisk, 'risk', null);
+    }else{
+      var resRisk: Array<any> = [];
+      section9Recommend.product.risk.map((resProdRisk: any, resIRisk:any) => {
+          resRisk.push({riskId:resProdRisk.riskId,content:resProdRisk.content,title:resProdRisk.title});
+      });
+
+      dataProductSelected.risks.map((valueRisk: any, index: any) => {
+        if(valueRisk.id == value){
+          resRisk.push({riskId:value,content:valueRisk.content,title:valueRisk.title})
+        }
+      });
+      setProductArr(resRisk, 'risk', null);
+    }
+  }
+
+  const checkRisk = (data: any) => {
+    if(section9Recommend.product.risk.length > 0){
+      section9Recommend.product.risk.map((value: any, index: any) => {
+        if(data == value.riskId){
+          return true;
+        }
+      })
+    }else{
+      return false;
+    }
+  }
+
+  // Data Riders
+  const setRiderAction = (event: any, index: any) => {
+    const { name, value } = event.target;
+    var resData = -1;
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) == value){
+          resData = resIRider;
+        }
+      });
+    }
+
+    if(resData >= 0){
+      
+      var resRiders: Array<any> = [];
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) != value){
+          resRiders.push(vRider);
+        }
+      });
+      setProductRiderArr(resRiders, 'riders', null);
+    }else{
+      var resRiders: Array<any> = [];
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+          resRiders.push(vRider);
+      });
+      dataProductSelected.riders.map((dataVal: any, index: any) => {
+        if(dataVal.new_rider.id == value){
+          resRiders.push({
+            selected: false,
+            edit: false,
+            subjectId: value,
+            name: dataVal.new_rider.riderName,
+            type: 0, // Insure / CIS
+            productType: 0, // product or rider
+            id: 0,
+            categoryId: 0,
+            policyTerm: '',
+            sumAssured: '',
+            premiumPaymentType: '0',
+            premium: 0,
+            premiumFrequency: 0,
+            funds:  [],
+            modelPortfolioRiskCategory: 0,
+            higherThanRiskProfile: 0,
+            nameOfOwner: 0,
+            nameOfInsure: "-1",
+            nameOfInsureOther: "",
+            benefit: [],
+            risk: [],
+            portfolio: 0,
+            fundName: "",
+            fundAmount: 0,
+            premiumForHospitalization: {
+              cash: 0,
+              cpfMedisave: 0
+            },
+            groupId: 0,
+            premiumType: null,
+            feature: dataVal.new_rider.riderFeature,
+          })
+        }
+      });
+      setProductRiderArr(resRiders, 'riders', null);
+    }
+  }
+
+  const checkRiders = (data: any) => {
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((value: any, index: any) => {
+        if(parseInt(data) == parseInt(value.subjectId)){
+          return true;
+        }
+      })
+    }else{
+      return false;
+    }
+  }
+
+  const getRiderValue = (data: any, name: any) => { 
+    if(section9Recommend.riders.length > 0){
+      if(name == 'nameOfInsure'){
+        return dataOwner[section9Recommend.product.nameOfOwner]['name'];
+      }
+
+      section9Recommend.riders.map((value: any, index: any) => {
+        if(parseInt(data) == parseInt(value.subjectId)){
+          return value[name];
+        }
+      })
+    }else{
+      return "";
+    }
+  }
+
+  const handleRiderProduct = (event: any, id: any) => {
+    const { name, value } = event.target;
+    // 
+    // 
+    // 
+    const resRiders: Array<any> = [];
+    const resRiders2: Array<any> = [];
+
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) == id){
+          var resData: any = {
+            selected: vRider.selected,
+            edit: vRider.edit,
+            subjectId: vRider.subjectId,
+            name: vRider.name,
+            type: vRider.type,
+            productType: vRider.productType,
+            id: vRider.id,
+            categoryId: vRider.categoryId,
+            policyTerm: vRider.policyTerm,
+            sumAssured: vRider.sumAssured,
+            premiumPaymentType: vRider.premiumPaymentType,
+            premium: vRider.premium,
+            premiumFrequency: vRider.premiumFrequency,
+            funds: vRider.funds,
+            modelPortfolioRiskCategory: vRider.modelPortfolioRiskCategory,
+            higherThanRiskProfile: vRider.higherThanRiskProfile,
+            nameOfOwner: vRider.nameOfOwner,
+            nameOfInsure: vRider.nameOfInsure,
+            nameOfInsureOther: vRider.nameOfInsureOther,
+            benefit: vRider.benefit,
+            risk: vRider.risk,
+            portfolio: vRider.portfolio,
+            fundName: vRider.fundName,
+            fundAmount: vRider.fundAmount,
+            premiumForHospitalization: {
+              cash: vRider.cash,
+              cpfMedisave: vRider.cpfMedisave,
+            },
+            groupId: vRider.groupId,
+            premiumType: vRider.premiumType,
+            feature: vRider.feature,
+          };
+          resData[name] = value;
+          resRiders.push(resData);
+        }else{
+          resRiders.push(vRider);
+        }
+      });
+      setProductRiderArr(resRiders, 'riders', null);
+    }
+  }
+
+  // Rider Benefit
+  const setRiderBenefitAction = (event: any, riderId:any, benefitId:any) => { 
+    const { name, value } = event.target;
+    var dataBenefit: Array<any> = [];
+    var resData = -1;
+    
+    
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) == riderId){
+          if(vRider.benefit.length > 0){
+            vRider.benefit.map((valueBen:any, resIBen:any) => {
+              if(valueBen.benefitId == benefitId){
+                resData = resIBen;
+              }
+            })
+          }
+        }
+      });
+    }
+
+    if(resData >= 0){
+      var resRiderBenefit: Array<any> = [];
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) == riderId){
+          if(vRider.benefit.length > 0){
+            vRider.benefit.map((valueBen:any, resIBen:any) => {
+              if(valueBen.benefitId != benefitId){
+                resRiderBenefit.push({
+                  benefitId: valueBen.benefitId,
+                  content: valueBen.content,
+                  title: valueBen.title,
+                });
+              }
+            })
+          }
+        }
+      });
+      setProductRiderBenefitArr(resRiderBenefit, riderId)
+    }else{
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) == riderId){
+          if(vRider.benefit.length > 0){
+            vRider.benefit.map((valueBen:any, resIBen:any) => {
+              dataBenefit.push(valueBen);
+            })
+          }
+        }
+      });
+
+      if(dataProductSelected.riders.length > 0){
+        dataProductSelected.riders.map((valueProd:any, indexProd:any) => {
+          if(valueProd.new_rider.id == riderId){
+            if(valueProd.new_rider.benefit.length > 0){
+              valueProd.new_rider.benefit.map((valueBen: any, indexBen: any) => {
+                if(valueBen.id == benefitId){
+                  dataBenefit.push({
+                    benefitId: benefitId,
+                    content: valueBen.content,
+                    title: valueBen.title,
+                  });
+                }
+              })
+            }
+          }
+        });
+        
+        setProductRiderBenefitArr(dataBenefit, riderId)
+      }
+    }
+  }
+
+  const checkRiderBenefit = (benefitId:any, riderId:any) => {
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((value: any, index: any) => {
+        if(parseInt(riderId) == parseInt(value.subjectId)){
+          if(value.benefit.length > 0){
+            value.benefit.map((valueBen:any) => {
+              if(valueBen == benefitId){
+                return true;
+              }
+            })
+          }
+        }
+      })
+    }else{
+      return false;
+    }
+  }
+
+  // Rider Risk
+  const setRiderRiskAction = (event: any, riderId:any, riskId:any) => { 
+    const { name, value } = event.target;
+    var dataRisk: Array<any> = [];
+    var resData = -1;
+
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) == riderId){
+          if(vRider.risk.length > 0){
+            vRider.risk.map((valueRisk:any, resIRisk:any) => {
+              if(valueRisk.riskId == riskId){
+                resData = resIRisk;
+              }
+            })
+          }
+        }
+      });
+    }
+
+    if(resData >= 0){
+      var resRiderRisk: Array<any> = [];
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) == riderId){
+          if(vRider.risk.length > 0){
+            vRider.risk.map((valueRisk:any, resIRisk:any) => {
+              if(valueRisk.riskId != riskId){
+                resRiderRisk.push({
+                  riskId: valueRisk.riskId,
+                  content: valueRisk.content,
+                  title: valueRisk.title,
+                });
+              }
+            })
+          }
+        }
+      });
+      setProductRiderRiskArr(resRiderRisk, riderId)
+    }else{
+      section9Recommend.riders.map((vRider: any, resIRider:any) => {
+        if(parseInt(vRider.subjectId) == riderId){
+          if(vRider.risk.length > 0){
+            vRider.risk.map((valueRisk:any, resIRisk:any) => {
+              dataRisk.push(valueRisk);
+            })
+          }
+        }
+      });
+
+      if(dataProductSelected.riders.length > 0){
+        dataProductSelected.riders.map((valueProd:any, indexProd:any) => {
+          if(valueProd.new_rider.id == riderId){
+            if(valueProd.new_rider.risk.length > 0){
+              valueProd.new_rider.risk.map((valueRisk: any, resIndexRiskVal: any) => {
+                if(valueRisk.id == riskId){
+                  dataRisk.push({
+                    riskId: riskId,
+                    content: valueRisk.content,
+                    title: valueRisk.title,
+                  });
+                }
+              })
+            }
+          }
+        });
+        
+        setProductRiderRiskArr(dataRisk, riderId)
+      }
+    }
+  }
+
+  const checkRiderRisk = (riskId:any, riderId:any) => {
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((value: any, index: any) => {
+        if(parseInt(riderId) == parseInt(value.subjectId)){
+          if(value.risk.length > 0){
+            value.risk.map((valueRisk:any) => {
+              if(valueRisk == riskId){
+                return true;
+              }
+            })
+          }
+        }
+      })
+    }else{
+      return false;
+    }
+  }
+
+  // Check Data Validation
+  const riderBenefitValidation = (riderId:any) => {
+    var dataRes = 0;
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((value: any, index: any) => {
+        if(parseInt(riderId) == parseInt(value.subjectId)){
+          if(value.benefit.length > 0){
+            dataRes = 1
+          }
+        }
+      })
+    }
+    
+    if(dataRes > 0){
+      return true
+    }else{
+      return false
+    }
+  }
+
+  const riderRiskValidation = (riderId:any) => {
+    var dataRes = 0;
+    if(section9Recommend.riders.length > 0){
+      section9Recommend.riders.map((value: any, index: any) => {
+        if(parseInt(riderId) == parseInt(value.subjectId)){
+          if(value.risk.length > 0){
+            dataRes = 1
+          }
+        }
+      })
+    }
+    
+    if(dataRes > 0){
+      return true
+    }else{
+      return false
+    }
+  }
+
+  // Get Fund Group Name 
+  const getFundName = (groupId:any) => {
+    var result = '-';
+    if(initWhole.ilpFundGroups.length > 0){
+      initWhole.ilpFundGroups.map((value:any) => {
+        if(value.id == groupId){
+          result = value.name
+        }
+      })
+    }
+
+    return result;
+  }
+
+  const checkDataIlpFundsOfCompany = (groupId: any) => {
+    var resArr: Array<any> = [];
+    getIlpFundsOfCompany.map((fund:any) => {
+      if(fund['groupId'] == groupId){
+        resArr.push(fund);
+      }
+    })
+
+    return resArr
+  }
+
+  const checkDataIlpFundsOfCompany2 = (groupId: any) => {
+    var resArr2: Array<any> = [];
+    getIlpFundsOfCompany.map((fund:any) => {
+      if(fund['groupId'] == groupId){
+        resArr2.push(fund);
+      }
+    })
+
+    return resArr2
+  }
+
+  // Handle Product Fund
+  const setProductFund = (event:any, resAllocation:any, groupId: any, indexPlatform:any) => {
+    const { name, value } = event.target;
+    var dataFunds: Array<any> = [];
+    var resData = -1;
+    
+    
+    if(section9Recommend.product.funds.length > 0){
+      section9Recommend.product.funds.map((vFund: any, resIFund:any) => {
+        if(parseInt(vFund.fundId) == value){
+            resData = resIFund;
+        }
+      });
+    }
+
+    if(resData >= 0){
+      var resFund: Array<any> = [];
+      section9Recommend.product.funds.map((vFund: any, resIFund:any) => {
+        if(parseInt(vFund.fundId) != value){
+          resFund.push(vFund);
+        }
+      });
+      setProductArr(resFund, 'funds', null)
+    }else{
+      section9Recommend.product.funds.map((vFund: any, resIFund:any) => {
+          dataFunds.push(vFund);
+      });
+
+      if(getSelectProductone.ilp.platform.funds.length > 0){
+        var dataMap = checkDataIlpFundsOfCompany2(groupId);
+        dataMap.map((valueMap:any, indexMap:any) => {
+          if(valueMap.id == value){
+            dataFunds[indexPlatform] = {
+              allocation: resAllocation,
+              fundId:valueMap.id,
+              groupId: valueMap.groupId,
+              name: valueMap.name,
+            }
+          }
+        });
+        
+        setProductArr(dataFunds, 'funds', null)
+      }
+    }
+
+  }
+
+  const checkFundValues = (dataI:any) => {
+    if(section9Recommend.product.funds.length > 0){
+      return section9Recommend.product?.funds[dataI].fundId;
+    }else{
+      return "";
+    }
+  }
 
   let { showDetailData } = useNavigationSection();
 
@@ -218,31 +1138,24 @@ const AddPlanRecommendation = () => {
     showDetailData(params);
   };
 
+  const handleHospilization = (event:any) => {
+    const { name, value } = event.target;
+    setProductHospital(value, name);
+  }
+  
   return (
     <>
       <HeadingSecondarySection className="mx-8 2xl:mx-60">Product Details</HeadingSecondarySection>
-      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+      <div className="grid grid-cols-1 mx-8 2xl:mx-60">
         <RowDoubleGrid>
           <div>
             <Select
               datas={dataOwner}
               label="Name of Owner"
               className="my-4"
-              handleChange={(event) => changeDataOwner(event.target.value)}
-            />
-            <Select
-              datas={dataCategory}
-              label="Category"
-              className="my-4"
-              handleChange={(event) => changeDataCategory(event.target.value)}
-            />
-            <Select
-              datas={dataProductName}
-              label="Product Name"
-              className="my-4"
-              handleChange={(event) =>
-                changeDataProductName(event.target.value)
-              }
+              name="nameOfOwner"
+              value={section9Recommend.product.nameOfOwner}
+              handleChange={(event) => setProductData(event)}
             />
           </div>
           <div>
@@ -250,224 +1163,398 @@ const AddPlanRecommendation = () => {
               datas={recomendationType}
               label="Recommendation Type"
               className="my-4"
+              name="type"
+              value={section9Recommend.product.type}
               handleChange={(event) =>
-                changeDataRecommendation(event.target.value)
+                setProductData(event)
               }
-            />
-            <Select
-              datas={dataProvider}
-              label="Provider Name"
-              className="my-4"
-              handleChange={(event) => changeDataProvider(event.target.value)}
             />
           </div>
         </RowDoubleGrid>
-
-        {productSelect > 0 ? (
-          <>
-            <RowDoubleGrid>
-              <div>
-                <Select
-                  datas={dataDependant}
-                  label="Name of Insured (If Different From Owner)"
-                  className="my-4"
-                  handleChange={(event) =>
-                    changeDataNameOfInsured(event.target.value)
-                  }
-                />
-                <Select
-                  datas={dataPaymentFreq}
-                  label="Payment Frequency"
-                  className="my-4"
-                  handleChange={(event) =>
-                    changeDataPaymentFrequency(event.target.value)
-                  }
-                />
-                <Input label="Policy Term Years" className="my-4" />
-                <Select
-                  datas={dataCurrency}
-                  label="Currency"
-                  className="my-4"
-                  handleChange={(event) =>
-                    changeDataCurrency(event.target.value)
-                  }
-                />
-              </div>
-              <div>
-                <Select
-                  datas={dataPremiumType}
-                  label="Premium Payment Type"
-                  className="my-4"
-                  handleChange={(event) =>
-                    changeDataPaymentType(event.target.value)
-                  }
-                />
-                <Input label="Premium Amounts" className="my-4" />
-                <Input label="Sum Assured" className="my-4" />
-              </div>
-            </RowDoubleGrid>
-            <RowSingleGrid>
-              <TextSmall>Product Feature</TextSmall>
-              <p className="text-sm text-gray-light">
-                {`MyRetirement is a life insurance endowment plan that aims to
-                provide a platform for accumulating retirement savings and
-                providing retirement income solutions. This is a participating
-                policy that participates in the performance of Singapore Life’s
-                Participating Fund in the form of non-guaranteed bonuses.
-                MyRetirement consists of two phases, the Accumulation Period and
-                the Retirement Income Period, and it provides coverage against
-                death and terminal illness. The plan provides limited premium
-                payment of 8 years OR limited premium payment of 10 years OR
-                regular premium payment up to 5 years before Policyholder's
-                selected Retirement Age.`}
-              </p>
-            </RowSingleGrid>
-          </>
-        ) : (
-          ""
-        )}
-      </SectionCardSingleGrid>
-      {productSelect > 0 ? (
-        <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">Benefit Details</HeadingSecondarySection>
-          <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
-            {benefits.length > 0 &&
-              benefits.map((benefit, index) => (
-                <div
-                  className="w-full p-5 border rounded-md border-gray-soft-strong"
-                  key={index}
-                >
-                  <div className="flex items-center justify-start gap-4 mb-5">
-                    <Checkbox label={benefit.name} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-light">
-                      {benefit.description}
-                    </p>
-                  </div>
+      </div>
+      {section9Recommend.product.type == 1 ? 
+          (<> 
+            <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+              <RowDoubleGrid>
+                <div>
+                  <Select
+                    datas={dataCategory}
+                    label="Category"
+                    className="my-4"
+                    name="category"
+                    value={getSelectedCategory}
+                    handleChange={(event) => changeDataCategory(event)}
+                  />
                 </div>
-              ))}
-          </SectionCardSingleGrid>
-
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">Risk Details</HeadingSecondarySection>
-          <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
-            {benefits.length > 0 &&
-              benefits.map((benefit, index) => (
-                <div
-                  className="w-full p-5 border rounded-md border-gray-soft-strong"
-                  key={index}
-                >
-                  <div className="flex items-center justify-start gap-4 mb-5">
-                    <Checkbox label={benefit.name} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-light">
-                      {benefit.description}
-                    </p>
-                  </div>
+                <div>
+                  <Select
+                    datas={dataCompany}
+                    label="Provider Name"
+                    className="my-4"
+                    name="company"
+                    value={getSelectedCompany}
+                    handleChange={(event) => changeDataProvider(event)}
+                  />
                 </div>
-              ))}
-          </SectionCardSingleGrid>
+              </RowDoubleGrid>
 
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">Rider Details</HeadingSecondarySection>
-          <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
-            {riders.length > 0 &&
-              riders.map((r, index) => (
-                <div
-                  className="w-full p-5 border rounded-md border-gray-soft-strong"
-                  key={index}
-                >
-                  <div className="flex mb-5">
-                    <Checkbox
-                      onChange={() => setRiderAction(r.id, !r.checked)}
-                      isChecked={riderArray[r.id]}
-                      label={r.name}
+              <RowDoubleGrid>
+                {dataSelectedCategoryType == 1 ? (<>
+                  <div>
+                    <Select
+                      datas={dataPremiumTypeIlp}
+                      label="Premium Type"
+                      className="my-4"
+                      name="productIndex"
+                      value={section9Recommend.product.premiumType}
+                      handleChange={(event) => changeDataPremiumType(event)}
                     />
                   </div>
-                  <div className="mb-5">
-                    <p className="text-sm text-gray-light">{r.description}</p>
-                  </div>
-                  {riderArray[r.id] == true ? (
-                    <div className="space-y-10">
-                      <div className="w-full p-5 border rounded-md border-gray-soft-strong">
-                        <RowDoubleGrid>
-                          <div>
-                            <Input label="Policy Term" className="my-4" />
-                            <Input label="Premium ($)" className="my-4" />
-                          </div>
-                          <div>
-                            <Input label="Sum Assured" className="my-4" />
-                            <Input label="Name of Insured" className="my-4" />
-                          </div>
-                        </RowDoubleGrid>
-                      </div>
-
-                      <RowSingleGrid>
-                        <TextSmall>Rider Benefit</TextSmall>
-
-                        {riderBenefits.length > 0 &&
-                          riderBenefits.map((rb, index) => (
-                            <div
-                              className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
-                              key={rb.id}
-                            >
-                              <div className="flex mb-5">
-                                <Checkbox
-                                  onChange={() => setRiderAction(rb.id)}
-                                  isChecked={rider == rb.id ? true : false}
-                                  label={rb.name}
-                                />
-                              </div>
-                              <div className="mb-5">
-                                <p className="text-sm text-gray-light">
-                                  {rb.description}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                      </RowSingleGrid>
-
-                      <RowSingleGrid>
-                        <TextSmall>Rider Risk</TextSmall>
-
-                        {riderRisks.length > 0 &&
-                          riderRisks.map((rr, index) => (
-                            <div
-                              className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
-                              key={rr.id}
-                            >
-                              <div className="flex mb-5">
-                                <Checkbox
-                                  onChange={() => setRiderAction(rr.id)}
-                                  isChecked={rider == rr.id ? true : false}
-                                  label={rr.name}
-                                />
-                              </div>
-                              <div className="mb-5">
-                                <p className="text-sm text-gray-light">
-                                  {rr.description}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                      </RowSingleGrid>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                </>) : ''}
+                <div>
+                  <Select
+                    datas={getSelectProducts}
+                    label="Product Name"
+                    className="my-4"
+                    name="productIndex"
+                    value={productValueSelect}
+                    handleChange={(event) => changeDataProductName(event.target.value)}
+                  />
                 </div>
-              ))}
-          </SectionCardSingleGrid>
-          <SectionCardFooter className="mx-8 2xl:mx-60">
-            <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
-            <ButtonRedMedium>Cancel</ButtonRedMedium>
-          </SectionCardFooter>
-        </>
-      ) : (
-        ""
-      )}
+              </RowDoubleGrid> 
+
+              {productValueSelect > 0 ? (
+                  <>
+                    <RowDoubleGrid>
+                      <div>
+                        <div className={`w-full my-4 space-y-3`}>
+                          <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+                            Name of Insured (If Different From Owner)
+                          </label>
+                          <select placeholder="Please select data" value={section9Recommend.product.nameOfInsure} name="nameOfInsure"
+                            className="my-4 w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                            onChange={(event) => setProductData(event)}>
+                            <option value="-">Please select data</option>
+                            {dataDependant?.length &&
+                              dataDependant.map((val: any, index: any) => (
+                                <option key={index} value={val.name}>
+                                  {val.name}
+                                </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        {section9Recommend.product.nameOfInsure == 'OTHER' ? 
+                          <Input label="Other" className="my-4" name="nameOfInsureOther" value={section9Recommend.product.nameOfInsureOther} handleChange={(event) => setProductData(event)}/>
+                        : ''} 
+                      </div>
+                    </RowDoubleGrid>
+                    <RowDoubleGrid>
+                      <div>
+                        <Select
+                          datas={dataCurrency}
+                          label="Currency"
+                          className=""
+                          name="currency"
+                          value={section9Recommend.product.currency} 
+                          handleChange={(event) => setProductData(event)}
+                        />
+                       
+                      </div>
+                      <div>
+                        <Select
+                          datas={dataPremiumType}
+                          label="Premium Payment Type"
+                          className=""
+                          name="premiumPaymentType"
+                          value={section9Recommend.product.premiumPaymentType} 
+                          handleChange={(event) => setProductData(event)}
+                        />
+                      </div>
+                    </RowDoubleGrid>
+                    <RowDoubleGrid>
+                      <div>
+                        <Input label="Premium Amounts" className="" name="premium" value={section9Recommend.product.premium} handleChange={(event) => setProductData(event)} needValidation={true} logic={section9Recommend.product.premium === null || section9Recommend.product.premium === 0 ? false : true}/>
+                      </div>
+                      <div>
+                        <Input label="Sum Assured" className="" name="sumAssured" value={section9Recommend.product.sumAssured} handleChange={(event) => setProductData(event)}
+                        needValidation={true} logic={section9Recommend.product.sumAssured === "" || section9Recommend.product.sumAssured === "-"  ? false : true}/>
+                      </div>
+                    </RowDoubleGrid>
+                    <RowDoubleGrid>
+                      <div>
+                        <Select
+                          datas={dataPaymentFreq}
+                          label="Payment Frequency"
+                          className=""
+                          name="premiumFrequency"
+                          value={section9Recommend.product.premiumFrequency} 
+                          handleChange={(event) => setProductData(event)}
+                        />
+                      </div>
+                      <div>
+                        <Input label="Policy Term Years" className="" name="policyTerm" value={section9Recommend.product.policyTerm} handleChange={(event) => setProductData(event)}
+                        needValidation={true} logic={section9Recommend.product.policyTerm === "" || section9Recommend.product.policyTerm === "-"  ? false : true}/>
+                      </div>
+                    </RowDoubleGrid>
+                    {(section9Recommend.product.funds.length > 0) ? (<>
+                      <RowSingleGrid>
+                        <TextSmall>FUND NAME & PERCENTAGE</TextSmall>
+                        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+                          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+                            <thead className="bg-white-bone">
+                              <tr className="border-b border-gray-soft-strong">
+                                <td className='align-top px-2 py-2'>
+                                  <TextSmall className="uppercase text-gray-light">
+                                    GROUP NAME
+                                  </TextSmall>
+                                </td>
+                                <td className='align-top px-2 py-2'>
+                                  <TextSmall className="uppercase text-gray-light">
+                                    ALLOCATION(%)
+                                  </TextSmall>
+                                </td>
+                                <td className='align-top px-2 py-2'>
+                                  <TextSmall className="uppercase text-gray-light">
+                                    FUND NAME
+                                  </TextSmall>
+                                </td>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {getSelectProductone?.ilp &&
+                                    getSelectProductone.ilp.platform.funds.map((dataPlatform: any, indexPlatform:any) => (
+                                    <tr>
+                                      <td className="px-2 py-2">
+                                        <span>{getFundName(dataPlatform.fund.groupId)}</span>
+                                      </td>
+                                      <td className="px-2 py-2">
+                                        <span>{dataPlatform.allocation}</span>
+                                      </td>
+                                      <td className="px-2 py-2">
+                                        <select
+                                          value={checkFundValues(indexPlatform)}
+                                          name="dataFund"
+                                          className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                                          onChange={(event) => setProductFund(event, dataPlatform.allocation, dataPlatform.fund.groupId, indexPlatform)}
+                                          disabled={getSelectProductone.ilp.platform.fixed == 1 ? true : false}
+                                        >
+                                          <option value="-">Please select data</option>
+                                          {checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).length &&
+                                            checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).map((val:any, indexVal:any) => (
+                                                <option key={indexVal} value={val.id}>
+                                                  {val.name}
+                                                </option>
+                                            ))
+                                          }
+                                        </select>
+                                      </td>
+                                    </tr> 
+                                  )
+                                )
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      </RowSingleGrid>
+                    </>) : ''}
+                    
+                    {dataSelectedCategoryId == 8 || dataSelectedCategoryId == 5 ? (
+                      <>
+                        <RowSingleGrid>
+                        <TextSmall>PREMIUM FREQUENCY</TextSmall>
+                        <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+                          <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+                            <tbody className="bg-white-bone">
+                              <tr>
+                                <td className="px-2 py-2">CASH</td>
+                                <td className="px-2 py-2">
+                                  <Input className="" name="cash" value={section9Recommend.product.premiumForHospitalization.cash} handleChange={(event) => handleHospilization(event)} needValidation={true} logic={section9Recommend.product.premiumForHospitalization.cash === null || section9Recommend.product.premiumForHospitalization.cash === 0 ? false : true}/>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="px-2 py-2">CPF MEDISAVE</td>
+                                <td className="px-2 py-2">
+                                  <Input className="" name="cpfMedisave" value={section9Recommend.product.premiumForHospitalization.cpfMedisave} handleChange={(event) => handleHospilization(event)} needValidation={true} logic={section9Recommend.product.premiumForHospitalization.cpfMedisave === null || section9Recommend.product.premiumForHospitalization.cpfMedisave === 0 ? false : true}/>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        </RowSingleGrid>
+                      </>
+                    ): ''}
+
+                    <RowSingleGrid>
+                      <TextSmall>Product Feature</TextSmall>
+                      <p className="text-sm text-gray-light">
+                        {dataProductSelected.product?.feature}
+                      </p>
+                    </RowSingleGrid>
+                  </>
+                ) : (
+                  ""
+              )}
+            </SectionCardSingleGrid>
+
+            {productValueSelect > 0 ? (
+              <>
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.benefits?.length > 0 ? 
+                    (<>
+                    <div className="flex flex-row items-center justify-between">
+                      <h2 className="text-xl font-bold">Benefit Details</h2>
+                    </div>
+                    {dataProductSelected.benefits.map((benefit: any, index: any) => (
+                      <div className="w-full p-5 border rounded-md border-gray-soft-strong" key={index}>
+                        <div className="flex items-center justify-start gap-4 mb-5">
+                          <Checkbox label={benefit.title} name="benefitData" isChecked={checkBenefit(benefit.id)} value={benefit.id} onChange={(event) => handleBenefits(event, index) }/>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-light">
+                            {benefit.content}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    </>)
+                    : ''
+                  }
+                </SectionCardSingleGrid>
+
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.risks?.length > 0 ? (<>
+                    <div className="flex flex-row items-center justify-between">
+                      <h2 className="text-xl font-bold">Risk Details</h2>
+                    </div>
+                    {dataProductSelected.risks.map((risk: any, index: any) => (
+                      <div
+                        className="w-full p-5 border rounded-md border-gray-soft-strong"
+                        key={index}
+                      >
+                        <div className="flex items-center justify-start gap-4 mb-5">
+                          <Checkbox label={risk.title} name="riskData" isChecked={checkRisk(risk.id)} value={risk.id} onChange={(event) => handleRisks(event, index)}/>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-light">
+                            {risk.content}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </>) 
+                  : ''}
+                </SectionCardSingleGrid>
+
+                <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
+                  {dataProductSelected.riders?.length > 0 ? (<>
+                    <div className="flex flex-row items-center justify-between">
+                      <h2 className="text-xl font-bold">Rider Details</h2>
+                    </div>
+                    {dataProductSelected.riders.map((value: any, index: any) => (
+                      <div
+                        className="w-full p-5 border rounded-md border-gray-soft-strong"
+                        key={index}
+                      >
+                        <div className="flex mb-5">
+                          <Checkbox label={value.new_rider.riderName} name="riderData" isChecked={checkRiders(value.new_rider.id)} value={value.new_rider.id} onChange={(event) => setRiderAction(event, index)}/>
+                        </div>
+                        <div className="mb-5">
+                          <p className="text-sm text-gray-light">{value.new_rider.riderFeature}</p>
+                        </div>
+                        {riderArr[value.new_rider.riderName] === true ? (
+                          <div className="space-y-10">
+                            <div className="w-full p-5 border rounded-md border-gray-soft-strong">
+                              <RowDoubleGrid>
+                                <div>
+                                  <Input label="Policy Term" className="my-4" name="policyTerm" value={getRiderValue(value.new_rider.id, 'policyTerm')} handleChange={(event) => handleRiderProduct(event, value.new_rider.id)} needValidation={true} logic={getRiderValue(value.new_rider.id, 'policyTerm') === "" || getRiderValue(value.new_rider.id, 'policyTerm') === "-" || !getRiderValue(value.new_rider.id, 'policyTerm')  ? false : true}/>
+                                  <Input label="Premium ($)" className="my-4" name="premium" value={getRiderValue(value.new_rider.id, 'premium')} handleChange={(event) => handleRiderProduct(event, value.new_rider.id)} needValidation={true} logic={getRiderValue(value.new_rider.id, 'policyTerm') === "" || getRiderValue(value.new_rider.id, 'premium') === "-" || !getRiderValue(value.new_rider.id, 'premium')  ? false : true}/>
+                                </div>
+                                <div>
+                                  <Input label="Sum Assured" className="my-4" name="sumAssured" value={getRiderValue(value.new_rider.id, 'sumAssured')} handleChange={(event) => handleRiderProduct(event, value.new_rider.id)} needValidation={true} logic={getRiderValue(value.new_rider.id, 'policyTerm') === "" || getRiderValue(value.new_rider.id, 'sumAssured') === "-" || !getRiderValue(value.new_rider.id, 'sumAssured')  ? false : true}/>
+                                  <Input label="Name of Insured" className="my-4" name="nameOfInsure" readonly value={getRiderValue(value.new_rider.id, 'nameOfInsure')}  handleChange={(event) => handleRiderProduct(event, value.new_rider.id)}/>
+                                </div>
+                              </RowDoubleGrid>
+                            </div>
+
+                            <RowSingleGrid>
+                              <TextSmall>Rider Benefit</TextSmall>
+                              
+                              {riderBenefitValidation(value.new_rider.id) == false ? 
+                                (<>
+                                  <span className="w-full text-xs text-left text-red">Required Field</span>
+                                </>) 
+                                : ''
+                              }
+                              
+                              {value.new_rider.benefit?.length > 0 &&
+                                value.new_rider.benefit.map((valueBen: any, indexBen:any) => (
+                                  <div
+                                    className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
+                                    key={valueBen.id}
+                                  >
+                                    <div className="flex mb-5">
+                                      <Checkbox label={valueBen.title} name="riderBenefitData" isChecked={checkRiderBenefit(valueBen.id, value.new_rider.id)} value={valueBen.id} onChange={(event) => setRiderBenefitAction(event, value.new_rider.id, valueBen.id)}/>
+                                    </div>
+                                    <div className="mb-5">
+                                      <p className="text-sm text-gray-light">
+                                        {valueBen.content}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                            </RowSingleGrid>
+
+                            <RowSingleGrid>
+                              <TextSmall>Rider Risk</TextSmall>
+                              
+                              {riderRiskValidation(value.new_rider.id) == false ? 
+                                (<>
+                                  <span className="w-full text-xs text-left text-red">Required Field</span>
+                                </>) 
+                                : ''
+                              }
+                              {value.new_rider.risk?.length > 0 &&
+                                value.new_rider.risk.map((valueRisk:any, indexRisk: any) => (
+                                  <div
+                                    className="w-full p-5 mb-5 border rounded-md border-gray-soft-strong"
+                                    key={valueRisk.id}
+                                  >
+                                    <div className="flex mb-5">
+                                      <Checkbox label={valueRisk.title}  name="riderRiskData" isChecked={checkRiderRisk(valueRisk.id, value.new_rider.id)} value={valueRisk.id} onChange={(event) => setRiderRiskAction(event, value.new_rider.id, valueRisk.id)}/>
+                                    </div>
+                                    <div className="mb-5">
+                                      <p className="text-sm text-gray-light">
+                                        {valueRisk.content}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                            </RowSingleGrid>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    ))}
+                  </>) 
+                  : '' }
+                </SectionCardSingleGrid>
+                <SectionCardFooter className="mx-8 2xl:mx-60">
+                  <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
+                  <ButtonRedMedium>Cancel</ButtonRedMedium>
+                </SectionCardFooter>
+              </>
+            ) : (
+              ""
+            )}    
+          
+          </>)
+
+        : ('')}
     </>
-  );
+    );
 };
 
 export default AddPlanRecommendation;

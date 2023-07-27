@@ -4,7 +4,6 @@ import { produce } from "immer";
 import { SectionEight } from "@/models/SectionEight";
 
 
-console.log("asdaksdnaskjd")
 
 const initialState: SectionEight = {
     section8: {
@@ -59,6 +58,20 @@ initialState.section8.payorBudget = new Array(initialState.section8.typeClient).
     single: 0,
     sourceOfFund: ""
 })})
+
+initialState.section8.sourceOfWealth = new Array(initialState.section8.typeClient).fill({
+    employment: false,
+    investment: false,
+    inheritance: false,
+    other: false,
+    otherExplain: null
+});
+
+initialState.section8.assetOrSurplus = new Array(initialState.section8.typeClient).fill({
+    answer: false,
+    reason: false
+});
+
 // initialState.section8.answer.clientData =  new Array(initialState.section8.typeClient).fill(
 //     {
 //       clientId: 0,
@@ -300,6 +313,8 @@ initialState.section8.payorBudget = new Array(initialState.section8.typeClient).
 type Actions = {
     setPayorDetail: (key: number, name: string, dataType: string, value: any) => any;
     setPayorBudget: (key: number, index:any, name: string, value: number) => any;
+    setSourceOfWealth: (key: number, name: string, value: any) => any;
+    setAssetOrSurplus: (key: number, name: string, value: any) => any;
 };
 
 const Affordability = create(
@@ -325,6 +340,26 @@ const Affordability = create(
             draft.section8.payorBudget[key][index][name] = dataResSelection;
         })
       ),
+    setSourceOfWealth: (key: number, name: string, value: any) => set(
+        produce((draft) => {
+            if(name != 'otherExplain'){
+                if(value == 'true'){
+                    var resVal = false;
+                }else{
+                    var resVal = true;
+                }
+                draft.section8.sourceOfWealth[key][name] = resVal;
+            }else{
+                draft.section8.sourceOfWealth[key][name] = value;
+            }
+        })
+    ),
+    setAssetOrSurplus: (key: number, name: string, value: any) => set(
+        produce((draft) => {
+            draft.section8.assetOrSurplus[key][name] = value;
+        })
+    ),
+
   }))
 
 );
