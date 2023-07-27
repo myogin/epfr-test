@@ -65,7 +65,7 @@ const IncomeProtection = (props : Props) => {
 
   const handleDefaultCheck = (e: any) => {
     const { name, checked, value } = e.target;
-    setAnswerDefaultCheck(checked, '', name)
+    setAnswerDefaultCheck(checked, 0, name)
   }
   
   const handleAdditional = (e: any) => {
@@ -113,7 +113,7 @@ const IncomeProtection = (props : Props) => {
   return (
     <>
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <table className="table-auto border-separate border-spacing-5">
+      <table className="border-separate table-auto border-spacing-5">
         <tbody className="">
           <tr>
             <td className='align-top'>
@@ -126,9 +126,9 @@ const IncomeProtection = (props : Props) => {
               (total > 1) ? 
               totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"a"+i} className={``}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
                         <input
                           type="checkbox" checked={section7.answer.need.client[i][0]} onChange={(event) => handleClient(!section7.answer.need.client[i][0],i,0) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:rin, dataI:g-1' />
@@ -146,9 +146,9 @@ const IncomeProtection = (props : Props) => {
               (totalDependant.length > 0) ? 
                 totalDependant.map(function (i) {
                   return (
-                    <td className={``}>
+                    <td key={"b" +i} className={``}>
                       <div className="text-right text-green-deep">Dependant {i+1} </div>
-                      <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-dependant-${i}`}>
+                      <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-dependant-${i}`}>
                         <div className='items-start justify-start gap-4'>
                           <input
                             type="checkbox" checked={section7.answer.need.dependant[i][0]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][0], i, 0) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
@@ -164,13 +164,13 @@ const IncomeProtection = (props : Props) => {
           </tr>
           <tr>
             <td className='w-1/2 align-top'>
-              <TextSmall className="text-gray-light align-top">
+              <TextSmall className="align-top text-gray-light">
                 Annual Amount Needed ($)
               </TextSmall>
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"c"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -187,7 +187,7 @@ const IncomeProtection = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"d"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -210,7 +210,7 @@ const IncomeProtection = (props : Props) => {
             </td>
               {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"e"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -227,7 +227,7 @@ const IncomeProtection = (props : Props) => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"f"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -250,7 +250,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"g"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -267,7 +267,7 @@ const IncomeProtection = (props : Props) => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"h"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -290,7 +290,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td>
+                <td key={"i"+i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.clientData[i].incomeProtectionUponDeath.capitalSumRequired}
                     </TextSmall>
@@ -300,7 +300,7 @@ const IncomeProtection = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td>
+                <td key={"j"+i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.dependantData[i].incomeProtectionUponDeath.capitalSumRequired}
                     </TextSmall>
@@ -315,7 +315,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"k"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -332,7 +332,7 @@ const IncomeProtection = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"l"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -353,7 +353,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"m"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -370,7 +370,7 @@ const IncomeProtection = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"n"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -400,7 +400,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"o"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -417,7 +417,7 @@ const IncomeProtection = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"p"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -448,7 +448,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"q"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -465,7 +465,7 @@ const IncomeProtection = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"r"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -494,7 +494,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"s"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -511,7 +511,7 @@ const IncomeProtection = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"t"+i} className={``}>
                   <Input
                     formStyle="text-right"
                       className="mb-10"
@@ -534,7 +534,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td>
+                <td key={"u"+i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.clientData[i].incomeProtectionUponDeath.totalCashFlow}
                     </TextSmall>
@@ -543,7 +543,7 @@ const IncomeProtection = (props : Props) => {
             })}
             {totalDependant.map(function (i) {
               return (
-                <td>
+                <td key={"p"+i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.dependantData[i].incomeProtectionUponDeath.totalCashFlow}
                     </TextSmall>
@@ -557,7 +557,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td>
+                <td key={"w"+i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.clientData[i].incomeProtectionUponDeath.total}
                     </TextSmall>
@@ -566,7 +566,7 @@ const IncomeProtection = (props : Props) => {
             })}
             {totalDependant.map(function (i) {
               return (
-                <td>
+                <td key={"x"+i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.dependantData[i].incomeProtectionUponDeath.total}
                     </TextSmall>
@@ -590,7 +590,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"y"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -607,7 +607,7 @@ const IncomeProtection = (props : Props) => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"z"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -630,7 +630,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"aa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -647,7 +647,7 @@ const IncomeProtection = (props : Props) => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"bb"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -670,7 +670,7 @@ const IncomeProtection = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td>
+                <td key={"cc"+i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.clientData[i].incomeProtectionUponDeath.netAmountRequired}
                     </TextSmall>
@@ -679,7 +679,7 @@ const IncomeProtection = (props : Props) => {
             })}
             {totalDependant.map(function (i) {
               return (
-                <td>
+                <td key={"dd"+i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.dependantData[i].incomeProtectionUponDeath.netAmountRequired}
                     </TextSmall>

@@ -523,7 +523,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             {/* <Toggle /> */}
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][0] ? <IncomeProtection section7={section7}/> : []}
+        {section7.answer.need.client[0][0] ? <IncomeProtection/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -536,7 +536,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][1] ? <FundDisability  section7={section7}/> : []}
+        {section7.answer.need.client[0][1] ? <FundDisability /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -549,11 +549,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][2] ? <FundCritical section7={section7}/> : []}
+        {section7.answer.need.client[0][2] ? <FundCritical/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
-            7.4 Saving & Investment (Fund Child(ren)'s Education)
+            {`7.4 Saving & Investment (Fund Child(ren)'s Education)`}
           </h2>
           <Toggle
             isChecked={section7.answer.need.client[0][3]}
@@ -562,7 +562,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][3] ? <FundChildrens section7={section7}/> : []}
+        {section7.answer.need.client[0][3] ? <FundChildrens/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -576,7 +576,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][4] ? <FundMediumToLong section7={section7}/> : []}
+        {section7.answer.need.client[0][4] ? <FundMediumToLong/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -589,7 +589,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][5] ? <FundRetirement section7={section7}/> : []}
+        {section7.answer.need.client[0][5] ? <FundRetirement/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -602,7 +602,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][6] ? <CoverForPersonal section7={section7}/> : []}
+        {section7.answer.need.client[0][6] ? <CoverForPersonal/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -615,7 +615,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][7] ? <FundLongTermCare section7={section7}/> : []}
+        {section7.answer.need.client[0][7] ? <FundLongTermCare/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -628,7 +628,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][8] ? <FundHospitalExpenses section7={section7}/> : []}
+        {section7.answer.need.client[0][8] ? <FundHospitalExpenses/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.10 Maternity Plan</h2>
@@ -639,7 +639,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][9] ? <MaternityPlan section7={section7}/> : []}
+        {section7.answer.need.client[0][9] ? <MaternityPlan/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.11 Estate Planning</h2>
@@ -650,7 +650,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][10] ? <EstatePlanning section7={section7}/> : []}
+        {section7.answer.need.client[0][10] ? <EstatePlanning/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.12 Other Insurance(s)</h2>
@@ -661,7 +661,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][11] ? <OtherInsurance section7={section7}/> : []}
+        {section7.answer.need.client[0][11] ? <OtherInsurance/> : ""}
       </>
 
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>

@@ -6,7 +6,6 @@ import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
 import React, {useState} from 'react'
-import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import Select from '@/components/Forms/Select'
@@ -84,7 +83,7 @@ const OtherInsurance = (props : Props) => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-       <table className="table-auto border-separate border-spacing-5">
+       <table className="border-separate table-auto border-spacing-5">
         <tbody className="">
           <tr>
             <td className='align-top'>
@@ -96,12 +95,11 @@ const OtherInsurance = (props : Props) => {
               (total > 1) ? 
               totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asasd"+i} className={``}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input
-                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][11]} onChange={(event) => handleClient(!section7.answer.need.client[i][11], i, 11) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input type="checkbox" checked={section7.answer.need.client[i][11]} onChange={(event) => handleClient(!section7.answer.need.client[i][11], i, 11) } className='p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -121,7 +119,7 @@ const OtherInsurance = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"asasd"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -144,7 +142,7 @@ const OtherInsurance = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"asasd"+i} className={``}>
                   <Select
                     className="mb-10"
                     name="typeOfTravelInsuranceCovered"
@@ -170,12 +168,11 @@ const OtherInsurance = (props : Props) => {
               (total > 1) ? 
               totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asasd"+i} className={``}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input
-                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][12]} onChange={(event) => handleClient(!section7.answer.need.client[i][12], i, 12) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input type="checkbox" checked={section7.answer.need.client[i][12]} onChange={(event) => handleClient(!section7.answer.need.client[i][12], i, 12) } className='p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -194,7 +191,7 @@ const OtherInsurance = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"asasd"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -217,7 +214,7 @@ const OtherInsurance = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"asasd"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -243,12 +240,11 @@ const OtherInsurance = (props : Props) => {
               (total > 1) ? 
               totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asasd"+i} className={``}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
-                        <input
-                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][13]} onChange={(event) => handleClient(!section7.answer.need.client[i][13], i, 13) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <input type="checkbox" checked={section7.answer.need.client[i][13]} onChange={(event) => handleClient(!section7.answer.need.client[i][13], i, 13) } className='p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -267,7 +263,7 @@ const OtherInsurance = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"asasd"+i} className={``}>
                   <Select
                     className="mb-10"
                     name="mortgageInsurance"
@@ -288,7 +284,7 @@ const OtherInsurance = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"asasd"+i} className={``}>
                   <Select
                     className="mb-10"
                     name="groupInsurance"
