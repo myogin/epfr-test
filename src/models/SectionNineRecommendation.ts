@@ -23,7 +23,7 @@ interface Product {
     benefit:                    Benefit[];
     risk:                       Risk[];
     portfolio:                  number;
-    fundName:                   null;
+    fundName:                   string;
     fundAmount:                 number;
     premiumForHospitalization:  PremiumForHospitalization;
     groupId:                    number;

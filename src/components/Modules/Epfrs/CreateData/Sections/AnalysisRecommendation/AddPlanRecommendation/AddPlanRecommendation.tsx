@@ -16,7 +16,7 @@ import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/an
 
 // Model
 import {getAllCompany} from "@/services/companyService";
-import {getWholeContext, pfrSection} from "@/services/pfrService";
+import {getWholeContext, pfrSection, getRecommendation} from "@/services/pfrService";
 import {productFindOne} from "@/services/productService";
 // import {getPfrSection} from "@/services/getPfrSection";
 
@@ -166,8 +166,8 @@ const AddPlanRecommendation = () => {
   ];
 
   let recomendationType: Array<any> = [
-    { id: 1, name: "Insurance" },
-    { id: 2, name: "CIS" },
+    { id: 0, name: "Insurance" },
+    { id: 1, name: "CIS" },
   ];
 
 
@@ -193,6 +193,7 @@ const AddPlanRecommendation = () => {
   }
 
   const [initWhole, setInitWhole] = useState<any>({});
+  const [dataCISPremiumType, setCISDataPremiumType]  = useState<any>([{ id: 4, name: "Single Payment" }]);
   const [dataPremiumType, setDataPremiumType]  = useState<any>([{ id: 0, name: "CASH" },{ id: 1, name: "CPF OA" },{ id: 2, name: "CPF SA" },{ id: 3, name: "CPF MEDISAVE" },{ id: 4, name: "SRS" }]);
   const [dataPaymentFreq, setDataPaymentFreq] = useState<any>([{ id: 0, name: "Monthly" },{ id: 1, name: "Quarterly" },{ id: 2, name: "Half-Yearly" },{ id: 3, name: "Annually" },{ id: 4, name: "Single" }])
 
@@ -200,6 +201,7 @@ const AddPlanRecommendation = () => {
   const [dataDependant, setDataDependant] = useState<any>([{}]);
   const [dataOwner, setDataOwner] = useState<any>([{}]);
   const [dataCompany, setCompany] = useState<any>(null);
+  const [dataCompanyCis, setCompanyCis] = useState<any>(null);
   const [dataCategory, setCategory] = useState<any>([{}]);
   const [getSelectProducts, setSelectProducts] = useState<any>([{}]);
   const [getSelectProductone, setSelectProductOne] = useState<any>([{}]);
@@ -215,6 +217,8 @@ const AddPlanRecommendation = () => {
   const [dataSelectedCategoryId, setDataSelectedCategoryId] = useState<any>(-1);
   const [dataOutcomes, setDataOutcomes] = useState<any>([{}]);
   const [cisData, setCisData] = useState<any>([{}]);
+  const [section5Data, setSection5data] = useState<any>([{}]);
+  const [cisModelPortofolioRisks, setCisModelPortofolioRisk] = useState<any>([{}]);
 
   const [annualPayorBudget, setAnnualPayor] = useState<any>([
     [0, 0, 0, 0, 0],
@@ -230,56 +234,111 @@ const AddPlanRecommendation = () => {
     { id: 0, name: "Single" },
     { id: 1, name: "Regular" },
   ];
+
+  let higherThanRiskProfile: Array<any> = [
+    { id: 0, name: "No" },
+  ]
   
   useEffect(() => {
     const pfrId = localStorage.getItem("s9_PfrId");
+    const pfrGroupId = localStorage.getItem("s9_dataGroup");
+    const resPfrGroupId = pfrGroupId == '0' ? null : 0
     const resultCateg: Array<any> = []
     const resDataOwner: Array<any> = [];
     getWholeContext(pfrId).then((data) => {
       console.log('data', data)
       setInitWhole(data);
 
-      // For Cis
-      if(data.product.type == 1) {
-        let cisData = data.cis.findIndex((cis: any) => {
-          return cis['id'] == section9Recommend.product.portfolio
-        });
+      // For Cis If ProductGroupId Exist
+      if(section9Recommend.product.type == 1) {
+        var setDataArrs: Array<any> = [];
+        const dataArr: Array<any> = [];
 
-        setCisData(cisData)
+        data.company.map((value: any, k: any) => {
+          value['idReal'] = value.id;
+          value['id'] = k;
+          if(value.products.length > 0){
+            value.products.map((valueProds: any, indexProds: any) => {
+              if(valueProds.rider.length > 0){
+                valueProds.rider.map((valueRider: any, indexRide: any) => {
+                  if(section9Recommend.riders.length > 0){
+                    section9Recommend.riders.map((valSectRide: any, indexSectRide: any) => {
+                      if(parseInt(valSectRide.subjectId) == parseInt(valueRider.riderId)){
+                        var Arrs: Array<any> = [];
+                        setDataArrs[valueRider.rider.riderName] = true;
+                        // setRiderArr(Arrs);
+                      }
+                    })
+                  }
+                });
+              }
+            });
+          }
+          
+          // Cis Data
+            // initWhole.cis.map((dataCis: any, indexCis:any) => {
+            //   // 
+            //   if((dataOutcomes[section9Recommend.product.nameOfOwner] == 1 || dataCis.platform.mustPassCKA == 0) &&  value == dataCis.platform.companyId &&
+            //     ((dataCis.maxBudget == 0 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] <= 29999) ||
+            //     (dataCis.maxBudget == 1 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 29999 && 
+            //     dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory) ||
+            //     (dataCis.maxBudget == 2 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 19999 &&
+            //     dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory))){
+            //       dataArr.push(dataCis)
+            //       return value;
+            //   }
+            // })
+        });
+        
+        
+        setCompany(data.company)
+        // setCisDataProduct(dataArr) 
+        setRiderArr(setDataArrs);
+
+        // let cisData = data.cis.findIndex((cis: any) => {
+        //   return cis['id'] == section9Recommend.product.portfolio
+        // });
+
+        // setCisData(cisData)
+
+        // if(cisData != -1) {
+        //   var selectedCompany = initWhole.cis[cisData]['platform']['companyId']
+        //   var selectedPortfolio = initWhole.cis[cisData]
+        //   onChangePortfolio()
+        // }
+      }else{
+        // Get Company
+        var setDataArrs: Array<any> = [];
+        data.company.map((value: any, k: any) => {
+          value['idReal'] = value.id;
+          value['id'] = k;
+          if(value.products.length > 0){
+            value.products.map((valueProds: any, indexProds: any) => {
+              if(valueProds.rider.length > 0){
+                valueProds.rider.map((valueRider: any, indexRide: any) => {
+                  if(section9Recommend.riders.length > 0){
+                    section9Recommend.riders.map((valSectRide: any, indexSectRide: any) => {
+                      if(parseInt(valSectRide.subjectId) == parseInt(valueRider.riderId)){
+                        var Arrs: Array<any> = [];
+                        setDataArrs[valueRider.rider.riderName] = true;
+                        // setRiderArr(Arrs);
+                      }
+                    })
+                  }
+                });
+              }
+            });
+          }
+          return value;
+        });
+        // 
+        setRiderArr(setDataArrs);
+        setCompany(data.company)
       }
-       console.log('cisData',cisData)
 
       // Get Dependant
       data.dependants.push({id: -1, name: "OTHER"})
       setDataDependant(data.dependants);
-
-      // Get Company
-      var setDataArrs: Array<any> = [];
-      data.company.map((value: any, k: any) => {
-        value['idReal'] = value.id;
-        value['id'] = k;
-        if(value.products.length > 0){
-          value.products.map((valueProds: any, indexProds: any) => {
-            if(valueProds.rider.length > 0){
-              valueProds.rider.map((valueRider: any, indexRide: any) => {
-                if(section9Recommend.riders.length > 0){
-                  section9Recommend.riders.map((valSectRide: any, indexSectRide: any) => {
-                    if(parseInt(valSectRide.subjectId) == parseInt(valueRider.riderId)){
-                      var Arrs: Array<any> = [];
-                      setDataArrs[valueRider.rider.riderName] = true;
-                      // setRiderArr(Arrs);
-                    }
-                  })
-                }
-              });
-            }
-          });
-        }
-        return value;
-      });
-      // 
-      setRiderArr(setDataArrs);
-      setCompany(data.company)
       
       // Get Clients
       data.clients.map((value: any, k: any) => {
@@ -298,17 +357,71 @@ const AddPlanRecommendation = () => {
       })
       setCategory(resultCateg)
 
+      // Section5
+      console.log('data.section5Result', data.section5Result)
+      const section5Arr: Array<any> = []
+      data.section5Result.map((outcome:any, i: any) => {
+        section5Arr.push(outcome['outcome']);
+      })
+      setSection5data(section5Arr)
+
+      // Section6
       const section6Outcome: Array<any> = []
       data.outcomes.map((outcome:any, i: any) => {
         section6Outcome.push(outcome['outcome']);
       })
       setDataOutcomes(section6Outcome)
+
+      // Get Model Portofolio Risk
+      const resModelPort: Array<any> = [];
+      if(section5Arr[section9Recommend.product.nameOfOwner] == 0){
+        resModelPort.push({
+          id: 1,
+          name: 'Capital Preservation'
+        })
+      }
+
+      if(section5Arr[section9Recommend.product.nameOfOwner] == 1){
+        resModelPort.push({
+          id: 2,
+          name: 'Conservative'
+        })
+      }
+
+      if(section5Arr[section9Recommend.product.nameOfOwner] == 2){
+        resModelPort.push({
+          id: 3,
+          name: 'Balanced'
+        })
+      }
+
+      if(section5Arr[section9Recommend.product.nameOfOwner] == 3){
+        resModelPort.push({
+          id: 4,
+          name: 'Growth'
+        })
+      }
+
+      if(section5Arr[section9Recommend.product.nameOfOwner] == 4){
+        resModelPort.push({
+          id: 5,
+          name: 'Aggressive'
+        })
+      }
+
+      if(section5Arr[section9Recommend.product.nameOfOwner] == 5){
+        resModelPort.push({
+          id: 6,
+          name: 'N/A - Client not following model portfolio'
+        })
+      }
+
+      setCisModelPortofolioRisk(resModelPort)
     });
     
     pfrSection(8, pfrId).then((data) => {
       let payorBudgets = data['payorBudgets']
       payorBudgets.map((budget:any) => {
-        console.log('budget', budget)
         if(budget['selection'] != 0) {
           let clientId = budget['clientType']
           let type = budget['type']
@@ -320,9 +433,37 @@ const AddPlanRecommendation = () => {
         }
       })
     })
-    
+
     console.log('section9Recommend', section9Recommend)
   }, [section9Recommend]);
+
+  const onChangePortfolio = () => {
+    if(section9Recommend.product.portfolio == 0) {
+      section9Recommend.product.fundName = ""
+      section9Recommend.product.funds = []
+    }else {
+      let index = initWhole.cis.findIndex((cis: any) => {
+        if(cis['id'] == section9Recommend.product.portfolio) {
+          return true
+        }
+      })
+
+      var selectedPortfolio = initWhole.cis[index]
+      var dataFundArr: Array<any> = [];
+      
+      benefits = new Array(selectedPortfolio['benefit'].length).fill(false)
+      risks = new Array(selectedPortfolio['risk'].length).fill(false)
+      setPremiumPaymentType(selectedPortfolio['payment']);
+      initWhole.cis[index]['platform']['funds'].map((fund: any) => {
+        dataFundArr.push({
+          name : fund['fund']['name'],
+          fundCode : fund['fund']['fundCode'],
+          allocation : fund['allocation']
+        })
+      })
+      setProductArr(dataFundArr, 'funds', null)
+    }
+  }
 
   const setProductData = (event: any) => {
     const { name, value } = event.target;
@@ -508,17 +649,17 @@ const AddPlanRecommendation = () => {
       setProduct(modelPortfolioRiskCategory.toString(), 'modelPortfolioRiskCategory', null)
       const ilpFundsOfCompany = initWhole.ilpFunds.filter((fund:any, k:any) => {
         if(initWhole.company[getSelectedCompany]){
-          console.log('initWhole.company[getSelectedCompany]',initWhole.company[getSelectedCompany]['id'] )
-          console.log('fund',fund)
+          
+          
           return fund['companyId'] == initWhole.company[getSelectedCompany]['idReal']
         }
       })
-      console.log('ilpFundsOfCompany', ilpFundsOfCompany)
+      
       setIlpFundsOfCompany(ilpFundsOfCompany);
     }
-    console.log('initWhole', initWhole)
-    console.log('dataProductSelected', dataProductSelected)
-    console.log('selectedProducts', selectedProducts)
+    
+    
+    
     setSelectProducts(selectedProducts);
   };
 
@@ -539,7 +680,7 @@ const AddPlanRecommendation = () => {
           })
         }
         setSelectProductOne(dataProduct);
-        console.log('getSelectProductone', getSelectProductone)
+        
         
         // Set Premium Type
         if(dataSelectedCategoryType == 1){
@@ -1179,10 +1320,7 @@ const AddPlanRecommendation = () => {
 
   let { showDetailData } = useNavigationSection();
 
-  const saveData = (params: any) => {
-    showDetailData(params);
-  };
-
+  // Hospitalization
   const handleHospilization = (event:any) => {
     const { name, value } = event.target;
     setProductHospital(value, name);
@@ -1192,41 +1330,63 @@ const AddPlanRecommendation = () => {
   const [cisDataProduct, setCisDataProduct] = useState<any>([{}]);
   const [cisDataProductIndex, setCisDataProductIndex] = useState<any>(-1);
   const [cisDataProvider, setCisDataProvider] = useState<any>(-1);
+  const [dataPremiumPaymentType, setPremiumPaymentType] = useState<any>([{}]);
 
   const changeCisDataProvider = (event: any) => {
     const { name, value } = event.target;
     const dataArr: Array<any> = [];
-
     setCisDataProvider(value);
     
-    console.log('initWhole', initWhole)
-    console.log('singlePayorBudget', singlePayorBudget)
-    cisData.map((dataCis: any, indexCis:any) => {
-      console.log('dataCis', dataCis)
-      if(
-        (dataOutcomes[section9Recommend.product.nameOfOwner] == 1 || dataCis.platform.mustPassCKA == 0) && 
-        value == dataCis.platform.companyId &&
-        ((dataCis.maxBudget == 0 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] <= 29999) ||
-        (dataCis.maxBudget == 1 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 29999 && 
-        dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory) ||
-        (dataCis.maxBudget == 2 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 19999 &&
-        dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory))){
-
-          dataArr.push(dataCis)
-
-      }
-    })
-    console.log('dataArr', dataArr)
-    setCisDataProduct(dataArr)
+    if(initWhole.cis.length > 0){
+      initWhole.cis.map((dataCis: any, indexCis:any) => {
+        // 
+        if((dataOutcomes[section9Recommend.product.nameOfOwner] == 1 || dataCis.platform.mustPassCKA == 0) &&  value == dataCis.platform.companyId &&
+          ((dataCis.maxBudget == 0 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] <= 29999) ||
+          (dataCis.maxBudget == 1 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 29999 && 
+          dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory) ||
+          (dataCis.maxBudget == 2 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 19999 &&
+          dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory))){
+            dataArr.push(dataCis)
+        }
+      })
+      
+      setCisDataProduct(dataArr) 
+    }
   }
 
   const changeCISDataProductName = (event: any) => {
     const { name, value } = event.target;
-    console.log('value', value)
-    // if(cisDataProductIndex >= 1){
-    //   selectedProduct
-    // }
+    
+    setProduct(value, name, null)
+
+    if(value == 0) {
+      section9Recommend.product.fundName = ""
+      section9Recommend.product.funds = []
+    }else {
+      let index = initWhole.cis.findIndex((cis: any) => {
+        if(cis['id'] == section9Recommend.product.portfolio) {
+          return true
+        }
+      })
+
+      var selectedPortfolio = initWhole.cis[index]
+      var dataFundArr: Array<any> = [];
+      
+      benefits = new Array(selectedPortfolio['benefit'].length).fill(false)
+      risks = new Array(selectedPortfolio['risk'].length).fill(false)
+      setPremiumPaymentType(selectedPortfolio['payment']);
+      initWhole.cis[index]['platform']['funds'].map((fund: any) => {
+        dataFundArr.push({
+          name : fund['fund']['name'],
+          fundCode : fund['fund']['fundCode'],
+          allocation : fund['allocation']
+        })
+      })
+      setProductArr(dataFundArr, 'funds', null)
+    }
   }
+
+
 
   return (
     <>
@@ -1257,7 +1417,7 @@ const AddPlanRecommendation = () => {
           </div>
         </RowDoubleGrid>
       </div>
-      {section9Recommend.product.type == 1 ? 
+      {section9Recommend.product.type == 0 ? 
           (<> 
             <SectionCardSingleGrid className="mx-8 2xl:mx-60">
               <RowDoubleGrid>
@@ -1639,56 +1799,42 @@ const AddPlanRecommendation = () => {
 
       : ''}
 
-      {section9Recommend.product.type > 1 ? (<>
+      {section9Recommend.product.type >= 1 ? 
         (
         <>
           <div className="grid grid-cols-1 mx-8 2xl:mx-60">
             <RowDoubleGrid>
               <div>
-                <Select
-                  datas={dataCompany}
-                  label="Provider Name"
-                  className="my-4"
-                  name="company"
-                  value={cisDataProvider}
-                  handleChange={(event) => changeCisDataProvider(event)}
-                />
+                <div className="w-full my-4 space-y-3">
+                  <label className="w-full text-sm font-bold text-gray-light">
+                    Provider Name
+                  </label>
+                  <select placeholder="Please select data" value={cisDataProvider} name="company"
+                    className="my-4 w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                    onChange={(event) => changeCisDataProvider(event)}>
+                    <option value="-">Please select data</option>
+                    {dataCompany?.length &&
+                      dataCompany.map((val: any, index: any) => (
+                        <option key={val.idReal} value={val.idReal}>
+                          {val.name}
+                        </option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <div>
                   <Select
                     datas={cisDataProduct}
                     label="Product Name"
                     className="my-4"
-                    name="productIndex"
-                    value={productValueSelect}
-                    handleChange={(event) => changeCISDataProductName(event.target.value)}
+                    name="portfolio"
+                    value={section9Recommend.product.portfolio}
+                    handleChange={(event) => changeCISDataProductName(event)}
                   />
                 </div>
             </RowDoubleGrid>
-            <RowDoubleGrid>
-              <div>
-                <Select
-                  datas={getSelectProducts}
-                  label="Model Portofolio Risk Category"
-                  className="my-4"
-                  name="modelPortfolioRiskCategory"
-                  value={productValueSelect}
-                  handleChange={(event) => changeDataProductName(event.target.value)}
-                />
-              </div>
-              <div>
-                <Select
-                  datas={getSelectProducts}
-                  label="Higher Than Client Risk Profile"
-                  className="my-4"
-                  name="higherThanClientRiskProfile"
-                  value={productValueSelect}
-                  handleChange={(event) => changeDataProductName(event.target.value)}
-                />
-              </div>
-            </RowDoubleGrid>
             
-            {(section9Recommend.product.funds.length > 0) ? (<>
+            {(section9Recommend.product.portfolio >= 1) ? (<>
               <RowSingleGrid>
                 <TextSmall>FUND NAME & PERCENTAGE</TextSmall>
                 <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
@@ -1697,12 +1843,7 @@ const AddPlanRecommendation = () => {
                       <tr className="border-b border-gray-soft-strong">
                         <td className='align-top px-2 py-2'>
                           <TextSmall className="uppercase text-gray-light">
-                            GROUP NAME
-                          </TextSmall>
-                        </td>
-                        <td className='align-top px-2 py-2'>
-                          <TextSmall className="uppercase text-gray-light">
-                            ALLOCATION(%)
+                            SN
                           </TextSmall>
                         </td>
                         <td className='align-top px-2 py-2'>
@@ -1710,35 +1851,33 @@ const AddPlanRecommendation = () => {
                             FUND NAME
                           </TextSmall>
                         </td>
+                        <td className='align-top px-2 py-2'>
+                          <TextSmall className="uppercase text-gray-light">
+                            CODE
+                          </TextSmall>
+                        </td>
+                        <td>
+                          <TextSmall>
+                            ALLOCATION(%)
+                          </TextSmall>
+                        </td>
                       </tr>
                     </thead>
                     <tbody>
-                      {getSelectProductone?.ilp &&
-                            getSelectProductone.ilp.platform.funds.map((dataPlatform: any, indexPlatform:any) => (
+                      {section9Recommend?.product &&
+                            section9Recommend.product.funds.map((dataPlatform: any, indexPlatform:any) => (
                             <tr>
                               <td className="px-2 py-2">
-                                <span>{getFundName(dataPlatform.fund.groupId)}</span>
+                                <span>{indexPlatform + 1}</span>
                               </td>
                               <td className="px-2 py-2">
-                                <span>{dataPlatform.allocation}</span>
+                                <span>{dataPlatform.name}</span>
                               </td>
                               <td className="px-2 py-2">
-                                <select
-                                  value={checkFundValues(indexPlatform)}
-                                  name="dataFund"
-                                  className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
-                                  onChange={(event) => setProductFund(event, dataPlatform.allocation, dataPlatform.fund.groupId, indexPlatform)}
-                                  disabled={getSelectProductone.ilp.platform.fixed == 1 ? true : false}
-                                >
-                                  <option value="-">Please select data</option>
-                                  {checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).length &&
-                                    checkDataIlpFundsOfCompany(dataPlatform.fund.groupId).map((val:any, indexVal:any) => (
-                                        <option key={indexVal} value={val.id}>
-                                          {val.name}
-                                        </option>
-                                    ))
-                                  }
-                                </select>
+                                {dataPlatform.fundCode}
+                              </td>
+                              <td className="px-2 py-2">
+                                {dataPlatform.allocation}
                               </td>
                             </tr> 
                           )
@@ -1749,14 +1888,40 @@ const AddPlanRecommendation = () => {
                 </div>
               </RowSingleGrid>
             </>) : ''}
-
+            
             <RowDoubleGrid>
               <div>
-                <Input label="Premium Payment Type" className="" name="premium" value={section9Recommend.product.premium} handleChange={(event) => setProductData(event)} needValidation={true} logic={section9Recommend.product.premium === null || section9Recommend.product.premium === 0 ? false : true}/>
+                <Select
+                  datas={cisModelPortofolioRisks}
+                  label="Model Portofolio Risk Category"
+                  className="my-4"
+                  name="modelPortfolioRiskCategory"
+                  value={section9Recommend.product.modelPortfolioRiskCategory}
+                  handleChange={(event) => setProductData(event)}
+                />
               </div>
               <div>
                 <Select
-                  datas={dataPremiumType}
+                  datas={higherThanRiskProfile}
+                  label="Higher Than Client Risk Profile"
+                  className="my-4"
+                  name="higherThanRiskProfile"
+                  value={section9Recommend.product.higherThanRiskProfile}
+                  handleChange={(event) => setProductData(event)}
+                />
+              </div>
+            </RowDoubleGrid>
+            
+            <RowDoubleGrid>
+              <div>
+                <Input label="Premium Payment Type" className="" name="premiumPaymentType" 
+                value={section9Recommend.product.premiumPaymentType} 
+                handleChange={(event) => setProductData(event)} needValidation={true} 
+                logic={section9Recommend.product.premiumPaymentType === null || section9Recommend.product.premiumPaymentType === '' ? false : true}/>
+              </div>
+              <div>
+                <Select
+                  datas={dataCISPremiumType}
                   label="Payment Frequency"
                   className=""
                   name="premiumPaymentType"
@@ -1925,7 +2090,7 @@ const AddPlanRecommendation = () => {
           </div>
         </>
         )
-      </>) : ''}
+      : ''}
     </>
     );
 };

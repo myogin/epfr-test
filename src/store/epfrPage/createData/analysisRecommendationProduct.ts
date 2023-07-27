@@ -34,7 +34,7 @@ const initialState: SectionNineRecommendation = {
             benefit: [],
             risk: [],
             portfolio: 0,
-            fundName: null,
+            fundName: "",
             fundAmount: 0,
             premiumForHospitalization: {
                 cash: 0,
