@@ -24,13 +24,26 @@ function validate(drafts: any, pfrType: number): number {
   }
 
   if (pfrType == 1) {
-    if (!drafts.need[0] && drafts.reason[0] != "") {
+    if (
+      !drafts.need[0] &&
+      (drafts.reason[0] == "" ||
+        drafts.reason[0] == undefined ||
+        drafts.reason[0] == null)
+    ) {
+      return 0;
+    } else if (
+      !drafts.need[0] &&
+      (drafts.reason[0] != "" ||
+        drafts.reason[0] != undefined ||
+        drafts.reason[0] != null)
+    ) {
       return 1;
     } else {
       if (validateAnswer[0]) {
         return 1;
+      } else {
+        return 0;
       }
-      return 0;
     }
   } else {
     if (drafts.need.every((e: any) => e == true)) {
