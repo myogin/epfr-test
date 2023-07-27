@@ -51,10 +51,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
     switch (name) {
       case "annualGrossIncome":
         if (groupdata === "annualy") {
-
-          console.log("Data annually " + indexdata + " " + value)
-          console.log("from annual sebelum edit")
-          console.log(annualData)
+          console.log("Data annually " + indexdata + " " + value);
+          console.log("from annual sebelum edit");
+          console.log(annualData);
 
           const newArray = [...annualData];
           newArray[indexdata] = value;
@@ -62,28 +61,26 @@ const AnnualIncomeCashFlow = (props: Props) => {
           const newArrayMonthly = [...annualData];
           newArrayMonthly[indexdata] = value / 12;
 
-          console.log("from annual")
-          console.log(newArray)
-          console.log(newArrayMonthly)
+          console.log("from annual");
+          console.log(newArray);
+          console.log(newArrayMonthly);
 
           setAnnualData(newArray);
           setMonthlyData(newArrayMonthly);
 
           setAnnualIncome(indexdata, name, value);
-          
         } else {
+          console.log("Data monthly " + indexdata + " " + value);
 
-          console.log("Data monthly " + indexdata + " " + value)
-          
           const newArray = [...monthlyData];
           newArray[indexdata] = value;
 
           const newArrayAnnualy = [...monthlyData];
           newArrayAnnualy[indexdata] = value * 12;
 
-          console.log("from month")
-          console.log(newArray)
-          console.log(newArrayAnnualy)
+          console.log("from month");
+          console.log(newArray);
+          console.log(newArrayAnnualy);
 
           setAnnualData(newArrayAnnualy);
           setMonthlyData(newArray);
@@ -120,7 +117,6 @@ const AnnualIncomeCashFlow = (props: Props) => {
         break;
       default:
         if (groupdata === "annualy") {
-
           const newArray = [...annualData];
           newArray[indexdata] = value;
 
@@ -132,8 +128,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          
-          console.log("Data bawah" + indexdata + " " + value)
+          console.log("Data bawah" + indexdata + " " + value);
 
           const newArray = [...monthlyData];
           newArray[indexdata] = value;
@@ -453,8 +448,12 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                             : "basis-1/6"
                                         }`}
                                       >
-                                        <div className="w-full text-sm font-bold text-left text-gray-light">Monthly</div>
-                                        <div className="py-2 text-sm text-left text-gray-light">0</div>
+                                        <div className="w-full text-sm font-bold text-left text-gray-light">
+                                          Monthly
+                                        </div>
+                                        <div className="py-2 text-sm text-left text-gray-light">
+                                          0
+                                        </div>
                                       </div>
                                       <div
                                         className={`my-4 space-y-3 text-right ${
@@ -463,8 +462,12 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                             : "basis-1/6"
                                         }`}
                                       >
-                                        <div className="w-full text-sm font-bold text-left text-gray-light">Annual</div>
-                                        <div className="py-2 text-sm text-left text-gray-light">0</div>
+                                        <div className="w-full text-sm font-bold text-left text-gray-light">
+                                          Annual
+                                        </div>
+                                        <div className="py-2 text-sm text-left text-gray-light">
+                                          0
+                                        </div>
                                       </div>
                                     </>
                                   )
@@ -493,70 +496,70 @@ const AnnualIncomeCashFlow = (props: Props) => {
           </Transition>
 
           {/* Modal Delete */}
-        <Transition appear show={showModalRemove} as={Fragment}>
-          <Dialog
-            as="div"
-            className="relative z-10"
-            onClose={() => setShowModalRemove(false)}
-          >
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
+          <Transition appear show={showModalRemove} as={Fragment}>
+            <Dialog
+              as="div"
+              className="relative z-10"
+              onClose={() => setShowModalRemove(false)}
             >
-              <div className="fixed inset-0 bg-black bg-opacity-25" />
-            </Transition.Child>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0 bg-black bg-opacity-25" />
+              </Transition.Child>
 
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex items-center justify-center min-h-full p-4 text-center">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0 scale-95"
-                  enterTo="opacity-100 scale-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100 scale-100"
-                  leaveTo="opacity-0 scale-95"
-                >
-                  <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-lg font-medium leading-6 text-gray-900"
-                    >
-                      Remove Data
-                    </Dialog.Title>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        Are you sure to remove this data.?
-                      </p>
-                    </div>
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex items-center justify-center min-h-full p-4 text-center">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                      <Dialog.Title
+                        as="h3"
+                        className="text-lg font-medium leading-6 text-gray-900"
+                      >
+                        Remove Data
+                      </Dialog.Title>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">
+                          Are you sure to remove this data.?
+                        </p>
+                      </div>
 
-                    <div className="mt-4 space-x-2">
-                      <button
-                        type="button"
-                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border rounded-md text-red border-red"
-                        onClick={() => removeDataAction(actionDatatId)}
-                      >
-                        Remove
-                      </button>
-                      <button
-                        type="button"
-                        className="inline-flex justify-center px-4 py-2 text-sm font-medium border rounded-md text-gray-light border-gray-light"
-                        onClick={() => setShowModalRemove(false)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </Dialog.Panel>
-                </Transition.Child>
+                      <div className="mt-4 space-x-2">
+                        <button
+                          type="button"
+                          className="inline-flex justify-center px-4 py-2 text-sm font-medium border rounded-md text-red border-red"
+                          onClick={() => removeDataAction(actionDatatId)}
+                        >
+                          Remove
+                        </button>
+                        <button
+                          type="button"
+                          className="inline-flex justify-center px-4 py-2 text-sm font-medium border rounded-md text-gray-light border-gray-light"
+                          onClick={() => setShowModalRemove(false)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </Dialog.Panel>
+                  </Transition.Child>
+                </div>
               </div>
-            </div>
-          </Dialog>
-        </Transition>
+            </Dialog>
+          </Transition>
         </div>
         {others?.annualIncome.length ? (
           <div
@@ -593,10 +596,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
                 {getPfrLength?.length &&
                   getPfrLength.map((d, indexB) => (
                     <>
-                      <div className="text-right">
+                      <div className="text-sm text-right text-gray-light">
                         {data.values[indexB] ? data.values[indexB] : "0"}
                       </div>
-                      <div className="text-right">
+                      <div className="text-sm text-right text-gray-light">
                         {data.values[indexB] ? data.values[indexB] : "0"}
                       </div>
                     </>
@@ -609,8 +612,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
             {getPfrLength?.length &&
               getPfrLength.map((d, index) => (
                 <>
-                  <div className="text-right">0</div>
-                  <div className="text-right">0</div>
+                  <div className="text-sm text-right text-gray-light">0</div>
+                  <div className="text-sm text-right text-gray-light">0</div>
                 </>
               ))}
           </>
