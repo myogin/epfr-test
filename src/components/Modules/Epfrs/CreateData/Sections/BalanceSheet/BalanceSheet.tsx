@@ -74,7 +74,7 @@ const BalanceSheet = (props: Props) => {
         </HeadingPrimarySection>
       </div>
 
-      {!need[0] || !need[1] ? (
+      {need[0] || need[1] ? (
         <>
           <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
             <div className="grid col-span-2">
@@ -164,7 +164,7 @@ const BalanceSheet = (props: Props) => {
                 ""
               )}
               <Checkbox
-                isChecked={need ? (need[index] == 1 ? true : false) : false}
+                isChecked={need ? (need[index] == 1 ? false : true) : true}
                 onChange={() => {
                   updateNeed(index, need[index] == 1 ? 0 : 1, props.pfrType);
                 }}
@@ -181,29 +181,25 @@ const BalanceSheet = (props: Props) => {
         <RowSingleORDouble pfrType={props.pfrType}>
           {getPfrLength.map((e, index) => (
             <div className="flex-1" key={index}>
-              {need[index] == 1 ? (
-                <TextArea
-                  // handleChange={}
-                  className="my-4"
-                  label="The Reason"
-                  name="reason"
-                  value={reason[index]}
-                  handleChange={(e) => {
-                    updateReason(index, e.target.value, props.pfrType);
-                  }}
-                  needValidation={true}
-                  logic={
-                    reason[index] === "" ||
-                    reason[index] === "-" ||
-                    reason[index] === null ||
-                    reason[index] === undefined
-                      ? false
-                      : true
-                  }
-                />
-              ) : (
-                ""
-              )}
+              <TextArea
+                isDisabled={need[index] == 1 ? true : false}
+                className="my-4"
+                label="The Reason"
+                name="reason"
+                value={reason[index]}
+                handleChange={(e) => {
+                  updateReason(index, e.target.value, props.pfrType);
+                }}
+                needValidation={need[index] == 0 ? true : false}
+                logic={
+                  reason[index] === "" ||
+                  reason[index] === "-" ||
+                  reason[index] === null ||
+                  reason[index] === undefined
+                    ? false
+                    : true
+                }
+              />
             </div>
           ))}
         </RowSingleORDouble>

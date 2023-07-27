@@ -3,9 +3,49 @@ import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
 import { SectionFour } from "@/models/SectionFour";
 
+function validate(drafts: any, pfrType: number): number {
+  if (pfrType == 1) {
+    if (
+      drafts.need[0] == 0 &&
+      (drafts.reason[0] == "" ||
+        drafts.reason[0] == undefined ||
+        drafts.reason[0] == null)
+    ) {
+      return 0;
+    } else {
+      return 1;
+    }
+  } else {
+    return validateNeed(drafts, pfrType);
+  }
+}
+function validateNeed(drafts: any, pfrType: number) {
+  let validation = [0, 0];
+  for (let index = 0; index < pfrType; index++) {
+    if (drafts.need[index] === 0) {
+      if (
+        drafts.reason[index] == "" ||
+        drafts.reason[index] == undefined ||
+        drafts.reason[index] == null
+      ) {
+        validation[index] = 0;
+      } else {
+        validation[index] = 1;
+      }
+    } else {
+      validation[index] = 1;
+    }
+  }
+  if (validation.every((e) => e == 1)) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 const initialState: SectionFour = {
   id: 0,
-  need: [0, 0],
+  need: [1, 1],
   reason: [null, null],
   others: {
     asset: [],
@@ -101,28 +141,7 @@ const balanceSheet = (set: any, get: any) => ({
     set(
       produce((drafts: any) => {
         drafts.need[client] = value;
-
-        let validation = [0, 0];
-        for (let index = 0; index < pfrType; index++) {
-          if (drafts.need[index] === 1) {
-            if (
-              drafts.reason[index] == "" ||
-              drafts.reason[index] == undefined ||
-              drafts.reason[index] == null
-            ) {
-              validation[index] = 0;
-            } else {
-              validation[index] = 1;
-            }
-          } else {
-            validation[index] = 1;
-          }
-        }
-        if (validation.every((e) => e == 1)) {
-          drafts.status = 1;
-        } else {
-          drafts.status = 0;
-        }
+        drafts.status = validate(drafts, pfrType);
       })
     );
   },
@@ -130,27 +149,7 @@ const balanceSheet = (set: any, get: any) => ({
     set(
       produce((drafts: any) => {
         drafts.reason[client] = reason;
-        let validation = [0, 0];
-        for (let index = 0; index < pfrType; index++) {
-          if (drafts.need[index] === 1) {
-            if (
-              drafts.reason[index] == "" ||
-              drafts.reason[index] == undefined ||
-              drafts.reason[index] == null
-            ) {
-              validation[index] = 0;
-            } else {
-              validation[index] = 1;
-            }
-          } else {
-            validation[index] = 1;
-          }
-        }
-        if (validation.every((e) => e == 1)) {
-          drafts.status = 1;
-        } else {
-          drafts.status = 0;
-        }
+        drafts.status = validate(drafts, pfrType);
       })
     );
   },
