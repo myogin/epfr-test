@@ -30,6 +30,36 @@ const CustomerKnowledgeAssesment = (props: Props) => {
     useCustomerKnowledgeAssesment();
 
   const [showSection, setShowSection] = useState(false);
+  const [outcome, setOutcome] = useState([-1, -1]);
+
+  useEffect(() => {
+    function outcomeCalc() {
+      // -1=empty,0=havenotmet, 1=havemet
+      let outcome = [-1, -1];
+      for (let i = 0; i < props.pfrType; i++) {
+        if (
+          answers[i].education[0].every((e) => e == false) &&
+          answers[i].education[1].every((e) => e == false) &&
+          answers[i].investment.every((e) => e == false) &&
+          answers[i].work.every((e) => e == false)
+        ) {
+          outcome[i] = -1;
+        } else if (
+          answers[i].education[0][11] == true &&
+          answers[i].education[1][10] == true &&
+          answers[i].investment[2] == true &&
+          answers[i].work[6] == true
+        ) {
+          outcome[i] = 0;
+        } else {
+          outcome[i] = 1;
+        }
+      }
+      return outcome;
+    }
+
+    setOutcome(outcomeCalc());
+  }, [answers, props.pfrType]);
   useEffect(() => {
     if (props.pfrType == 1) {
       setShowSection(need[0]);
@@ -78,16 +108,38 @@ const CustomerKnowledgeAssesment = (props: Props) => {
             Customer Knowledge Assesment Outcome
           </HeadingSecondarySection>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            <div className="space-y-5">
-              <span className="text-green-deep">
-                {/* {haveMet ? "YOU HAVE MET" : "YOU HAVE NOT MET"} */}
-              </span>
-              <p className="text-sm text-gray-light">
-                The Customer Knowledge Assessment criteria and are deemed to
-                possess the knowledge or experience for transactions in a
-                Collective Invesment Scheme or an Investment Linked Policy.
-              </p>
-            </div>
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e, index) => (
+                <div className="space-y-5" key={index}>
+                  {props.pfrType > 1 && (
+                    <>
+                      <h3
+                        key={"heading-secondary-" + index}
+                        className="w-full mb-10 text-base font-bold"
+                      >
+                        Client {index + 1}
+                      </h3>
+                    </>
+                  )}
+                  {outcome[index] != -1 ? (
+                    <>
+                      <span className="text-green-deep">
+                        {outcome[index] == 0
+                          ? "YOU HAVE NOT MET"
+                          : "YOU HAVE MET"}
+                      </span>
+                      <p className="text-sm text-gray-light">
+                        {outcome[index] == 0
+                          ? "the Customer Knowledge Assessment criteria and are deemed not to possess the knowledge or experience over for transactions in a Collective Invesment Scheme or an Investment Linked Policy."
+                          : "the Customer Knowledge Assessment criteria and are deemed to possess the knowledge or experience over for transactions in a Collective Invesment Scheme or an Investment Linked Policy."}
+                      </p>
+                    </>
+                  ) : (
+                    "-"
+                  )}
+                </div>
+              ))}
+            </RowSingleORDouble>
           </SectionCardSingleGrid>
         </>
       ) : (
