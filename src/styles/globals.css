@@ -16,5 +16,5 @@
 }
 
 input[disabled] {
-  background: rgb(204 204 204 / var(--tw-border-opacity)) !important;
+  /* background: rgb(204 204 204 / var(--tw-border-opacity)) !important; */
 }

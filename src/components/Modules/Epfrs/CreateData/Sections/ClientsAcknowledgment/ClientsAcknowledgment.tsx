@@ -1,5 +1,6 @@
 import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
 import RowFourthGrid from "@/components/Attributes/Rows/Grids/RowFourthGrid";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
@@ -8,6 +9,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { getLength } from "@/libs/helper";
 import { getAllPfrData } from "@/services/pfrService";
 import { getPfrStep } from "@/services/pfrService";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
@@ -16,13 +18,14 @@ import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const pfrId = 10343;
 const pfrType = 1;
 
 const ClientsAcknowledgment = (props: Props) => {
+  let getPfrLength = getLength(props.pfrType);
   let { showDetailData } = useNavigationSection();
 
   const saveData = (params: any) => {
@@ -35,57 +38,60 @@ const ClientsAcknowledgment = (props: Props) => {
   const [section6Need, setSection6Need] = useState([0, 0]);
   const [nftf, setNftf] = useState(false);
 
-  const [sectionElevenData, setSectionElevenData] = useState([
+  const sectionData = [
     [
-      [
-          false,
-          false,
-          false
-      ],
-      [
-          0
-      ],
-      [
-          false
-      ],
-      [
-          false,
-          false
-      ],
-      [
-          false,
-          false
-      ],
-      [
-          false
-      ],
-      [
-          true,
-          false
-      ],
-      [
-          false
-      ],
-      [
-          false
-      ],
-      [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false
-      ]
+      false,
+      false,
+      false
+    ],
+    [
+        0
+    ],
+    [
+        false
+    ],
+    [
+        false,
+        false
+    ],
+    [
+        false,
+        false
+    ],
+    [
+        false
+    ],
+    [
+        true,
+        false
+    ],
+    [
+        false
+    ],
+    [
+        false
+    ],
+    [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
     ]
+  ];
+
+  const [sectionElevenData, setSectionElevenData] = useState([
+    sectionData,
+    sectionData
   ]);
 
   const [sub4Options, setSub4Options] = useState([
@@ -282,9 +288,30 @@ const ClientsAcknowledgment = (props: Props) => {
           Section 11. Client’s Acknowledgment
         </HeadingPrimarySection>
       </div>
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">
-        1. Customer Knowledge Assessment Outcome
-      </HeadingSecondarySection>
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowFourthGrid>
+          <div className="col-span-3">
+            <HeadingSecondarySection className="mx-8 2xl:mx-60">
+              1. Customer Knowledge Assessment Outcome
+            </HeadingSecondarySection>
+          </div>
+          <div>
+            {props.pfrType && props.pfrType > 1 && (
+              <RowDouble className="mb-5">
+                {getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                    <h3
+                      key={"heading-secondary-" + index}
+                      className="w-full mb-4 text-base font-bold text-green-deep">
+                      Client {++index}
+                    </h3>
+                  </div>
+                ))}
+              </RowDouble>
+            )}
+          </div>
+        </RowFourthGrid>
+      </SectionCardSingleGrid>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowFourthGrid>
           <div className="col-span-3">
@@ -295,14 +322,18 @@ const ClientsAcknowledgment = (props: Props) => {
               my/our Legacy FA Representative.
             </TextThin>
           </div>
-          <div className="text-right">
+          <div>
+            <RowDouble className="mb-5">
             {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 0)} isChecked={!!sectionElevenData[i][0][0]} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 0)} isChecked={!!sectionElevenData[i][0][0]} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
 
@@ -321,13 +352,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox isDisabled={true} isChecked={!!sectionElevenData[i][0][1]} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox isDisabled={true} isChecked={!!sectionElevenData[i][0][1]} />
+                </div>);
               }
               return htmlBlock;
             })()}
+          </RowDouble>
           </div>
         </RowFourthGrid>
 
@@ -343,13 +378,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 2)} isChecked={!!sectionElevenData[i][0][2]} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 2)} isChecked={!!sectionElevenData[i][0][2]} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
       </SectionCardSingleGrid>
@@ -375,13 +414,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox onChange={(e) => onChangeSectionData(e, i, 1, 0)} isChecked={!!sectionElevenData[i][1][0]} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 1, 0)} isChecked={!!sectionElevenData[i][1][0]} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
       </SectionCardSingleGrid>
@@ -401,13 +444,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox isDisabled={true} isChecked={true} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox isDisabled={true} isChecked={true} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
       </SectionCardSingleGrid>
@@ -426,13 +473,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox onChange={(e) => onChangeSectionData(e, i, 3, 0)} isChecked={!!sectionElevenData[i][3][0]} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 3, 0)} isChecked={!!sectionElevenData[i][3][0]} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
 
@@ -446,13 +497,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox isDisabled={true} isChecked={true} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox isDisabled={true} isChecked={true} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
 
@@ -468,15 +523,19 @@ const ClientsAcknowledgment = (props: Props) => {
                   </TextThin>
                 </div>
                 <div className="text-right">
+                  <RowDouble className="mb-5">
                   {(() => {
                     let htmlBlock = [];
-                    for (let i=0; i<pfrType; i++) {
+                    for (let i=0; i<props.pfrType; i++) {
                       const css = (matrixData[i][option.iKey] == true && !sectionElevenData[i][9][option.iKey])? "text-xs text-red": "text-xs";
                       const label = (matrixData[i][option.iKey] == true && !sectionElevenData[i][9][option.iKey])? "Required field": "";
-                      htmlBlock.push(<Checkbox isChecked={!!sectionElevenData[i][9][option.iKey]} onChange={(e) => onCheckMatirx(e, i, option.iKey)} lableStyle={css} label={label} />);
-                    }
-                    return htmlBlock;
+                      htmlBlock.push(<div className="flex-1">
+                        <Checkbox isChecked={!!sectionElevenData[i][9][option.iKey]} onChange={(e) => onCheckMatirx(e, i, option.iKey)} lableStyle={css} label={label} />
+                      </div>);
+                  }
+                  return htmlBlock;
                   })()}
+            </RowDouble>
                 </div>
               </RowFourthGrid>
             )
@@ -499,13 +558,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox isDisabled={true} isChecked={true} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox isDisabled={true} isChecked={true} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
 
@@ -517,13 +580,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox onChange={(e) => onChangeSectionData(e, i, 4, 1)} isChecked={!!sectionElevenData[i][4][1]} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 4, 1)} isChecked={!!sectionElevenData[i][4][1]} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
       </SectionCardSingleGrid>
@@ -540,13 +607,17 @@ const ClientsAcknowledgment = (props: Props) => {
             
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox isDisabled={true} isChecked={true} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox isDisabled={true} isChecked={true} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
       </HeadingSecondarySection>
@@ -561,7 +632,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-            <Checkbox />
+          <RowDouble className="mb-5">
+            {(() => {
+              let htmlBlock = [];
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox isDisabled={true} isChecked={!!sectionElevenData[i][6][0]} />
+                </div>);
+              }
+              return htmlBlock;
+            })()}
+          </RowDouble>
           </div>
         </RowFourthGrid>
 
@@ -572,7 +653,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-            <Checkbox />
+          <RowDouble className="mb-5">
+            {(() => {
+              let htmlBlock = [];
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox isDisabled={true} isChecked={!!sectionElevenData[i][6][1]} />
+                </div>);
+              }
+              return htmlBlock;
+            })()}
+          </RowDouble>
           </div>
         </RowFourthGrid>
       </SectionCardSingleGrid>
@@ -589,13 +680,17 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox onChange={(e) => onChangeSectionData(e, i, 7, 0)} isChecked={!!sectionElevenData[i][7][0]} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 7, 0)} isChecked={!!sectionElevenData[i][7][0]} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
         <TextThin>
@@ -613,13 +708,17 @@ const ClientsAcknowledgment = (props: Props) => {
             {`9. I Acknowledge and Agree to The Purchase of Financial Products Using Remote Signature in This Non-Face-To-Face Transaction`}
           </div>
           <div className="text-right">
-          {(() => {
+          <RowDouble className="mb-5">
+            {(() => {
               let htmlBlock = [];
-              for (let i=0; i<pfrType; i++) {
-                htmlBlock.push(<Checkbox onChange={(e) => onChangeSectionData(e, i, 8, 0)} isChecked={!!sectionElevenData[i][8][0]} />);
+              for (let i=0; i<props.pfrType; i++) {
+                htmlBlock.push(<div className="flex-1">
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 8, 0)} isChecked={!!sectionElevenData[i][8][0]} />
+                </div>);
               }
               return htmlBlock;
             })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
       </HeadingSecondarySection>
