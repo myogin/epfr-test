@@ -430,8 +430,6 @@ const ClientsAcknowledgment = (props: Props) => {
     localStorage.setItem('section11', JSON.stringify(sectionElevenData));
   }, [sectionElevenData]);
 
-  const scrollPosition = useScrollPosition(11)
-
   return (
     <div id={props.id}>
       <div id="section-header-11" className={`sticky top-0 z-10 ${scrollPosition === "okSec11" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
