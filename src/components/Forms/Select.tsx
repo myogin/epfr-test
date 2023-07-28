@@ -9,6 +9,15 @@ interface Props {
   datas?: Array<any>;
   className?: string;
   dataType?: string;
+<<<<<<< Updated upstream
+=======
+  indexData?: number;
+  intro?: string;
+  needValidation?: boolean;
+  logic?: boolean;
+  textError?: string;
+  disabled?: boolean;
+>>>>>>> Stashed changes
 }
 
 const Select = (props: Props) => {
@@ -29,6 +38,7 @@ const Select = (props: Props) => {
       )}
 
       <select
+        disabled={props.disabled}
         data-groupdata={props.dataType}
         placeholder={props.placeholder}
         value={props.value}

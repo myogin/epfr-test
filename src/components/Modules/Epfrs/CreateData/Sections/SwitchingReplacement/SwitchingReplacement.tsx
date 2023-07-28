@@ -1,4 +1,5 @@
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
@@ -10,6 +11,7 @@ import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { getLength } from "@/libs/helper";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
@@ -22,6 +24,8 @@ interface Props {
 }
 
 const SwitchingReplacement = (props: Props) => {
+  let getPfrLength = getLength(props.pfrType);
+
   const fillInformation = [
     { id: 0, name: "No" },
     { id: 1, name: "Yes" },
@@ -32,11 +36,10 @@ const SwitchingReplacement = (props: Props) => {
     { id: "1", name: "Premium(Annual)" },
     { id: "2", name: "Investment" },
   ];
-
-  const clientTypes: Array<any> = [
-    { id: "0", name: "Client1" },
-    // { id: "1", name: "Client2" },
-  ];
+  
+  const clientTypes = getPfrLength.map((data, index) => (
+    {id: index, name: `Client ${index + 1}`}
+  ));
 
   const productData = {
     index: -1,
@@ -50,10 +53,37 @@ const SwitchingReplacement = (props: Props) => {
     maturityDate: "",
   };
 
+  const sectionData = {
+    answer1: {
+      a: {
+        answer: 0,
+        reason: "",
+      },
+      b: 0
+    },
+    answer2: 0,
+    answer3: "",
+    answer4: {
+      companyName: null,
+      typeOfProduct: null,
+      premium: 0,
+      premiumType: null,
+      benefit: null,
+      inceptionDate: null,
+      maturityDate: null
+    },
+    answer5: 0,
+    answer6: 0,
+    answer7: 0,
+    answer8: 0,
+    answer9: 0,
+    answer10: 0
+  };
+
   const products: any[] = [];
 
-  const [showReason, setShowReason] = useState(0);
-  const [showReasonTwo, setShowReasonTwo] = useState(0);
+  const [showReason, setShowReason] = useState([0, 0]);
+  const [showReasonTwo, setShowReasonTwo] = useState([0, 0]);
   const [showProductDetailTable, setShowProductDetailTable] = useState(0);
   const [newProduct, setNewProduct] = useState(productData);
   const [newProductErrors, setNewProductErrors] = useState<Array<any>>([]);
@@ -61,44 +91,26 @@ const SwitchingReplacement = (props: Props) => {
     id: 0,
     needs: 0,
     data: [
-      {
-        answer1: {
-          a: {
-            answer: 0,
-            reason: "",
-          },
-          b: 0
-        },
-        answer2: 0,
-        answer3: null,
-        answer4: {
-          companyName: null,
-          typeOfProduct: null,
-          premium: 0,
-          premiumType: null,
-          benefit: null,
-          inceptionDate: null,
-          maturityDate: null
-        },
-        answer5: 1,
-        answer6: 1,
-        answer7: 1,
-        answer8: 1,
-        answer9: 1,
-        answer10: 1
-      }
+      sectionData,
+      sectionData,
     ],
     issues: [],
     originalProduct: products,
     status: 1
   });
 
-  const setData = (params: any) => {
-    setShowReason(params);
+  const setData = (params: any, index: number) => {
+    setShowReason(showReason.map((data, i) => {
+      if (i==index) {
+        return params;
+      } else {
+        return data;
+      }
+    }));
     setSectionTenData({
       ...sectionTenData,
       data: sectionTenData.data?.map((item, i) => {
-        if (i==0) {
+        if (i==index) {
           return {
             ...item,
             answer1: {
@@ -116,12 +128,18 @@ const SwitchingReplacement = (props: Props) => {
     });
   };
 
-  const setDataTwo = (params: any) => {
-    setShowReasonTwo(params);
+  const setDataTwo = (params: any, index: number) => {
+    setShowReasonTwo(showReasonTwo.map((data, i) => {
+      if (i==index) {
+        return params;
+      } else {
+        return data;
+      }
+    }));
     setSectionTenData({
       ...sectionTenData,
       data: sectionTenData.data?.map((item, i) => {
-        if (i==0) {
+        if (i==index) {
           return {
             ...item,
             answer1: {
@@ -183,7 +201,6 @@ const SwitchingReplacement = (props: Props) => {
   }
 
   const removeProductData = (index: any) => {
-    console.log(index);
     const productList = sectionTenData.originalProduct;
     productList.splice(index,1);
     setSectionTenData({
@@ -223,6 +240,18 @@ const SwitchingReplacement = (props: Props) => {
   }
 
   useEffect(() => {
+    getPfrLength.map((data, index) => {
+      if (showReasonTwo[index] == 0) {
+        const productList = sectionTenData.originalProduct.filter(val => val.owner !== index);
+        setSectionTenData({
+          ...sectionTenData,
+          originalProduct: productList
+        });
+      }
+    });
+  }, [showReasonTwo]);
+
+  useEffect(() => {
     localStorage.setItem('section10', JSON.stringify(sectionTenData));
   }, [sectionTenData]);
 
@@ -235,96 +264,150 @@ const SwitchingReplacement = (props: Props) => {
         </HeadingPrimarySection>
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowSingleGrid>
-          <TextThin>
-            1a. Have you withdrawn / surrendered / terminated, in part or in
-            full any existing insurance policy or investment product within the
-            last 12 months?
-          </TextThin>
-          <Select
-            value={showReason}
-            datas={fillInformation}
-            handleChange={(event) => setData(eval(event.target.value))}
-          />
-          {showReason == 1 ? (
-            <RowSingleGrid>
-              <TextArea 
-              label="Please state reasons:" 
-              defaultValue={sectionTenData.data[0]?.answer1?.a?.reason}
-              handleChange={function(event) {
-                setSectionTenData({
-                  ...sectionTenData,
-                  data: sectionTenData.data?.map((item, i) => {
-                    if (i==0) {
-                      return {
-                        ...item,
-                        answer1: {
-                          ...item.answer1,
-                          a: {
-                            ...item.answer1.a,
-                            reason: event.target.value
+        {/* {props.pfrType && props.pfrType > 1 && (
+          <RowDouble className="mb-10">
+            {getPfrLength.map((data, index) => (
+              <div className="flex-1">
+                <h3
+                  key={"heading-secondary-" + index}
+                  className="w-full mb-4 text-base font-bold text-green-deep">
+                  Client {index + 1}
+                </h3>
+              </div>
+            ))}
+          </RowDouble>
+        )} */}
+        <TextThin className="mb-5">
+          1a. Have you withdrawn / surrendered / terminated, in part or in
+          full any existing insurance policy or investment product within the
+          last 12 months?
+        </TextThin>
+        <RowDouble className="mb-10">
+          {getPfrLength?.length &&
+            getPfrLength.map((data, index) => {
+              return (
+                <div className="flex-1">
+                <TextThin>
+                  Client {index + 1}
+                </TextThin>
+                <Select
+                  value={showReason[index]}
+                  datas={fillInformation}
+                  handleChange={(event) => setData(eval(event.target.value), index)}
+                />
+                {showReason.includes(1) ? (
+                  <RowSingleGrid>
+                    <TextArea 
+                    label="Please state reasons:" 
+                    defaultValue={sectionTenData.data[index]?.answer1?.a?.reason}
+                    needValidation={showReason[index]==1 && sectionTenData.data[index]?.answer1?.a?.reason.trim() == ""}
+                    handleChange={function(event) {
+                      setSectionTenData({
+                        ...sectionTenData,
+                        data: sectionTenData.data?.map((item, i) => {
+                          if (i==index) {
+                            return {
+                              ...item,
+                              answer1: {
+                                ...item.answer1,
+                                a: {
+                                  ...item.answer1.a,
+                                  reason: event.target.value
+                                }
+                              }
+                            };
+                          } else {
+                            return item;
                           }
-                        }
-                      };
-                    } else {
-                      return item;
-                    }
-                  })
-                });
-              }} />
-            </RowSingleGrid>
-          ) : null}
-        </RowSingleGrid>
+                        })
+                      });
+                    }} />
+                  </RowSingleGrid>
+                ) : null}
+                </div>
+              )
+            })}
+        </RowDouble>
 
         {/* Question 1.b */}
-        <RowSingleGrid>
-          <TextThin>
-            1b. Are you switching / replacing in part or in full any existing
-            insurance policy or investment product purchased from Legacy FA Pte
-            Ltd or any other Financial Institution(s)?
-          </TextThin>
-          <Select
-            value={showReasonTwo}
-            datas={fillInformation}
-            handleChange={(event) => setDataTwo(eval(event.target.value))}
-          />
-        </RowSingleGrid>
-        {showReasonTwo == 1 ? (
+        <TextThin className="mb-5">
+          1b. Are you switching / replacing in part or in full any existing
+          insurance policy or investment product purchased from Legacy FA Pte
+          Ltd or any other Financial Institution(s)?
+        </TextThin>
+        <RowDouble className="mb-10">
+          {getPfrLength?.length &&
+            getPfrLength.map((data, index) => (
+              <div className="flex-1">
+                <TextThin>
+                  Client {index + 1}
+                </TextThin>
+                <Select
+                  value={showReasonTwo[index]}
+                  datas={fillInformation}
+                  handleChange={(event) => setDataTwo(eval(event.target.value), index)}
+                />
+              </div>
+            ))}
+        </RowDouble>
+        {showReasonTwo.includes(1) ? (
           <>
-            <RowSingleGrid>
-              <TextThin>
-                2. Is the switch / replacement of insurance policy and/or
-                investment product advised by the Representative ?
-              </TextThin>
-              <Select
-                value={sectionTenData.data[0]?.answer2}
-                datas={fillInformation}
-                handleChange={function(event) {
-                  setSectionTenData({
-                    ...sectionTenData,
-                    data: sectionTenData.data?.map((item, i) => {
-                      if (i==0) {
-                        return {
-                          ...item,
-                          answer2: eval(event.target.value)
-                        };
-                      } else {
-                        return item;
-                      }
-                    })
-                  });
-                }}
-              />
-            </RowSingleGrid>
+            <TextThin className="mb-5">
+              2. Is the switch / replacement of insurance policy and/or
+              investment product advised by the Representative ?
+            </TextThin>
+            <RowDouble className="mb-10">
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                  <TextThin>
+                    Client {index + 1}
+                  </TextThin>
+                  <Select
+                    disabled={!eval(showReasonTwo[index] + "")}
+                    value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer2}
+                    datas={fillInformation}
+                    handleChange={function(event) {
+                      setSectionTenData({
+                        ...sectionTenData,
+                        data: sectionTenData.data?.map((item, i) => {
+                          if (i==index) {
+                            return {
+                              ...item,
+                              answer2: eval(event.target.value)
+                            };
+                          } else {
+                            return item;
+                          }
+                        })
+                      });
+                    }}
+                  />
+                </div>
+                ))}
+            </RowDouble>
 
-            <RowSingleGrid>
-              <TextThin>
-                3. What are the reason(s) for switching / replacing your
-                insurance policy and/or investment product?
-              </TextThin>
-              <TextArea label="Please state reasons:" defaultValue="" />
-            </RowSingleGrid>
+            <TextThin className="mb-5">
+              3. What are the reason(s) for switching / replacing your
+              insurance policy and/or investment product?
+            </TextThin>
+            <RowDouble className="mb-10">
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                    <TextThin>
+                      Client {index + 1}
+                    </TextThin>
+                    <TextArea 
+                    label="Please state reasons:" 
+                    defaultValue="" 
+                    needValidation={showReasonTwo[index]==1 && sectionTenData.data[index]?.answer3.trim() == ""} 
+                    />
+                  </div>
+                ))}
+            </RowDouble>
 
+            <div className="mb-5">
             <RowSingleGrid>
               <TextThin>4. Do you have details of original product?</TextThin>
               <Select
@@ -335,6 +418,7 @@ const SwitchingReplacement = (props: Props) => {
                 }}
               />
             </RowSingleGrid>
+            </div>
 
             {(showProductDetailTable===1) && (
               <SectionCardSingleGrid>
@@ -373,24 +457,53 @@ const SwitchingReplacement = (props: Props) => {
                               as="h3"
                               className="text-lg font-medium leading-6 text-gray-900"
                             >
-                              Add Dependent
+                              Original Product
                             </Dialog.Title>
                             <div className="mt-2">
                               <div className="flex">
-                                <Select
-                                    className="my-4"
-                                    label="Client"
+                                <div className={`w-full my-4 space-y-3`}>
+                                    <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+                                      Client
+                                    </label>
+
+                                  <select
                                     name="clientName"
-                                    datas={clientTypes}
-                                    value={newProduct.owner}
-                                    handleChange={(e) =>{
-                                      console.log(e.target.selectedIndex);
+                                    className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                                    onChange={(e) =>{
+                                      console.log(e.target.selectedIndex)
                                       setNewProduct({
                                         ...newProduct,
                                         owner: e.target.selectedIndex,
                                       });
                                     }}
-                                  />
+                                  >
+                                    {getPfrLength.map((data, index) => {
+                                      if (showReasonTwo[index] === 1) {
+                                        return (<option key={index} value={index}>
+                                          Client {index + 1}
+                                        </option>);
+                                      } 
+                                    })}
+                                  </select>
+                                </div>
+                                {/* <Select
+                                    className="my-4"
+                                    label="Client"
+                                    name="clientName"
+                                    datas={getPfrLength.map((data, index) => {
+                                      if (showReasonTwo[index] === 1) {
+                                        return {id: 0, name: `Client`};
+                                      } else {
+                                        return;
+                                      }
+                                    })}
+                                    handleChange={(e) =>{
+                                      setNewProduct({
+                                        ...newProduct,
+                                        owner: e.target.selectedIndex - 1,
+                                      });
+                                    }}
+                                  /> */}
                                 {/* <Input
                                   className="my-4"
                                   label="Client"
@@ -563,165 +676,225 @@ const SwitchingReplacement = (props: Props) => {
             </SectionCardSingleGrid>
             )}
 
-            <RowSingleGrid>
-              <TextThin>
-                5. Has the Representative explained to you that you may incur
-                transaction costs without gaining any real benefit from the
-                replacement?
-              </TextThin>
-              <Select
-                value={sectionTenData.data[0]?.answer5}
-                datas={fillInformation}
-                handleChange={function(event) {
-                  setSectionTenData({
-                    ...sectionTenData,
-                    data: sectionTenData.data?.map((item, i) => {
-                      if (i==0) {
-                        return {
-                          ...item,
-                          answer5: eval(event.target.value)
-                        };
-                      } else {
-                        return item;
-                      }
-                    })
-                  });
-                }}
-              />
-            </RowSingleGrid>
+            <TextThin className="mb-5">
+              5. Has the Representative explained to you that you may incur
+              transaction costs without gaining any real benefit from the
+              replacement?
+            </TextThin>
+            <RowDouble className="mb-10">
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                    <TextThin>
+                      Client {index + 1}
+                    </TextThin>
+                    <Select
+                      disabled={!eval(showReasonTwo[index] + "")}
+                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer5}
+                      datas={fillInformation}
+                      handleChange={function(event) {
+                        setSectionTenData({
+                          ...sectionTenData,
+                          data: sectionTenData.data?.map((item, i) => {
+                            if (i==index) {
+                              return {
+                                ...item,
+                                answer5: eval(event.target.value)
+                              };
+                            } else {
+                              return item;
+                            }
+                          })
+                        });
+                      }}
+                    />
+                  </div>
+                ))
+              }
+            </RowDouble>
 
-            <RowSingleGrid>
-              <TextThin>
-                6. Has the Representative explained to you that you may incur
-                penalties for terminating any of your existing policies?
-              </TextThin>
-              <Select
-                value={sectionTenData.data[0]?.answer6}
-                datas={fillInformation}
-                handleChange={function(event) {
-                  setSectionTenData({
-                    ...sectionTenData,
-                    data: sectionTenData.data?.map((item, i) => {
-                      if (i==0) {
-                        return {
-                          ...item,
-                          answer6: eval(event.target.value)
-                        };
-                      } else {
-                        return item;
-                      }
-                    })
-                  });
-                }}
-              />
-            </RowSingleGrid>
+            <TextThin className="mb-5">
+              6. Has the Representative explained to you that you may incur
+              penalties for terminating any of your existing policies?
+            </TextThin>
+            <RowDouble className="mb-10">
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                    <TextThin>
+                      Client {index + 1}
+                    </TextThin>
+                    <Select
+                      disabled={!eval(showReasonTwo[index] + "")}
+                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer6}
+                      datas={fillInformation}
+                      handleChange={function(event) {
+                        setSectionTenData({
+                          ...sectionTenData,
+                          data: sectionTenData.data?.map((item, i) => {
+                            if (i==index) {
+                              return {
+                                ...item,
+                                answer6: eval(event.target.value)
+                              };
+                            } else {
+                              return item;
+                            }
+                          })
+                        });
+                      }}
+                    />
+                  </div>
+                ))
+              }
+            </RowDouble>
 
-            <RowSingleGrid>
-              <TextThin>
-                7. Has the Representative explained to you that the replacement
-                plan may offer a lower level of benefit at a higher cost or same
-                cost, or offer the same level of benefit at a higher cost?
-              </TextThin>
-              <Select
-                value={sectionTenData.data[0]?.answer7}
-                datas={fillInformation}
-                handleChange={function(event) {
-                  setSectionTenData({
-                    ...sectionTenData,
-                    data: sectionTenData.data?.map((item, i) => {
-                      if (i==0) {
-                        return {
-                          ...item,
-                          answer7: eval(event.target.value)
-                        };
-                      } else {
-                        return item;
-                      }
-                    })
-                  });
-                }}
-              />
-            </RowSingleGrid>
+            <TextThin className="mb-5">
+              7. Has the Representative explained to you that the replacement
+              plan may offer a lower level of benefit at a higher cost or same
+              cost, or offer the same level of benefit at a higher cost?
+            </TextThin>
+            <RowDouble className="mb-10">
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                    <TextThin>
+                      Client {index + 1}
+                    </TextThin>
+                    <Select
+                      disabled={!eval(showReasonTwo[index] + "")}
+                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer7}
+                      datas={fillInformation}
+                      handleChange={function(event) {
+                        setSectionTenData({
+                          ...sectionTenData,
+                          data: sectionTenData.data?.map((item, i) => {
+                            if (i==index) {
+                              return {
+                                ...item,
+                                answer7: eval(event.target.value)
+                              };
+                            } else {
+                              return item;
+                            }
+                          })
+                        });
+                      }}
+                    />
+                  </div>
+                ))
+              }
+            </RowDouble>
 
-            <RowSingleGrid>
-              <TextThin>
-                8. Has the Representative explained to you that the replacement
-                plan may be less suitable and the terms and conditions may
-                differ?
-              </TextThin>
-              <Select
-                value={sectionTenData.data[0]?.answer8}
-                datas={fillInformation}
-                handleChange={function(event) {
-                  setSectionTenData({
-                    ...sectionTenData,
-                    data: sectionTenData.data?.map((item, i) => {
-                      if (i==0) {
-                        return {
-                          ...item,
-                          answer8: eval(event.target.value)
-                        };
-                      } else {
-                        return item;
-                      }
-                    })
-                  });
-                }}
-              />
-            </RowSingleGrid>
+            <TextThin className="mb-5">
+              8. Has the Representative explained to you that the replacement
+              plan may be less suitable and the terms and conditions may
+              differ?
+            </TextThin>
+            <RowDouble className="mb-10">
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                    <TextThin>
+                      Client {index + 1}
+                    </TextThin>
+                    <Select
+                      disabled={!eval(showReasonTwo[index] + "")}
+                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer8}
+                      datas={fillInformation}
+                      handleChange={function(event) {
+                        setSectionTenData({
+                          ...sectionTenData,
+                          data: sectionTenData.data?.map((item, i) => {
+                            if (i==index) {
+                              return {
+                                ...item,
+                                answer8: eval(event.target.value)
+                              };
+                            } else {
+                              return item;
+                            }
+                          })
+                        });
+                      }}
+                    />
+                  </div>
+                ))
+              }
+            </RowDouble>
 
-            <RowSingleGrid>
-              <TextThin>
-                9. Has the Representative explained to you that you may not be
-                insurable at standard terms?
-              </TextThin>
-              <Select
-                value={sectionTenData.data[0]?.answer9}
-                datas={fillInformation}
-                handleChange={function(event) {
-                  setSectionTenData({
-                    ...sectionTenData,
-                    data: sectionTenData.data?.map((item, i) => {
-                      if (i==0) {
-                        return {
-                          ...item,
-                          answer9: eval(event.target.value)
-                        };
-                      } else {
-                        return item;
-                      }
-                    })
-                  });
-                }}
-              />
-            </RowSingleGrid>
+            <TextThin className="mb-5">
+              9. Has the Representative explained to you that you may not be
+              insurable at standard terms?
+            </TextThin>
+            <RowDouble className="mb-10">
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                    <TextThin>
+                      Client {index + 1}
+                    </TextThin>
+                    <Select
+                      disabled={!eval(showReasonTwo[index] + "")}
+                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer9}
+                      datas={fillInformation}
+                      handleChange={function(event) {
+                        setSectionTenData({
+                          ...sectionTenData,
+                          data: sectionTenData.data?.map((item, i) => {
+                            if (i==index) {
+                              return {
+                                ...item,
+                                answer9: eval(event.target.value)
+                              };
+                            } else {
+                              return item;
+                            }
+                          })
+                        });
+                      }}
+                    />
+                  </div>
+                ))
+              }
+            </RowDouble>
 
-            <RowSingleGrid>
-              <TextThin>
-                10. Has the Representative explained to you that there may be
-                other options available besides policy replacement (eg. Free
-                switching facilities for investment policy)?
-              </TextThin>
-              <Select
-                value={sectionTenData.data[0]?.answer10}
-                datas={fillInformation}
-                handleChange={function(event) {
-                  setSectionTenData({
-                    ...sectionTenData,
-                    data: sectionTenData.data?.map((item, i) => {
-                      if (i==0) {
-                        return {
-                          ...item,
-                          answer10: eval(event.target.value)
-                        };
-                      } else {
-                        return item;
-                      }
-                    })
-                  });
-                }}
-              />
-            </RowSingleGrid>
+            <TextThin>
+              10. Has the Representative explained to you that there may be
+              other options available besides policy replacement (eg. Free
+              switching facilities for investment policy)?
+            </TextThin>
+            <RowDouble className="mb-10">
+              {getPfrLength?.length &&
+                getPfrLength.map((data, index) => (
+                  <div className="flex-1">
+                    <TextThin>
+                      Client {index + 1}
+                    </TextThin>
+                    <Select
+                      disabled={!eval(showReasonTwo[index] + "")}
+                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer10}
+                      datas={fillInformation}
+                      handleChange={function(event) {
+                        setSectionTenData({
+                          ...sectionTenData,
+                          data: sectionTenData.data?.map((item, i) => {
+                            if (i==index) {
+                              return {
+                                ...item,
+                                answer10: eval(event.target.value)
+                              };
+                            } else {
+                              return item;
+                            }
+                          })
+                        });
+                      }}
+                    />
+                  </div>
+                ))
+              }
+            </RowDouble>
           </>
         ) : null}
       </SectionCardSingleGrid>
