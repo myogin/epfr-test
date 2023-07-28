@@ -62,7 +62,7 @@ const ClientsAcknowledgment = (props: Props) => {
         false
     ],
     [
-        true,
+        false,
         false
     ],
     [
@@ -89,10 +89,79 @@ const ClientsAcknowledgment = (props: Props) => {
     ]
   ];
 
-  const [sectionElevenData, setSectionElevenData] = useState([
-    sectionData,
-    sectionData
-  ]);
+  const sectionDataTwo = [
+    [
+      false,
+      false,
+      false
+    ],
+    [
+        0
+    ],
+    [
+        false
+    ],
+    [
+        false,
+        false
+    ],
+    [
+        false,
+        false
+    ],
+    [
+        false
+    ],
+    [
+        false,
+        false
+    ],
+    [
+        false
+    ],
+    [
+        false
+    ],
+    [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    ]
+  ];
+
+  interface SectionEleven {
+    id: number,
+    data: Array<any>,
+    remark: string | null,
+    remark1: string | null,
+    introducer: string | null,
+    status: number,
+    issues: Array<any>
+  }
+
+  const [sectionElevenData, setSectionElevenData] = useState<SectionEleven>({
+    id: 0,
+    data: [
+      sectionData,
+      sectionDataTwo
+    ],
+    remark: null,
+    remark1: null,
+    introducer: null,
+    status: 1,
+    issues: []
+  });
 
   const [sub4Options, setSub4Options] = useState([
     {label : "Insurance Application Form(s)", key : "insuranceApplicationForm", iKey: 0 },
@@ -126,11 +195,16 @@ const ClientsAcknowledgment = (props: Props) => {
       let data = JSON.parse(s12Res['answer']['data']);
       setSectionElevenData(data);
 
-      for(let i = 0 ; i < pfrType ; i ++) {
-        if(sectionElevenData[i][9] == undefined) {
-          sectionElevenData[i][9] = [ false, false,false, false,false, false,false, false,false, false,false, false,false, false,false]
+      getPfrLength.map((data, i) => {
+        if(sectionElevenData.data[i][9] == undefined) {
+          sectionElevenData.data[i][9] = [ false, false,false, false,false, false,false, false,false, false,false, false,false, false,false]
         }
-      }
+      })
+      // for(let i = 0 ; i < pfrType ; i ++) {
+      //   if(sectionElevenData.data[i][9] == undefined) {
+      //     sectionElevenData.data[i][9] = [ false, false,false, false,false, false,false, false,false, false,false, false,false, false,false]
+      //   }
+      // }
     }
 
     let mat = s12Res['matrix'];
@@ -175,8 +249,41 @@ const ClientsAcknowledgment = (props: Props) => {
     });
 
     for(let i = 0 ; i < pfrType ; i ++ ) {
-      setSectionElevenData(prevData => {
-        return prevData.map((client, idx) => {
+      // setSectionElevenData(prevData => {
+      //   return prevData.map((client, idx) => {
+      //     if(i === idx) {
+      //       const copyData = client;
+      //       if(section6Need[i] == 0 || productCount[i] == 0) {
+      //         copyData[0][0] = false
+      //         copyData[0][1] = false
+      //         copyData[0][2] = false
+      //       } else {
+      //         if(outcomes[i] == 0) {
+      //           copyData[0][0] = false
+      //           copyData[0][1] = false
+      //           copyData[0][2] = true
+      //         } else {
+      //           let deviate = deviateCount[i]
+      //           if(deviate > 0) {
+      //             copyData[0][0] = false
+      //             copyData[0][1] = true
+      //             copyData[0][2] = false
+      //           } else {
+      //             copyData[0][0] = true
+      //             copyData[0][1] = false
+      //             copyData[0][2] = false
+      //           }
+      //         }
+      //       }
+      //       return copyData;
+      //     } else {
+      //       return client;
+      //     }
+      //   })
+      // });
+      setSectionElevenData({
+        ...sectionElevenData,
+        data: sectionElevenData.data.map((client, idx) => {
           if(i === idx) {
             const copyData = client;
             if(section6Need[i] == 0 || productCount[i] == 0) {
@@ -214,8 +321,20 @@ const ClientsAcknowledgment = (props: Props) => {
     answers.forEach( (answer:any, i:any) => {
       let _1b = answer['answer1b']
       if(i < pfrType) {
-        setSectionElevenData(prevData => {
-          return prevData.map((client, idx) => {
+        // setSectionElevenData(prevData => {
+        //   return prevData.map((client, idx) => {
+        //     if(i === idx) {
+        //       const copyData = client;
+        //       copyData[1][0] = _1b;
+        //       return copyData;
+        //     } else {
+        //       return client;
+        //     }
+        //   })
+        // });
+        setSectionElevenData({
+          ...sectionElevenData,
+          data: sectionElevenData.data.map((client, idx) => {
             if(i === idx) {
               const copyData = client;
               copyData[1][0] = _1b;
@@ -242,8 +361,20 @@ const ClientsAcknowledgment = (props: Props) => {
   }
 
   const onCheckMatirx = (e:React.ChangeEvent<HTMLInputElement>, i:any, iKey:any) => {
-    setSectionElevenData(prevData => {
-      return prevData.map((client, idx) => {
+    // setSectionElevenData(prevData => {
+    //   return prevData.map((client, idx) => {
+    //     if(i === idx) {
+    //       const copyData = client;
+    //       copyData[9][iKey] = e.target.checked;
+    //       return copyData;
+    //     } else {
+    //       return client;
+    //     }
+    //   })
+    // });
+    setSectionElevenData({
+      ...sectionElevenData,
+      data: sectionElevenData.data.map((client, idx) => {
         if(i === idx) {
           const copyData = client;
           copyData[9][iKey] = e.target.checked;
@@ -256,11 +387,27 @@ const ClientsAcknowledgment = (props: Props) => {
   }
 
   const onChangeSectionData = (e:React.ChangeEvent<HTMLInputElement>, i:any, firstIndex:any, secondIndex:any) => {
-    setSectionElevenData(prevData => {
-      return prevData.map((client, idx) => {
+    // setSectionElevenData(prevData => {
+    //   return prevData.map((client, idx) => {
+    //     if(i === idx) {
+    //       console.log("pfr index: ", i);
+    //       console.log("section index: ", idx);
+    //       const copyData = client;
+    //       copyData[firstIndex][secondIndex] = e.target.checked;
+    //       return copyData;
+    //     } else {
+    //       return client;
+    //     }
+    //   })
+    // });
+    setSectionElevenData({
+      ...sectionElevenData,
+      data: sectionElevenData.data.map((client, idx) => {
         if(i === idx) {
+          console.log("section index: ", idx);
           const copyData = client;
           copyData[firstIndex][secondIndex] = e.target.checked;
+          console.log('Copy Data: ', copyData);
           return copyData;
         } else {
           return client;
@@ -279,7 +426,11 @@ const ClientsAcknowledgment = (props: Props) => {
     
   }, []);
 
-  
+  useEffect(() => {
+    localStorage.setItem('section11', JSON.stringify(sectionElevenData));
+  }, [sectionElevenData]);
+
+  const scrollPosition = useScrollPosition(11)
 
   return (
     <div id={props.id}>
@@ -289,20 +440,20 @@ const ClientsAcknowledgment = (props: Props) => {
         </HeadingPrimarySection>
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <RowFourthGrid>
+        <RowFourthGrid styles={{margin: '0px'}}>
           <div className="col-span-3">
-            <HeadingSecondarySection className="mx-8 2xl:mx-60">
+            <h2 className="text-xl font-bold 2xl:mx-60">
               1. Customer Knowledge Assessment Outcome
-            </HeadingSecondarySection>
+            </h2>
           </div>
           <div>
             {props.pfrType && props.pfrType > 1 && (
-              <RowDouble className="mb-5">
+              <RowDouble>
                 {getPfrLength.map((data, index) => (
                   <div className="flex-1">
                     <h3
                       key={"heading-secondary-" + index}
-                      className="w-full mb-4 text-base font-bold text-green-deep">
+                      className="w-full text-base font-bold text-green-deep">
                       Client {++index}
                     </h3>
                   </div>
@@ -328,7 +479,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 0)} isChecked={!!sectionElevenData[i][0][0]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 0)} isChecked={!!sectionElevenData.data[i][0][0]} />
                 </div>);
               }
               return htmlBlock;
@@ -357,7 +508,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox isDisabled={true} isChecked={!!sectionElevenData[i][0][1]} />
+                  <Checkbox isDisabled={true} isChecked={!!sectionElevenData.data[i][0][1]} />
                 </div>);
               }
               return htmlBlock;
@@ -383,7 +534,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 2)} isChecked={!!sectionElevenData[i][0][2]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 2)} isChecked={!!sectionElevenData.data[i][0][2]} />
                 </div>);
               }
               return htmlBlock;
@@ -419,7 +570,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 1, 0)} isChecked={!!sectionElevenData[i][1][0]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 1, 0)} isChecked={!!sectionElevenData.data[i][1][0]} />
                 </div>);
               }
               return htmlBlock;
@@ -478,7 +629,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 3, 0)} isChecked={!!sectionElevenData[i][3][0]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 3, 0)} isChecked={!!sectionElevenData.data[i][3][0]} />
                 </div>);
               }
               return htmlBlock;
@@ -527,10 +678,10 @@ const ClientsAcknowledgment = (props: Props) => {
                   {(() => {
                     let htmlBlock = [];
                     for (let i=0; i<props.pfrType; i++) {
-                      const css = (matrixData[i][option.iKey] == true && !sectionElevenData[i][9][option.iKey])? "text-xs text-red": "text-xs";
-                      const label = (matrixData[i][option.iKey] == true && !sectionElevenData[i][9][option.iKey])? "Required field": "";
+                      const css = (matrixData[i][option.iKey] == true && !sectionElevenData.data[i][9][option.iKey])? "text-xs text-red": "text-xs";
+                      const label = (matrixData[i][option.iKey] == true && !sectionElevenData.data[i][9][option.iKey])? "Required field": "";
                       htmlBlock.push(<div className="flex-1">
-                        <Checkbox isChecked={!!sectionElevenData[i][9][option.iKey]} onChange={(e) => onCheckMatirx(e, i, option.iKey)} lableStyle={css} label={label} />
+                        <Checkbox isChecked={!!sectionElevenData.data[i][9][option.iKey]} onChange={(e) => onCheckMatirx(e, i, option.iKey)} lableStyle={css} label={label} />
                       </div>);
                   }
                   return htmlBlock;
@@ -585,7 +736,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 4, 1)} isChecked={!!sectionElevenData[i][4][1]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 4, 1)} isChecked={!!sectionElevenData.data[i][4][1]} />
                 </div>);
               }
               return htmlBlock;
@@ -637,7 +788,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox isDisabled={true} isChecked={!!sectionElevenData[i][6][0]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 6, 0)} isChecked={!!sectionElevenData.data[i][6][0]} />
                 </div>);
               }
               return htmlBlock;
@@ -658,7 +809,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox isDisabled={true} isChecked={!!sectionElevenData[i][6][1]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 6, 1)} isChecked={!!sectionElevenData.data[i][6][1]} />
                 </div>);
               }
               return htmlBlock;
@@ -675,7 +826,13 @@ const ClientsAcknowledgment = (props: Props) => {
           <div className="col-span-3">
             <TextThin>
             I/we hereby confirm that I/we am/are referred by Introducer
-            <input type="text" className="mx-2 border-t-0 border-b border-l-0 border-r-0"/> 
+            <input 
+            type="text" 
+            onChange={(e) => setSectionElevenData({
+              ...sectionElevenData,
+              introducer: e.target.value
+            })} 
+            className="mx-2 border-t-0 border-b border-l-0 border-r-0"/> 
             and that I/we am/are informed of the following:
             </TextThin>
           </div>
@@ -685,7 +842,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 7, 0)} isChecked={!!sectionElevenData[i][7][0]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 7, 0)} isChecked={!!sectionElevenData.data[i][7][0]} />
                 </div>);
               }
               return htmlBlock;
@@ -713,7 +870,7 @@ const ClientsAcknowledgment = (props: Props) => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
                 htmlBlock.push(<div className="flex-1">
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 8, 0)} isChecked={!!sectionElevenData[i][8][0]} />
+                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 8, 0)} isChecked={!!sectionElevenData.data[i][8][0]} />
                 </div>);
               }
               return htmlBlock;
