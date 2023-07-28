@@ -105,9 +105,9 @@ const AnalysisRecommendation = (props: Props) => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingleGrid>
           <TextThin>
-            1) Client's situation(s), consideration(s), objective(s),
+            {`1) Client's situation(s), consideration(s), objective(s),
             concern(s), medical condition(s), shortfall amount($), where
-            applicable*
+            applicable*`}
           </TextThin>
           <Editor
             toolbarClassName="toolbar-class"
@@ -136,8 +136,8 @@ const AnalysisRecommendation = (props: Props) => {
 
         <RowSingleGrid>
           <TextThin>
-            2) Client's investment objectives, investment time horizon,
-            investment risk profile, where applicable *
+            {`2) Client's investment objectives, investment time horizon,
+            investment risk profile, where applicable *`}
           </TextThin>
           <Editor
             toolbarClassName="toolbar-class"
@@ -528,7 +528,7 @@ const AnalysisRecommendation = (props: Props) => {
                   <td className="px-2 py-5">1</td>
                   <td className="px-2 py-5">Singlife Savvy Invest</td>
                   <td className="w-1/2 px-2 py-5">
-                    Singlife Savvy Invest is a whole life, regular premium
+                    {`Singlife Savvy Invest is a whole life, regular premium
                     investment-linked plan (ILP) that provides investment
                     opportunities as well as protection against death and
                     terminal illness. This plan offers a welcome bonus to help
@@ -536,7 +536,7 @@ const AnalysisRecommendation = (props: Props) => {
                     also rewards the policyholder with a loyalty bonus along the
                     policy term. At a life stage event, the policyholder can
                     also make a penalty-free withdrawal from the policy up to a
-                    limit.{" "}
+                    limit.`}
                   </td>
                   <td className="px-2 py-5">Protection</td>
                 </tr>
@@ -550,12 +550,12 @@ const AnalysisRecommendation = (props: Props) => {
       </HeadingSecondarySection>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingleGrid className="text-sm font-normal">
-          1) State how the plan meets client's need(s)
+          {`1) State how the plan meets client's need(s)`}
           <br />
-          2) State and explain features and benefits relating to the product(s)
+          {`2) State and explain features and benefits relating to the product(s)`}
           sold
           <br />
-          3) Affordability, consideration before investing (where applicable),
+          {`3) Affordability, consideration before investing (where applicable),`}
           remaining shortfall (if any)
         </RowSingleGrid>
         <RowSingleGrid>
@@ -577,12 +577,12 @@ const AnalysisRecommendation = (props: Props) => {
                   <td className="px-2 py-5">Singlife Savvy Invest</td>
                   <td className="px-2 py-5">Minimum Investment Period</td>
                   <td className="px-2 py-5">
-                    There are two variations of minimum investment period
+                    {`There are two variations of minimum investment period
                     available under this plan: (a) Fixed; and (b) Flexible. Both
                     the Fixed and Flexible options offer a range of different
                     durations that the policyholder can choose from, depending
                     on his/her preferred commitment period. Please refer to the
-                    policy contract for more information.
+                    policy contract for more information.`}
                   </td>
                   <td className="px-2 py-5">-</td>
                   <td className="px-2 py-5">Group One</td>
@@ -621,9 +621,9 @@ const AnalysisRecommendation = (props: Props) => {
       </HeadingSecondarySection>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingleGrid className="text-sm">
-          1) State any possible risks relating to the product(s) sold
+          {`1) State any possible risks relating to the product(s) sold`}
           <br />
-          2) State possible disadvantage(s) based on circumstances of client
+          {`2) State possible disadvantage(s) based on circumstances of client`}
         </RowSingleGrid>
         <RowSingleGrid>
           <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
@@ -644,12 +644,12 @@ const AnalysisRecommendation = (props: Props) => {
                   <td className="px-2 py-5">Singlife Savvy Invest</td>
                   <td className="px-2 py-5">Minimum Investment Period</td>
                   <td className="px-2 py-5">
-                    There are two variations of minimum investment period
+                    {`There are two variations of minimum investment period
                     available under this plan: (a) Fixed; and (b) Flexible. Both
                     the Fixed and Flexible options offer a range of different
                     durations that the policyholder can choose from, depending
                     on his/her preferred commitment period. Please refer to the
-                    policy contract for more information.
+                    policy contract for more information.`}
                   </td>
                   <td className="px-2 py-5">-</td>
                   <td className="px-2 py-5">Group One</td>
@@ -688,15 +688,13 @@ const AnalysisRecommendation = (props: Props) => {
       </HeadingSecondarySection>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingleGrid className="text-sm font-normal text-gray-light">
-          1) Reasons for any deviation from client's profile , objectives and/or
-          Representative's recommendations (where applicable)
+          {`1) Reasons for any deviation from client's profile , objectives and/or Representative's recommendations (where applicable)`}
           <br />
-          - Premiums are more than Client's budget
+          {`- Premiums are more than Client's budget`}
           <br />
-          - Funds recommended (e.g ILP sub-fund, par, fund) are of a higher risk
-          than client's risk preference
-          <br />- Client's choice of product(s)/fund(s) differs from
-          Representative's recommended plan(s)/funds
+          {`- Funds recommended (e.g ILP sub-fund, par, fund) are of a higher risk than client's risk preference`}
+          <br />
+          {`- Client's choice of product(s)/fund(s) differs from Representative's recommended plan(s)/funds`}
         </RowSingleGrid>
         <RowSingleGrid>
           <Editor

@@ -523,7 +523,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             {/* <Toggle /> */}
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][0] ? <IncomeProtection/> : ""}
+        {section7.answer.need.client[0][0] ? <IncomeProtection pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
