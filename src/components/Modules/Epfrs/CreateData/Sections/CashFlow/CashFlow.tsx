@@ -19,7 +19,7 @@ import { SectionThree } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
-import { getLength } from "@/libs/helper";
+import { clientIdentity, getLength } from "@/libs/helper";
 
 interface Props {
   id?: any;
@@ -41,14 +41,15 @@ const CashFlow = (props: Props) => {
   let { showDetailData } = useNavigationSection();
   const scrollPosition = useScrollPosition(3);
 
-  const saveData = (params: any) => {
-    showDetailData(params);
+  let { need, reason, totalNetSurplus, setNeed } = useCashFlow();
+
+  let checkNeedData = checkAllNeed(need);
+
+  const [reviewAll, setReviewAll] = useState(true);
+
+  const handleReview = (index: number, params: any) => {
+    setNeed(index, params);
   };
-
-  let { need, reason, totalNetSurplus } = useCashFlow();
-
-  const [notReviewAll, setNotReviewAll] = useState(false);
-
   // let post = postPfr(1)
 
   return (
@@ -69,12 +70,12 @@ const CashFlow = (props: Props) => {
           Section 3. Cash Flow
         </HeadingPrimarySection>
       </div>
-      {!notReviewAll ? (
+      {reviewAll ? (
         <>
           <HeadingSecondaryDynamicGrid
             className={`mx-8 2xl:mx-60 ${
               props.pfrType == 2
-                ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+                ? "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
                 : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
             }`}
             pfrType={props.pfrType}
@@ -82,10 +83,11 @@ const CashFlow = (props: Props) => {
             3.1 Annual Income
           </HeadingSecondaryDynamicGrid>
           <AnnualIncomeCashFlow pfrType={props.pfrType} />
+          
           <HeadingSecondaryDynamicGrid
             className={`mx-8 2xl:mx-60 ${
               props.pfrType == 2
-                ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+                ? "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
                 : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
             }`}
             pfrType={props.pfrType}
@@ -98,12 +100,12 @@ const CashFlow = (props: Props) => {
         ""
       )}
 
-      {notReviewAll ? (
+      {!reviewAll ? (
         <SectionCardSingleGrid className="mx-8 2xl:mx-60">
           <RowSingle>
             <Checkbox
-              isChecked={notReviewAll}
-              onChange={() => setNotReviewAll(!notReviewAll)}
+              isChecked={reviewAll}
+              onChange={() => setReviewAll(!reviewAll)}
               lableStyle="text-sm font-normal text-gray-light"
               label="The Client would not like their cash flow to be taken into
             consideration for the Needs Analysis and Recommendation(s)"
@@ -123,7 +125,7 @@ const CashFlow = (props: Props) => {
       <HeadingSecondaryDynamicGrid
         className={`mx-8 2xl:mx-60 ${
           props.pfrType == 2
-            ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
+            ? "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
             : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
         }`}
         pfrType={props.pfrType}
@@ -131,42 +133,103 @@ const CashFlow = (props: Props) => {
         3.3 Annual Net Cash Flow
       </HeadingSecondaryDynamicGrid>
       <AnnualNetCashFlow pfrType={props.pfrType} />
-      {!notReviewAll ? (
+      {reviewAll ? (
         <>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            <div>
-              <p className="text-sm font-normal text-gray-light">
-                Do you have any plans or are there any factors within the next
-                12 months which may significantly increase or decrease your
-                current income and expenditure position (eg. Receiving an
-                inheritance or borrowing money for investment or purchase of a
-                holiday home, etc.) ?
-              </p>
-            </div>
             <RowDouble>
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1" key={index}>
+                  <div className="flex-1" key={"cashflow-qa-" + index}>
+
+                    {/* For Joint */}
                     {props.pfrType > 1 ? (
                       <>
-                        <h3
-                          key={"heading-secondary-" + index}
-                          className="w-full text-base font-bold text-right text-green-deep"
-                        >
-                          Client {++index}
-                        </h3>
+                        {need && checkNeedData > 0 ? (
+                          need[index] ? (
+                            <>
+                              <h3
+                                key={"heading-secondary-" + index}
+                                className="w-full mb-4 text-base font-bold"
+                              >
+                                {clientIdentity(index)}
+                              </h3>
+                              <p className="text-sm font-normal text-gray-light">
+                                {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <h3
+                                key={"heading-secondary-" + index}
+                                className="w-full mb-4 text-base font-bold text-gray-soft-strong"
+                              >
+                                {clientIdentity(index)}
+                              </h3>
+                              <p className="text-sm font-normal text-gray-soft-strong">
+                                {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                              </p>
+                            </>
+                          )
+                        ) : (
+                          ""
+                        )}
                       </>
-                    ) : (
-                      ""
+                    ) : ( // For single
+                      <p className="text-sm font-normal text-gray-light">
+                        {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                      </p>
                     )}
-                    <Select
-                      value=""
-                      className="my-4"
-                      datas={fillInformation}
-                      handleChange={(event) =>
-                        setData(eval(event.target.value))
-                      }
-                    />
+
+                    {/* For Joint */}
+                    {props.pfrType > 1 ? (
+                      <>
+                        {need && checkNeedData > 0 ? (
+                          need[index] ? (
+                            <Select
+                              value=""
+                              className="my-4"
+                              datas={fillInformation}
+                              handleChange={(event) =>
+                                setData(eval(event.target.value))
+                              }
+                            />
+                          ) : (
+                            <Select
+                              disabled={true}
+                              value=""
+                              className="my-4"
+                              datas={fillInformation}
+                              handleChange={(event) =>
+                                setData(eval(event.target.value))
+                              }
+                            />
+                          )
+                        ) : (
+                          ""
+                        )}
+                      </>
+                    ) : ( // For single
+                      <Select
+                        value=""
+                        className="my-4"
+                        datas={fillInformation}
+                        handleChange={(event) =>
+                          setData(eval(event.target.value))
+                        }
+                      />
+                    )}
                   </div>
                 ))}
             </RowDouble>
@@ -176,11 +239,28 @@ const CashFlow = (props: Props) => {
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
                   <div className="flex-1" key={index}>
+                    {props.pfrType > 1 ? (
+                      <>
+                        <h3
+                          key={"heading-secondary-" + index}
+                          className="w-full mb-10 text-base font-bold"
+                        >
+                          {clientIdentity(index)}
+                        </h3>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <Checkbox
                       isChecked={
                         need ? (need[index] == 1 ? true : false) : false
                       }
-                      onChange={() => setNotReviewAll(!notReviewAll)}
+                      onChange={() =>
+                        handleReview(
+                          index,
+                          need ? (need[index] == 0 ? 1 : 0) : 0
+                        )
+                      }
                       lableStyle="text-sm font-normal text-gray-light"
                       label="The Client would not like their cash flow to be taken into
             consideration for the Needs Analysis and Recommendation(s)"
@@ -194,7 +274,7 @@ const CashFlow = (props: Props) => {
                   <>
                     {need ? (
                       need[index] == 1 ? (
-                        ""
+                        <div className="flex-1"></div>
                       ) : (
                         <div className="flex-1" key={index}>
                           <TextArea
@@ -235,6 +315,19 @@ const CashFlow = (props: Props) => {
       </SectionCardFooter> */}
     </div>
   );
+};
+
+const checkAllNeed = (params: any) => {
+  let checkTotal = 0;
+  if (params?.length) {
+    params.map((data: any, index: any) => {
+      if (data == 1) {
+        checkTotal = 1;
+      }
+    });
+  }
+
+  return checkTotal;
 };
 
 export default CashFlow;

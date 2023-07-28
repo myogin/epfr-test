@@ -6,7 +6,6 @@ import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
 import React, {useState} from 'react'
-import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 
@@ -84,7 +83,7 @@ const FundCritical = (props : Props) => {
   // Default Check
   const handleDefaultCheck = (e: any) => {
     const { name, checked, value } = e.target;
-    setAnswerDefaultCheck(checked, '', name)
+    setAnswerDefaultCheck(checked, 0, name)
   }
   
   // Additional Note
@@ -131,7 +130,7 @@ const FundCritical = (props : Props) => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <table className="table-auto border-separate border-spacing-5">
+      <table className="border-separate table-auto border-spacing-5">
         <tbody className="">
           <tr>
             <td className='align-top'>
@@ -143,9 +142,9 @@ const FundCritical = (props : Props) => {
               (total > 1) ? 
               totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td  key={"asa"+i} className={``}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
                         <input type="checkbox" checked={section7.answer.need.client[i][2]} onChange={(event) => handleClient(!section7.answer.need.client[i][2], i, 2) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
@@ -162,9 +161,9 @@ const FundCritical = (props : Props) => {
               (totalDependant.length > 0) ? 
                 totalDependant.map(function (i) {
                   return (
-                    <td className={``}>
+                    <td  key={"asa"+i} className={``}>
                       <div className="text-right text-green-deep">Dependant {i+1} </div>
-                      <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-dependant-${i}`}>
+                      <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-dependant-${i}`}>
                         <div className='items-start justify-start gap-4'>
                           <input type="checkbox" checked={section7.answer.need.dependant[i][2]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][2], i, 2) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                           <span className={``}> Review</span>
@@ -184,7 +183,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -201,7 +200,7 @@ const FundCritical = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -224,7 +223,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -241,7 +240,7 @@ const FundCritical = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -264,7 +263,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -281,7 +280,7 @@ const FundCritical = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -304,7 +303,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className='align-top'>
+                <td  key={"asa"+i} className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
                     ${section7.answer.clientData[i].fundCriticalIllnessExpense.capitalSumRequired}
                   </TextSmall>
@@ -313,7 +312,7 @@ const FundCritical = (props : Props) => {
             })}
             {totalDependant.map(function (i) {
               return (
-                <td className='align-top'>
+                <td  key={"asa"+i} className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
                     ${section7.answer.dependantData[i].fundCriticalIllnessExpense.capitalSumRequired}
                   </TextSmall>
@@ -330,7 +329,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -347,7 +346,7 @@ const FundCritical = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -377,7 +376,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -394,7 +393,7 @@ const FundCritical = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -417,7 +416,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -434,7 +433,7 @@ const FundCritical = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -457,7 +456,7 @@ const FundCritical = (props : Props) => {
               </td>
               {totalClient.map(function (i) {
                 return (
-                  <td className='align-top'>
+                  <td  key={"asa"+i} className='align-top'>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.clientData[i].fundCriticalIllnessExpense.totalCashOutflow}
                     </TextSmall>
@@ -466,7 +465,7 @@ const FundCritical = (props : Props) => {
               })}
               {totalDependant.map(function (i) {
                 return (
-                  <td className='align-top'>
+                  <td  key={"asa"+i} className='align-top'>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.dependantData[i].fundCriticalIllnessExpense.totalCashOutflow}
                     </TextSmall>
@@ -482,7 +481,7 @@ const FundCritical = (props : Props) => {
               </td>
               {totalClient.map(function (i) {
                 return (
-                  <td className='align-top'>
+                  <td  key={"asa"+i} className='align-top'>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.clientData[i].fundCriticalIllnessExpense.total}
                     </TextSmall>
@@ -491,7 +490,7 @@ const FundCritical = (props : Props) => {
               })}
               {totalDependant.map(function (i) {
                 return (
-                  <td className='align-top'>
+                  <td  key={"asa"+i} className='align-top'>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.dependantData[i].fundCriticalIllnessExpense.total}
                     </TextSmall>
@@ -514,7 +513,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -531,7 +530,7 @@ const FundCritical = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -554,7 +553,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -571,7 +570,7 @@ const FundCritical = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -594,7 +593,7 @@ const FundCritical = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className='align-top'>
+                  <td  key={"asa"+i} className='align-top'>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.clientData[i].fundCriticalIllnessExpense.netAmountRequired}
                     </TextSmall>
@@ -603,7 +602,7 @@ const FundCritical = (props : Props) => {
               })}
               {totalDependant.map(function (i) {
                 return (
-                  <td className='align-top'>
+                  <td  key={"asa"+i} className='align-top'>
                     <TextSmall className="text-right uppercase text-green-deep">
                       ${section7.answer.dependantData[i].fundCriticalIllnessExpense.netAmountRequired}
                     </TextSmall>

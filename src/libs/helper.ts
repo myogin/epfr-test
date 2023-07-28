@@ -26,17 +26,49 @@ export const getClientCustom = (clients: any) => {
   let clientCustom: any[] = [];
 
   if (clients?.length) {
-    clients.map((data: any, index: any) => {
-      clientCustom.push({ id: index, name: data.clientName });
-    });
+    clients.map((data: any, index: any) => {});
   }
 
   return clientCustom;
 };
 
-
-export const getLength = (params : any) => {
-
-  let arr = [...Array(params)]
+export const getLength = (params: any) => {
+  let arr = [...Array(params)];
   return arr;
+};
+
+export const clientIdentity = (params: any) => {
+  switch (params) {
+    case 0:
+      return "Client 1";
+    case 1:
+      return "Client 2";
+    default:
+      return "Client 1";
+  }
+};
+
+export const answerYesNo = (params: any) => {
+  switch (params) {
+    case "1":
+      return "Yes";
+    case "2":
+      return "No";
+    default:
+      return "No";
+  }
+};
+
+export const usdFormat = (currency: any) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(currency);
+};
+
+export const sgdFormat = (currency: any) => {
+  return new Intl.NumberFormat("en-SG", {
+    style: "currency",
+    currency: "SGD",
+  }).format(currency);
 };

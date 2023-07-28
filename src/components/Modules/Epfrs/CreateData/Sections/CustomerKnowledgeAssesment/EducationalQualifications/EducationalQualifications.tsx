@@ -6,9 +6,12 @@ import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
 import React, { useEffect, useState } from "react";
 import MultipleCheckbox from "../components/MultipleCheckbox";
+import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
+import { getLength } from "@/libs/helper";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 interface Props {
-  initData: any;
-  updateState: (index1: number, index2: number) => void;
+  pfrType: number;
 }
 
 const EducationalQualifications = (props: Props) => {
@@ -54,59 +57,109 @@ const EducationalQualifications = (props: Props) => {
       ],
     },
   ];
+  let getPfrLength = getLength(props.pfrType);
 
-  const checkValidate = (data: boolean) => data === false;
+  // zustand
+  const { answers, updateEducation, need } = useCustomerKnowledgeAssesment();
 
+  const checkValidate = (e: any) => e == false;
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowSingle>
-        <TitleSmall className="text-gray-light">
+        <TitleSmall className="text-gray-light ">
           1. Do you have a Diploma or higher qualication(s) in any of the
           following?
         </TitleSmall>
       </RowSingle>
 
-      {props.initData[0].every(checkValidate) ? (
-        <RowSingle className="py-6">
-          <span className="text-xs font-normal text-red">Required</span>
-        </RowSingle>
+      <RowSingleORDouble pfrType={props.pfrType}>
+        {getPfrLength.map((e2, userIndex) => (
+          <>
+            {answers[userIndex].education[0].every(checkValidate) &&
+            need[userIndex] ? (
+              <div className="text-xs font-normal text-red">Required</div>
+            ) : (
+              <div></div>
+            )}
+          </>
+        ))}
+      </RowSingleORDouble>
+
+      {props.pfrType > 1 ? (
+        <RowSingleORDouble pfrType={props.pfrType}>
+          <div>Client 1</div>
+          <div>Client 2</div>
+        </RowSingleORDouble>
       ) : (
         ""
       )}
 
       {qa[0].answers?.length &&
         qa[0].answers.map((answer: any, index: number) => (
-          <RowSingle key={answer.id}>
-            <Checkbox
-              onChange={() => props.updateState(0, index)}
-              isChecked={props.initData[0][index]}
-            />
-            <TextThin className="text-gray-light">{answer.answer}</TextThin>
-          </RowSingle>
+          <RowSingleORDouble pfrType={props.pfrType} key={index}>
+            {getPfrLength.map((e2, userIndex) => (
+              <>
+                <div>
+                  <Checkbox
+                    isDisabled={!need[userIndex]}
+                    onChange={() => {
+                      updateEducation(userIndex, 0, index, props.pfrType);
+                    }}
+                    isChecked={answers[userIndex].education[0][index]}
+                    label={answer.answer}
+                  />
+                </div>
+              </>
+            ))}
+          </RowSingleORDouble>
         ))}
+
       {/*  */}
       <RowSingle>
-        <TitleSmall className="text-gray-light">
+        <TitleSmall className="text-gray-light ">
           2. Do you have a professional finanace-related qualification(s) in any
           of the following?
         </TitleSmall>
       </RowSingle>
-      {props.initData[1].every(checkValidate) ? (
-        <RowSingle className="py-6">
-          <span className="text-xs font-normal text-red">Required</span>
-        </RowSingle>
-      ) : (
-        ""
+
+      <RowSingleORDouble pfrType={props.pfrType}>
+        {getPfrLength.map((e2, userIndex) => (
+          <>
+            {answers[userIndex].education[1].every(checkValidate) &&
+            need[userIndex] ? (
+              <div className="text-xs font-normal text-red">Required</div>
+            ) : (
+              <div></div>
+            )}
+          </>
+        ))}
+      </RowSingleORDouble>
+
+      {props.pfrType > 1 && (
+        <RowSingleORDouble pfrType={props.pfrType}>
+          <div>Client 1</div>
+          <div>Client 2</div>
+        </RowSingleORDouble>
       )}
+
       {qa[1].answers?.length &&
         qa[1].answers.map((answer: any, index: number) => (
-          <RowSingle key={answer.id}>
-            <Checkbox
-              onChange={() => props.updateState(1, index)}
-              isChecked={props.initData[1][index]}
-            />
-            <TextThin className="text-gray-light">{answer.answer}</TextThin>
-          </RowSingle>
+          <RowSingleORDouble pfrType={props.pfrType} key={index}>
+            {getPfrLength.map((e2, userIndex) => (
+              <>
+                <div>
+                  <Checkbox
+                    isDisabled={!need[userIndex]}
+                    onChange={() => {
+                      updateEducation(userIndex, 1, index, props.pfrType);
+                    }}
+                    isChecked={answers[userIndex].education[1][index]}
+                    label={answer.answer}
+                  />
+                </div>
+              </>
+            ))}
+          </RowSingleORDouble>
         ))}
     </SectionCardSingleGrid>
   );

@@ -2,13 +2,16 @@ import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSing
 import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
 import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
+import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
+import { getLength } from "@/libs/helper";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 import React from "react";
 interface Props {
-  initData: any;
-  updateState: (index: number) => void;
+  pfrType: number;
 }
 const WorkExperience = (props: Props) => {
   let qa: Array<any> = [
@@ -34,31 +37,61 @@ const WorkExperience = (props: Props) => {
       ],
     },
   ];
-  const checkValidate = (data: boolean) => data === false;
+  let getPfrLength = getLength(props.pfrType);
+
+  // zustand
+  const { answers, updateWork, need } = useCustomerKnowledgeAssesment();
+
+  const checkValidate = (e: any) => e == false;
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowSingle>
-        <TitleSmall className="text-gray-light">
+        <TitleSmall className="text-gray-light ">
           Do you have at least 3 consecutive years of working experience for the
           last 10 years in any of ther following? *
         </TitleSmall>
       </RowSingle>
-      {props.initData.every(checkValidate) ? (
-        <RowSingle className="py-6">
-          <span className="text-xs font-normal text-red">Required</span>
-        </RowSingle>
+
+      <RowSingleORDouble pfrType={props.pfrType}>
+        {getPfrLength.map((e2, userIndex) => (
+          <>
+            {answers[userIndex].work.every(checkValidate) && need[userIndex] ? (
+              <div className="text-xs font-normal text-red">Required</div>
+            ) : (
+              <div></div>
+            )}
+          </>
+        ))}
+      </RowSingleORDouble>
+
+      {props.pfrType > 1 ? (
+        <RowSingleORDouble pfrType={props.pfrType}>
+          <div>Client 1</div>
+          <div>Client 2</div>
+        </RowSingleORDouble>
       ) : (
         ""
       )}
+
       {qa[0].answers?.length &&
         qa[0].answers.map((answer: any, index: number) => (
-          <RowSingle key={answer.id}>
-            <Checkbox
-              onChange={() => props.updateState(index)}
-              isChecked={props.initData[index]}
-            />
-            <TextThin className="text-gray-light">{answer.answer}</TextThin>
-          </RowSingle>
+          <RowSingleORDouble pfrType={props.pfrType} key={index}>
+            {getPfrLength.map((e2, userIndex) => (
+              <>
+                <div>
+                  <Checkbox
+                    isDisabled={!need[userIndex]}
+                    onChange={() => {
+                      updateWork(userIndex, index, props.pfrType);
+                    }}
+                    isChecked={answers[userIndex].work[index]}
+                    label={answer.answer}
+                  />
+                </div>
+              </>
+            ))}
+          </RowSingleORDouble>
         ))}
     </SectionCardSingleGrid>
   );

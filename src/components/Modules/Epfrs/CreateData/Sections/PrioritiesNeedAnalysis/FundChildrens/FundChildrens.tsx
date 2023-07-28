@@ -6,7 +6,6 @@ import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
 import React, {useState} from 'react'
-import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import Select from '@/components/Forms/Select'
@@ -90,7 +89,7 @@ const FundChildrens =(props : Props) => {
   // Default Check
   const handleDefaultCheck = (e: any) => {
     const { name, checked, value } = e.target;
-    setAnswerDefaultCheck(checked, '', name)
+    setAnswerDefaultCheck(checked, 0, name)
   }
   
   // Additional Note
@@ -136,10 +135,10 @@ const FundChildrens =(props : Props) => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <table className="table-auto border-separate border-spacing-5">
+      <table className="border-separate table-auto border-spacing-5">
         <tbody className="">
         <tr>
-            <td className=' align-top'>
+            <td className='align-top '>
               <div className="grid grid-cols-3 gap-4">
                 <div className="col-end-1">
                   <TextSmall className="text-gray-light">
@@ -158,9 +157,9 @@ const FundChildrens =(props : Props) => {
               (total > 1) ? 
               totalChildFund.map(function (i) {
                 return (
-                  <td className={` align-top`}>
+                  <td key={"asa"+i} className={` align-top`}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
                         {
                           (i != 0) ?
@@ -187,7 +186,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Select
                     dataType="clientInfo"
                     className="mb-10"
@@ -209,7 +208,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -232,7 +231,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -255,7 +254,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -277,7 +276,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -299,7 +298,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className='align-top'>
+                <td  key={"asa"+i} className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
                     ${section7.answer.childFund[i].futureValueOfAnnualTuitionFee}
                   </TextSmall>
@@ -315,7 +314,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className='align-top'>
+                <td  key={"asa"+i} className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
                     ${section7.answer.childFund[i].totalTuitionFee}
                   </TextSmall>
@@ -333,7 +332,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -355,7 +354,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -378,7 +377,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className='align-top'>
+                <td  key={"asa"+i} className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
                     ${section7.answer.childFund[i].futureValueOfAnnualLivingCosts}
                   </TextSmall>
@@ -395,7 +394,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className='align-top'>
+                <td  key={"asa"+i} className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
                     ${section7.answer.childFund[i].totalLivingCost}
                   </TextSmall>
@@ -412,7 +411,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className='align-top'>
+                <td  key={"asa"+i} className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
                     ${section7.answer.childFund[i].totalEducationFunding}
                   </TextSmall>
@@ -429,7 +428,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className={``}>
+                <td  key={"asa"+i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -452,7 +451,7 @@ const FundChildrens =(props : Props) => {
             </td>
             {totalChildFund.map(function (i) {
               return (
-                <td className='align-top'>
+                <td  key={"asa"+i} className='align-top'>
                   <TextSmall className="text-right uppercase text-green-deep">
                     ${section7.answer.childFund[i].netAmountRequired}
                   </TextSmall>

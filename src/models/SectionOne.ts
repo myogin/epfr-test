@@ -1,9 +1,10 @@
-export interface PersonalInformation {
+export interface Clientformation {
   id?: string;
   clientTitle: string;
   clientName: string;
   otherName: string;
   relationship: string;
+  race: string;
   gender: string;
   passportNo: string;
   nationality: string;
@@ -11,6 +12,7 @@ export interface PersonalInformation {
   residencyTwo: string;
   residencyOther: string;
   dateOfBirth: string;
+  birthCountryId: number;
   marital: string;
   smoker: string;
   employmentStatus: string;
@@ -31,6 +33,9 @@ export interface DependantInformation {
   name: string;
   relationship: string;
   dateOfBirth: string;
+  certNumber: string;
+  sponsored: string;
+  nric: string;
   age: number;
   gender: string;
   year: string;
@@ -64,7 +69,7 @@ export interface SectionOne {
   ownerId?: number;
   type?: number;
   id?: number;
-  clientInfo: PersonalInformation[];
+  clientInfo: Clientformation[];
   dependant: DependantInformation[];
   accompaniment: Accompaniment[];
   trustedIndividuals: TrustedIndividual;

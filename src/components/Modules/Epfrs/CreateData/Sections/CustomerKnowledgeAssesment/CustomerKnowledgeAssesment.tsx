@@ -13,231 +13,65 @@ import TextArea from "@/components/Forms/TextArea";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionSix } from "@/models/SectionSix";
+import { getLength } from "@/libs/helper";
+import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const CustomerKnowledgeAssesment = (props: Props) => {
-  const [isReview, setIsReview] = useState(false);
-
+  let getPfrLength = getLength(props.pfrType);
   const scrollPosition = useScrollPosition(6);
+  // zustand
+  const { answers, need, updateNeed, reason, updateReason } =
+    useCustomerKnowledgeAssesment();
 
-  const [sectionSix, setSectionSix] = useState<SectionSix>({
-    id: 0,
-    need: [],
-    reason: ["", ""],
-    answers: {
-      education: [
-        [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ],
-        [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ],
-      ],
-      investment: [false, false, false],
-      work: [false, false, false, false, false, false, false],
-    },
-
-    outcome: [],
-    outcomeChanged: true,
-    issues: [],
-    status: false,
-  });
-
-  if (typeof window !== "undefined") {
-    localStorage.setItem("section6", JSON.stringify(sectionSix));
-  }
-
-  const checkboxChange = (event: any) => {
-    setIsReview(!isReview);
-    setSectionSix((prevState) => {
-      return { ...prevState, ["need"]: [!isReview] };
-    });
-  };
-
-  // handle input change / state change
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
-
-    setSectionSix((prevState) => {
-      return { ...prevState, [name]: value };
-    });
-  };
-
-  const handleReasonChange = (e: any, user: number) => {
-    const { name, value } = e.target;
-    let newReason = sectionSix.reason;
-    newReason[user] = value;
-
-    setSectionSix((prevState) => {
-      return { ...prevState, reason: newReason };
-    });
-  };
-
-  // Educational Qualifications
-  const eqChange = (question: number, index2: number) => {
-    let tempVal = sectionSix.answers.education;
-
-    if (
-      (question === 0 && index2 === 11) ||
-      (question === 1 && index2 === 10)
-    ) {
-      if (sectionSix.answers.education[question][index2] === false) {
-        tempVal[question] = tempVal[question].map((e) => {
-          return false;
-        });
-      }
-    }
-
-    if (question === 0 && index2 !== 11) {
-      if (sectionSix.answers.education[question][index2] != true) {
-        tempVal[question][11] = false;
-      }
-    }
-    if (question === 1 && index2 !== 10) {
-      if (sectionSix.answers.education[question][index2] != true) {
-        tempVal[question][10] = false;
-      }
-    }
-
-    tempVal[question][index2] = !tempVal[question][index2];
-
-    setSectionSix((prevState) => {
-      return {
-        ...prevState,
-        answers: {
-          ...prevState.answers,
-          education: tempVal,
-        },
-      };
-    });
-  };
-
-  // 6.2 Investment Experience
-  const ieChange = (index: number) => {
-    let tempVal = sectionSix.answers.investment;
-    if (index === 2) {
-      if (sectionSix.answers.investment[index] === false) {
-        tempVal = tempVal.map((e) => {
-          return false;
-        });
-      }
-    }
-
-    if (index !== 2) {
-      if (sectionSix.answers.investment[index] != true) {
-        tempVal[2] = false;
-      }
-    }
-    tempVal[index] = !tempVal[index];
-
-    setSectionSix((prevState) => {
-      return {
-        ...prevState,
-        answers: {
-          ...prevState.answers,
-          investment: tempVal,
-        },
-      };
-    });
-  };
-  const wChange = (index: number) => {
-    let tempVal = sectionSix.answers.work;
-    if (index === 6) {
-      if (sectionSix.answers.work[index] === false) {
-        tempVal = tempVal.map((e) => {
-          return false;
-        });
-      }
-    }
-
-    if (index !== 6) {
-      if (sectionSix.answers.work[index] != true) {
-        tempVal[6] = false;
-      }
-    }
-    tempVal[index] = !tempVal[index];
-
-    setSectionSix((prevState) => {
-      return {
-        ...prevState,
-        answers: {
-          ...prevState.answers,
-          work: tempVal,
-        },
-      };
-    });
-  };
-  const [haveMet, setHaveMet] = useState(false);
+  const [showSection, setShowSection] = useState(false);
+  const [outcome, setOutcome] = useState([-1, -1]);
 
   useEffect(() => {
-    const handleHaveMet = () => {
-      let tempAnswer = [];
-      tempAnswer.push(sectionSix.answers.education[0][11]);
-      tempAnswer.push(sectionSix.answers.education[0][10]);
-      tempAnswer.push(sectionSix.answers.investment[2]);
-      tempAnswer.push(sectionSix.answers.work[6]);
+    function outcomeCalc() {
+      // -1=empty,0=havenotmet, 1=havemet
+      let outcome = [-1, -1];
+      for (let i = 0; i < props.pfrType; i++) {
+        if (
+          answers[i].education[0].every((e) => e == false) &&
+          answers[i].education[1].every((e) => e == false) &&
+          answers[i].investment.every((e) => e == false) &&
+          answers[i].work.every((e) => e == false)
+        ) {
+          outcome[i] = -1;
+        } else if (
+          answers[i].education[0][11] == true &&
+          answers[i].education[1][10] == true &&
+          answers[i].investment[2] == true &&
+          answers[i].work[6] == true
+        ) {
+          outcome[i] = 0;
+        } else {
+          outcome[i] = 1;
+        }
+      }
+      return outcome;
+    }
 
-      setHaveMet(tempAnswer.every((e) => e === false));
-    };
-    handleHaveMet();
+    setOutcome(outcomeCalc());
+  }, [answers, props.pfrType]);
+  useEffect(() => {
+    if (props.pfrType == 1) {
+      setShowSection(need[0]);
+    } else {
+      if (need[0] || need[1]) {
+        setShowSection(true);
+      } else {
+        setShowSection(false);
+      }
+    }
+  }, [need, props.pfrType]);
 
-    const checkValidate = () => {
-      console.log(sectionSix.reason[0]);
-
-      // if (sectionSix.need[0]) {
-      //   if (sectionSix.reason[0] === "") {
-      //     return false;
-      //   }
-      //   return true;
-      // } else {
-      //   if (sectionSix.answers.education[0].every((e) => e === false)) {
-      //     return false;
-      //   }
-      //   if (sectionSix.answers.education[1].every((e) => e === false)) {
-      //     return false;
-      //   }
-      //   if (sectionSix.answers.investment.every((e) => e === false)) {
-      //     return false;
-      //   }
-      //   if (sectionSix.answers.work.every((e) => e === false)) {
-      //     return false;
-      //   }
-      //   return true;
-      // }
-      return false;
-    };
-    const updateStatusSection6 = () => {
-      setSectionSix((prevState) => {
-        return { ...prevState, ["status"]: checkValidate() };
-      });
-    };
-    updateStatusSection6();
-  }, [sectionSix.reason, sectionSix.answers, sectionSix.need]);
   return (
     <div id={props.id}>
       <div
@@ -256,73 +90,117 @@ const CustomerKnowledgeAssesment = (props: Props) => {
           Section 6. Customer Knowledge Assesment
         </HeadingPrimarySection>
       </div>
-      {!isReview ? (
+      {showSection ? (
         <>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.1 Educational Qualifications
           </HeadingSecondarySection>
-          <EducationalQualifications
-            initData={sectionSix.answers.education}
-            updateState={eqChange}
-          />
+          <EducationalQualifications pfrType={props.pfrType} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.2 Investment Experience
           </HeadingSecondarySection>
-          <InvestmentExperience
-            initData={sectionSix.answers.investment}
-            updateState={ieChange}
-          />
+          <InvestmentExperience pfrType={props.pfrType} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             6.3 Work Experience
           </HeadingSecondarySection>
-          <WorkExperience
-            initData={sectionSix.answers.work}
-            updateState={wChange}
-          />
+          <WorkExperience pfrType={props.pfrType} />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             Customer Knowledge Assesment Outcome
           </HeadingSecondarySection>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            <div className="space-y-5">
-              <span className="text-green-deep">
-                {haveMet ? "YOU HAVE MET" : "YOU HAVE NOT MET"}
-              </span>
-              <p className="text-sm text-gray-light">
-                The Customer Knowledge Assessment criteria and are deemed to
-                possess the knowledge or experience for transactions in a
-                Collective Invesment Scheme or an Investment Linked Policy.
-              </p>
-            </div>
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e, index) => (
+                <div className="space-y-5" key={index}>
+                  {props.pfrType > 1 && (
+                    <>
+                      <h3
+                        key={"heading-secondary-" + index}
+                        className="w-full mb-10 text-base font-bold"
+                      >
+                        Client {index + 1}
+                      </h3>
+                    </>
+                  )}
+                  {outcome[index] != -1 ? (
+                    <>
+                      <span className="text-green-deep">
+                        {outcome[index] == 0
+                          ? "YOU HAVE NOT MET"
+                          : "YOU HAVE MET"}
+                      </span>
+                      <p className="text-sm text-gray-light">
+                        {outcome[index] == 0
+                          ? "the Customer Knowledge Assessment criteria and are deemed not to possess the knowledge or experience over for transactions in a Collective Invesment Scheme or an Investment Linked Policy."
+                          : "the Customer Knowledge Assessment criteria and are deemed to possess the knowledge or experience over for transactions in a Collective Invesment Scheme or an Investment Linked Policy."}
+                      </p>
+                    </>
+                  ) : (
+                    "-"
+                  )}
+                </div>
+              ))}
+            </RowSingleORDouble>
           </SectionCardSingleGrid>
         </>
       ) : (
         ""
       )}
 
-      <SectionCardSingleGrid className="mx-8 space-y-5 2xl:mx-60">
-        <div>
-          <Checkbox
-            isChecked={isReview}
-            onChange={checkboxChange}
-            lableStyle="text-sm font-normal text-gray-light"
-            label="Not applicable"
-          />
-        </div>
-        {isReview ? (
-          <div>
-            <TextArea
-              handleChange={(e) => {
-                handleReasonChange(e, 0);
-              }}
-              className="my-4"
-              label="The Reason"
-              value={sectionSix.reason[0]}
-              rows={3}
-            />
-          </div>
-        ) : (
-          ""
-        )}
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowSingleORDouble pfrType={props.pfrType}>
+          {getPfrLength.map((e, index) => (
+            <div className="flex-1" key={index}>
+              {props.pfrType > 1 ? (
+                <>
+                  <h3
+                    key={"heading-secondary-" + index}
+                    className="w-full mb-10 text-base font-bold"
+                  >
+                    Client {index + 1}
+                  </h3>
+                </>
+              ) : (
+                ""
+              )}
+              <Checkbox
+                isChecked={!need[index]}
+                onChange={() => {
+                  updateNeed(index, need[index], props.pfrType);
+                }}
+                lableStyle="text-sm font-normal text-gray-light"
+                label="Not applicable"
+              />
+            </div>
+          ))}
+        </RowSingleORDouble>
+
+        {/*  */}
+
+        <RowSingleORDouble pfrType={props.pfrType}>
+          {getPfrLength.map((e, index) => (
+            <div className="flex-1" key={index}>
+              <TextArea
+                isDisabled={need[index]}
+                className="my-4"
+                label="The Reason"
+                name="reason"
+                value={reason[index]}
+                handleChange={(e) => {
+                  updateReason(index, e.target.value, props.pfrType);
+                }}
+                needValidation={!need[index]}
+                logic={
+                  reason[index] === "" ||
+                  reason[index] === "-" ||
+                  reason[index] === null ||
+                  reason[index] === undefined
+                    ? false
+                    : true
+                }
+              />
+            </div>
+          ))}
+        </RowSingleORDouble>
       </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>

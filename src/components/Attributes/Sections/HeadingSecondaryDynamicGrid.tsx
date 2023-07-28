@@ -1,4 +1,4 @@
-import { getLength } from "@/libs/helper";
+import { clientIdentity, getLength } from "@/libs/helper";
 import React from "react";
 
 interface Props {
@@ -14,7 +14,7 @@ const HeadingSecondaryDynamicGrid = (props: Props) => {
     <div
       className={`grid ${props.className} grid-cols-1 gap-8 mb-10 items-center`}
     >
-      <h2 className="text-xl font-bold">{props.children}</h2>
+      <h2 className={`text-xl font-bold col-span-3`}>{props.children}</h2>
       {props.pfrType > 1 ? (
         <>
           {getPfrLength?.length &&
@@ -25,7 +25,7 @@ const HeadingSecondaryDynamicGrid = (props: Props) => {
                 key={"heading-secondary-" + index}
                 className="w-full text-base font-bold text-right text-green-deep"
               >
-                Client {++index}
+                {clientIdentity(index)}
               </h3>
               </>
               

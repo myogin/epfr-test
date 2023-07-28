@@ -1,12 +1,12 @@
 export interface SectionSix {
   id: number;
   need: boolean[];
-  reason: any[];
-  answers: Answer;
+  reason: Array<string | undefined | null>;
+  answers: Array<Answer>;
   outcome: boolean[];
   issues: any[];
   outcomeChanged: boolean;
-  status: boolean;
+  status: number;
 }
 
 export interface Answer {

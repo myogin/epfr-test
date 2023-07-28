@@ -133,7 +133,7 @@ const FundHospitalExpenses = (props : Props) => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-       <table className="table-auto border-separate border-spacing-5">
+       <table className="border-separate table-auto border-spacing-5">
         <tbody className="">
           <tr>
             <td className='align-top'>
@@ -145,12 +145,12 @@ const FundHospitalExpenses = (props : Props) => {
               (total > 1) ? 
               totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"tsdys" + i} className={``}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
                         <input
-                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][8]} onChange={(event) => handleClient(!section7.answer.need.client[i][8], i, 8) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                          type="checkbox" checked={section7.answer.need.client[i][8]} onChange={(event) => handleClient(!section7.answer.need.client[i][8], i, 8) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -165,12 +165,12 @@ const FundHospitalExpenses = (props : Props) => {
               (totalDependant.length > 0) ? 
                 totalDependant.map(function (i) {
                   return (
-                    <td className={``}>
+                    <td key={"tsdys" + i} className={``}>
                       <div className="text-right text-green-deep">Dependant {i+1} </div>
-                      <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-dependant-${i}`}>
+                      <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-dependant-${i}`}>
                         <div className='items-start justify-start gap-4'>
                           <input
-                            formStyle="text-right" type="checkbox" checked={section7.answer.need.dependant[i][8]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][8], i, 8) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                            type="checkbox" checked={section7.answer.need.dependant[i][8]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][8], i, 8) } className='p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                           <span className={``}> Review</span>
                         </div>
                       </div>
@@ -188,7 +188,7 @@ const FundHospitalExpenses = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="disiredChoiceOfHospitalType"
@@ -203,7 +203,7 @@ const FundHospitalExpenses = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="disiredChoiceOfHospitalType"
@@ -224,7 +224,7 @@ const FundHospitalExpenses = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="disiredChoiceOfWardClass"
@@ -239,8 +239,7 @@ const FundHospitalExpenses = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
-                  <td className={``}>
+                  <td key={"tsdys" + i} className={``}>
                     <Select
                       className="mb-10"
                       name="disiredChoiceOfWardClass"
@@ -250,7 +249,6 @@ const FundHospitalExpenses = (props : Props) => {
                       handleChange={(event) => setDataDependant(event, i)}
                     />
                   </td>
-                </td>
               );
             })}
           </tr>
@@ -262,7 +260,7 @@ const FundHospitalExpenses = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="desiredTypeOfCover"
@@ -277,7 +275,7 @@ const FundHospitalExpenses = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="desiredTypeOfCover"
@@ -298,7 +296,7 @@ const FundHospitalExpenses = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -315,7 +313,7 @@ const FundHospitalExpenses = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -338,7 +336,7 @@ const FundHospitalExpenses = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="existingTypeOfHospitalCovered"
@@ -353,7 +351,7 @@ const FundHospitalExpenses = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="existingTypeOfHospitalCovered"
@@ -374,7 +372,7 @@ const FundHospitalExpenses = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="existingClassOfWardCovered"
@@ -389,7 +387,7 @@ const FundHospitalExpenses = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="existingClassOfWardCovered"
@@ -410,7 +408,7 @@ const FundHospitalExpenses = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="existingTypeOfCover"
@@ -425,7 +423,7 @@ const FundHospitalExpenses = (props : Props) => {
 
             {totalDependant.map(function (i) {
               return (
-                <td className={``}>
+                <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="existingTypeOfCover"

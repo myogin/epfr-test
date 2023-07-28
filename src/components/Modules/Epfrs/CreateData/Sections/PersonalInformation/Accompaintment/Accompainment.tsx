@@ -1,7 +1,7 @@
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
-import { getLength } from "@/libs/helper";
+import { clientIdentity, getLength } from "@/libs/helper";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React from "react";
 
@@ -28,14 +28,9 @@ const Accompainment = (props: Props) => {
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
+    const { indexdata } = event.target.dataset;
 
-    setAccompaniment(0, name, value);
-  };
-
-  const changeData = (params: any) => {};
-
-  const setData = (params: any) => {
-    console.log(params);
+    setAccompaniment(indexdata, name, value);
   };
 
   return (
@@ -48,8 +43,9 @@ const Accompainment = (props: Props) => {
               label="Age"
               type="text"
               readonly
+              indexData={0}
               placeholder="Below 62"
-              value={accompaniment[0].age}
+              value={accompaniment[0].age == 0 ? "Below 62" : "62 or above"}
             />
             <Select
               className="mb-10"
@@ -57,6 +53,7 @@ const Accompainment = (props: Props) => {
               value={accompaniment[0].english_spoken}
               name="english_spoken"
               datas={englishLevel}
+              indexData={0}
               handleChange={handleInputChange}
             />
           </div>
@@ -67,6 +64,7 @@ const Accompainment = (props: Props) => {
               value={accompaniment[0].education_level}
               name="education_level"
               datas={educationLevel}
+              indexData={0}
               handleChange={handleInputChange}
             />
             <Select
@@ -75,6 +73,7 @@ const Accompainment = (props: Props) => {
               value={accompaniment[0].english_written}
               datas={englishLevel}
               name="english_written"
+              indexData={0}
               handleChange={handleInputChange}
             />
           </div>
@@ -84,15 +83,15 @@ const Accompainment = (props: Props) => {
           {getPfrLength?.length &&
             getPfrLength.map((data, index) => (
               <div key={index}>
-                <h3 className="w-full mb-10 text-base font-bold text-green-deep">Client {++index}</h3>
+                <h3 className="w-full mb-10 text-base font-bold text-green-deep">{clientIdentity(index)}</h3>
                 
                 <Input
                   className="mb-10"
                   label="Age"
                   type="text"
                   readonly
-                  placeholder="Below 62"
-                  value={accompaniment[index] ? accompaniment[index].age : ""}
+                  placeholder={`Below 62 ${index}`}
+                  value={accompaniment[index] ? accompaniment[index].age == 0 ? "Below 62" : "62 or above" : ""}
                 />
                 <Select
                   className="mb-10"
@@ -100,6 +99,7 @@ const Accompainment = (props: Props) => {
                   value={accompaniment[index] ? accompaniment[index].english_spoken : ""}
                   name="english_spoken"
                   datas={englishLevel}
+                  indexData={index}
                   handleChange={handleInputChange}
                 />
                 <Select
@@ -108,6 +108,7 @@ const Accompainment = (props: Props) => {
                   value={accompaniment[index] ? accompaniment[index].education_level : ""}
                   name="education_level"
                   datas={educationLevel}
+                  indexData={index}
                   handleChange={handleInputChange}
                 />
                 <Select
@@ -115,6 +116,7 @@ const Accompainment = (props: Props) => {
                   label="Written English Language Proficiency"
                   value={accompaniment[index] ? accompaniment[index].english_written : ""}
                   datas={englishLevel}
+                  indexData={index}
                   name="english_written"
                   handleChange={handleInputChange}
                 />

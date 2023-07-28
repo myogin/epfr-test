@@ -1482,7 +1482,7 @@ const AddPlanRecommendation = () => {
                             Name of Insured (If Different From Owner)
                           </label>
                           <select placeholder="Please select data" value={section9Recommend.product.nameOfInsure} name="nameOfInsure"
-                            className="my-4 w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                            className="w-full px-0 py-2 my-4 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
                             onChange={(event) => setProductData(event)}>
                             <option value="-">Please select data</option>
                             {dataDependant?.length &&
@@ -1555,17 +1555,17 @@ const AddPlanRecommendation = () => {
                           <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
                             <thead className="bg-white-bone">
                               <tr className="border-b border-gray-soft-strong">
-                                <td className='align-top px-2 py-2'>
+                                <td className='px-2 py-2 align-top'>
                                   <TextSmall className="uppercase text-gray-light">
                                     GROUP NAME
                                   </TextSmall>
                                 </td>
-                                <td className='align-top px-2 py-2'>
+                                <td className='px-2 py-2 align-top'>
                                   <TextSmall className="uppercase text-gray-light">
                                     ALLOCATION(%)
                                   </TextSmall>
                                 </td>
-                                <td className='align-top px-2 py-2'>
+                                <td className='px-2 py-2 align-top'>
                                   <TextSmall className="uppercase text-gray-light">
                                     FUND NAME
                                   </TextSmall>
@@ -1575,7 +1575,7 @@ const AddPlanRecommendation = () => {
                             <tbody>
                               {getSelectProductone?.ilp &&
                                     getSelectProductone.ilp.platform.funds.map((dataPlatform: any, indexPlatform:any) => (
-                                    <tr>
+                                    <tr key={"asada"+indexPlatform}>
                                       <td className="px-2 py-2">
                                         <span>{getFundName(dataPlatform.fund.groupId)}</span>
                                       </td>

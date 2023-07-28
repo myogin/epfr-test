@@ -6,7 +6,6 @@ import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
 import React, {useState} from 'react'
-import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import Select from '@/components/Forms/Select'
@@ -70,7 +69,7 @@ const FundRetirement = () => {
   // Default Check
   const handleDefaultCheck = (e: any) => {
     const { name, checked, value } = e.target;
-    setAnswerDefaultCheck(checked, '', name)
+    setAnswerDefaultCheck(checked, 0, name)
   }
   
   // Additional Note
@@ -90,7 +89,7 @@ const FundRetirement = () => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <table className="table-auto border-separate border-spacing-5">
+      <table className="border-separate table-auto border-spacing-5">
         <tbody className="">
           <tr>
             <td className='align-top'>
@@ -102,12 +101,12 @@ const FundRetirement = () => {
               (total > 1) ? 
               totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
                         <input
-                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][5]} onChange={(event) => handleClient(!section7.answer.need.client[i][5], i, 5) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                          type="checkbox" checked={section7.answer.need.client[i][5]} onChange={(event) => handleClient(!section7.answer.need.client[i][5], i, 5) } className='p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
                       </div>
                     </div>
@@ -122,12 +121,12 @@ const FundRetirement = () => {
               (totalDependant.length > 0) ? 
                 totalDependant.map(function (i) {
                   return (
-                    <td className={``}>
+                    <td key={"asa"+i} className={``}>
                       <div className="text-right text-green-deep">Dependant {i+1} </div>
-                      <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-dependant-${i}`}>
+                      <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-dependant-${i}`}>
                         <div className='items-start justify-start gap-4'>
                           <input
-                            formStyle="text-right" type="checkbox" checked={section7.answer.need.dependant[i][5]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][5], i, 1) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                            type="checkbox" checked={section7.answer.need.dependant[i][5]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][5], i, 1) } className='p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                           <span className={``}> Review</span>
                         </div>
                       </div>
@@ -145,7 +144,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -162,7 +161,7 @@ const FundRetirement = () => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -185,7 +184,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.clientData[i].fundRetirementLifeStyle.yearsToRetirement}
                 </TextSmall>
@@ -195,7 +194,7 @@ const FundRetirement = () => {
 
             {totalDependant.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.dependantData[i].fundRetirementLifeStyle.yearsToRetirement}
                 </TextSmall>
@@ -211,7 +210,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                    <Select
                       className="mb-10"
                       name="selectedMethod"
@@ -226,7 +225,7 @@ const FundRetirement = () => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Select
                       className="mb-10"
                       name="selectedMethod"
@@ -247,7 +246,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -264,7 +263,7 @@ const FundRetirement = () => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -287,7 +286,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -304,7 +303,7 @@ const FundRetirement = () => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -327,7 +326,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.clientData[i].fundRetirementLifeStyle.incomeAtRetirementAge}
                 </TextSmall>
@@ -337,7 +336,7 @@ const FundRetirement = () => {
 
             {totalDependant.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.dependantData[i].fundRetirementLifeStyle.incomeAtRetirementAge}
                 </TextSmall>
@@ -353,7 +352,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -370,7 +369,7 @@ const FundRetirement = () => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -393,7 +392,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.clientData[i].fundRetirementLifeStyle.incomeRequiredAtRetirement}
                 </TextSmall>
@@ -403,7 +402,7 @@ const FundRetirement = () => {
 
             {totalDependant.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.dependantData[i].fundRetirementLifeStyle.incomeRequiredAtRetirement}
                 </TextSmall>
@@ -414,7 +413,7 @@ const FundRetirement = () => {
           <tr>
             <td className='align-top'>
               <TextSmall className="uppercase text-gray-light">
-              Retirement Expense (in today's value) ($)
+                {`Retirement Expense (in today's value) ($)`}
               </TextSmall>
             </td>
             {totalClient.map(function (i) {
@@ -505,7 +504,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.clientData[i].fundRetirementLifeStyle.expenseATRetirement}
                 </TextSmall>
@@ -515,7 +514,7 @@ const FundRetirement = () => {
 
             {totalDependant.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.dependantData[i].fundRetirementLifeStyle.expenseATRetirement}
                 </TextSmall>
@@ -531,7 +530,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -548,7 +547,7 @@ const FundRetirement = () => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -571,7 +570,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -588,7 +587,7 @@ const FundRetirement = () => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -611,7 +610,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.clientData[i].fundRetirementLifeStyle.amountNeededAtRetirementAge}
                 </TextSmall>
@@ -621,7 +620,7 @@ const FundRetirement = () => {
 
             {totalDependant.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.dependantData[i].fundRetirementLifeStyle.amountNeededAtRetirementAge}
                 </TextSmall>
@@ -637,7 +636,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -654,7 +653,7 @@ const FundRetirement = () => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={"asa"+i} className={``}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -677,7 +676,7 @@ const FundRetirement = () => {
             </td>
             {totalClient.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.clientData[i].fundRetirementLifeStyle.netAmountRequired}
                 </TextSmall>
@@ -687,7 +686,7 @@ const FundRetirement = () => {
 
             {totalDependant.map(function (i) {
               return (
-              <td className='align-top'>
+              <td key={"asa"+i} className='align-top'>
                 <TextSmall className="text-right uppercase text-green-deep">
                   ${section7.answer.dependantData[i].fundRetirementLifeStyle.netAmountRequired}
                 </TextSmall>

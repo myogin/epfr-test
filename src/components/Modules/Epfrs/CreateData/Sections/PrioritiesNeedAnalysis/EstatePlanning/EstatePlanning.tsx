@@ -6,7 +6,6 @@ import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
 import React, {useState} from 'react'
-import Dependent from '../../PersonalInformation/Dependent'
 import Toggle from "@/components/Forms/Toggle";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import Select from '@/components/Forms/Select'
@@ -93,7 +92,7 @@ const EstatePlanning = (props : Props) => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <table className="table-auto border-separate border-spacing-5">
+      <table className="border-separate table-auto border-spacing-5">
         <tbody className="">
           <tr>
             <td className='align-top'>
@@ -105,9 +104,9 @@ const EstatePlanning = (props : Props) => {
               (total > 1) ? 
               totalClient.map(function (i) {
                 return (
-                  <td className={``}>
+                  <td key={'sd'+i} className={``}>
                     <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
                         <input type="checkbox" checked={section7.answer.need.client[i][10]} onChange={(event) => handleClient(!section7.answer.need.client[i][10], i, 10) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
                         <span className={``}> Review</span>
@@ -129,7 +128,7 @@ const EstatePlanning = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={'sd'+i} className={``}>
                   <Select
                     className="mb-10"
                     name="willWritten"
@@ -150,7 +149,7 @@ const EstatePlanning = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={'sd'+i} className={``}>
                   <Input
                 formStyle="text-right"
                 className="mb-10"
@@ -168,12 +167,12 @@ const EstatePlanning = (props : Props) => {
           <tr>
             <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
-              Were there any Provisions made for Special Needs Dependant's?
+                {`Were there any Provisions made for Special Needs Dependant's?`}
               </TextSmall>
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={'sd'+i} className={``}>
                   <Select
                     className="mb-10"
                     name="anyProvision"
@@ -194,7 +193,7 @@ const EstatePlanning = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={'sd'+i} className={``}>
                   <Select
                     className="mb-10"
                     name="haveLastingPowerOfAttorney"
@@ -215,7 +214,7 @@ const EstatePlanning = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={'sd'+i} className={``}>
                   <Select
                     className="mb-10"
                     name="doneYourCPFNomination"
@@ -236,7 +235,7 @@ const EstatePlanning = (props : Props) => {
             </td>
             {totalClient.map(function (i) {
               return (
-                <td className={``}>
+                <td key={'sd'+i} className={``}>
                   <Select
                     className="mb-10"
                     name="anyBenefit"

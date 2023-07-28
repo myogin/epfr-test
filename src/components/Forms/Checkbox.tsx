@@ -2,6 +2,7 @@ import React from "react";
 
 interface Props {
   isChecked?: boolean;
+  isDisabled?: boolean;
   className?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
@@ -13,6 +14,7 @@ interface Props {
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
+  class?: string;
 }
 
 const Checkbox = (props: Props) => {
@@ -21,21 +23,28 @@ const Checkbox = (props: Props) => {
       <div className="flex items-start justify-start gap-4">
         <input
           type="checkbox"
+          disabled={props.isDisabled}
           checked={props.isChecked}
           onChange={props.onChange}
           value={props.value}
           data-id={props.dataId}
           name={props.name}
           ref={props.innerRef}
-          className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+          className={`p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1 `}
         />
-        <span className={`${props.lableStyle}`}>{props.label}</span>
+        <div
+          className={`${props.lableStyle} ${
+            props.isDisabled && "text-gray-soft-strong"
+          }`}
+        >
+          {props.label}
+        </div>
       </div>
       {props.needValidation && !props.logic ? (
         <div className="flex items-start">
-          <span className="w-full text-xs text-left text-red">
+          <div className="w-full text-xs text-left text-red">
             {props.textError ? props.textError : "Required field"}
-          </span>
+          </div>
         </div>
       ) : null}
     </div>
