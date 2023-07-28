@@ -1327,10 +1327,13 @@ const AddPlanRecommendation = () => {
   }
 
   /// CIS
-  const [cisDataProduct, setCisDataProduct] = useState<any>([{}]);
   const [cisDataProductIndex, setCisDataProductIndex] = useState<any>(-1);
-  const [cisDataProvider, setCisDataProvider] = useState<any>(-1);
+
+  const [cisDataProduct, setCisDataProduct] = useState<any>([{}]);
   const [dataPremiumPaymentType, setPremiumPaymentType] = useState<any>([{}]);
+  const [cisDataProvider, setCisDataProvider] = useState<any>(-1);
+  const [cisDataBenRisk, setCisDataBenRisk] = useState<any>([{}]);
+
 
   const changeCisDataProvider = (event: any) => {
     const { name, value } = event.target;
@@ -1370,6 +1373,8 @@ const AddPlanRecommendation = () => {
       })
 
       var selectedPortfolio = initWhole.cis[index]
+      setCisDataBenRisk(selectedPortfolio);
+      
       var dataFundArr: Array<any> = [];
       
       benefits = new Array(selectedPortfolio['benefit'].length).fill(false)
@@ -1936,7 +1941,7 @@ const AddPlanRecommendation = () => {
               </div>
             </RowSingleGrid>
 
-            {productValueSelect > 0 ? (
+            {cisDataBenRisk.length > 0 ? (
               <>
                 <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
                   {dataProductSelected.benefits?.length > 0 ? 
