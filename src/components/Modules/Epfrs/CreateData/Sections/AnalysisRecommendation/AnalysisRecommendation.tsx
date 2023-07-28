@@ -27,6 +27,7 @@ const TextAreaEditor = dynamic(
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const AnalysisRecommendation = (props: Props) => {

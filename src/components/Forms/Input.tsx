@@ -12,7 +12,11 @@ interface Props {
   onWheel?: (event: React.WheelEvent<HTMLInputElement>) => void;
   readonly?: boolean;
   name?: string;
-  dataType?:string;
+  dataType?: string;
+  indexData?: number;
+  needValidation?: boolean;
+  logic?: boolean;
+  textError?: string;
 }
 
 const Input = (props: Props) => {
@@ -28,6 +32,7 @@ const Input = (props: Props) => {
       <input
         onWheel={props.onWheel}
         data-groupdata={props.dataType}
+        data-indexdata={props.indexData}
         name={props.name}
         type={props.type}
         readOnly={props.readonly}
@@ -36,6 +41,11 @@ const Input = (props: Props) => {
         placeholder={props.placeholder}
         className={`w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong ${props.formStyle}`}
       />
+
+      {/* Error Validation */}
+      {props.needValidation && !props.logic ? (
+        <span className="w-full text-xs text-left text-red">{props.textError ? props.textError : "Required field"}</span>
+      ) : null}
     </div>
   );
 };

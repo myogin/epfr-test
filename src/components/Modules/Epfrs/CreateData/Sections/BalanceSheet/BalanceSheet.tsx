@@ -16,30 +16,120 @@ import NetWorthBalance from "./NetWorthBalance/NetWorthBalance";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { SectionFour, assetInterface } from "@/models/SectionFour";
+import { log } from "console";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const BalanceSheet = (props: Props) => {
-  const setData = (params: any) => {
-    console.log(params);
-  };
-
-  let { showDetailData } = useNavigationSection();
-
-  const saveData = (params: any) => {
-    showDetailData(params);
-  };
-
   const [notReviewAll, setNotReviewAll] = useState(false);
 
-  const scrollPosition = useScrollPosition(4)
+  const scrollPosition = useScrollPosition(4);
+
+  const [sectionFour, setSectionFour] = useState<SectionFour>({
+    id: 0,
+    need: [false, false],
+    reason: [],
+    others: {
+      asset: [],
+      liability: [],
+    },
+    issues: [],
+    status: 0,
+  });
+
+  if (typeof window !== "undefined") {
+    localStorage.setItem("section4", JSON.stringify(sectionFour));
+  }
+
+  // handle input change / state change
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    setSectionFour((prevState) => {
+      return { ...prevState, [name]: value };
+    });
+  };
+
+  const checkboxChange = (event: any) => {
+    setNotReviewAll(!notReviewAll);
+    setSectionFour((prevState) => {
+      return { ...prevState, ["need"]: [!notReviewAll] };
+    });
+  };
+
+  function updateAssets(assets: assetInterface) {
+    setSectionFour((prevState) => {
+      return {
+        ...prevState,
+        others: {
+          ...prevState.others,
+          asset: [...prevState.others.asset, assets],
+        },
+      };
+    });
+  }
+
+  function deleteAssets(index: number) {
+    setSectionFour((prevState) => {
+      let newAsset = prevState.others.asset;
+      newAsset.splice(index, 1);
+
+      return {
+        ...prevState,
+        others: {
+          ...prevState.others,
+          asset: newAsset,
+        },
+      };
+    });
+  }
+
+  function updateLiabilities(assets: assetInterface) {
+    setSectionFour((prevState) => {
+      return {
+        ...prevState,
+        others: {
+          ...prevState.others,
+          asset: [...prevState.others.asset, assets],
+        },
+      };
+    });
+  }
+
+  function deleteLiabilities(index: number) {
+    setSectionFour((prevState) => {
+      let newAsset = prevState.others.asset;
+      newAsset.splice(index, 1);
+
+      return {
+        ...prevState,
+        others: {
+          ...prevState.others,
+          asset: newAsset,
+        },
+      };
+    });
+  }
 
   return (
     <div id={props.id}>
-      <div id="section-header-4" className={`sticky top-0 z-10 ${scrollPosition === "okSec4" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
-        <HeadingPrimarySection className={`mx-8 2xl:mx-60 ${scrollPosition === "okSec4" ? "text-gray-light text-xl font-bold mb-5 mt-5" : "text-2xl font-bold mb-10 mt-10"}`}>
+      <div
+        id="section-header-4"
+        className={`sticky top-0 z-10 ${
+          scrollPosition === "okSec4" ? "bg-white py-1 ease-in shadow-lg" : ""
+        }`}
+      >
+        <HeadingPrimarySection
+          className={`mx-8 2xl:mx-60 ${
+            scrollPosition === "okSec4"
+              ? "text-gray-light text-xl font-bold mb-5 mt-5"
+              : "text-2xl font-bold mb-10 mt-10"
+          }`}
+        >
           Section 4. Balance Sheet
         </HeadingPrimarySection>
       </div>
@@ -49,7 +139,11 @@ const BalanceSheet = (props: Props) => {
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.1 Assets
           </HeadingSecondarySection>
-          <AssetBalance />
+          <AssetBalance
+            updateassets={updateAssets}
+            assetDatas={sectionFour.others.asset}
+            deleteAssets={deleteAssets}
+          />
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             4.2 Liabilities
           </HeadingSecondarySection>
@@ -67,7 +161,7 @@ const BalanceSheet = (props: Props) => {
         <RowSingle>
           <Checkbox
             isChecked={notReviewAll}
-            onChange={() => setNotReviewAll(!notReviewAll)}
+            onChange={checkboxChange}
             lableStyle="text-sm font-normal text-gray-light"
             label="No, The Client would not like their existing portfolio to be taken
             into consideration for the Needs Analysis and Recommendation(s)?"
@@ -77,9 +171,10 @@ const BalanceSheet = (props: Props) => {
           <>
             <RowSingle>
               <TextArea
+                handleChange={handleInputChange}
                 className="my-4"
                 label="The Reason"
-                defaultValue="test text area"
+                name="reason"
               />
             </RowSingle>
           </>
@@ -88,11 +183,6 @@ const BalanceSheet = (props: Props) => {
         )}
       </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
-      {/* <SectionCardFooter>
-        <ButtonGreenMedium onClick={() => saveData(5)}>
-          Continue <ArrowRightLineIcon size={20} />
-        </ButtonGreenMedium>
-      </SectionCardFooter> */}
     </div>
   );
 };

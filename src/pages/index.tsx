@@ -7,10 +7,18 @@ import TitleMedium from "@/components/Attributes/Typography/TitleMedium";
 import Link from "next/link";
 import File3FillIcon from "remixicon-react/File3FillIcon";
 import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
+import { useLoginData } from "@/store/login/logindata";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
+  const { token, ownerId, setLogin } = useLoginData();
+  const router = useRouter();
+  useEffect(() => {
+    setLogin(router.query.ownerId, router.query.token);
+  });
   return (
     <>
       <Head>
@@ -39,7 +47,7 @@ const EpfrPage: Page = () => {
               </Link>
             </div>
             <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
-              <Link href="create/join">
+              <Link href="create/joint">
                 <button className="mb-3">
                   <File3FillIcon className="text-green-deep" size={50} />
                 </button>

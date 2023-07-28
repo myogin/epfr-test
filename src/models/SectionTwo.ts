@@ -1,7 +1,7 @@
 export interface SummaryOfProperty {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
-  category: number;
   typeOfProperty: string;
   yearPurchased: number;
   purchasePrice: number;
@@ -13,19 +13,21 @@ export interface SummaryOfProperty {
 }
 
 export interface SummaryOfInvestment {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   typeOfInvestment: string;
   typeOfInvestmentOther: string;
   company: string;
   yearInvested: number;
   investmentAmount: number;
-  currentvalue: string;
+  currentvalue: number;
   sourceOfInvestment: string;
 }
 
 export interface SummaryOfSavings {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   typeOfDeposit: number;
   bank: string;
@@ -34,12 +36,12 @@ export interface SummaryOfSavings {
 }
 
 export interface SummaryOfInsurance {
-  editting: boolean;
-  client: string;
-  insured: string;
-  status: string;
-  insurer: string;
-  policyType: string;
+  editting?: boolean;
+  id?: number;
+  client: string; //same
+  insured: string; //same
+  insurer: string; //same
+  policyType: string; // same
   policyTypeOther: string;
   policyTerm: string;
   death: number;
@@ -53,10 +55,12 @@ export interface SummaryOfInsurance {
   cash: number;
   medisave: number;
   sourceOfFund: number;
+  status: string;
 }
 
 export interface SummaryOfInsurance2 {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   insured: string;
   insurer: string;
@@ -73,7 +77,8 @@ export interface SummaryOfInsurance2 {
 }
 
 export interface SummaryOfLoans {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   typeOfLoan: string;
   loanTerm: string;
@@ -88,7 +93,8 @@ export interface SummaryOfLoans {
 }
 
 export interface SummaryOfCPF {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   ordinaryAccount: number;
   specialAccount: number;
@@ -97,16 +103,17 @@ export interface SummaryOfCPF {
 }
 
 export interface SummaryOfSRS {
-  editting: boolean;
+  editting?: boolean;
+  id?: number;
   client: string;
   amount: number;
 }
 
 export interface SectionTwo {
-  id: number;
-  need: boolean;
-  declineToReview: Array<any>;
-  reason: string;
+  id?: number;
+  need?: boolean;
+  declineToReview?: Array<any>;
+  reason?: string;
   summaryOfProperty: SummaryOfProperty[];
   summaryOfInvestment: SummaryOfInvestment[];
   summaryOfSavings: SummaryOfSavings[];
@@ -115,8 +122,8 @@ export interface SectionTwo {
   summaryOfLoans: SummaryOfLoans[];
   summaryOfCPF: SummaryOfCPF[];
   summaryOfSRS: SummaryOfSRS[];
-  issues: [];
-  totalNetWorth: Array<any>;
-  networthReason: Array<any>;
-  status: number;
+  issues?: [];
+  totalNetWorth?: Array<any>;
+  networthReason?: Array<any>;
+  status?: number;
 }

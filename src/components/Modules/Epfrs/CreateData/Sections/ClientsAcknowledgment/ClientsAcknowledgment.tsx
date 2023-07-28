@@ -18,10 +18,7 @@ import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 interface Props {
   id?: any;
-<<<<<<< Updated upstream
-=======
-  pfrType: number;
->>>>>>> Stashed changes
+  pfrType?: number;
 }
 
 const pfrId = 12016;

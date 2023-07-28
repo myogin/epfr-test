@@ -11,7 +11,7 @@ import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import Toggle from "@/components/Forms/Toggle";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import CpfPortofolio from "./Cpf/CpfPortofolio";
 import InsurancePortofolio from "./Insurance/InsurancePortofolio";
@@ -20,7 +20,6 @@ import LoanPortofolio from "./Loan/LoanPortofolio";
 import PropertyPortofolio from "./Property/PropertyPortofolio";
 import SavingPortofolio from "./Saving/SavingPortofolio";
 import SrsPortofolio from "./Srs/SrsPortofolio";
-import VehiclesPortofolio from "./Vehicles/VehiclesPortofolio";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
@@ -28,6 +27,7 @@ import { SectionTwo } from "@/models/SectionTwo";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const ExistingPortofolio = (props: Props) => {
@@ -37,20 +37,18 @@ const ExistingPortofolio = (props: Props) => {
   ];
 
   let {
-    showDetailProperty,
-    showDetailCpf,
-    showDetailInsurance,
-    showDetailInvestment,
-    showDetailLoan,
-    showDetailSaving,
-    showDetailSrs,
-    cpf,
-    insurance,
-    investment,
-    loan,
-    property,
-    saving,
-    srs,
+    need,
+    reason,
+    summaryOfProperty,
+    summaryOfInvestment,
+    summaryOfSavings,
+    summaryOfInsurance,
+    summaryOfInsurance2,
+    summaryOfLoans,
+    summaryOfCPF,
+    summaryOfSRS,
+    setToggle,
+    setGlobal,
   } = useExistingPortofolio();
 
   let { showDetailData } = useNavigationSection();
@@ -59,35 +57,9 @@ const ExistingPortofolio = (props: Props) => {
     showDetailData(params);
   };
 
-  const setDetailProperty = () => {
-    showDetailProperty(!property);
+  const handleToggle = (object: string, clientType: number, value: boolean) => {
+    setToggle(object, clientType, "editting", value);
   };
-
-  const setDetailInvestment = () => {
-    showDetailInvestment(!investment);
-  };
-
-  const setDetailSeving = () => {
-    showDetailSaving(!saving);
-  };
-
-  const setDetailCpf = () => {
-    showDetailCpf(!cpf);
-  };
-
-  const setDetailInsurance = () => {
-    showDetailInsurance(!insurance);
-  };
-
-  const setDetailSrs = () => {
-    showDetailSrs(!srs);
-  };
-
-  const setDetailLoan = () => {
-    showDetailLoan(!loan);
-  };
-
-  const [notReviewAll, setNotReviewAll] = useState(false);
 
   const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
 
@@ -95,132 +67,13 @@ const ExistingPortofolio = (props: Props) => {
 
   // console.log("Test logic scroll " +scrollPosition);
 
-  const [sectionTwo, setSectionTwo] = useState<SectionTwo>({
-    id: 0,
-    need: false,
-    declineToReview: [],
-    reason: "",
-    summaryOfProperty: [
-      {
-        editting: false,
-        client: "",
-        category: 0,
-        typeOfProperty: "",
-        yearPurchased: 0,
-        purchasePrice: 0,
-        loanAmount: 0,
-        currentOutstanding: 0,
-        monthlyLoanRepaymentCash: 0,
-        monthlyLoanRepaymentCPF: 0,
-        currentMarketValue: 0,
-      },
-    ],
-    summaryOfInvestment: [
-      {
-        editting: false,
-        client: "",
-        typeOfInvestment: "",
-        typeOfInvestmentOther: "",
-        company: "",
-        yearInvested: 0,
-        investmentAmount: 0,
-        currentvalue: "",
-        sourceOfInvestment: "",
-      },
-    ],
-    summaryOfSavings: [
-      {
-        editting: false,
-        client: "",
-        typeOfDeposit: 0,
-        bank: "",
-        yearDeposit: 0,
-        savingAmount: 0,
-      },
-    ],
-    summaryOfInsurance: [
-      {
-        editting: false,
-        client: "",
-        insured: "",
-        status: "",
-        insurer: "",
-        policyType: "",
-        policyTypeOther: "",
-        policyTerm: "",
-        death: 0,
-        tpd: 0,
-        ci: 0,
-        earlyCI: 0,
-        acc: 0,
-        purchaseYear: 0,
-        premiumFrequency: "",
-        premium: 0,
-        cash: 0,
-        medisave: 0,
-        sourceOfFund: 0,
-      },
-    ],
-    summaryOfInsurance2: [
-      {
-        editting: false,
-        client: "",
-        insured: "",
-        insurer: "",
-        policyType: "",
-        policyTerm: "",
-        existingHosPlan: "",
-        typeOfHosCovered: "",
-        classOfWardCovered: "",
-        purchaseYear: 0,
-        premium: 0,
-        medisave: 0,
-        frequency: "",
-        sourceOfFund: 0,
-      },
-    ],
-    summaryOfLoans: [
-      {
-        editting: false,
-        client: "",
-        typeOfLoan: "",
-        loanTerm: "",
-        yearOfLoanTaken: 0,
-        amountBorrowed: 0,
-        loanStatus: "",
-        typeOfVehicle: "",
-        currentOutstandingLoan: 0,
-        lender: "",
-        interestRate: 0,
-        monthlyLoanRepayment: 0,
-      },
-    ],
-    summaryOfCPF: [
-      {
-        editting: false,
-        client: "",
-        ordinaryAccount: 0,
-        specialAccount: 0,
-        medisaveAccount: 0,
-        retirementAccount: 0,
-      },
-    ],
-    summaryOfSRS: [
-      {
-        editting: false,
-        client: "",
-        amount: 0,
-      },
-    ],
-    issues: [],
-    totalNetWorth: [],
-    networthReason: [],
-    status: 0,
-  });
+  // if (typeof window !== "undefined") {
+  //   localStorage.setItem("section2", JSON.stringify(sectionTwo));
+  // }
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem("section2", JSON.stringify(sectionTwo));
-  }
+  // useEffect(() => {
+  //   localStorage.setItem("section2", JSON.stringify(sectionTwo));
+  // }, []);
 
   return (
     <div id={props.id}>
@@ -240,89 +93,127 @@ const ExistingPortofolio = (props: Props) => {
           Section 2. Existing Portfolio
         </HeadingPrimarySection>
       </div>
-      {!notReviewAll ? (
+      {need ? (
         <>
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
             <Toggle
-              isChecked={property}
-              toggleName={property ? "Review" : "Not Review"}
-              onChange={setDetailProperty}
+              isChecked={summaryOfProperty[0].editting}
+              toggleName={
+                summaryOfProperty[0].editting ? "Review" : "Not Review"
+              }
+              onChange={() =>
+                handleToggle(
+                  "summaryOfProperty",
+                  0,
+                  !summaryOfProperty[0].editting
+                )
+              }
             />
             {/* <Toggle /> */}
           </HeadingSecondarySectionDoubleGrid>
 
-          {property ? <PropertyPortofolio id={sectionTwo.id} datas={sectionTwo.summaryOfProperty} /> : null}
+          {summaryOfProperty[0].editting ? <PropertyPortofolio /> : null}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>
             <Toggle
-              isChecked={investment}
-              toggleName={investment ? "Review" : "Not Review"}
-              onChange={setDetailInvestment}
+              isChecked={summaryOfInvestment[0].editting}
+              toggleName={
+                summaryOfInvestment[0].editting ? "Review" : "Not Review"
+              }
+              onChange={() =>
+                handleToggle(
+                  "summaryOfInvestment",
+                  0,
+                  !summaryOfInvestment[0].editting
+                )
+              }
             />
           </HeadingSecondarySectionDoubleGrid>
 
-          {investment ? <InvestmentPortofolio /> : ""}
+          {summaryOfInvestment[0].editting ? <InvestmentPortofolio /> : ""}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.3 Summary of Saving(s)</h2>
             <Toggle
-              isChecked={saving}
-              toggleName={saving ? "Review" : "Not Review"}
-              onChange={setDetailSeving}
+              isChecked={summaryOfSavings[0].editting}
+              toggleName={
+                summaryOfSavings[0].editting ? "Review" : "Not Review"
+              }
+              onChange={() =>
+                handleToggle(
+                  "summaryOfSavings",
+                  0,
+                  !summaryOfSavings[0].editting
+                )
+              }
             />
           </HeadingSecondarySectionDoubleGrid>
 
-          {saving ? <SavingPortofolio /> : ""}
+          {summaryOfSavings[0].editting ? <SavingPortofolio /> : ""}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.4 Summary of CPF</h2>
             <Toggle
-              isChecked={cpf}
-              toggleName={cpf ? "Review" : "Not Review"}
-              onChange={setDetailCpf}
+              isChecked={summaryOfCPF[0].editting}
+              toggleName={summaryOfCPF[0].editting ? "Review" : "Not Review"}
+              onChange={() =>
+                handleToggle("summaryOfCPF", 0, !summaryOfCPF[0].editting)
+              }
             />
           </HeadingSecondarySectionDoubleGrid>
 
-          {cpf ? <CpfPortofolio /> : ""}
+          {summaryOfCPF[0].editting ? <CpfPortofolio /> : ""}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">2.5 Summary of Insurance(s)</h2>
             <Toggle
-              isChecked={insurance}
-              toggleName={insurance ? "Review" : "Not Review"}
-              onChange={setDetailInsurance}
+              isChecked={summaryOfInsurance[0].editting}
+              toggleName={
+                summaryOfInsurance[0].editting ? "Review" : "Not Review"
+              }
+              onChange={() =>
+                handleToggle(
+                  "summaryOfInsurance",
+                  0,
+                  !summaryOfInsurance[0].editting
+                )
+              }
             />
           </HeadingSecondarySectionDoubleGrid>
 
-          {insurance ? <InsurancePortofolio /> : ""}
+          {summaryOfInsurance[0].editting ? <InsurancePortofolio /> : ""}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">
               2.6 Supplementary Retirement Scheme (SRS)
             </h2>
             <Toggle
-              isChecked={srs}
-              toggleName={srs ? "Review" : "Not Review"}
-              onChange={setDetailSrs}
+              isChecked={summaryOfSRS[0].editting}
+              toggleName={summaryOfSRS[0].editting ? "Review" : "Not Review"}
+              onChange={() =>
+                handleToggle("summaryOfSRS", 0, !summaryOfSRS[0].editting)
+              }
             />
           </HeadingSecondarySectionDoubleGrid>
 
-          {srs ? <SrsPortofolio /> : ""}
+          {summaryOfSRS[0].editting ? <SrsPortofolio /> : ""}
 
           <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
             <h2 className="text-xl font-bold">
               2.7 Summary of Loan (Excluding Property Loan)
             </h2>
             <Toggle
-              isChecked={loan}
-              toggleName={loan ? "Review" : "Not Review"}
-              onChange={setDetailLoan}
+              isChecked={summaryOfLoans[0].editting}
+              toggleName={summaryOfLoans[0].editting ? "Review" : "Not Review"}
+              onChange={() =>
+                handleToggle("summaryOfLoans", 0, !summaryOfLoans[0].editting)
+              }
             />
           </HeadingSecondarySectionDoubleGrid>
 
-          {loan ? <LoanPortofolio /> : ""}
+          {summaryOfLoans[0].editting ? <LoanPortofolio /> : ""}
         </>
       ) : (
         ""
@@ -331,13 +222,13 @@ const ExistingPortofolio = (props: Props) => {
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowSingle>
           <Checkbox
-            onChange={() => setNotReviewAll(!notReviewAll)}
+            isChecked={need}
+            onChange={() => setGlobal("need", !need)}
             lableStyle="text-sm font-normal text-gray-light"
-            label="The Client would not like their assets and liabilities to be taken
-            into consideration for the needs analysis and recommendations"
+            label=" Would you like your assets and liabilities to be taken into consideration for the Needs Analysis and Recommendation(s)?"
           />
         </RowSingle>
-        {notReviewAll ? (
+        {!need ? (
           <>
             <RowSingle className="my-10">
               <TextArea label="The Reason" defaultValue="test text area" />

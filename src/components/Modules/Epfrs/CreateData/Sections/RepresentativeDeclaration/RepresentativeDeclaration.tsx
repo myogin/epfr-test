@@ -18,6 +18,7 @@ import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const pfrId = 12016;
@@ -81,19 +82,20 @@ const RepresentativeDeclaration = (props: Props) => {
         </RowSingleGrid>
         <RowSingleGrid>
           <TextThin>
-            3. The recommendation(s) made by me is/are based on the above needs
+            {`3. The recommendation(s) made by me is/are based on the above needs
             analysis which has taken into account the information disclosed by
-            the client in this 'Personal Financial Record'.
+            the client in this 'Personal Financial Record'.`}
           </TextThin>
         </RowSingleGrid>
 
         <RowSingleGrid>
           <TextThin>
-            4. The information provided to me in this 'Personal Financial
+            {`4. The information provided to me in this 'Personal Financial
             Record' is strictly confidential and is only to be used for the
             purpose of fact-finding as part of the process of recommending
             suitable insurance/investment product(s) and shall not be used for
-            any other purposes.
+            any other purposes.`}
+            
           </TextThin>
         </RowSingleGrid>
 

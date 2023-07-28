@@ -33,20 +33,21 @@ export interface Others {
 }
 
 export interface Datas {
+  id?: number;
   annualIncome: AnnualIncome;
   annualSurplus: AnnualSurplus;
   answer: Answers;
-  reasonForSurplus: any;
+  reasonForSurplus?: any;
 }
 
 export interface SectionThree {
-  id: number;
-  need: Array<any>;
-  reason: Array<any>;
-  others: Others;
+  id?: number;
+  need?: Array<any>;
+  reason?: Array<any>;
+  others?: Others;
   data: Datas[];
   annualExpense: AnnualExpanse[];
-  issues: Array<any>;
-  totalNetSurplus: Array<any>;
-  status: number;
+  issues?: Array<any>;
+  totalNetSurplus?: Array<any>;
+  status?: number;
 }

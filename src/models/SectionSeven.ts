@@ -1,5 +1,5 @@
 interface AdditionalNote {
-  note?: any;
+  note: string;
 }
 
 interface Answer {
@@ -182,6 +182,7 @@ interface IncomeProtectionUponDeath {
 }
 
 export interface SectionSeven {
+  section7: {
     answer: Answer;
     pfrId: number;
     typeClient: number;
@@ -189,3 +190,4 @@ export interface SectionSeven {
     additionalNote: AdditionalNote[];
     status: number;
   }
+}

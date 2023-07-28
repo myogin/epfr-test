@@ -21,6 +21,7 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 interface Props {
   id?: any;
+  pfrType?: number;
 }
 
 const SwitchingReplacement = (props: Props) => {

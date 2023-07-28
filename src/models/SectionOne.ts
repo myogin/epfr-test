@@ -1,4 +1,4 @@
-export interface PersonalInformation {
+export interface Clientformation {
   id?: string;
   clientTitle: string;
   clientName: string;
@@ -27,7 +27,7 @@ export interface PersonalInformation {
   mailingAddr: string;
 }
 export interface DependantInformation {
-  id?: string;
+  id?: number;
   name: string;
   relationship: string;
   dateOfBirth: string;
@@ -57,18 +57,18 @@ export interface TrustedIndividual {
   englishLevel2: number;
   educationLevel: number;
   ageLevel: number;
-  declaration: number;
+  declaration: boolean;
 }
 
 export interface SectionOne {
-  ownerId: number;
-  type: number;
-  id: number;
-  clientInfo: PersonalInformation[];
+  ownerId?: number;
+  type?: number;
+  id?: number;
+  clientInfo: Clientformation[];
   dependant: DependantInformation[];
   accompaniment: Accompaniment[];
   trustedIndividuals: TrustedIndividual;
-  issues: [];
-  reviewDate: string;
-  status: number;
+  issues?: [];
+  reviewDate?: string;
+  status?: number;
 }

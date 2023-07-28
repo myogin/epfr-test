@@ -5,10 +5,32 @@ import TextThin from '@/components/Attributes/Typography/TextThin'
 import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
+import React, {useState} from 'react'
+import Dependent from '../../PersonalInformation/Dependent'
+import Toggle from "@/components/Forms/Toggle";
+import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import Select from '@/components/Forms/Select'
-import React from 'react'
+import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import AddBoxFillIcon from "remixicon-react/AddBoxFillIcon";
 
-const OtherInsurance = () => {
+interface Props {
+  datas?: Array<any>;
+}
+
+const OtherInsurance = (props : Props) => {
+  let {
+    section7,
+    setClient,
+    setDependant,
+    setNeed,
+    setNeedDependant,
+    setAnswerDefaultCheck,
+    setAdditional,
+    addChildFund,
+    removeChildFund,
+    setChildFund
+  } = usePrioritiesNeedAnalysis();
+
   let travelInsurance: Array<any> = [
     { id: "Single Trip", name: "Single Trip" },
     { id: "Annual Plan", name: "Annual Plan" },
@@ -25,166 +47,281 @@ const OtherInsurance = () => {
     { id: 'No', name: "No" }
   ];
 
-  const setData = (params: any) => {
-    console.log('params', params);
-  };
+  
+  // Total Data Client & Deoendants
+  let total = section7.typeClient;
+  var totalClient = [];
+  var totalChildFund = [];
+  var totalDependant = [];
+  
+  for (var i = 0; i < section7.typeClient; i++) {
+    totalClient.push(i);
+  }
+
+  for (var i = 0; i < section7.totalDependant; i++) {
+    totalDependant.push(i);
+  }
+
+  // Handle Checkbox Client & Dependant
+  const handleClient = (value:any, i: any, dataI:any) => {
+    setNeed(value, i, dataI);
+  }
+
+
+  // Set Client Data
+  const setDataClient = (event: any, i: any) => {
+    const { groupdata } = event.target.dataset;
+    const { name, value } = event.target;
+    setClient(value, i, name, groupdata);
+  }
+
+  // Additional Note
+  const handleAdditional = (e: any) => {
+    const {name, value} = e.target;
+    setAdditional(value, 11, name)
+    
+  }
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      
-      <RowDoubleGrid>
-        <div className="col-auto">
-          <TextSmall className="uppercase text-gray-light">
-          Travel Insurance
-          </TextSmall>
-        </div>
-        <div className="col-span-1">
-          <div className="flex text-green-deep">Client 1</div>
-          <div className="flex items-center justify-start gap-2">
-            <Checkbox /> <TextThin>Review</TextThin>
-          </div>
-        </div>
-      </RowDoubleGrid>
-      
-          <RowDoubleGrid>
-            <div>
+       <table className="table-auto border-separate border-spacing-5">
+        <tbody className="">
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="uppercase text-gray-light">
+              Travel Insurance
+              </TextSmall>
+            </td>
+            { 
+              (total > 1) ? 
+              totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <div className="text-right text-green-deep">Client {i+1} </div>
+                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                      <div className='items-start justify-start gap-4'>
+                        <input
+                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][11]} onChange={(event) => handleClient(!section7.answer.need.client[i][11], i, 11) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <span className={``}> Review</span>
+                      </div>
+                    </div>
+                  </td>
+                );
+              })
+              
+              : ''
+            }
+
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Frequency of Travel
               </TextSmall>
-            </div>
-            <div>
-              <Input
-                className="mb-4"
-                type="text"
-                placeholder="1,000,000"
-                handleChange={(event) => setData(event.target.value)}
-              />
-            </div>
-          </RowDoubleGrid>
-
-          <RowDoubleGrid>
-            <div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    formStyle="text-right"
+                    className="mb-10"
+                    type="text"
+                    placeholder="Value"
+                    name="frequencyOfTravel"
+                    dataType="otherInsures"
+                    value={section7.answer.clientData[i].otherInsures.frequencyOfTravel}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Type of Travel Insurance Covered
               </TextSmall>
-            </div>
-            <div>
-              <Select
-                dataType="clientInfo"
-                className="mb-10"
-                name="travelInsurance"
-                datas={travelInsurance}
-              />
-            </div>
-          </RowDoubleGrid>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Select
+                    className="mb-10"
+                    name="typeOfTravelInsuranceCovered"
+                    dataType="otherInsures"
+                    value={section7.answer.clientData[i].otherInsures.typeOfTravelInsuranceCovered}
+                    datas={travelInsurance}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
 
-      <RowDoubleGrid>
-        <div className="col-auto">
-          <TextSmall className="uppercase text-gray-light">
-          Motor Insurance
-          </TextSmall>
-        </div>
-        <div className="col-span-1">
-          <div className="flex text-green-deep">Client 1</div>
-          <div className="flex items-center justify-start gap-2">
-            <Checkbox /> <TextThin>Review</TextThin>
-          </div>
-        </div>
-      </RowDoubleGrid>
-      
-          <RowDoubleGrid>
-            <div>
+
+          
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="uppercase text-gray-light">
+              Motor Insurance
+              </TextSmall>
+            </td>
+            { 
+              (total > 1) ? 
+              totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <div className="text-right text-green-deep">Client {i+1} </div>
+                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                      <div className='items-start justify-start gap-4'>
+                        <input
+                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][12]} onChange={(event) => handleClient(!section7.answer.need.client[i][12], i, 12) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <span className={``}> Review</span>
+                      </div>
+                    </div>
+                  </td>
+                );
+              })
+              
+              : ''
+            }
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Company Name
               </TextSmall>
-            </div>
-            <div>
-              <Input
-                className="mb-4"
-                type="text"
-                placeholder="1,000,000"
-                handleChange={(event) => setData(event.target.value)}
-              />
-            </div>
-          </RowDoubleGrid>
-
-          <RowDoubleGrid>
-            <div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    formStyle="text-right"
+                    className="mb-10"
+                    type="text"
+                    placeholder="Value"
+                    name="companyName"
+                    dataType="otherInsures"
+                    value={section7.answer.clientData[i].otherInsures.companyName}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Renewal Date
               </TextSmall>
-            </div>
-            <div>
-              <Input
-                className="mb-4"
-                type="date"
-                placeholder="1,000,000"
-                handleChange={(event) => setData(event.target.value)}
-              />
-            </div>
-          </RowDoubleGrid>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                    formStyle="text-right"
+                    className="mb-10"
+                    type="date"
+                    placeholder="date"
+                    name="renewalDate"
+                    dataType="otherInsures"
+                    value={section7.answer.clientData[i].otherInsures.renewalDate}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
 
-
-      <RowDoubleGrid>
-        <div className="col-auto">
-          <TextSmall className="uppercase text-gray-light">
-          Would you be interested in knowing more and / or receiving quotes on the following range of insurance(s)? 
-          </TextSmall>
-        </div>
-        <div className="col-span-1">
-          <div className="flex text-green-deep">Client 1</div>
-          <div className="flex items-center justify-start gap-2">
-            <Checkbox /> <TextThin>Review</TextThin>
-          </div>
-        </div>
-      </RowDoubleGrid>
-      
-          <RowDoubleGrid>
-            <div>
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="uppercase text-gray-light">
+              Would you be interested in knowing more and / or receiving quotes on the following range of insurance(s)? 
+              </TextSmall>
+            </td>
+            { 
+              (total > 1) ? 
+              totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <div className="text-right text-green-deep">Client {i+1} </div>
+                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                      <div className='items-start justify-start gap-4'>
+                        <input
+                          formStyle="text-right" type="checkbox" checked={section7.answer.need.client[i][13]} onChange={(event) => handleClient(!section7.answer.need.client[i][13], i, 13) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <span className={``}> Review</span>
+                      </div>
+                    </div>
+                  </td>
+                );
+              })
+              
+              : ''
+            }
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Mortgage insurance
               </TextSmall>
-            </div>
-            <div>
-              <Select
-                dataType="clientInfo"
-                className="mb-10"
-                name="interestMortgage"
-                datas={interestMortgage}
-              />
-            </div>
-          </RowDoubleGrid>
-
-          <RowDoubleGrid>
-            <div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Select
+                    className="mb-10"
+                    name="mortgageInsurance"
+                    dataType="otherInsures"
+                    value={section7.answer.clientData[i].otherInsures.mortgageInsurance}
+                    datas={interestMortgage}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Group insurance (Company Employee Benefits)
               </TextSmall>
-            </div>
-            <div>
-              <Select
-                dataType="clientInfo"
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Select
+                    className="mb-10"
+                    name="groupInsurance"
+                    dataType="otherInsures"
+                    value={section7.answer.clientData[i].otherInsures.groupInsurance}
+                    datas={interestGroup}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td colSpan={total}>
+              <TextSmall className="text-gray-light">Additional Notes</TextSmall>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={total+1}>
+              <Input
+                formStyle="text-right"
                 className="mb-10"
-                name="interestGroup"
-                datas={interestGroup}
+                type="text"
+                placeholder="Additional Notes"
+                name="note"
+                value={section7.additionalNote[11].note}
+                handleChange={handleAdditional}
               />
-            </div>
-          </RowDoubleGrid>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-          
-
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">Additional Notes</TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="Additional Notes"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
     </SectionCardSingleGrid>
   )
 }

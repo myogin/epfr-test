@@ -5,10 +5,33 @@ import TextThin from '@/components/Attributes/Typography/TextThin'
 import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
 import Checkbox from '@/components/Forms/Checkbox'
 import Input from '@/components/Forms/Input'
+import React, {useState} from 'react'
+import Dependent from '../../PersonalInformation/Dependent'
+import Toggle from "@/components/Forms/Toggle";
+import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import Select from '@/components/Forms/Select'
-import React from 'react'
+import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import AddBoxFillIcon from "remixicon-react/AddBoxFillIcon";
 
-const EstatePlanning = () => {
+interface Props {
+  datas?: Array<any>;
+}
+
+
+const EstatePlanning = (props : Props) => {
+  let {
+    section7,
+    setClient,
+    setDependant,
+    setNeed,
+    setNeedDependant,
+    setAnswerDefaultCheck,
+    setAdditional,
+    addChildFund,
+    removeChildFund,
+    setChildFund
+  } = usePrioritiesNeedAnalysis();
+
   let planningWritten: Array<any> = [
     { id: 'Yes', name: "Yes" },
     { id: 'No', name: "No" }
@@ -34,134 +57,222 @@ const EstatePlanning = () => {
     { id: 'No', name: "No" }
   ];
 
-  const setData = (params: any) => {
-    console.log('params', params);
-  };
+  // Total Data Client & Deoendants
+  let total = section7.typeClient;
+  var totalClient = [];
+  var totalChildFund = [];
+  var totalDependant = [];
+  
+  for (var i = 0; i < section7.typeClient; i++) {
+    totalClient.push(i);
+  }
+
+  for (var i = 0; i < section7.totalDependant; i++) {
+    totalDependant.push(i);
+  }
+
+  // Handle Checkbox Client & Dependant
+  const handleClient = (value:any, i: any, dataI:any) => {
+    setNeed(value, i, dataI);
+  }
+
+
+  // Set Client Data
+  const setDataClient = (event: any, i: any) => {
+    const { groupdata } = event.target.dataset;
+    const { name, value } = event.target;
+    setClient(value, i, name, groupdata);
+  }
+
+  // Additional Note
+  const handleAdditional = (e: any) => {
+    const {name, value} = e.target;
+    setAdditional(value, 10, name)
+    
+  }
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <RowDoubleGrid>
-        <div className="col-auto">
-          <TextSmall className="uppercase text-gray-light">
-          ESTATE PLANNING
-          </TextSmall>
-        </div>
-        <div className="col-span-1">
-          <div className="flex text-green-deep">Client 1</div>
-          <div className="flex items-center justify-start gap-2">
-            <Checkbox /> <TextThin>Review</TextThin>
-          </div>
-        </div>
-      </RowDoubleGrid>
-      
-          <RowDoubleGrid>
-            <div>
+      <table className="table-auto border-separate border-spacing-5">
+        <tbody className="">
+          <tr>
+            <td className='align-top'>
+              <TextSmall className="uppercase text-gray-light">
+              ESTATE PLANNING
+              </TextSmall>
+            </td>
+            { 
+              (total > 1) ? 
+              totalClient.map(function (i) {
+                return (
+                  <td className={``}>
+                    <div className="text-right text-green-deep">Client {i+1} </div>
+                    <div className="text-right items-center justify-start gap-2 mb-10" id={`custome-checkbox-${i}`}>
+                      <div className='items-start justify-start gap-4'>
+                        <input type="checkbox" checked={section7.answer.need.client[i][10]} onChange={(event) => handleClient(!section7.answer.need.client[i][10], i, 10) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                        <span className={``}> Review</span>
+                      </div>
+                    </div>
+                  </td>
+                );
+              })
+              
+              : ''
+            }
+
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Do you have a Will written?
               </TextSmall>
-            </div>
-            <div>
-              <Select
-                dataType="clientInfo"
-                className="mb-10"
-                name="planningWritten"
-                datas={planningWritten}
-              />
-            </div>
-          </RowDoubleGrid>
-
-          <RowDoubleGrid>
-            <div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Select
+                    className="mb-10"
+                    name="willWritten"
+                    dataType="estatePlaning"
+                    value={section7.answer.clientData[i].estatePlaning.willWritten}
+                    datas={planningWritten}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               When was it last updated?
               </TextSmall>
-            </div>
-            <div>
-              <Input
-                className="mb-4"
-                type="date"
-                placeholder="1,000,000"
-                handleChange={(event) => setData(event.target.value)}
-              />
-            </div>
-          </RowDoubleGrid>
-
-          <RowDoubleGrid>
-            <div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Input
+                formStyle="text-right"
+                className="mb-10"
+                    type="date"
+                    placeholder="date"
+                    name="lastUpdated"
+                    dataType="estatePlaning"
+                    value={section7.answer.clientData[i].estatePlaning.lastUpdated}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Were there any Provisions made for Special Needs Dependant's?
               </TextSmall>
-            </div>
-            <div>
-            <Select
-                dataType="clientInfo"
-                className="mb-10"
-                name="planningDependants"
-                datas={planningDependants}
-              />
-            </div>
-          </RowDoubleGrid>
-
-          <RowDoubleGrid>
-            <div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Select
+                    className="mb-10"
+                    name="anyProvision"
+                    dataType="estatePlaning"
+                    value={section7.answer.clientData[i].estatePlaning.anyProvision}
+                    datas={planningDependants}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Have you given a Lasting Power Attorney?
               </TextSmall>
-            </div>
-            <div>
-              <Select
-                dataType="clientInfo"
-                className="mb-10"
-                name="planningAttorney"
-                datas={planningAttorney}
-              />
-            </div>
-          </RowDoubleGrid>
-
-          <RowDoubleGrid>
-            <div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Select
+                    className="mb-10"
+                    name="haveLastingPowerOfAttorney"
+                    dataType="estatePlaning"
+                    value={section7.answer.clientData[i].estatePlaning.haveLastingPowerOfAttorney}
+                    datas={planningAttorney}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Have you done your CPF nomination?
               </TextSmall>
-            </div>
-            <div>
-              <Select
-                dataType="clientInfo"
-                className="mb-10"
-                name="planningNomination"
-                datas={planningNomination}
-              />
-            </div>
-          </RowDoubleGrid>
-
-          <RowDoubleGrid>
-            <div>
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Select
+                    className="mb-10"
+                    name="doneYourCPFNomination"
+                    dataType="estatePlaning"
+                    value={section7.answer.clientData[i].estatePlaning.doneYourCPFNomination}
+                    datas={planningNomination}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td className='w-1/2 align-top'>
               <TextSmall className="text-gray-light">
               Have you named any beneficiaries under Section 49M / 49L?
               </TextSmall>
-            </div>
-            <div>
-              <Select
-                dataType="clientInfo"
+            </td>
+            {totalClient.map(function (i) {
+              return (
+                <td className={``}>
+                  <Select
+                    className="mb-10"
+                    name="anyBenefit"
+                    dataType="estatePlaning"
+                    value={section7.answer.clientData[i].estatePlaning.anyBenefit}
+                    datas={planningSection}
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              );
+            })}
+          </tr>
+          <tr>
+            <td colSpan={total}>
+              <TextSmall className="text-gray-light">Additional Notes</TextSmall>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={total+1}>
+              <Input
+                formStyle="text-right"
                 className="mb-10"
-                name="planningSection"
-                datas={planningSection}
+                type="text"
+                placeholder="Additional Notes"
+                name="note"
+                value={section7.additionalNote[10].note}
+                handleChange={handleAdditional}
               />
-            </div>
-          </RowDoubleGrid>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-        <RowDoubleGrid>
-          <div>
-            <TextSmall className="text-gray-light">Additional Notes</TextSmall>
-          </div>
-          <div>
-            <Input
-              className="mb-4"
-              type="text"
-              placeholder="Additional Notes"
-              handleChange={(event) => setData(event.target.value)}
-            />
-          </div>
-        </RowDoubleGrid>
+        
+
+         
     </SectionCardSingleGrid>
   )
 }

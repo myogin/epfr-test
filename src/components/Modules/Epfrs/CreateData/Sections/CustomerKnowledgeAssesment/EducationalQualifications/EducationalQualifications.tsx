@@ -4,13 +4,14 @@ import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import MultipleCheckbox from "../components/MultipleCheckbox";
+interface Props {
+  initData: any;
+  updateState: (index1: number, index2: number) => void;
+}
 
-const EducationalQualifications = () => {
-  const setData = (params: any) => {
-    console.log(params);
-  };
-
+const EducationalQualifications = (props: Props) => {
   let qa: Array<any> = [
     {
       id: 1,
@@ -54,31 +55,58 @@ const EducationalQualifications = () => {
     },
   ];
 
+  const checkValidate = (data: boolean) => data === false;
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      {qa?.length &&
-        qa.map((question, index) => (
-          <div key={question.id}>
-            <RowSingle>
-              <TitleSmall className="text-gray-light">
-                {(index += 1)}. {question.question}
-              </TitleSmall>
-            </RowSingle>
-            <RowSingle className="py-6">
-              <span className="text-xs font-normal text-red">Required</span>
-            </RowSingle>
-            {question.answers?.length &&
-              question.answers.map(
-                (answer: any, indexAnswer: React.Key | null | undefined) => (
-                  <RowSingle key={answer.id}>
-                    <Checkbox />
-                    <TextThin className="text-gray-light">
-                      {answer.answer}
-                    </TextThin>
-                  </RowSingle>
-                )
-              )}
-          </div>
+      <RowSingle>
+        <TitleSmall className="text-gray-light">
+          1. Do you have a Diploma or higher qualication(s) in any of the
+          following?
+        </TitleSmall>
+      </RowSingle>
+
+      {props.initData[0].every(checkValidate) ? (
+        <RowSingle className="py-6">
+          <span className="text-xs font-normal text-red">Required</span>
+        </RowSingle>
+      ) : (
+        ""
+      )}
+
+      {qa[0].answers?.length &&
+        qa[0].answers.map((answer: any, index: number) => (
+          <RowSingle key={answer.id}>
+            <Checkbox
+              onChange={() => props.updateState(0, index)}
+              isChecked={props.initData[0][index]}
+            />
+            <TextThin className="text-gray-light">{answer.answer}</TextThin>
+          </RowSingle>
+        ))}
+      {/*  */}
+      <RowSingle>
+        <TitleSmall className="text-gray-light">
+          2. Do you have a professional finanace-related qualification(s) in any
+          of the following?
+        </TitleSmall>
+      </RowSingle>
+      {props.initData[1].every(checkValidate) ? (
+        <RowSingle className="py-6">
+          <span className="text-xs font-normal text-red">Required</span>
+        </RowSingle>
+      ) : (
+        ""
+      )}
+      {qa[1].answers?.length &&
+        qa[1].answers.map((answer: any, index: number) => (
+          <RowSingle key={answer.id}>
+            <Checkbox
+              onChange={() => props.updateState(1, index)}
+              isChecked={props.initData[1][index]}
+            />
+            <TextThin className="text-gray-light">{answer.answer}</TextThin>
+          </RowSingle>
         ))}
     </SectionCardSingleGrid>
   );

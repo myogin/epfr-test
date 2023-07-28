@@ -28,7 +28,11 @@ import { useScrollPosition } from "@/hooks/useScrollPosition";
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 import { useRouter } from "next/router";
 
-const EpfrCreateSingle: Page = () => {
+const CreatePfrPage: Page = () => {
+  const router = useRouter();
+  const { pfrType } = router.query;
+
+  let pfrTypeId = pfrType === "single" ? 1 : 2;
 
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
 
@@ -204,18 +208,33 @@ const EpfrCreateSingle: Page = () => {
                     scrollThrottle={80}
                     useBoxMethod
                   >
-                    <PersonalInformation id="section-1" />
-                    <ExistingPortofolio id="section-2" />
-                    <CashFlow id="section-3" />
-                    <BalanceSheet id="section-4" />
-                    <RiskProfile id="section-5" />
-                    <CustomerKnowledgeAssesment id="section-6" />
-                    <PrioritiesNeedAnalysis id="section-7" />
-                    <Affordability id="section-8" />
-                    <AnalysisRecommendation id="section-9" />
-                    <SwitchingReplacement id="section-10" />
-                    <ClientsAcknowledgment id="section-11" />
-                    <RepresentativeDeclaration id="section-12" />
+                    <PersonalInformation pfrType={pfrTypeId} id="section-1" />
+                    <ExistingPortofolio pfrType={pfrTypeId} id="section-2" />
+                    <CashFlow pfrType={pfrTypeId} id="section-3" />
+                    <BalanceSheet pfrType={pfrTypeId} id="section-4" />
+                    <RiskProfile pfrType={pfrTypeId} id="section-5" />
+                    <CustomerKnowledgeAssesment
+                      pfrType={pfrTypeId}
+                      id="section-6"
+                    />
+                    <PrioritiesNeedAnalysis
+                      pfrType={pfrTypeId}
+                      id="section-7"
+                    />
+                    <Affordability pfrType={pfrTypeId} id="section-8" />
+                    <AnalysisRecommendation
+                      pfrType={pfrTypeId}
+                      id="section-9"
+                    />
+                    <SwitchingReplacement pfrType={pfrTypeId} id="section-10" />
+                    <ClientsAcknowledgment
+                      pfrType={pfrTypeId}
+                      id="section-11"
+                    />
+                    <RepresentativeDeclaration
+                      pfrType={pfrTypeId}
+                      id="section-12"
+                    />
                   </ScrollSpy>
                 </div>
               )}
@@ -227,8 +246,8 @@ const EpfrCreateSingle: Page = () => {
   );
 };
 
-EpfrCreateSingle.getLayout = function getLayout(content: any) {
+CreatePfrPage.getLayout = function getLayout(content: any) {
   return <AppSecondaryLayout typeMenu="1">{content}</AppSecondaryLayout>;
 };
 
-export default EpfrCreateSingle;
+export default CreatePfrPage;
