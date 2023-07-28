@@ -574,7 +574,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
               >
                 <div className={`${props.pfrType == 1 ? "" : "col-span-2"}`}>
                   <div className="flex items-center gap-4">
-                    <div>{data.key}</div>
+                    <div className="text-sm font-bold text-gray-light">{data.key}</div>
                     {data.key !== "" ? (
                       <div className="space-x-2">
                         <ButtonBox

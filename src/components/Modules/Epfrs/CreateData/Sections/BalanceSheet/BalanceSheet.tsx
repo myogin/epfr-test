@@ -76,7 +76,7 @@ const BalanceSheet = (props: Props) => {
 
       {!need[0] || !need[1] ? (
         <>
-          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
+          <div className="grid grid-cols-3 mx-8 mb-10 2xl:mx-60">
             <div className="grid col-span-2">
               <h2 className="text-xl font-bold">4.1 Assets</h2>
             </div>
@@ -98,7 +98,7 @@ const BalanceSheet = (props: Props) => {
             </div>
           </div>
           <AssetBalance pfrType={props.pfrType} dataS4={dataS4} />
-          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
+          <div className="grid grid-cols-3 mx-8 mb-10 2xl:mx-60">
             <div className="grid col-span-2">
               <h2 className="text-xl font-bold">4.2 Liabilities</h2>
             </div>
@@ -120,7 +120,7 @@ const BalanceSheet = (props: Props) => {
             </div>
           </div>
           <LiabilityBalance pfrType={props.pfrType} />
-          <div className="mx-8 2xl:mx-60 grid grid-cols-3 mb-10">
+          <div className="grid grid-cols-3 mx-8 mb-10 2xl:mx-60">
             <div className="grid col-span-2">
               <h2 className="text-xl font-bold"> 4.3 Net Worth</h2>
             </div>

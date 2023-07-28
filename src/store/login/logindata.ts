@@ -5,10 +5,12 @@ import { produce } from "immer";
 interface Login {
   token?: any;
   ownerId?: any;
+  pfrId?: number;
 }
 const initialState: Login = {
   token: "",
   ownerId: "",
+  pfrId: 0,
 };
 
 type Actions = {
