@@ -18,7 +18,7 @@ import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const pfrId = 12016;
