@@ -31,3 +31,8 @@ export const getPfrStep = async (step: any, pfrId: any) => {
   const res = await http.get(`pfr/get/s${step}/${pfrId}`, { headers: authHeader() });
   return res.data;
 }
+
+export const downloadPdf = async (pfrId: any) => {
+  const res = await http.get(`pfr/downloadPDF_1/${pfrId}`, { headers: authHeader(), responseType : "blob" });
+  return res;
+}
