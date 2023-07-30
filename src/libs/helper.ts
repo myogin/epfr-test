@@ -26,7 +26,9 @@ export const getClientCustom = (clients: any) => {
   let clientCustom: any[] = [];
 
   if (clients?.length) {
-    clients.map((data: any, index: any) => {});
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
   }
 
   return clientCustom;

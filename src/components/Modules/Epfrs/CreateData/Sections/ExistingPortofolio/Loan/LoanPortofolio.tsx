@@ -191,24 +191,24 @@ const LoanPortofolio = () => {
                                 : true
                             }
                           />
-                          <Select
+                          <Input
                             className="my-4"
-                            name="typeOfVehicle"
                             label="Type Of Vehicle"
+                            type="text"
+                            name="typeOfVehicle"
                             value={newData.typeOfVehicle}
-                            datas={typeOfLoans}
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                typeOfLoan: event.target.value,
-                              })
-                            }
                             needValidation={true}
                             logic={
                               newData.typeOfLoan === "" ||
                               newData.typeOfLoan === "-"
                                 ? false
                                 : true
+                            }
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                typeOfVehicle: event.target.value,
+                              })
                             }
                           />
                           <Select
@@ -422,7 +422,11 @@ const LoanPortofolio = () => {
                   <tr key={data.id}>
                     <td className="px-2 py-5">{++index}</td>
                     <td className="px-2 py-5">{clientName(data.client)}</td>
-                    <td className="px-2 py-5">{data.typeOfLoan ? typeOfLoans[Number(data.typeOfLoan) -1].name : ""}</td>
+                    <td className="px-2 py-5">
+                      {data.typeOfLoan
+                        ? typeOfLoans[Number(data.typeOfLoan) - 1].name
+                        : ""}
+                    </td>
                     <td className="px-2 py-5">{data.loanTerm}</td>
                     <td className="px-2 py-5">{data.yearOfLoanTaken}</td>
                     <td className="px-2 py-5">{data.amountBorrowed}</td>
@@ -434,10 +438,16 @@ const LoanPortofolio = () => {
                     <td className="px-2 py-5">{data.loanStatus}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
-                        <ButtonBox className="text-green-deep" onClick={() => openModalEdit(data.id)}>
+                        <ButtonBox
+                          className="text-green-deep"
+                          onClick={() => openModalEdit(data.id)}
+                        >
                           <PencilLineIcon size={14} />
                         </ButtonBox>
-                        <ButtonBox className="text-red" onClick={() => modalRemoveData(data.id)}>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => modalRemoveData(data.id)}
+                        >
                           <CloseLineIcon size={14} />
                         </ButtonBox>
                       </div>
