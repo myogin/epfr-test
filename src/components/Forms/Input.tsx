@@ -14,6 +14,7 @@ interface Props {
   name?: string;
   dataType?: string;
   indexData?: number;
+  indexClient?: number;
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
@@ -33,6 +34,7 @@ const Input = (props: Props) => {
         onWheel={props.onWheel}
         data-groupdata={props.dataType}
         data-indexdata={props.indexData}
+        data-indexclient={props.indexClient}
         name={props.name}
         type={props.type}
         readOnly={props.readonly}
