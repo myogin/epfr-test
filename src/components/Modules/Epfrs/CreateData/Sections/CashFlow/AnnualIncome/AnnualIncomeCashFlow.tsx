@@ -38,11 +38,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
   let [annualData, setAnnualData] = useState([0, 0]);
   let [monthlyData, setMonthlyData] = useState([0, 0]);
 
-  let [annualWadgesData, setAnnualWadgesData] = useState(0);
-  let [monthlyWadgesData, setMonthlyWadgesData] = useState(0);
+  let [annualWadgesData, setAnnualWadgesData] = useState([0,0]);
+  let [monthlyWadgesData, setMonthlyWadgesData] = useState([0,0]);
 
-  let [annualLessData, setAnnualLessData] = useState(0);
-  let [monthlyLessData, setMonthlyLessData] = useState(0);
+  let [annualLessData, setAnnualLessData] = useState([0,0]);
+  let [monthlyLessData, setMonthlyLessData] = useState([0,0]);
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -51,36 +51,24 @@ const AnnualIncomeCashFlow = (props: Props) => {
     switch (name) {
       case "annualGrossIncome":
         if (groupdata === "annualy") {
-          console.log("Data annually " + indexdata + " " + value);
-          console.log("from annual sebelum edit");
-          console.log(annualData);
 
           const newArray = [...annualData];
           newArray[indexdata] = value;
 
-          const newArrayMonthly = [...annualData];
+          const newArrayMonthly = [...monthlyData];
           newArrayMonthly[indexdata] = value / 12;
-
-          console.log("from annual");
-          console.log(newArray);
-          console.log(newArrayMonthly);
 
           setAnnualData(newArray);
           setMonthlyData(newArrayMonthly);
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          console.log("Data monthly " + indexdata + " " + value);
 
           const newArray = [...monthlyData];
           newArray[indexdata] = value;
 
-          const newArrayAnnualy = [...monthlyData];
+          const newArrayAnnualy = [...annualData];
           newArrayAnnualy[indexdata] = value * 12;
-
-          console.log("from month");
-          console.log(newArray);
-          console.log(newArrayAnnualy);
 
           setAnnualData(newArrayAnnualy);
           setMonthlyData(newArray);
@@ -91,36 +79,71 @@ const AnnualIncomeCashFlow = (props: Props) => {
         break;
       case "additionalWages":
         if (groupdata === "annualy") {
-          setMonthlyWadgesData(value / 12);
-          setAnnualWadgesData(value);
+
+          console.log("additional wedges annual masulk " + indexdata + " " + name + " " + value)
+
+          const newArray = [...annualWadgesData];
+          newArray[indexdata] = value;
+
+          const newArrayMonthly = [...monthlyWadgesData];
+          newArrayMonthly[indexdata] = value / 12;
+
+          setAnnualWadgesData(newArray);
+          setMonthlyWadgesData(newArrayMonthly);
+          
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          setAnnualWadgesData(value * 12);
-          setMonthlyWadgesData(value);
+
+          console.log("additional wedges monthly masulk " + indexdata + " " + name + " " + value)
+
+          const newArray = [...monthlyWadgesData];
+          newArray[indexdata] = value;
+
+          const newArrayAnnualy = [...annualWadgesData];
+          newArrayAnnualy[indexdata] = value * 12;
+
+          setAnnualWadgesData(newArrayAnnualy);
+          setMonthlyWadgesData(newArray);
 
           setAnnualIncome(indexdata, name, value * 12);
         }
         break;
       case "less":
         if (groupdata === "annualy") {
-          setMonthlyLessData(value / 12);
-          setAnnualLessData(value);
+
+          const newArray = [...annualLessData];
+          newArray[indexdata] = value;
+
+          const newArrayMonthly = [...monthlyLessData];
+          newArrayMonthly[indexdata] = value / 12;
+
+          setAnnualLessData(newArray);
+          setMonthlyLessData(newArrayMonthly);
+          
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          setAnnualLessData(value * 12);
-          setMonthlyLessData(value);
+
+          const newArray = [...monthlyWadgesData];
+          newArray[indexdata] = value;
+
+          const newArrayAnnualy = [...annualWadgesData];
+          newArrayAnnualy[indexdata] = value * 12;
+
+          setAnnualLessData(newArrayAnnualy);
+          setMonthlyLessData(newArray);
 
           setAnnualIncome(indexdata, name, value * 12);
         }
         break;
       default:
         if (groupdata === "annualy") {
+
           const newArray = [...annualData];
           newArray[indexdata] = value;
 
-          const newArrayMonthly = [...annualData];
+          const newArrayMonthly = [...monthlyData];
           newArrayMonthly[indexdata] = value / 12;
 
           setAnnualData(newArray);
@@ -128,12 +151,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          console.log("Data bawah" + indexdata + " " + value);
 
           const newArray = [...monthlyData];
           newArray[indexdata] = value;
 
-          const newArrayAnnualy = [...monthlyData];
+          const newArrayAnnualy = [...annualData];
           newArrayAnnualy[indexdata] = value * 12;
 
           setAnnualData(newArrayAnnualy);
@@ -278,9 +300,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         type="text"
                         formStyle="text-right"
                         name="additionalWages"
+                        indexData={index}
                         value={
-                          monthlyWadgesData > 0
-                            ? monthlyWadgesData
+                          monthlyWadgesData[index] > 0
+                            ? monthlyWadgesData[index]
                             : data[index]
                             ? data[index].annualIncome.additionalWages / 12
                             : 0
@@ -295,9 +318,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         type="text"
                         formStyle="text-right"
                         name="additionalWages"
+                        indexData={index}
                         value={
-                          annualWadgesData > 0
-                            ? annualWadgesData
+                          annualWadgesData[index] > 0
+                            ? annualWadgesData[index]
                             : data[index]
                             ? data[index].annualIncome.additionalWages
                             : 0
@@ -643,9 +667,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
                       type="text"
                       name="less"
                       formStyle="text-right"
+                      indexData={index}
                       value={
-                        monthlyLessData > 0
-                          ? monthlyLessData
+                        monthlyLessData[index] > 0
+                          ? monthlyLessData[index]
                           : data[index]
                           ? data[index].annualIncome.less / 12
                           : 0
@@ -657,10 +682,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
                       className="my-4"
                       type="text"
                       name="less"
+                      indexData={index}
                       formStyle="text-right"
                       value={
-                        annualLessData > 0
-                          ? annualLessData
+                        annualLessData[index] > 0
+                          ? annualLessData[index]
                           : data[index]
                           ? data[index].annualIncome.less
                           : 0
