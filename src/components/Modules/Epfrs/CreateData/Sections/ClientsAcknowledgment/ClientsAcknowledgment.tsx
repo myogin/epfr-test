@@ -424,11 +424,8 @@ const ClientsAcknowledgment = (props: Props) => {
       fetchData();
     }
     
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem('section12', JSON.stringify(sectionElevenData));
-  }, [sectionElevenData]);
+  }, [scrollPosition, sectionElevenData]);
 
   return (
     <div id={props.id}>

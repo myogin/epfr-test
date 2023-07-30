@@ -250,11 +250,10 @@ const SwitchingReplacement = (props: Props) => {
         });
       }
     });
-  }, [showReasonTwo]);
 
-  useEffect(() => {
     localStorage.setItem('section10', JSON.stringify(sectionTenData));
-  }, [sectionTenData]);
+
+  }, [showReasonTwo,sectionTenData]);
 
   const scrollPosition = useScrollPosition(10)
   return (
