@@ -740,7 +740,7 @@ const AddPlanRecommendation = () => {
         var lengthData = 0;
         var dataFunds: Array<any> = [];
 
-        if(dataProduct?.ilp){
+        if(dataProduct.ilp){
           if(dataProduct.ilp.platform.funds.length > 0){
             dataProduct.ilp.platform.funds.map((valueRes:any, indexRes:any) => {
               dataFunds.push({
@@ -1815,7 +1815,7 @@ const AddPlanRecommendation = () => {
                     Provider Name
                   </label>
                   <select placeholder="Please select data" value={cisDataProvider} name="company"
-                    className="my-4 w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                    className="w-full px-0 py-2 my-4 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
                     onChange={(event) => changeCisDataProvider(event)}>
                     <option value="-">Please select data</option>
                     {dataCompany?.length &&
@@ -1846,17 +1846,17 @@ const AddPlanRecommendation = () => {
                   <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
                     <thead className="bg-white-bone">
                       <tr className="border-b border-gray-soft-strong">
-                        <td className='align-top px-2 py-2'>
+                        <td className='px-2 py-2 align-top'>
                           <TextSmall className="uppercase text-gray-light">
                             SN
                           </TextSmall>
                         </td>
-                        <td className='align-top px-2 py-2'>
+                        <td className='px-2 py-2 align-top'>
                           <TextSmall className="uppercase text-gray-light">
                             FUND NAME
                           </TextSmall>
                         </td>
-                        <td className='align-top px-2 py-2'>
+                        <td className='px-2 py-2 align-top'>
                           <TextSmall className="uppercase text-gray-light">
                             CODE
                           </TextSmall>
@@ -1871,7 +1871,7 @@ const AddPlanRecommendation = () => {
                     <tbody>
                       {section9Recommend?.product &&
                             section9Recommend.product.funds.map((dataPlatform: any, indexPlatform:any) => (
-                            <tr>
+                            <tr key={"aassa"+indexPlatform}>
                               <td className="px-2 py-2">
                                 <span>{indexPlatform + 1}</span>
                               </td>
