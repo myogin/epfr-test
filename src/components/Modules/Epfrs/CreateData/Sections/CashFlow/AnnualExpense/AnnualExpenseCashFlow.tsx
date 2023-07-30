@@ -88,7 +88,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
       setAnnualData(newArray);
       setMonthlyData(newArrayMonthly);
 
-      setAnnualExpanse(name, indexdata, value);
+      setAnnualExpanse(name, indexdata, indexclient, value);
     } else {
       const newArray = [...monthlyData];
       newArray[indexdata][indexclient] = value;
@@ -99,7 +99,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
       setAnnualData(newArrayAnnualy);
       setMonthlyData(newArray);
 
-      setAnnualExpanse(name, indexdata, value * 12);
+      setAnnualExpanse(name, indexdata, indexclient, value * 12);
     }
   };
 
@@ -115,10 +115,10 @@ const AnnualExpenseCashFlow = (props: Props) => {
         <div className={`col-span-3`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
-            <>
+            <Fragment key={"dasda" + index}>
               <div className="text-sm font-bold text-right">Monthly</div>
               <div className="text-sm font-bold text-right">Annual</div>
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
 
@@ -135,62 +135,68 @@ const AnnualExpenseCashFlow = (props: Props) => {
             <TextSmall className="text-gray-light">{data.title}</TextSmall>
           </div>
           {getPfrLength?.length &&
-            getPfrLength.map((dataTwo, index) =>
-              need ? (
-                need[index] ? (
-                  <>
-                    <div>
-                      <Input
-                        dataType="monthly"
-                        className="my-4"
-                        formStyle="text-right"
-                        type="text"
-                        indexData={indexOne}
-                        indexClient={index}
-                        name={data.key}
-                        value={
-                          monthlyData[indexOne][index] > 0
-                            ? monthlyData[indexOne][index]
-                            : data.values
-                            ? data.values[index] / 12
-                            : 0
-                        }
-                        handleChange={handleInputChange}
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        dataType="annualy"
-                        className="my-4"
-                        formStyle="text-right"
-                        indexData={indexOne}
-                        indexClient={index}
-                        name={data.key}
-                        type="text"
-                        value={
-                          annualData[indexOne][index] > 0
-                            ? annualData[indexOne][index]
-                            : data.values
-                            ? data.values[index]
-                            : 0
-                        }
-                        handleChange={handleInputChange}
-                      />
-                    </div>
-                  </>
+            getPfrLength.map((dataTwo, index) => (
+              <Fragment key={"dsa" + index}>
+                {need ? (
+                  need[index] ? (
+                    <>
+                      <div>
+                        <Input
+                          dataType="monthly"
+                          className="my-4"
+                          formStyle="text-right"
+                          type="text"
+                          indexData={indexOne}
+                          indexClient={index}
+                          name={data.key}
+                          value={
+                            monthlyData[indexOne][index] > 0
+                              ? monthlyData[indexOne][index]
+                              : data.values
+                              ? data.values[index] / 12
+                              : 0
+                          }
+                          handleChange={handleInputChange}
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          dataType="annualy"
+                          className="my-4"
+                          formStyle="text-right"
+                          indexData={indexOne}
+                          indexClient={index}
+                          name={data.key}
+                          type="text"
+                          value={
+                            annualData[indexOne][index] > 0
+                              ? annualData[indexOne][index]
+                              : data.values
+                              ? data.values[index]
+                              : 0
+                          }
+                          handleChange={handleInputChange}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-sm text-right text-gray-light">
+                        0
+                      </div>
+                      <div className="text-sm text-right text-gray-light">
+                        0
+                      </div>
+                    </>
+                  )
                 ) : (
                   <>
                     <div className="text-sm text-right text-gray-light">0</div>
                     <div className="text-sm text-right text-gray-light">0</div>
                   </>
-                )
-              ) : (
-                <>
-                  <div className="text-sm text-right text-gray-light">0</div>
-                  <div className="text-sm text-right text-gray-light">0</div>
-                </>
-              )
-            )}
+                )}
+              </Fragment>
+            ))}
         </RowDinamycGrid>
       ))}
 
@@ -471,14 +477,14 @@ const AnnualExpenseCashFlow = (props: Props) => {
                 </div>
                 {getPfrLength?.length &&
                   getPfrLength.map((d, indexB) => (
-                    <>
+                    <Fragment key={"adas" + indexB}>
                       <div className="text-sm text-right text-gray-light">
                         {data.values[indexB] ? data.values[indexB] : "0"}
                       </div>
                       <div className="text-sm text-right text-gray-light">
                         {data.values[indexB] ? data.values[indexB] : "0"}
                       </div>
-                    </>
+                    </Fragment>
                   ))}
               </div>
             ))}
@@ -487,10 +493,10 @@ const AnnualExpenseCashFlow = (props: Props) => {
           <>
             {getPfrLength?.length &&
               getPfrLength.map((d, index) => (
-                <>
+                <Fragment key={"sasa" + index}>
                   <div className="text-sm text-right text-gray-light">0</div>
                   <div className="text-sm text-right text-gray-light">0</div>
-                </>
+                </Fragment>
               ))}
           </>
         )}
@@ -508,7 +514,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
 
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
-            <>
+            <Fragment key={"sasas" + index}>
               {need ? (
                 need[index] ? (
                   <>
@@ -539,7 +545,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
                   </div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
     </SectionCardSingleGrid>

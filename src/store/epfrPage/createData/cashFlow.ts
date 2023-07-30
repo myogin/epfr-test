@@ -7,7 +7,8 @@ type Actions = {
   setAnnualIncome: (clientType: number, name: string, value: any) => any;
   setAnnualExpanse: (
     key: string,
-    index: number,
+    indexData: number,
+    indexClient: number,
     value: any
   ) => any;
   setData: (indexData: number, params: any) => any;
@@ -170,55 +171,15 @@ const cashFlow = create(
           ),
         setAnnualExpanse: (
           key: string,
-          index: number,
+          indexData: number,
+          indexClient: number,
           value: any
         ) =>
           set(
             produce((draft) => {
-              switch (key) {
-                case "household":
-                  let household = draft.annualExpense[0];
-                  household.values[index] = value;
-                  household.selected = true;
-                  break;
-                case "transportation":
-                  let transportation = draft.annualExpense[1];
-                  transportation.values[index] = value;
-                  transportation.selected = true;
-                  break;
-                case "telco":
-                  let telco = draft.annualExpense[2];
-                  telco.values[index] = value;
-                  telco.selected = true;
-                  break;
-                case "dependents":
-                  let dependents = draft.annualExpense[3];
-                  dependents.values[index] = value;
-                  dependents.selected = true;
-                  break;
-                case "personal":
-                  let personal = draft.annualExpense[4];
-                  personal.values[index] = value;
-                  personal.selected = true;
-                  break;
-                case "luxury":
-                  let luxury = draft.annualExpense[5];
-                  luxury.values[index] = value;
-                  luxury.selected = true;
-                  break;
-                case "insurancePremiums":
-                  let insurancePremiums = draft.annualExpense[6];
-                  insurancePremiums.values[index] = value;
-                  insurancePremiums.selected = true;
-                  break;
-                case "loanRepayments":
-                  let loanRepayments = draft.annualExpense[7];
-                  loanRepayments.values[index] = value;
-                  loanRepayments.selected = true;
-                  break;
-                default:
-                  break;
-              }
+              let household = draft.annualExpense[indexData];
+              household.values[indexClient] = value;
+              household.selected = true;
             })
           ),
         setAnnualSurplus: (indexData: number, params: any) =>

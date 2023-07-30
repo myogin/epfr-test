@@ -740,9 +740,9 @@ const AddPlanRecommendation = () => {
         var lengthData = 0;
         var dataFunds: Array<any> = [];
 
-        if(dataProduct.ilp){
-          if(dataProduct.ilp.platform.funds.length > 0){
-            dataProduct.ilp.platform.funds.map((valueRes:any, indexRes:any) => {
+        if(dataProduct.length > 0){
+          if(dataProduct.ilp?.platform.funds.length > 0){
+            dataProduct?.ilp?.platform.funds.map((valueRes:any, indexRes:any) => {
               dataFunds.push({
                 allocation: valueRes.allocation,
                 fundId: valueRes.fundId,

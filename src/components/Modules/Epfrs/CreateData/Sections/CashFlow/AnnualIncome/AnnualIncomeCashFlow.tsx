@@ -203,10 +203,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         <div className={`col-span-3`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
-            <>
+            <Fragment key={"dsds"+index}>
               <div className="text-sm font-bold text-right">Monthly</div>
               <div className="text-sm font-bold text-right">Annual</div>
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -221,7 +221,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
-            <>
+            <Fragment key={"asas"+index}>
               {need ? (
                 need[index] == 1 ? (
                   <>
@@ -274,7 +274,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   <div className="text-right">0</div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -289,7 +289,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
-            <>
+            <Fragment key={"asa"+index}>
               {need ? (
                 need[index] == 1 ? (
                   <>
@@ -342,7 +342,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   <div className="text-right">0</div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -403,7 +403,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                           <>
                             {getPfrLength?.length &&
                               getPfrLength.map((d, index) => (
-                                <>
+                                <Fragment key={"asa"+index}>
                                   <div
                                     className={`text-sm ${
                                       props.pfrType == 1 ? "1/4" : "basis-1/6"
@@ -416,7 +416,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                       props.pfrType == 1 ? "1/4" : "basis-1/6"
                                     }`}
                                   ></div>
-                                </>
+                                </Fragment>
                               ))}
                           </>
                         )}
@@ -434,7 +434,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                           />
                           {getPfrLength?.length &&
                             getPfrLength.map((d, index) => (
-                              <>
+                              <Fragment key={"asas"+index}>
                                 {need ? (
                                   need[index] == 1 ? (
                                     <>
@@ -501,7 +501,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                     <div className="text-right">-</div>
                                   </>
                                 )}
-                              </>
+                              </Fragment>
                             ))}
                         </div>
                       </div>
@@ -619,14 +619,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
                 </div>
                 {getPfrLength?.length &&
                   getPfrLength.map((d, indexB) => (
-                    <>
+                    <Fragment key={"assa"+index}>
                       <div className="text-sm text-right text-gray-light">
                         {data.values[indexB] ? data.values[indexB] : "0"}
                       </div>
                       <div className="text-sm text-right text-gray-light">
                         {data.values[indexB] ? data.values[indexB] : "0"}
                       </div>
-                    </>
+                    </Fragment>
                   ))}
               </div>
             ))}
@@ -635,10 +635,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
           <>
             {getPfrLength?.length &&
               getPfrLength.map((d, index) => (
-                <>
+                <Fragment key={"sasa"+index}>
                   <div className="text-sm text-right text-gray-light">0</div>
                   <div className="text-sm text-right text-gray-light">0</div>
-                </>
+                </Fragment>
               ))}
           </>
         )}
@@ -657,7 +657,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
-            <>
+            <Fragment key={"sas"+index}>
               {need ? (
                 need[index] == 1 ? (
                   <>
@@ -706,7 +706,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   <div className="text-right">0</div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -721,7 +721,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
-            <>
+            <Fragment key={"sasa"+index}>
               {need ? (
                 need[index] ? (
                   <>
@@ -752,7 +752,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   </div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
     </SectionCardSingleGrid>
