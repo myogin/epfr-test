@@ -7,13 +7,15 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { getPfrStep } from "@/services/pfrService";
+import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 interface Props {
@@ -31,6 +33,10 @@ const RepresentativeDeclaration = (props: Props) => {
   const finish = () => {
     push("/create/finish");
   };
+
+  const review = () => {
+    push(`/create/review/${props.pfrType === 1? 'single': 'joint'}`);
+  }
 
   const [requiredNFTF, setRequiredNFTF] = useState(false);
   const [isJointFieldWork, setIsJointFieldWork] = useState(false);
@@ -58,6 +64,26 @@ const RepresentativeDeclaration = (props: Props) => {
       fetchData();
     }
   }, []);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const openModalEdit = (params: any) => {
+    // setNewProduct({
+    //   ...sectionTenData.originalProduct[params],
+    //   index: params
+    // });
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+  //   setNewProductErrors([]);
+  //   setNewProduct(productData);
+    setShowModal(false);
+  };
 
   return (
     <div id={props.id}>
@@ -168,10 +194,185 @@ const RepresentativeDeclaration = (props: Props) => {
       </SectionCardSingleGrid>
 
       <SectionCardFooter className="mx-8 2xl:mx-60">
-        <ButtonGreenMedium>Review</ButtonGreenMedium>
-        <ButtonGreenMedium onClick={finish}>
+        <ButtonGreenMedium onClick={review}>
+          Review
+        </ButtonGreenMedium>
+        <ButtonGreenMedium onClick={openModal}>
           Sign Now <ArrowRightLineIcon size={20} />
         </ButtonGreenMedium>
+
+        <Transition appear show={showModal} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-opacity-25 bg-gray-light" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-full p-4 text-center">
+                {/* <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-2xl p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Siging Method
+                    </Dialog.Title>
+
+                    <div className="mt-2">
+
+                      <div className="flex">
+                        <div className={`w-full my-4 space-y-3`}>
+                            <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+                              Client(s), Trusted Individual(s), Agent
+                            </label>
+
+                          <select
+                            name="clientName"
+                            className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                            onChange={(e) => {
+                              console.log(e.target.selectedIndex)
+                            }}
+                          >
+                            <option key='remote' value='0'>
+                              Remote
+                            </option>
+                            <option key='face2face' value='0'>
+                              Face to face
+                            </option>
+                          </select>
+                        </div>
+
+                        <div className="flex">
+                          <div className={`w-full my-4 space-y-3`}>
+                              <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+                                Supervisor
+                              </label>
+
+                            <select
+                              name="clientName"
+                              className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                              onChange={(e) => {
+                                console.log(e.target.selectedIndex)
+                              }}
+                            >
+                              <option key='remote' value='0'>
+                                Remote
+                              </option>
+                              <option key='face2face' value='1'>
+                                Face to face
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                    
+                  </Dialog.Panel>
+                </Transition.Child> */}
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-2xl p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Singing Method
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <div className="flex">
+                        <div className={`w-full my-4 space-y-3`}>
+                            <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+                              Client(s), Trusted Individual(s), Agent
+                            </label>
+
+                            <select
+                              name="clientName"
+                              className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                              onChange={(e) => {
+                                console.log(e.target.selectedIndex)
+                              }}
+                            >
+                              <option key='remote' value='0'>
+                                Remote
+                              </option>
+                              <option key='face2face' value='0'>
+                                Face to face
+                              </option>
+                            </select>
+                        </div>
+                      </div>
+
+                      <div className="flex">
+                        <div className={`w-full my-4 space-y-3`}>
+                            <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+                              Supervisor
+                            </label>
+
+                            <select
+                              name="clientName"
+                              className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                              onChange={(e) => {
+                                console.log(e.target.selectedIndex)
+                              }}
+                            >
+                              <option key='remote' value='0'>
+                                Remote
+                              </option>
+                              <option key='face2face' value='0'>
+                                Face to face
+                              </option>
+                            </select>
+                        </div>
+                      </div>
+                    </div>
+                    {/* {(newProductErrors.length > 0) && (
+                      <div className="mt-4">
+                        {newProductErrors.map(({name}) => (
+                          <p key={name} style={{fontSize: '14px', color: 'red'}}>
+                            - {name} is required
+                          </p>
+                        ))}
+                      </div>
+                    )} */}
+                    <div className="flex gap-4 mt-4">
+                      <ButtonGreenMedium onClick={finish}>
+                        Sign
+                      </ButtonGreenMedium>
+                      <ButtonTransparentMedium onClick={closeModal}>
+                        Cancel
+                      </ButtonTransparentMedium>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
       </SectionCardFooter>
     </div>
   );
