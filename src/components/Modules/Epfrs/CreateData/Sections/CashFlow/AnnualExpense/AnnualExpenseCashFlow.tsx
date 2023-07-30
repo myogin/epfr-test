@@ -27,9 +27,30 @@ const AnnualExpenseCashFlow = (props: Props) => {
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
 
+  let [annualData, setAnnualData] = useState([
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+  ]);
+  let [monthlyData, setMonthlyData] = useState([
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+  ]);
+
   let getPfrLength = getLength(props.pfrType);
 
-  let { need, annualExpense, others } = useCashFlow();
+  let { need, annualExpense, others, setAnnualExpanse } = useCashFlow();
 
   const addOther = () => {
     setShowModalOther(true);
@@ -53,6 +74,35 @@ const AnnualExpenseCashFlow = (props: Props) => {
     setActionDataId(params);
   };
 
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+    const { groupdata, indexdata, indexclient } = event.target.dataset;
+
+    if (groupdata === "annualy") {
+      const newArray = [...annualData];
+      newArray[indexdata][indexclient] = value;
+
+      const newArrayMonthly = [...monthlyData];
+      newArrayMonthly[indexdata][indexclient] = value / 12;
+
+      setAnnualData(newArray);
+      setMonthlyData(newArrayMonthly);
+
+      setAnnualExpanse(name, indexdata, value);
+    } else {
+      const newArray = [...monthlyData];
+      newArray[indexdata][indexclient] = value;
+
+      const newArrayAnnualy = [...annualData];
+      newArrayAnnualy[indexdata][indexclient] = value * 12;
+
+      setAnnualData(newArrayAnnualy);
+      setMonthlyData(newArray);
+
+      setAnnualExpanse(name, indexdata, value * 12);
+    }
+  };
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowDinamycGrid
@@ -72,9 +122,9 @@ const AnnualExpenseCashFlow = (props: Props) => {
           ))}
       </RowDinamycGrid>
 
-      {annualExpense.map((data, index) => (
+      {annualExpense.map((data, indexOne) => (
         <RowDinamycGrid
-          key={index}
+          key={indexOne}
           className={`${
             props.pfrType == 1
               ? "lg:grid-cols-5 sm:grid-cols-5 md:grid-cols-5"
@@ -85,48 +135,62 @@ const AnnualExpenseCashFlow = (props: Props) => {
             <TextSmall className="text-gray-light">{data.title}</TextSmall>
           </div>
           {getPfrLength?.length &&
-            getPfrLength.map((dataTwo, index) => (
-              <>
-                {need ? (
-                  need[index] ? (
-                    <>
-                      <div>
-                        <Input
-                          className="my-4"
-                          formStyle="text-right"
-                          type="text"
-                          value={data.values[index]}
-                          handleChange={(event) => setData(event.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          className="my-4"
-                          formStyle="text-right"
-                          type="text"
-                          value={data.values[index]}
-                          handleChange={(event) => setData(event.target.value)}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-sm text-right text-gray-light">
-                        0
-                      </div>
-                      <div className="text-sm text-right text-gray-light">
-                        0
-                      </div>
-                    </>
-                  )
+            getPfrLength.map((dataTwo, index) =>
+              need ? (
+                need[index] ? (
+                  <>
+                    <div>
+                      <Input
+                        dataType="monthly"
+                        className="my-4"
+                        formStyle="text-right"
+                        type="text"
+                        indexData={indexOne}
+                        indexClient={index}
+                        name={data.key}
+                        value={
+                          monthlyData[indexOne][index] > 0
+                            ? monthlyData[indexOne][index]
+                            : data.values
+                            ? data.values[index] / 12
+                            : 0
+                        }
+                        handleChange={handleInputChange}
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        dataType="annualy"
+                        className="my-4"
+                        formStyle="text-right"
+                        indexData={indexOne}
+                        indexClient={index}
+                        name={data.key}
+                        type="text"
+                        value={
+                          annualData[indexOne][index] > 0
+                            ? annualData[indexOne][index]
+                            : data.values
+                            ? data.values[index]
+                            : 0
+                        }
+                        handleChange={handleInputChange}
+                      />
+                    </div>
+                  </>
                 ) : (
                   <>
                     <div className="text-sm text-right text-gray-light">0</div>
                     <div className="text-sm text-right text-gray-light">0</div>
                   </>
-                )}
-              </>
-            ))}
+                )
+              ) : (
+                <>
+                  <div className="text-sm text-right text-gray-light">0</div>
+                  <div className="text-sm text-right text-gray-light">0</div>
+                </>
+              )
+            )}
         </RowDinamycGrid>
       ))}
 
@@ -384,7 +448,9 @@ const AnnualExpenseCashFlow = (props: Props) => {
               >
                 <div className={`${props.pfrType == 1 ? "" : "col-span-2"}`}>
                   <div className="flex items-center gap-4">
-                    <div className="text-sm font-bold text-gray-light">{data.key}</div>
+                    <div className="text-sm font-bold text-gray-light">
+                      {data.key}
+                    </div>
                     {data.key !== "" ? (
                       <div className="space-x-2">
                         <ButtonBox

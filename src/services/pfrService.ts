@@ -16,18 +16,8 @@ export const postPfr = async (group : any, data : any) => {
 }
 
 export const getWholeContext = async (id: any) => {
-  const headers = {'Authorization': 'Bearer $2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'};
-  const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/getWhole/${id}`, 
-      {
-          'headers':{
-              'Authorization': '$2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'
-          }
-      }
-  );
-  const data = await response.json();
-  
-  return data;
+  const res = await http.get(`/pfr/getWhole/${id}`,{ headers: authHeader() });
+  return res.data;
 };
 
 export const pfrSection = async (section:any, id:any) => {

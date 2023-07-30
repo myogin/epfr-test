@@ -390,7 +390,7 @@ const InvestmentPortofolio = () => {
                     <td className="px-2 py-5">{data.yearInvested}</td>
                     <td className="px-2 py-5">{data.investmentAmount}</td>
                     <td className="px-2 py-5">{data.currentvalue}</td>
-                    <td className="px-2 py-5">{data.sourceOfInvestment}</td>
+                    <td className="px-2 py-5">{data.sourceOfInvestment ? sourceOfInvestments[Number(data.sourceOfInvestment)].name : ""}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
                         <ButtonBox

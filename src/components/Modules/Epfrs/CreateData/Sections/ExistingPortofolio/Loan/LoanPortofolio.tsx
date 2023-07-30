@@ -106,6 +106,24 @@ const LoanPortofolio = () => {
 
   let loanTerms = loanTerm();
 
+  const [checkVehicle, setCheckVehicle] = useState(false);
+
+  const checkTypeOfLoan = (params: any) => {
+    if (params === "1") {
+      setNewData({
+        ...newData,
+        typeOfLoan: params,
+      });
+      setCheckVehicle(true);
+    } else {
+      setNewData({
+        ...newData,
+        typeOfLoan: params,
+      });
+      setCheckVehicle(false);
+    }
+  };
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <div className="w-full">
@@ -178,10 +196,7 @@ const LoanPortofolio = () => {
                             value={newData.typeOfLoan}
                             datas={typeOfLoans}
                             handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                typeOfLoan: event.target.value,
-                              })
+                              checkTypeOfLoan(event.target.value)
                             }
                             needValidation={true}
                             logic={
@@ -191,26 +206,55 @@ const LoanPortofolio = () => {
                                 : true
                             }
                           />
-                          <Select
-                            className="my-4"
-                            name="typeOfVehicle"
-                            label="Type Of Vehicle"
-                            value={newData.typeOfVehicle}
-                            datas={typeOfLoans}
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                typeOfLoan: event.target.value,
-                              })
-                            }
-                            needValidation={true}
-                            logic={
-                              newData.typeOfLoan === "" ||
-                              newData.typeOfLoan === "-"
-                                ? false
-                                : true
-                            }
-                          />
+                          {checkVehicle ? (
+                            <>
+                              <Input
+                                className="my-4"
+                                label="Type Of Vehicle"
+                                type="text"
+                                name="typeOfVehicle"
+                                value={newData.typeOfVehicle}
+                                needValidation={true}
+                                logic={
+                                  newData.typeOfLoan === "1" &&
+                                  (newData.typeOfVehicle === "" ||
+                                    newData.typeOfVehicle === "-")
+                                    ? false
+                                    : true
+                                }
+                                handleChange={(event) =>
+                                  setNewData({
+                                    ...newData,
+                                    typeOfVehicle: event.target.value,
+                                  })
+                                }
+                              />
+                              <Input
+                                className="my-4"
+                                label="Loan Status"
+                                type="text"
+                                name="loanStatus"
+                                value={newData.loanStatus}
+                                needValidation={true}
+                                logic={
+                                  newData.typeOfLoan === "1" &&
+                                  (newData.loanStatus === "" ||
+                                    newData.loanStatus === "-")
+                                    ? false
+                                    : true
+                                }
+                                handleChange={(event) =>
+                                  setNewData({
+                                    ...newData,
+                                    loanStatus: event.target.value,
+                                  })
+                                }
+                              />
+                            </>
+                          ) : (
+                            ""
+                          )}
+
                           <Select
                             className="my-4"
                             name="loanTerm"
@@ -405,9 +449,10 @@ const LoanPortofolio = () => {
                 <th className="px-2 py-5">Client</th>
                 <th className="px-2 py-5">Type Of Loan</th>
                 <th className="px-2 py-5">Loan Term</th>
+                <th className="px-2 py-5">Type Of Vehicle</th>
+                <th className="px-2 py-5">Loan Status</th>
                 <th className="px-2 py-5">Year Of Loan Taken</th>
                 <th className="px-2 py-5">Amount Borrowed ($)</th>
-                <th className="px-2 py-5">Type Of Vehicle</th>
                 <th className="px-2 py-5">Current Outstanding Loan ($)</th>
                 <th className="px-2 py-5">Lender</th>
                 <th className="px-2 py-5">Interest Rate</th>
@@ -422,22 +467,40 @@ const LoanPortofolio = () => {
                   <tr key={data.id}>
                     <td className="px-2 py-5">{++index}</td>
                     <td className="px-2 py-5">{clientName(data.client)}</td>
-                    <td className="px-2 py-5">{data.typeOfLoan ? typeOfLoans[Number(data.typeOfLoan) -1].name : ""}</td>
+                    <td className="px-2 py-5">
+                      {data.typeOfLoan
+                        ? typeOfLoans[Number(data.typeOfLoan) - 1].name
+                        : ""}
+                    </td>
                     <td className="px-2 py-5">{data.loanTerm}</td>
+                    {data.typeOfLoan === "1" ? (
+                      <>
+                        <td className="px-2 py-5">{data.typeOfVehicle}</td>
+                        <td className="px-2 py-5">{data.loanStatus}</td>
+                      </>
+                    ) : (
+                      ""
+                    )}
+
                     <td className="px-2 py-5">{data.yearOfLoanTaken}</td>
                     <td className="px-2 py-5">{data.amountBorrowed}</td>
-                    <td className="px-2 py-5">{data.typeOfVehicle}</td>
+
                     <td className="px-2 py-5">{data.currentOutstandingLoan}</td>
                     <td className="px-2 py-5">{data.lender}</td>
                     <td className="px-2 py-5">{data.interestRate}</td>
                     <td className="px-2 py-5">{data.monthlyLoanRepayment}</td>
-                    <td className="px-2 py-5">{data.loanStatus}</td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
-                        <ButtonBox className="text-green-deep" onClick={() => openModalEdit(data.id)}>
+                        <ButtonBox
+                          className="text-green-deep"
+                          onClick={() => openModalEdit(data.id)}
+                        >
                           <PencilLineIcon size={14} />
                         </ButtonBox>
-                        <ButtonBox className="text-red" onClick={() => modalRemoveData(data.id)}>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => modalRemoveData(data.id)}
+                        >
                           <CloseLineIcon size={14} />
                         </ButtonBox>
                       </div>
