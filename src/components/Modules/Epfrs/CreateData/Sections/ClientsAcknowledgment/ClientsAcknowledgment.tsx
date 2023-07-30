@@ -422,7 +422,7 @@ const ClientsAcknowledgment = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('section11', JSON.stringify(sectionElevenData));
+    localStorage.setItem('section12', JSON.stringify(sectionElevenData));
   }, [sectionElevenData]);
 
   const scrollPosition = useScrollPosition(11)

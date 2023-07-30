@@ -41,6 +41,7 @@ const RepresentativeDeclaration = (props: Props) => {
 
   const [requiredNFTF, setRequiredNFTF] = useState(false);
   const [isJointFieldWork, setIsJointFieldWork] = useState(false);
+  const [explain, setExplain] = useState("");
 
   const fetchData = async () => {
     console.log("Fetching ...");
@@ -80,6 +81,13 @@ const RepresentativeDeclaration = (props: Props) => {
     setShowModal(false);
   };
 
+  useEffect(() => {
+    localStorage.setItem('section13', JSON.stringify({
+      id: 0,
+      explain
+    }));
+  }, [isJointFieldWork, explain]);
+
   return (
     <div id={props.id}>
       <div className="sticky top-0 z-10 bg-white">
@@ -104,7 +112,7 @@ const RepresentativeDeclaration = (props: Props) => {
           </TextThin>
         </RowSingleGrid>
         <RowSingleGrid>
-          <TextArea defaultValue="test" />
+          <TextArea handleChange={(e) => setExplain(e.target.value)} />
         </RowSingleGrid>
         <RowSingleGrid>
           <TextThin>
