@@ -11,6 +11,13 @@ type Actions = {
     indexClient: number,
     value: any
   ) => any;
+  setOthers: (
+    annualType: string,
+    index: number,
+    params: any
+  ) => any;
+  patchOthers: (annualType: string, params: any) => any;
+  removeOthers: (annualType: string, params: any) => any;
   setData: (indexData: number, params: any) => any;
   setAnnualSurplus: (indexData: number, params: any) => any;
   setAnswer: (indexData: number, params: any) => any;
@@ -24,30 +31,18 @@ const initialState: SectionThree = {
   others: {
     annualIncome: [
       {
-        id: 1,
+        id: 0,
         editting: false,
-        key: "Test Other A",
-        values: [10, 20],
-      },
-      {
-        id: 2,
-        editting: false,
-        key: "Test Other C",
-        values: [10, 20],
+        key: "",
+        values: [0, 0],
       },
     ],
     annualExpense: [
       {
-        id: 1,
+        id: 0,
         editting: false,
-        key: "Test Other expense A",
-        values: [10, 30],
-      },
-      {
-        id: 2,
-        editting: false,
-        key: "Test Other expense B",
-        values: [10, 20],
+        key: "",
+        values: [0, 0],
       },
     ],
   },
@@ -180,6 +175,88 @@ const cashFlow = create(
               let household = draft.annualExpense[indexData];
               household.values[indexClient] = value;
               household.selected = true;
+            })
+          ),
+        setOthers: (
+          annualType: string,
+          indexData: number,
+          params: any
+        ) => set(produce((draft) => {
+
+            if(annualType === "annualIncome") {
+              if (indexData === 0 && get().others?.annualIncome.length) {
+                let othersReplace = draft.others.annualIncome[indexData];
+                othersReplace.id = params.id;
+                othersReplace.editting = params.editting;
+                othersReplace.key = params.key;
+                othersReplace.values[0] = params.values[0];
+                othersReplace.values[1] = params.values[1];
+              } else {
+                draft.others.annualIncome.push(params);
+              }
+            }else {
+              if (indexData === 0 && get().others?.annualExpense.length) {
+                let othersReplace = draft.others.annualExpense[indexData];
+                othersReplace.id = params.id;
+                othersReplace.editting = params.editting;
+                othersReplace.key = params.key;
+                othersReplace.values = params.value;
+              } else {
+                draft.others.annualExpense.push(params);
+              }
+
+            }
+            
+          })),
+        patchOthers: (annualType: string, params: any) =>
+          set(
+            produce((draft) => {
+              const other = draft.others[annualType].find(
+                (el: any) => el.id === params.id
+              );
+
+              other.editting = params.editting;
+              other.key = params.key;
+              other.values = params.value;
+            })
+          ),
+          removeOthers: (annualType: string,params: any) =>
+          set(
+            produce((draft) => {
+
+              if(annualType === "annualIncome") {
+                if (get().others?.annualIncome?.length > 1) {
+                  const otherIndex = draft.others?.annualIncome.findIndex(
+                    (el: any) => el.id === params
+                  );
+                  console.log("masuk disini");
+                  draft.others.annualIncome.splice(otherIndex, 1);
+  
+                  // reset index 0 dependent data
+                } else {
+                  let otherReplace = draft.others.annualIncome[0];
+                  otherReplace.id = 0;
+                  otherReplace.editting = false;
+                  otherReplace.key = "";
+                  otherReplace.values = [0,0];
+                }
+              }else {
+                if (get().others?.annualExpense?.length > 1) {
+                  const otherIndex = draft.others?.annualExpense.findIndex(
+                    (el: any) => el.id === params
+                  );
+                  console.log("masuk disini");
+                  draft.others.annualExpense.splice(otherIndex, 1);
+  
+                  // reset index 0 dependent data
+                } else {
+                  let otherReplace = draft.others.annualExpense[0];
+                  otherReplace.id = 0;
+                  otherReplace.editting = false;
+                  otherReplace.key = "";
+                  otherReplace.values = [0,0];
+                }
+              }
             })
           ),
         setAnnualSurplus: (indexData: number, params: any) =>

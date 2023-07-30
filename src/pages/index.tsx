@@ -31,7 +31,7 @@ const EpfrPage: Page = () => {
   return (
     <>
       <Head>
-        <title>Epfr Apps</title>
+        <title>Epfr Lite</title>
       </Head>
       <GlobalCard className="flex flex-col w-full min-h-screen">
         <div className="fixed pt-14 pl-14">

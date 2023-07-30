@@ -240,20 +240,20 @@ const SwitchingReplacement = (props: Props) => {
     return errors;
   }
 
-  useEffect(() => {
-    getPfrLength.map((data, index) => {
-      if (showReasonTwo[index] == 0) {
-        const productList = sectionTenData.originalProduct.filter(val => val.owner !== index);
-        setSectionTenData({
-          ...sectionTenData,
-          originalProduct: productList
-        });
-      }
-    });
+  // useEffect(() => {
+  //   getPfrLength.map((data, index) => {
+  //     if (showReasonTwo[index] == 0) {
+  //       const productList = sectionTenData.originalProduct.filter(val => val.owner !== index);
+  //       setSectionTenData({
+  //         ...sectionTenData,
+  //         originalProduct: productList
+  //       });
+  //     }
+  //   });
 
-    localStorage.setItem('section10', JSON.stringify(sectionTenData));
+  //   localStorage.setItem('section10', JSON.stringify(sectionTenData));
 
-  }, [showReasonTwo,sectionTenData]);
+  // }, [sectionTenData]);
 
   const scrollPosition = useScrollPosition(10)
   return (

@@ -45,7 +45,7 @@ export interface SectionThree {
   id?: number;
   need?: Array<any>;
   reason?: Array<any>;
-  others?: Others;
+  others: Others;
   data: Datas[];
   annualExpense: AnnualExpanse[];
   issues?: Array<any>;
