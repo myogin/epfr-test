@@ -16,18 +16,25 @@ const EpfrLogin: Page = () => {
   const { status } = useSession();
   const { setLogin, token } = useLoginData();
 
-  const loginTest = async (token: any) => {
-    if (token) {
+  const loginTest = async (token1: any) => {
+    if (token1) {
       const result = await signIn("credentials", {
-        token: token,
+        token: token1,
+        redirect: false,
       });
+
+      if (result?.status == 200) {
+        router.push("/");
+      } else {
+        router.push("/unauthorized");
+      }
     }
   };
-  if (router.query.error) {
-    router.push("/unauthorized");
-  }
 
   useEffect(() => {
+    if (router.query.token == undefined) {
+      router.push("/unauthorized");
+    }
     setLogin(router.query.token, router.query.ownerId);
     loginTest(router.query.token);
   });
