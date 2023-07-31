@@ -14,7 +14,7 @@ interface Props {
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 const Select = (props: Props) => {

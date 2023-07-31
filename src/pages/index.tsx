@@ -10,28 +10,49 @@ import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
 import { useLoginData } from "@/store/login/logindata";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { getAllPfrData } from "@/services/pfrService";
+import { getAllPfrData, validateToken } from "@/services/pfrService";
+import { log } from "console";
+import http from "@/libs/httpSetting";
+import authHeader from "@/libs/authHeader";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
-  const { setLogin } = useLoginData();
+  const { setLogin, token } = useLoginData();
   const router = useRouter();
 
-  const getGeneralData =async () => {
-    if(router.query.edit) {
-      const pfr:any = await getAllPfrData(router.query.pfrId);
-    } 
-  }
+  const getGeneralData = async () => {
+    if (router.query.edit) {
+      const pfr: any = await getAllPfrData(router.query.pfrId);
+    }
+  };
 
   useEffect(() => {
+    console.log("useEffect");
+
     getGeneralData();
-    setLogin(router.query.token,router.query.ownerId);
+    setLogin(router.query.token, router.query.ownerId);
+    async function ValidateToken() {
+      const test = await http
+        .post(
+          `http://localhost:8009/api/pfr/validate-params`,
+          {},
+          { headers: authHeader() }
+        )
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          // router.push("/unauthorized");
+        });
+    }
+    ValidateToken();
   });
+
   return (
     <>
       <Head>
-        <title>Epfr Apps</title>
+        <title>Epfr Lite</title>
       </Head>
       <GlobalCard className="flex flex-col w-full min-h-screen">
         <div className="fixed pt-14 pl-14">

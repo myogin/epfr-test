@@ -1,18 +1,15 @@
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowDinamycGrid from "@/components/Attributes/Rows/Grids/RowDinamycGrid";
-import RowTripleGrid from "@/components/Attributes/Rows/Grids/RowTripleGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
-import ButtonBorder from "@/components/Forms/Buttons/ButtonBorder";
-import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
-import { checkCountData, getLength } from "@/libs/helper";
-import { AnnualIncome, Datas } from "@/models/SectionThree";
+import { checkCountDataOther, getLength } from "@/libs/helper";
+import { AnnualGeneral, AnnualIncome, Datas } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
@@ -29,20 +26,87 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   let getPfrLength = getLength(props.pfrType);
 
-  let { need, data, others, setAnnualIncome, setAnnualSurplus } = useCashFlow();
+  let {
+    need,
+    data,
+    others,
+    setAnnualIncome,
+    setAnnualSurplus,
+    setOthers,
+    patchOthers,
+    removeOthers,
+  } = useCashFlow();
+
+  let checkIndex = checkCountDataOther(others?.annualIncome);
+
+  let initialState: AnnualGeneral = {
+    id: checkIndex,
+    editting: true,
+    key: "",
+    values: [0, 0],
+  };
 
   const [showModalOther, setShowModalOther] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
+  const [saveType, setSaveType] = useState("");
+
+  // inject initial state to useState
+  const [newData, setNewData] = useState(initialState);
 
   let [annualData, setAnnualData] = useState([0, 0]);
   let [monthlyData, setMonthlyData] = useState([0, 0]);
 
-  let [annualWadgesData, setAnnualWadgesData] = useState(0);
-  let [monthlyWadgesData, setMonthlyWadgesData] = useState(0);
+  let [checkTotal, setCheckTotal] = useState([0, 0]);
 
-  let [annualLessData, setAnnualLessData] = useState(0);
-  let [monthlyLessData, setMonthlyLessData] = useState(0);
+  let [annualDataOther, setAnnualDataOther] = useState([0, 0]);
+  let [monthlyDataOther, setMonthlyDataOther] = useState([0, 0]);
+
+  let [annualWadgesData, setAnnualWadgesData] = useState([0, 0]);
+  let [monthlyWadgesData, setMonthlyWadgesData] = useState([0, 0]);
+
+  let [annualLessData, setAnnualLessData] = useState([0, 0]);
+  let [monthlyLessData, setMonthlyLessData] = useState([0, 0]);
+
+  const handleInputChangeOther = (event: any) => {
+    const { name, value } = event.target;
+    const { groupdata, indexdata } = event.target.dataset;
+
+    if (groupdata === "annualy") {
+      const newArray = [...annualDataOther];
+      newArray[indexdata] = value;
+
+      const newArrayMonthly = [...monthlyDataOther];
+      newArrayMonthly[indexdata] = value / 12;
+
+      setAnnualDataOther(newArray);
+      setMonthlyDataOther(newArrayMonthly);
+
+      const newArrayOri = [...newData.values];
+      newArrayOri[indexdata] = value;
+
+      setNewData((prevObj) => {
+        const newValues = [...prevObj.values];
+        newValues[indexdata] = value;
+        return { ...prevObj, values: newValues };
+      });
+    } else {
+      const newArray = [...monthlyDataOther];
+      newArray[indexdata] = value;
+
+      const newArrayAnnualy = [...annualDataOther];
+      newArrayAnnualy[indexdata] = value * 12;
+
+      setAnnualDataOther(newArrayAnnualy);
+      setMonthlyDataOther(newArray);
+
+      setNewData((prevObj) => {
+        const newValues = [...prevObj.values];
+        newValues[indexdata] = value * 12;
+        return { ...prevObj, values: newValues };
+      });
+    }
+  };
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -51,36 +115,22 @@ const AnnualIncomeCashFlow = (props: Props) => {
     switch (name) {
       case "annualGrossIncome":
         if (groupdata === "annualy") {
-          console.log("Data annually " + indexdata + " " + value);
-          console.log("from annual sebelum edit");
-          console.log(annualData);
-
           const newArray = [...annualData];
           newArray[indexdata] = value;
 
-          const newArrayMonthly = [...annualData];
+          const newArrayMonthly = [...monthlyData];
           newArrayMonthly[indexdata] = value / 12;
-
-          console.log("from annual");
-          console.log(newArray);
-          console.log(newArrayMonthly);
 
           setAnnualData(newArray);
           setMonthlyData(newArrayMonthly);
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          console.log("Data monthly " + indexdata + " " + value);
-
           const newArray = [...monthlyData];
           newArray[indexdata] = value;
 
-          const newArrayAnnualy = [...monthlyData];
+          const newArrayAnnualy = [...annualData];
           newArrayAnnualy[indexdata] = value * 12;
-
-          console.log("from month");
-          console.log(newArray);
-          console.log(newArrayAnnualy);
 
           setAnnualData(newArrayAnnualy);
           setMonthlyData(newArray);
@@ -91,26 +141,68 @@ const AnnualIncomeCashFlow = (props: Props) => {
         break;
       case "additionalWages":
         if (groupdata === "annualy") {
-          setMonthlyWadgesData(value / 12);
-          setAnnualWadgesData(value);
+          console.log(
+            "additional wedges annual masulk " +
+              indexdata +
+              " " +
+              name +
+              " " +
+              value
+          );
+
+          const newArray = [...annualWadgesData];
+          newArray[indexdata] = value;
+
+          const newArrayMonthly = [...monthlyWadgesData];
+          newArrayMonthly[indexdata] = value / 12;
+
+          setAnnualWadgesData(newArray);
+          setMonthlyWadgesData(newArrayMonthly);
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          setAnnualWadgesData(value * 12);
-          setMonthlyWadgesData(value);
+          console.log(
+            "additional wedges monthly masulk " +
+              indexdata +
+              " " +
+              name +
+              " " +
+              value
+          );
+
+          const newArray = [...monthlyWadgesData];
+          newArray[indexdata] = value;
+
+          const newArrayAnnualy = [...annualWadgesData];
+          newArrayAnnualy[indexdata] = value * 12;
+
+          setAnnualWadgesData(newArrayAnnualy);
+          setMonthlyWadgesData(newArray);
 
           setAnnualIncome(indexdata, name, value * 12);
         }
         break;
       case "less":
         if (groupdata === "annualy") {
-          setMonthlyLessData(value / 12);
-          setAnnualLessData(value);
+          const newArray = [...annualLessData];
+          newArray[indexdata] = value;
+
+          const newArrayMonthly = [...monthlyLessData];
+          newArrayMonthly[indexdata] = value / 12;
+
+          setAnnualLessData(newArray);
+          setMonthlyLessData(newArrayMonthly);
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          setAnnualLessData(value * 12);
-          setMonthlyLessData(value);
+          const newArray = [...monthlyWadgesData];
+          newArray[indexdata] = value;
+
+          const newArrayAnnualy = [...annualWadgesData];
+          newArrayAnnualy[indexdata] = value * 12;
+
+          setAnnualLessData(newArrayAnnualy);
+          setMonthlyLessData(newArray);
 
           setAnnualIncome(indexdata, name, value * 12);
         }
@@ -120,7 +212,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
           const newArray = [...annualData];
           newArray[indexdata] = value;
 
-          const newArrayMonthly = [...annualData];
+          const newArrayMonthly = [...monthlyData];
           newArrayMonthly[indexdata] = value / 12;
 
           setAnnualData(newArray);
@@ -128,12 +220,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
           setAnnualIncome(indexdata, name, value);
         } else {
-          console.log("Data bawah" + indexdata + " " + value);
-
           const newArray = [...monthlyData];
           newArray[indexdata] = value;
 
-          const newArrayAnnualy = [...monthlyData];
+          const newArrayAnnualy = [...annualData];
           newArrayAnnualy[indexdata] = value * 12;
 
           setAnnualData(newArrayAnnualy);
@@ -143,9 +233,17 @@ const AnnualIncomeCashFlow = (props: Props) => {
         }
         break;
     }
+
+    getTotal(indexdata);
   };
 
   const addOther = () => {
+    setSaveType("add");
+    initialState.values[0] = 0;
+    initialState.values[1] = 0;
+    setAnnualDataOther([0, 0]);
+    setMonthlyDataOther([0, 0]);
+    setNewData(initialState);
     setShowModalOther(true);
   };
 
@@ -153,12 +251,28 @@ const AnnualIncomeCashFlow = (props: Props) => {
     setShowModalOther(false);
   };
 
-  const editOther = (params: string) => {
+  const editOther = (params: number) => {
+    setSaveType("update");
+
+    setAnnualDataOther([0, 0]);
+    setMonthlyDataOther([0, 0]);
+
+    const detailData = others?.annualIncome.filter((obj) => obj.id === params);
+
+    console.log("check data filter");
+    console.log(detailData[0]);
+
+    initialState.id = detailData[0].id;
+    initialState.key = detailData[0].key;
+    initialState.values[0] = detailData[0].values[0];
+    initialState.values[1] = detailData[0].values[1];
+
+    setNewData(initialState);
     setShowModalOther(true);
   };
 
   const removeDataAction = (params: any) => {
-    // removeDependent(params);
+    removeOthers("annualIncome", params);
     setShowModalRemove(false);
   };
 
@@ -167,8 +281,48 @@ const AnnualIncomeCashFlow = (props: Props) => {
     setActionDataId(params);
   };
 
-  const [other, setOther] = useState<any>(0);
-  const [cpfContribution, setCpfContribution] = useState<any>(0);
+  const getTotal = (index: number) => {
+    if (data.length > 0) {
+      let totalOther = [0, 0];
+
+      if (others.annualIncome.length > 0) {
+        others.annualIncome.map((data, indexA) => {
+          totalOther[index] += data.values[index];
+        });
+      }
+
+      let annualGrossIncome = data[index].annualIncome.annualGrossIncome;
+      let additionalWages = data[index].annualIncome.additionalWages;
+      let less = data[index].annualIncome.less;
+      let result =
+        annualGrossIncome + additionalWages + totalOther[index] - less;
+
+      const newArray = [...checkTotal];
+      newArray[index] = result;
+
+      setCheckTotal(newArray);
+    }
+  };
+
+  const saveData = () => {
+    console.log(newData);
+
+    let checkTotalData =
+      others?.annualIncome.length === 0 || others?.annualIncome[0].id === 0
+        ? 0
+        : 1;
+
+    if (saveType === "add") {
+      setOthers("annualIncome", checkTotalData, newData);
+    } else {
+      patchOthers("annualIncome", newData);
+    }
+
+    setShowModalOther(false);
+  };
+
+  useEffect(() => {}, []);
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowDinamycGrid
@@ -181,10 +335,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
         <div className={`col-span-3`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
-            <>
+            <Fragment key={"dsds" + index}>
               <div className="text-sm font-bold text-right">Monthly</div>
               <div className="text-sm font-bold text-right">Annual</div>
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -199,7 +353,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
-            <>
+            <Fragment key={"asas" + index}>
               {need ? (
                 need[index] == 1 ? (
                   <>
@@ -252,7 +406,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   <div className="text-right">0</div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -267,7 +421,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
-            <>
+            <Fragment key={"asa" + index}>
               {need ? (
                 need[index] == 1 ? (
                   <>
@@ -278,9 +432,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         type="text"
                         formStyle="text-right"
                         name="additionalWages"
+                        indexData={index}
                         value={
-                          monthlyWadgesData > 0
-                            ? monthlyWadgesData
+                          monthlyWadgesData[index] > 0
+                            ? monthlyWadgesData[index]
                             : data[index]
                             ? data[index].annualIncome.additionalWages / 12
                             : 0
@@ -295,9 +450,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         type="text"
                         formStyle="text-right"
                         name="additionalWages"
+                        indexData={index}
                         value={
-                          annualWadgesData > 0
-                            ? annualWadgesData
+                          annualWadgesData[index] > 0
+                            ? annualWadgesData[index]
                             : data[index]
                             ? data[index].annualIncome.additionalWages
                             : 0
@@ -318,7 +474,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   <div className="text-right">0</div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -379,7 +535,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                           <>
                             {getPfrLength?.length &&
                               getPfrLength.map((d, index) => (
-                                <>
+                                <Fragment key={"asa" + index}>
                                   <div
                                     className={`text-sm ${
                                       props.pfrType == 1 ? "1/4" : "basis-1/6"
@@ -392,7 +548,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                       props.pfrType == 1 ? "1/4" : "basis-1/6"
                                     }`}
                                   ></div>
-                                </>
+                                </Fragment>
                               ))}
                           </>
                         )}
@@ -401,32 +557,51 @@ const AnnualIncomeCashFlow = (props: Props) => {
                         <div className="flex justify-between gap-4">
                           <Input
                             label="Item"
+                            name="key"
+                            value={newData.key}
                             className={`my-4 ${
                               props.pfrType == 1 ? "2/4" : "basis-2/6"
                             }`}
                             type="text"
                             placeholder="Add item here.."
-                            name="key"
+                            handleChange={(event) =>
+                              setNewData({
+                                ...newData,
+                                key: event.target.value,
+                              })
+                            }
                           />
                           {getPfrLength?.length &&
                             getPfrLength.map((d, index) => (
-                              <>
+                              <Fragment key={"asas" + index}>
                                 {need ? (
                                   need[index] == 1 ? (
                                     <>
                                       <Input
                                         label="Monthly"
+                                        dataType="monthly"
+                                        indexData={index}
                                         className={`my-4 ${
                                           props.pfrType == 1
                                             ? "1/4"
                                             : "basis-1/6"
                                         }`}
                                         type="text"
-                                        name="otherValue"
+                                        name="otherMonthlyValue"
                                         placeholder="0"
                                         formStyle="text-left"
+                                        value={
+                                          monthlyDataOther[index] > 0
+                                            ? monthlyDataOther[index]
+                                            : newData.values
+                                            ? newData.values[index] / 12
+                                            : 0
+                                        }
+                                        handleChange={handleInputChangeOther}
                                       />
                                       <Input
+                                        indexData={index}
+                                        dataType="annualy"
                                         label="Annual"
                                         className={`my-4 ${
                                           props.pfrType == 1
@@ -434,9 +609,17 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                             : "basis-1/6"
                                         }`}
                                         type="text"
-                                        name="otherValue"
+                                        name="otherAnnualValue"
                                         placeholder="0"
                                         formStyle="text-left"
+                                        value={
+                                          annualDataOther[index] > 0
+                                            ? annualDataOther[index]
+                                            : newData.values
+                                            ? newData.values[index]
+                                            : 0
+                                        }
+                                        handleChange={handleInputChangeOther}
                                       />
                                     </>
                                   ) : (
@@ -477,13 +660,15 @@ const AnnualIncomeCashFlow = (props: Props) => {
                                     <div className="text-right">-</div>
                                   </>
                                 )}
-                              </>
+                              </Fragment>
                             ))}
                         </div>
                       </div>
 
                       <div className="flex gap-4 mt-4">
-                        <ButtonGreenMedium>Save</ButtonGreenMedium>
+                        <ButtonGreenMedium onClick={saveData}>
+                          Save
+                        </ButtonGreenMedium>
                         <ButtonTransparentMedium onClick={closeOther}>
                           Cancel
                         </ButtonTransparentMedium>
@@ -574,12 +759,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
               >
                 <div className={`${props.pfrType == 1 ? "" : "col-span-2"}`}>
                   <div className="flex items-center gap-4">
-                    <div className="text-sm font-bold text-gray-light">{data.key}</div>
+                    <div className="text-sm font-bold text-gray-light">
+                      {data.key}
+                    </div>
                     {data.key !== "" ? (
                       <div className="space-x-2">
                         <ButtonBox
                           className="text-green-deep"
-                          onClick={() => editOther(data.key)}
+                          onClick={() => editOther(Number(data.id))}
                         >
                           <PencilLineIcon size={14} />
                         </ButtonBox>
@@ -595,14 +782,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
                 </div>
                 {getPfrLength?.length &&
                   getPfrLength.map((d, indexB) => (
-                    <>
+                    <Fragment key={"assa" + indexB}>
                       <div className="text-sm text-right text-gray-light">
-                        {data.values[indexB] ? data.values[indexB] : "0"}
+                        {data.values[indexB] ? data.values[indexB] / 12 : "0"}
                       </div>
                       <div className="text-sm text-right text-gray-light">
                         {data.values[indexB] ? data.values[indexB] : "0"}
                       </div>
-                    </>
+                    </Fragment>
                   ))}
               </div>
             ))}
@@ -611,10 +798,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
           <>
             {getPfrLength?.length &&
               getPfrLength.map((d, index) => (
-                <>
+                <Fragment key={"sasa" + index}>
                   <div className="text-sm text-right text-gray-light">0</div>
                   <div className="text-sm text-right text-gray-light">0</div>
-                </>
+                </Fragment>
               ))}
           </>
         )}
@@ -633,7 +820,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
-            <>
+            <Fragment key={"sas" + index}>
               {need ? (
                 need[index] == 1 ? (
                   <>
@@ -643,9 +830,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
                       type="text"
                       name="less"
                       formStyle="text-right"
+                      indexData={index}
                       value={
-                        monthlyLessData > 0
-                          ? monthlyLessData
+                        monthlyLessData[index] > 0
+                          ? monthlyLessData[index]
                           : data[index]
                           ? data[index].annualIncome.less / 12
                           : 0
@@ -657,10 +845,11 @@ const AnnualIncomeCashFlow = (props: Props) => {
                       className="my-4"
                       type="text"
                       name="less"
+                      indexData={index}
                       formStyle="text-right"
                       value={
-                        annualLessData > 0
-                          ? annualLessData
+                        annualLessData[index] > 0
+                          ? annualLessData[index]
                           : data[index]
                           ? data[index].annualIncome.less
                           : 0
@@ -680,7 +869,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   <div className="text-right">0</div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -695,15 +884,19 @@ const AnnualIncomeCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((d, index) => (
-            <>
+            <Fragment key={"sasa" + index}>
               {need ? (
                 need[index] ? (
                   <>
                     <div className="text-right">
-                      <span className="text-green-deep">0</span>
+                      <span className="text-green-deep">
+                        {checkTotal[index] / 12}
+                      </span>
                     </div>
                     <div className="text-right">
-                      <span className="text-green-deep">0</span>
+                      <span className="text-green-deep">
+                        {checkTotal[index]}
+                      </span>
                     </div>
                   </>
                 ) : (
@@ -726,7 +919,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                   </div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
     </SectionCardSingleGrid>
