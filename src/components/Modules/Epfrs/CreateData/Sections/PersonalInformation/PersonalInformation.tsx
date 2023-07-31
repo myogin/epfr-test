@@ -54,16 +54,11 @@ const PersonalInformation = (props: Props) => {
     setTrustedIndividuals
   );
 
-  console.log("Test check");
-  console.log(checkAccompainment);
-
   useEffect(() => {
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
   }, [dependant]);
-
-  console.log(getPfrLength);
 
   return (
     <div id={props.id}>
