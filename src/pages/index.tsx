@@ -18,7 +18,6 @@ import authHeader from "@/libs/authHeader";
 const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
-  const { setLogin, token } = useLoginData();
   const router = useRouter();
 
   const getGeneralData = async () => {
@@ -31,23 +30,7 @@ const EpfrPage: Page = () => {
     console.log("useEffect");
 
     getGeneralData();
-    setLogin(router.query.token, router.query.ownerId);
-    async function ValidateToken() {
-      const test = await http
-        .post(
-          `http://localhost:8009/api/pfr/validate-params`,
-          {},
-          { headers: authHeader() }
-        )
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          // router.push("/unauthorized");
-        });
-    }
-    ValidateToken();
-  }, [router.query.ownerId, router.query.token, setLogin]);
+  });
 
   return (
     <>

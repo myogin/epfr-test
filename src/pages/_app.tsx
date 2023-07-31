@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { SessionProvider } from "next-auth/react";
 
 export type Page<P = {}> = NextPage<P> & {
   getLayout?: (page: ReactNode) => ReactNode;
@@ -20,7 +21,9 @@ export default function App({ Component, pageProps }: Props) {
   if (Component.getLayout) {
     return getLayout(
       <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
+        <SessionProvider session={pageProps.session}>
+          <Component {...pageProps} />
+        </SessionProvider>
       </QueryClientProvider>
     );
   }
