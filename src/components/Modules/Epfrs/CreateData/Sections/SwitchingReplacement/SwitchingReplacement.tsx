@@ -37,10 +37,11 @@ const SwitchingReplacement = (props: Props) => {
     { id: "1", name: "Premium(Annual)" },
     { id: "2", name: "Investment" },
   ];
-  
-  const clientTypes = getPfrLength.map((data, index) => (
-    {id: index, name: `Client ${index + 1}`}
-  ));
+
+  const clientTypes = getPfrLength.map((data, index) => ({
+    id: index,
+    name: `Client ${index + 1}`,
+  }));
 
   const productData = {
     index: -1,
@@ -60,7 +61,7 @@ const SwitchingReplacement = (props: Props) => {
         answer: 0,
         reason: "",
       },
-      b: 0
+      b: 0,
     },
     answer2: 0,
     answer3: "",
@@ -71,14 +72,14 @@ const SwitchingReplacement = (props: Props) => {
       premiumType: null,
       benefit: null,
       inceptionDate: null,
-      maturityDate: null
+      maturityDate: null,
     },
     answer5: 0,
     answer6: 0,
     answer7: 0,
     answer8: 0,
     answer9: 0,
-    answer10: 0
+    answer10: 0,
   };
 
   const products: any[] = [];
@@ -91,67 +92,68 @@ const SwitchingReplacement = (props: Props) => {
   const [sectionTenData, setSectionTenData] = useState({
     id: 0,
     needs: 0,
-    data: [
-      sectionData,
-      sectionData,
-    ],
+    data: [sectionData, sectionData],
     issues: [],
     originalProduct: products,
-    status: 1
+    status: 1,
   });
 
   const setData = (params: any, index: number) => {
-    setShowReason(showReason.map((data, i) => {
-      if (i==index) {
-        return params;
-      } else {
-        return data;
-      }
-    }));
+    setShowReason(
+      showReason.map((data, i) => {
+        if (i == index) {
+          return params;
+        } else {
+          return data;
+        }
+      })
+    );
     setSectionTenData({
       ...sectionTenData,
       data: sectionTenData.data?.map((item, i) => {
-        if (i==index) {
+        if (i == index) {
           return {
             ...item,
             answer1: {
               ...item.answer1,
               a: {
                 ...item.answer1.a,
-                answer: params
-              }
-            }
+                answer: params,
+              },
+            },
           };
         } else {
           return item;
         }
-      })
+      }),
     });
   };
 
   const setDataTwo = (params: any, index: number) => {
-    setShowReasonTwo(showReasonTwo.map((data, i) => {
-      if (i==index) {
-        return params;
-      } else {
-        return data;
-      }
-    }));
+    setShowReasonTwo(
+      showReasonTwo.map((data, i) => {
+        if (i == index) {
+          return params;
+        } else {
+          return data;
+        }
+      })
+    );
     setSectionTenData({
       ...sectionTenData,
       data: sectionTenData.data?.map((item, i) => {
-        if (i==index) {
+        if (i == index) {
           return {
             ...item,
             answer1: {
               ...item.answer1,
               b: params,
-            }
+            },
           };
         } else {
           return item;
         }
-      })
+      }),
     });
   };
 
@@ -164,7 +166,7 @@ const SwitchingReplacement = (props: Props) => {
   const openModalEdit = (params: any) => {
     setNewProduct({
       ...sectionTenData.originalProduct[params],
-      index: params
+      index: params,
     });
     setShowModal(true);
   };
@@ -184,7 +186,7 @@ const SwitchingReplacement = (props: Props) => {
   const addProductData = () => {
     const errors = checkNewProduct();
     if (errors.length) return;
-    
+
     const productList = sectionTenData.originalProduct;
 
     if (newProduct.index !== -1) {
@@ -196,70 +198,84 @@ const SwitchingReplacement = (props: Props) => {
     setNewProduct(productData);
     setSectionTenData({
       ...sectionTenData,
-      originalProduct: productList
+      originalProduct: productList,
     });
     closeModal();
-  }
+  };
 
   const removeProductData = (index: any) => {
     const productList = sectionTenData.originalProduct;
-    productList.splice(index,1);
+    productList.splice(index, 1);
     setSectionTenData({
       ...sectionTenData,
-      originalProduct: productList
+      originalProduct: productList,
     });
-  }
+  };
 
   const checkNewProduct = () => {
     let errors = [];
     if (newProduct.owner < 0) {
-      errors.push({name: "Client"});
+      errors.push({ name: "Client" });
     }
-    
+
     if (newProduct.companyName.trim() === "") {
-      errors.push({name: "Company Name"});
+      errors.push({ name: "Company Name" });
     }
-    
+
     if (newProduct.typeOfProduct.trim() === "") {
-      errors.push({name: "Type Of Product"});
+      errors.push({ name: "Type Of Product" });
     }
-    
+
     if (newProduct.premium.trim() === "0") {
-      errors.push({name: "Premium Amount"});
+      errors.push({ name: "Premium Amount" });
     }
-    
+
     if (newProduct.premiumType < 0) {
-      errors.push({name: "Premium Type"});
+      errors.push({ name: "Premium Type" });
     }
-    
+
     if (newProduct.benefit.trim() === "") {
-      errors.push({name: "Benefit Provided"});
+      errors.push({ name: "Benefit Provided" });
     }
 
     setNewProductErrors(errors);
     return errors;
-  }
+  };
 
-  // useEffect(() => {
-  //   getPfrLength.map((data, index) => {
-  //     if (showReasonTwo[index] == 0) {
-  //       const productList = sectionTenData.originalProduct.filter(val => val.owner !== index);
-  //       setSectionTenData({
-  //         ...sectionTenData,
-  //         originalProduct: productList
-  //       });
-  //     }
-  //   });
+  useEffect(() => {
+    getPfrLength.map((data, index) => {
+      if (showReasonTwo[index] == 0) {
+        const productList = sectionTenData.originalProduct.filter(
+          (val) => val.owner !== index
+        );
+        setSectionTenData({
+          ...sectionTenData,
+          originalProduct: productList,
+        });
+      }
+    });
+  }, [showReasonTwo]);
 
-  //   localStorage.setItem('section10', JSON.stringify(sectionTenData));
+  useEffect(() => {
+    localStorage.setItem("section10", JSON.stringify(sectionTenData));
+  }, [sectionTenData]);
 
-  // }, [sectionTenData]);
-
-  const scrollPosition = useScrollPosition(10)
+  const scrollPosition = useScrollPosition(10);
   return (
     <div id={props.id}>
-      <div id="section-header-10" className={`sticky top-0 z-10 ${scrollPosition === "okSec10" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
-        <HeadingPrimarySection className={`mx-8 2xl:mx-60 ${scrollPosition === "okSec10" ? "text-gray-light text-xl font-bold mb-5 mt-5" : "text-2xl font-bold mb-10 mt-10"}`}>
+      <div
+        id="section-header-10"
+        className={`sticky top-0 z-10 ${
+          scrollPosition === "okSec10" ? "bg-white py-1 ease-in shadow-lg" : ""
+        }`}
+      >
+        <HeadingPrimarySection
+          className={`mx-8 2xl:mx-60 ${
+            scrollPosition === "okSec10"
+              ? "text-gray-light text-xl font-bold mb-5 mt-5"
+              : "text-2xl font-bold mb-10 mt-10"
+          }`}
+        >
           Section 10. Switching / Replacement
         </HeadingPrimarySection>
       </div>
@@ -278,54 +294,62 @@ const SwitchingReplacement = (props: Props) => {
           </RowDouble>
         )} */}
         <TextThin className="mb-5">
-          1a. Have you withdrawn / surrendered / terminated, in part or in
-          full any existing insurance policy or investment product within the
-          last 12 months?
+          1a. Have you withdrawn / surrendered / terminated, in part or in full
+          any existing insurance policy or investment product within the last 12
+          months?
         </TextThin>
         <RowDouble className="mb-10">
           {getPfrLength?.length &&
             getPfrLength.map((data, index) => {
               return (
-                <div key={"asas"+index} className="flex-1">
-                <TextThin>
-                  Client {index + 1}
-                </TextThin>
-                <Select
-                  value={showReason[index]}
-                  datas={fillInformation}
-                  handleChange={(event) => setData(eval(event.target.value), index)}
-                />
-                {showReason.includes(1) ? (
-                  <RowSingleGrid>
-                    <TextArea 
-                    label="Please state reasons:" 
-                    defaultValue={sectionTenData.data[index]?.answer1?.a?.reason}
-                    needValidation={showReason[index]==1 && sectionTenData.data[index]?.answer1?.a?.reason.trim() == ""}
-                    handleChange={function(event) {
-                      setSectionTenData({
-                        ...sectionTenData,
-                        data: sectionTenData.data?.map((item, i) => {
-                          if (i==index) {
-                            return {
-                              ...item,
-                              answer1: {
-                                ...item.answer1,
-                                a: {
-                                  ...item.answer1.a,
-                                  reason: event.target.value
-                                }
+                <div key={"asas" + index} className="flex-1">
+                  <TextThin>Client {index + 1}</TextThin>
+                  <Select
+                    value={showReason[index]}
+                    datas={fillInformation}
+                    handleChange={(event) =>
+                      setData(eval(event.target.value), index)
+                    }
+                  />
+                  {showReason.includes(1) ? (
+                    <RowSingleGrid>
+                      <TextArea
+                        label="Please state reasons:"
+                        defaultValue={
+                          sectionTenData.data[index]?.answer1?.a?.reason
+                        }
+                        needValidation={
+                          showReason[index] == 1 &&
+                          sectionTenData.data[
+                            index
+                          ]?.answer1?.a?.reason.trim() == ""
+                        }
+                        handleChange={function (event) {
+                          setSectionTenData({
+                            ...sectionTenData,
+                            data: sectionTenData.data?.map((item, i) => {
+                              if (i == index) {
+                                return {
+                                  ...item,
+                                  answer1: {
+                                    ...item.answer1,
+                                    a: {
+                                      ...item.answer1.a,
+                                      reason: event.target.value,
+                                    },
+                                  },
+                                };
+                              } else {
+                                return item;
                               }
-                            };
-                          } else {
-                            return item;
-                          }
-                        })
-                      });
-                    }} />
-                  </RowSingleGrid>
-                ) : null}
+                            }),
+                          });
+                        }}
+                      />
+                    </RowSingleGrid>
+                  ) : null}
                 </div>
-              )
+              );
             })}
         </RowDouble>
 
@@ -338,14 +362,14 @@ const SwitchingReplacement = (props: Props) => {
         <RowDouble className="mb-10">
           {getPfrLength?.length &&
             getPfrLength.map((data, index) => (
-              <div key={"sdds"+index} className="flex-1">
-                <TextThin>
-                  Client {index + 1}
-                </TextThin>
+              <div key={"sdds" + index} className="flex-1">
+                <TextThin>Client {index + 1}</TextThin>
                 <Select
                   value={showReasonTwo[index]}
                   datas={fillInformation}
-                  handleChange={(event) => setDataTwo(eval(event.target.value), index)}
+                  handleChange={(event) =>
+                    setDataTwo(eval(event.target.value), index)
+                  }
                 />
               </div>
             ))}
@@ -359,134 +383,146 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div key={"asasa"+index} className="flex-1">
-                  <TextThin>
-                    Client {index + 1}
-                  </TextThin>
-                  <Select
-                    disabled={!eval(showReasonTwo[index] + "")}
-                    value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer2}
-                    datas={fillInformation}
-                    handleChange={function(event) {
-                      setSectionTenData({
-                        ...sectionTenData,
-                        data: sectionTenData.data?.map((item, i) => {
-                          if (i==index) {
-                            return {
-                              ...item,
-                              answer2: eval(event.target.value)
-                            };
-                          } else {
-                            return item;
-                          }
-                        })
-                      });
-                    }}
-                  />
-                </div>
+                  <div key={"asasa" + index} className="flex-1">
+                    <TextThin>Client {index + 1}</TextThin>
+                    <Select
+                      disabled={!eval(showReasonTwo[index] + "")}
+                      value={
+                        !eval(showReasonTwo[index] + "")
+                          ? -1
+                          : sectionTenData.data[index]?.answer2
+                      }
+                      datas={fillInformation}
+                      handleChange={function (event) {
+                        setSectionTenData({
+                          ...sectionTenData,
+                          data: sectionTenData.data?.map((item, i) => {
+                            if (i == index) {
+                              return {
+                                ...item,
+                                answer2: eval(event.target.value),
+                              };
+                            } else {
+                              return item;
+                            }
+                          }),
+                        });
+                      }}
+                    />
+                  </div>
                 ))}
             </RowDouble>
 
             <TextThin className="mb-5">
-              3. What are the reason(s) for switching / replacing your
-              insurance policy and/or investment product?
+              3. What are the reason(s) for switching / replacing your insurance
+              policy and/or investment product?
             </TextThin>
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div key={"saas"+index} className="flex-1">
-                    <TextThin>
-                      Client {index + 1}
-                    </TextThin>
-                    <TextArea 
-                    label="Please state reasons:" 
-                    defaultValue="" 
-                    needValidation={showReasonTwo[index]==1 && sectionTenData.data[index]?.answer3.trim() == ""} 
+                  <div key={"saas" + index} className="flex-1">
+                    <TextThin>Client {index + 1}</TextThin>
+                    <TextArea
+                      label="Please state reasons:"
+                      defaultValue=""
+                      needValidation={
+                        showReasonTwo[index] == 1 &&
+                        sectionTenData.data[index]?.answer3.trim() == ""
+                      }
                     />
                   </div>
                 ))}
             </RowDouble>
 
             <div className="mb-5">
-            <RowSingleGrid>
-              <TextThin>4. Do you have details of original product?</TextThin>
-              <Select
-                value={showProductDetailTable}
-                datas={fillInformation}
-                handleChange={function(event) {
-                  setShowProductDetailTable(eval(event.target.value));
-                }}
-              />
-            </RowSingleGrid>
+              <RowSingleGrid>
+                <TextThin>4. Do you have details of original product?</TextThin>
+                <Select
+                  value={showProductDetailTable}
+                  datas={fillInformation}
+                  handleChange={function (event) {
+                    setShowProductDetailTable(eval(event.target.value));
+                  }}
+                />
+              </RowSingleGrid>
             </div>
 
-            {(showProductDetailTable===1) && (
+            {showProductDetailTable === 1 && (
               <SectionCardSingleGrid>
-              <div className="w-full">
-                <ButtonBox onClick={openModal} className="text-green-deep">
-                  <AddLineIcon />
-                </ButtonBox>
+                <div className="w-full">
+                  <ButtonBox onClick={openModal} className="text-green-deep">
+                    <AddLineIcon />
+                  </ButtonBox>
 
-                <Transition appear show={showModal} as={Fragment}>
-                  <Dialog as="div" className="relative z-10" onClose={closeModal}>
-                    <Transition.Child
-                      as={Fragment}
-                      enter="ease-out duration-300"
-                      enterFrom="opacity-0"
-                      enterTo="opacity-100"
-                      leave="ease-in duration-200"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
+                  <Transition appear show={showModal} as={Fragment}>
+                    <Dialog
+                      as="div"
+                      className="relative z-10"
+                      onClose={closeModal}
                     >
-                      <div className="fixed inset-0 bg-opacity-25 bg-gray-light" />
-                    </Transition.Child>
+                      <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                      >
+                        <div className="fixed inset-0 bg-opacity-25 bg-gray-light" />
+                      </Transition.Child>
 
-                    <div className="fixed inset-0 overflow-y-auto">
-                      <div className="flex items-center justify-center min-h-full p-4 text-center">
-                        <Transition.Child
-                          as={Fragment}
-                          enter="ease-out duration-300"
-                          enterFrom="opacity-0 scale-95"
-                          enterTo="opacity-100 scale-100"
-                          leave="ease-in duration-200"
-                          leaveFrom="opacity-100 scale-100"
-                          leaveTo="opacity-0 scale-95"
-                        >
-                          <Dialog.Panel className="w-full max-w-2xl p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                            <Dialog.Title
-                              as="h3"
-                              className="text-lg font-medium leading-6 text-gray-900"
-                            >
-                              Original Product
-                            </Dialog.Title>
-                            <div className="mt-2">
-                              <div className="flex">
-                                <div className={`w-full my-4 space-y-3`}>
-                                    <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
+                      <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex items-center justify-center min-h-full p-4 text-center">
+                          <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                          >
+                            <Dialog.Panel className="w-full max-w-2xl p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                              <Dialog.Title
+                                as="h3"
+                                className="text-lg font-medium leading-6 text-gray-900"
+                              >
+                                Original Product
+                              </Dialog.Title>
+                              <div className="mt-2">
+                                <div className="flex">
+                                  <div className={`w-full my-4 space-y-3`}>
+                                    <label
+                                      htmlFor=""
+                                      className="w-full text-sm font-bold text-gray-light"
+                                    >
                                       Client
                                     </label>
 
-                                  <select
-                                    name="clientName"
-                                    className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
-                                    onChange={(e) =>{
-                                      console.log(e.target.selectedIndex)
-                                      setNewProduct({
-                                        ...newProduct,
-                                        owner: e.target.selectedIndex,
-                                      });
-                                    }}
-                                  >
-                                    {getPfrLength.map((data, index) => {
-                                      if (showReasonTwo[index] === 1) {
-                                        return (<option key={index} value={index}>
-                                          Client {index + 1}
-                                        </option>);
-                                      } 
-                                    })}
-                                  </select>
-                                </div>
-                                {/* <Select
+                                    <select
+                                      name="clientName"
+                                      className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                                      onChange={(e) => {
+                                        console.log(e.target.selectedIndex);
+                                        setNewProduct({
+                                          ...newProduct,
+                                          owner: e.target.selectedIndex,
+                                        });
+                                      }}
+                                    >
+                                      {getPfrLength.map((data, index) => {
+                                        if (showReasonTwo[index] === 1) {
+                                          return (
+                                            <option key={index} value={index}>
+                                              Client {index + 1}
+                                            </option>
+                                          );
+                                        }
+                                      })}
+                                    </select>
+                                  </div>
+                                  {/* <Select
                                     className="my-4"
                                     label="Client"
                                     name="clientName"
@@ -504,7 +540,7 @@ const SwitchingReplacement = (props: Props) => {
                                       });
                                     }}
                                   /> */}
-                                {/* <Input
+                                  {/* <Input
                                   className="my-4"
                                   label="Client"
                                   name="clientName"
@@ -515,38 +551,38 @@ const SwitchingReplacement = (props: Props) => {
                                     console.log(e.target.value)
                                   }
                                 /> */}
-                              </div>
-                              <div className="flex">
-                                <Input
-                                  className="my-4"
-                                  label="Company Name"
-                                  name="companyName"
-                                  type="text"
-                                  value={newProduct.companyName}
-                                  handleChange={(e) =>
-                                    setNewProduct({
-                                      ...newProduct,
-                                      companyName: e.target.value,
-                                    })
-                                  }
-                                />
-                              </div>
-                              <div className="flex">
-                                <Input
-                                  className="my-4"
-                                  label="Type Of Product"
-                                  name="typeOfProduct"
-                                  type="text"
-                                  value={newProduct.typeOfProduct}
-                                  handleChange={(e) =>
-                                    setNewProduct({
-                                      ...newProduct,
-                                      typeOfProduct: e.target.value,
-                                    })
-                                  }
-                                />
-                              </div>
-                              <div className="flex">
+                                </div>
+                                <div className="flex">
+                                  <Input
+                                    className="my-4"
+                                    label="Company Name"
+                                    name="companyName"
+                                    type="text"
+                                    value={newProduct.companyName}
+                                    handleChange={(e) =>
+                                      setNewProduct({
+                                        ...newProduct,
+                                        companyName: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </div>
+                                <div className="flex">
+                                  <Input
+                                    className="my-4"
+                                    label="Type Of Product"
+                                    name="typeOfProduct"
+                                    type="text"
+                                    value={newProduct.typeOfProduct}
+                                    handleChange={(e) =>
+                                      setNewProduct({
+                                        ...newProduct,
+                                        typeOfProduct: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </div>
+                                <div className="flex">
                                   <Select
                                     className="my-4"
                                     label="Premium/Investment"
@@ -571,82 +607,89 @@ const SwitchingReplacement = (props: Props) => {
                                       checkBirthDate(event.target.value)
                                     }
                                   /> */}
+                                </div>
+                                <div className="flex">
+                                  <Input
+                                    onWheel={(e) => e.currentTarget.blur()}
+                                    className="my-4"
+                                    label="Premium Amount"
+                                    name="premium"
+                                    type="number"
+                                    value={newProduct.premium}
+                                    handleChange={(e) =>
+                                      setNewProduct({
+                                        ...newProduct,
+                                        premium: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </div>
+                                <div className="flex">
+                                  <Input
+                                    className="my-4"
+                                    label="Benefit Provided"
+                                    name="benefit"
+                                    type="text"
+                                    value={newProduct.benefit}
+                                    handleChange={(e) =>
+                                      setNewProduct({
+                                        ...newProduct,
+                                        benefit: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </div>
                               </div>
-                              <div className="flex">
-                                <Input
-                                  onWheel={(e) => e.currentTarget.blur()}
-                                  className="my-4"
-                                  label="Premium Amount"
-                                  name="premium"
-                                  type="number"
-                                  value={newProduct.premium}
-                                  handleChange={(e) =>
-                                    setNewProduct({
-                                      ...newProduct,
-                                      premium: e.target.value,
-                                    })
-                                  }
-                                />
+                              {newProductErrors.length > 0 && (
+                                <div className="mt-4">
+                                  {newProductErrors.map(({ name }) => (
+                                    <p
+                                      key={name}
+                                      style={{ fontSize: "14px", color: "red" }}
+                                    >
+                                      - {name} is required
+                                    </p>
+                                  ))}
+                                </div>
+                              )}
+                              <div className="flex gap-4 mt-4">
+                                <ButtonGreenMedium onClick={addProductData}>
+                                  Save
+                                </ButtonGreenMedium>
+                                <ButtonTransparentMedium onClick={closeModal}>
+                                  Cancel
+                                </ButtonTransparentMedium>
                               </div>
-                              <div className="flex">
-                                <Input
-                                  className="my-4"
-                                  label="Benefit Provided"
-                                  name="benefit"
-                                  type="text"
-                                  value={newProduct.benefit}
-                                  handleChange={(e) =>
-                                    setNewProduct({
-                                      ...newProduct,
-                                      benefit: e.target.value,
-                                    })
-                                  }
-                                />
-                              </div>
-                            </div>
-                            {(newProductErrors.length > 0) && (
-                              <div className="mt-4">
-                                {newProductErrors.map(({name}) => (
-                                  <p key={name} style={{fontSize: '14px', color: 'red'}}>
-                                    - {name} is required
-                                  </p>
-                                ))}
-                              </div>
-                            )}
-                            <div className="flex gap-4 mt-4">
-                              <ButtonGreenMedium onClick={addProductData}>
-                                Save
-                              </ButtonGreenMedium>
-                              <ButtonTransparentMedium onClick={closeModal}>
-                                Cancel
-                              </ButtonTransparentMedium>
-                            </div>
-                          </Dialog.Panel>
-                        </Transition.Child>
+                            </Dialog.Panel>
+                          </Transition.Child>
+                        </div>
                       </div>
-                    </div>
-                  </Dialog>
-                </Transition>
-              </div>
-              {sectionTenData?.originalProduct.length > 0 && (
-                <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-                  <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
-                    <thead className="text-left bg-white-bone">
-                      <tr className="border-b border-gray-soft-strong">
-                        <th className="px-2 py-5">SN</th>
-                        <th className="px-2 py-5">Client</th>
-                        <th className="px-2 py-5">Company Name</th>
-                        <th className="px-2 py-5">Type Of Product</th>
-                        <th className="px-2 py-5">Premium/Investment Amount</th>
-                        <th className="px-2 py-5">Benefits Provided</th>
-                        <th className="px-2 py-5"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                    </Dialog>
+                  </Transition>
+                </div>
+                {sectionTenData?.originalProduct.length > 0 && (
+                  <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+                    <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+                      <thead className="text-left bg-white-bone">
+                        <tr className="border-b border-gray-soft-strong">
+                          <th className="px-2 py-5">SN</th>
+                          <th className="px-2 py-5">Client</th>
+                          <th className="px-2 py-5">Company Name</th>
+                          <th className="px-2 py-5">Type Of Product</th>
+                          <th className="px-2 py-5">
+                            Premium/Investment Amount
+                          </th>
+                          <th className="px-2 py-5">Benefits Provided</th>
+                          <th className="px-2 py-5"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
                         {sectionTenData.originalProduct.map((data, index) => (
                           <tr className="test" key={"product-" + index}>
-                            <td className="px-2 py-5">{index+1}</td>
-                            <td className="px-2 py-5">{clientTypes[data.owner].name}</td>
+                            <td className="px-2 py-5">{index + 1}</td>
+                            <td className="px-2 py-5">
+                              {clientTypes[data.owner].name}
+                            </td>
                             <td className="px-2 py-5">{data.companyName}</td>
                             <td className="px-2 py-5">{data.typeOfProduct}</td>
                             <td className="px-2 py-5">
@@ -662,18 +705,21 @@ const SwitchingReplacement = (props: Props) => {
                                 >
                                   <PencilLineIcon size={14} />
                                 </ButtonBox>
-                                <ButtonBox onClick={() => removeProductData(index)} className="text-red">
+                                <ButtonBox
+                                  onClick={() => removeProductData(index)}
+                                  className="text-red"
+                                >
                                   <CloseLineIcon size={14} />
                                 </ButtonBox>
                               </div>
                             </td>
                           </tr>
                         ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </SectionCardSingleGrid>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </SectionCardSingleGrid>
             )}
 
             <TextThin className="mb-5">
@@ -684,33 +730,34 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div key={"asas"+index} className="flex-1">
-                    <TextThin>
-                      Client {index + 1}
-                    </TextThin>
+                  <div key={"asas" + index} className="flex-1">
+                    <TextThin>Client {index + 1}</TextThin>
                     <Select
                       disabled={!eval(showReasonTwo[index] + "")}
-                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer5}
+                      value={
+                        !eval(showReasonTwo[index] + "")
+                          ? -1
+                          : sectionTenData.data[index]?.answer5
+                      }
                       datas={fillInformation}
-                      handleChange={function(event) {
+                      handleChange={function (event) {
                         setSectionTenData({
                           ...sectionTenData,
                           data: sectionTenData.data?.map((item, i) => {
-                            if (i==index) {
+                            if (i == index) {
                               return {
                                 ...item,
-                                answer5: eval(event.target.value)
+                                answer5: eval(event.target.value),
                               };
                             } else {
                               return item;
                             }
-                          })
+                          }),
                         });
                       }}
                     />
                   </div>
-                ))
-              }
+                ))}
             </RowDouble>
 
             <TextThin className="mb-5">
@@ -720,33 +767,34 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div key={"asaa"+index} className="flex-1">
-                    <TextThin>
-                      Client {index + 1}
-                    </TextThin>
+                  <div key={"asaa" + index} className="flex-1">
+                    <TextThin>Client {index + 1}</TextThin>
                     <Select
                       disabled={!eval(showReasonTwo[index] + "")}
-                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer6}
+                      value={
+                        !eval(showReasonTwo[index] + "")
+                          ? -1
+                          : sectionTenData.data[index]?.answer6
+                      }
                       datas={fillInformation}
-                      handleChange={function(event) {
+                      handleChange={function (event) {
                         setSectionTenData({
                           ...sectionTenData,
                           data: sectionTenData.data?.map((item, i) => {
-                            if (i==index) {
+                            if (i == index) {
                               return {
                                 ...item,
-                                answer6: eval(event.target.value)
+                                answer6: eval(event.target.value),
                               };
                             } else {
                               return item;
                             }
-                          })
+                          }),
                         });
                       }}
                     />
                   </div>
-                ))
-              }
+                ))}
             </RowDouble>
 
             <TextThin className="mb-5">
@@ -757,70 +805,71 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div key={"asa"+index} className="flex-1">
-                    <TextThin>
-                      Client {index + 1}
-                    </TextThin>
+                  <div key={"asa" + index} className="flex-1">
+                    <TextThin>Client {index + 1}</TextThin>
                     <Select
                       disabled={!eval(showReasonTwo[index] + "")}
-                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer7}
+                      value={
+                        !eval(showReasonTwo[index] + "")
+                          ? -1
+                          : sectionTenData.data[index]?.answer7
+                      }
                       datas={fillInformation}
-                      handleChange={function(event) {
+                      handleChange={function (event) {
                         setSectionTenData({
                           ...sectionTenData,
                           data: sectionTenData.data?.map((item, i) => {
-                            if (i==index) {
+                            if (i == index) {
                               return {
                                 ...item,
-                                answer7: eval(event.target.value)
+                                answer7: eval(event.target.value),
                               };
                             } else {
                               return item;
                             }
-                          })
+                          }),
                         });
                       }}
                     />
                   </div>
-                ))
-              }
+                ))}
             </RowDouble>
 
             <TextThin className="mb-5">
               8. Has the Representative explained to you that the replacement
-              plan may be less suitable and the terms and conditions may
-              differ?
+              plan may be less suitable and the terms and conditions may differ?
             </TextThin>
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div key={"asadd"+index} className="flex-1">
-                    <TextThin>
-                      Client {index + 1}
-                    </TextThin>
+                  <div key={"asadd" + index} className="flex-1">
+                    <TextThin>Client {index + 1}</TextThin>
                     <Select
                       disabled={!eval(showReasonTwo[index] + "")}
-                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer8}
+                      value={
+                        !eval(showReasonTwo[index] + "")
+                          ? -1
+                          : sectionTenData.data[index]?.answer8
+                      }
                       datas={fillInformation}
-                      handleChange={function(event) {
+                      handleChange={function (event) {
                         setSectionTenData({
                           ...sectionTenData,
                           data: sectionTenData.data?.map((item, i) => {
-                            if (i==index) {
+                            if (i == index) {
                               return {
                                 ...item,
-                                answer8: eval(event.target.value)
+                                answer8: eval(event.target.value),
                               };
                             } else {
                               return item;
                             }
-                          })
+                          }),
                         });
                       }}
                     />
                   </div>
-                ))
-              }
+                ))}
             </RowDouble>
 
             <TextThin className="mb-5">
@@ -830,33 +879,34 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div key={"asa"+index} className="flex-1">
-                    <TextThin>
-                      Client {index + 1}
-                    </TextThin>
+                  <div key={"asa" + index} className="flex-1">
+                    <TextThin>Client {index + 1}</TextThin>
                     <Select
                       disabled={!eval(showReasonTwo[index] + "")}
-                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer9}
+                      value={
+                        !eval(showReasonTwo[index] + "")
+                          ? -1
+                          : sectionTenData.data[index]?.answer9
+                      }
                       datas={fillInformation}
-                      handleChange={function(event) {
+                      handleChange={function (event) {
                         setSectionTenData({
                           ...sectionTenData,
                           data: sectionTenData.data?.map((item, i) => {
-                            if (i==index) {
+                            if (i == index) {
                               return {
                                 ...item,
-                                answer9: eval(event.target.value)
+                                answer9: eval(event.target.value),
                               };
                             } else {
                               return item;
                             }
-                          })
+                          }),
                         });
                       }}
                     />
                   </div>
-                ))
-              }
+                ))}
             </RowDouble>
 
             <TextThin>
@@ -867,33 +917,34 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div key={"asda"+index} className="flex-1">
-                    <TextThin>
-                      Client {index + 1}
-                    </TextThin>
+                  <div key={"asda" + index} className="flex-1">
+                    <TextThin>Client {index + 1}</TextThin>
                     <Select
                       disabled={!eval(showReasonTwo[index] + "")}
-                      value={!eval(showReasonTwo[index] + "")? -1: sectionTenData.data[index]?.answer10}
+                      value={
+                        !eval(showReasonTwo[index] + "")
+                          ? -1
+                          : sectionTenData.data[index]?.answer10
+                      }
                       datas={fillInformation}
-                      handleChange={function(event) {
+                      handleChange={function (event) {
                         setSectionTenData({
                           ...sectionTenData,
                           data: sectionTenData.data?.map((item, i) => {
-                            if (i==index) {
+                            if (i == index) {
                               return {
                                 ...item,
-                                answer10: eval(event.target.value)
+                                answer10: eval(event.target.value),
                               };
                             } else {
                               return item;
                             }
-                          })
+                          }),
                         });
                       }}
                     />
                   </div>
-                ))
-              }
+                ))}
             </RowDouble>
           </>
         ) : null}

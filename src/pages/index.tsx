@@ -47,7 +47,7 @@ const EpfrPage: Page = () => {
         });
     }
     ValidateToken();
-  });
+  }, [router.query.ownerId, router.query.token, setLogin]);
 
   return (
     <>
