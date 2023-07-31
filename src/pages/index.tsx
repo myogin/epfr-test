@@ -14,21 +14,22 @@ import { getAllPfrData, validateToken } from "@/services/pfrService";
 import { log } from "console";
 import http from "@/libs/httpSetting";
 import authHeader from "@/libs/authHeader";
+import { signIn, useSession } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
   const router = useRouter();
+  const { status } = useSession();
+  const { setLogin, token } = useLoginData();
 
   const getGeneralData = async () => {
     if (router.query.edit) {
       const pfr: any = await getAllPfrData(router.query.pfrId);
     }
   };
-
+  console.log(status);
   useEffect(() => {
-    console.log("useEffect");
-
     getGeneralData();
   });
 

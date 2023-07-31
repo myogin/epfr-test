@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { redirect } from "next/navigation";
 
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
@@ -49,20 +48,20 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
-  callbacks: {
-    async signIn({ credentials }) {
-      const isAllowedToSignIn = true;
-      if (isAllowedToSignIn) {
-        return "/";
-      } else {
-        // Return false to display a default error message
+  // callbacks: {
+  //   async signIn({ credentials }) {
+  //     const isAllowedToSignIn = true;
+  //     if (isAllowedToSignIn) {
+  //       return "/";
+  //     } else {
+  //       // Return false to display a default error message
 
-        return "/unauthorized";
+  //       return "/unauthorized";
 
-        // Or you can return a URL to redirect to:
-        // return '/unauthorized'
-      }
-    },
-  },
+  //       // Or you can return a URL to redirect to:
+  //       // return '/unauthorized'
+  //     }
+  //   },
+  // },
 };
 export default NextAuth(authOptions);
