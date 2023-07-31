@@ -9,7 +9,7 @@ import { checkCountDataOther, getLength } from "@/libs/helper";
 import { AnnualGeneral, AnnualIncome, Datas } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
@@ -56,6 +56,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   let [annualData, setAnnualData] = useState([0, 0]);
   let [monthlyData, setMonthlyData] = useState([0, 0]);
+
+  let [checkTotal, setCheckTotal] = useState([0, 0]);
 
   let [annualDataOther, setAnnualDataOther] = useState([0, 0]);
   let [monthlyDataOther, setMonthlyDataOther] = useState([0, 0]);
@@ -231,14 +233,16 @@ const AnnualIncomeCashFlow = (props: Props) => {
         }
         break;
     }
+
+    getTotal(indexdata);
   };
 
   const addOther = () => {
     setSaveType("add");
     initialState.values[0] = 0;
     initialState.values[1] = 0;
-    setAnnualDataOther([0,0])
-    setMonthlyDataOther([0,0])
+    setAnnualDataOther([0, 0]);
+    setMonthlyDataOther([0, 0]);
     setNewData(initialState);
     setShowModalOther(true);
   };
@@ -250,13 +254,13 @@ const AnnualIncomeCashFlow = (props: Props) => {
   const editOther = (params: number) => {
     setSaveType("update");
 
-    setAnnualDataOther([0,0])
-    setMonthlyDataOther([0,0])
-    
+    setAnnualDataOther([0, 0]);
+    setMonthlyDataOther([0, 0]);
+
     const detailData = others?.annualIncome.filter((obj) => obj.id === params);
 
-    console.log("check data filter")
-    console.log(detailData[0])
+    console.log("check data filter");
+    console.log(detailData[0]);
 
     initialState.id = detailData[0].id;
     initialState.key = detailData[0].key;
@@ -268,7 +272,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
   };
 
   const removeDataAction = (params: any) => {
-    removeOthers("annualIncome",params);
+    removeOthers("annualIncome", params);
     setShowModalRemove(false);
   };
 
@@ -277,8 +281,30 @@ const AnnualIncomeCashFlow = (props: Props) => {
     setActionDataId(params);
   };
 
-  const saveData = () => {
+  const getTotal = (index: number) => {
+    if (data.length > 0) {
+      let totalOther = [0, 0];
 
+      if (others.annualIncome.length > 0) {
+        others.annualIncome.map((data, indexA) => {
+          totalOther[index] += data.values[index];
+        });
+      }
+
+      let annualGrossIncome = data[index].annualIncome.annualGrossIncome;
+      let additionalWages = data[index].annualIncome.additionalWages;
+      let less = data[index].annualIncome.less;
+      let result =
+        annualGrossIncome + additionalWages + totalOther[index] - less;
+
+      const newArray = [...checkTotal];
+      newArray[index] = result;
+
+      setCheckTotal(newArray);
+    }
+  };
+
+  const saveData = () => {
     console.log(newData);
 
     let checkTotalData =
@@ -294,6 +320,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
     setShowModalOther(false);
   };
+
+  useEffect(() => {}, []);
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -638,7 +666,9 @@ const AnnualIncomeCashFlow = (props: Props) => {
                       </div>
 
                       <div className="flex gap-4 mt-4">
-                        <ButtonGreenMedium onClick={saveData}>Save</ButtonGreenMedium>
+                        <ButtonGreenMedium onClick={saveData}>
+                          Save
+                        </ButtonGreenMedium>
                         <ButtonTransparentMedium onClick={closeOther}>
                           Cancel
                         </ButtonTransparentMedium>
@@ -859,10 +889,14 @@ const AnnualIncomeCashFlow = (props: Props) => {
                 need[index] ? (
                   <>
                     <div className="text-right">
-                      <span className="text-green-deep">0</span>
+                      <span className="text-green-deep">
+                        {checkTotal[index] / 12}
+                      </span>
                     </div>
                     <div className="text-right">
-                      <span className="text-green-deep">0</span>
+                      <span className="text-green-deep">
+                        {checkTotal[index]}
+                      </span>
                     </div>
                   </>
                 ) : (
