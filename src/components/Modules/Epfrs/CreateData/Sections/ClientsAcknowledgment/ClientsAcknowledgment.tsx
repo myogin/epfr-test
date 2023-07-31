@@ -473,7 +473,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 0)} isChecked={!!sectionElevenData.data[i][0][0]} />
                 </div>);
               }
@@ -502,7 +502,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox isDisabled={true} isChecked={!!sectionElevenData.data[i][0][1]} />
                 </div>);
               }
@@ -528,7 +528,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 0, 2)} isChecked={!!sectionElevenData.data[i][0][2]} />
                 </div>);
               }
@@ -564,7 +564,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 1, 0)} isChecked={!!sectionElevenData.data[i][1][0]} />
                 </div>);
               }
@@ -594,7 +594,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox isDisabled={true} isChecked={true} />
                 </div>);
               }
@@ -623,7 +623,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 3, 0)} isChecked={!!sectionElevenData.data[i][3][0]} />
                 </div>);
               }
@@ -647,7 +647,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox isDisabled={true} isChecked={true} />
                 </div>);
               }
@@ -675,7 +675,7 @@ const ClientsAcknowledgment = (props: Props) => {
                     for (let i=0; i<props.pfrType; i++) {
                       const css = (matrixData[i][option.iKey] == true && !sectionElevenData.data[i][9][option.iKey])? "text-xs text-red": "text-xs";
                       const label = (matrixData[i][option.iKey] == true && !sectionElevenData.data[i][9][option.iKey])? "Required field": "";
-                      htmlBlock.push(<div className="flex-1">
+                      htmlBlock.push(<div className="flex-1" key={i}>
                         <Checkbox isChecked={!!sectionElevenData.data[i][9][option.iKey]} onChange={(e) => onCheckMatirx(e, i, option.iKey)} lableStyle={css} label={label} />
                       </div>);
                   }
@@ -708,7 +708,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox isDisabled={true} isChecked={true} />
                 </div>);
               }
@@ -730,7 +730,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 4, 1)} isChecked={!!sectionElevenData.data[i][4][1]} />
                 </div>);
               }
@@ -757,7 +757,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox isDisabled={true} isChecked={true} />
                 </div>);
               }
@@ -782,7 +782,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 6, 0)} isChecked={!!sectionElevenData.data[i][6][0]} />
                 </div>);
               }
@@ -803,7 +803,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 6, 1)} isChecked={!!sectionElevenData.data[i][6][1]} />
                 </div>);
               }
@@ -836,7 +836,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 7, 0)} isChecked={!!sectionElevenData.data[i][7][0]} />
                 </div>);
               }
@@ -864,7 +864,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {(() => {
               let htmlBlock = [];
               for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1">
+                htmlBlock.push(<div className="flex-1" key={i}>
                   <Checkbox onChange={(e) => onChangeSectionData(e, i, 8, 0)} isChecked={!!sectionElevenData.data[i][8][0]} />
                 </div>);
               }

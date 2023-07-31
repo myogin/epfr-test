@@ -5,7 +5,7 @@ import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJoin
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import Checkbox from "@/components/Forms/Checkbox";
 import TextArea from "@/components/Forms/TextArea";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import AssetBalance from "./AssetBalance/AssetBalance";
 import LiabilityBalance from "./LiabilityBalance/LiabilityBalance";
 import NetWorthBalance from "./NetWorthBalance/NetWorthBalance";
@@ -82,7 +82,7 @@ const BalanceSheet = (props: Props) => {
             </div>
             <div className="grid grid-cols-2">
               {getPfrLength.map((e, index) => (
-                <>
+                <Fragment key={"key"+index}>
                   {props.pfrType > 1 ? (
                     <h3
                       key={"heading-secondary-" + index}
@@ -93,7 +93,7 @@ const BalanceSheet = (props: Props) => {
                   ) : (
                     ""
                   )}
-                </>
+                </Fragment>
               ))}
             </div>
           </div>
@@ -104,7 +104,7 @@ const BalanceSheet = (props: Props) => {
             </div>
             <div className="grid grid-cols-2">
               {getPfrLength.map((e, index) => (
-                <>
+                <Fragment key={"sdas"+index}>
                   {props.pfrType > 1 ? (
                     <h3
                       key={"heading-secondary-" + index}
@@ -115,7 +115,7 @@ const BalanceSheet = (props: Props) => {
                   ) : (
                     ""
                   )}
-                </>
+                </Fragment>
               ))}
             </div>
           </div>
@@ -126,7 +126,7 @@ const BalanceSheet = (props: Props) => {
             </div>
             <div className="grid grid-cols-2">
               {getPfrLength.map((e, index) => (
-                <>
+                <Fragment key={"sasd"+index}>
                   {props.pfrType > 1 ? (
                     <h3
                       key={"heading-secondary-" + index}
@@ -137,7 +137,7 @@ const BalanceSheet = (props: Props) => {
                   ) : (
                     ""
                   )}
-                </>
+                </Fragment>
               ))}
             </div>
           </div>
@@ -186,7 +186,7 @@ const BalanceSheet = (props: Props) => {
                 className="my-4"
                 label="The Reason"
                 name="reason"
-                value={reason[index]}
+                defaultValue={reason[index]}
                 handleChange={(e) => {
                   updateReason(index, e.target.value, props.pfrType);
                 }}
