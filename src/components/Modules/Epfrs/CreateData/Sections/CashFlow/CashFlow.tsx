@@ -83,7 +83,7 @@ const CashFlow = (props: Props) => {
             3.1 Annual Income
           </HeadingSecondaryDynamicGrid>
           <AnnualIncomeCashFlow pfrType={props.pfrType} />
-          
+
           <HeadingSecondaryDynamicGrid
             className={`mx-8 2xl:mx-60 ${
               props.pfrType == 2
@@ -140,49 +140,47 @@ const CashFlow = (props: Props) => {
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
                   <div className="flex-1" key={"cashflow-qa-" + index}>
-
                     {/* For Joint */}
                     {props.pfrType > 1 ? (
-                      <>
-                        {need && checkNeedData > 0 ? (
-                          need[index] ? (
-                            <>
-                              <h3
-                                key={"heading-secondary-" + index}
-                                className="w-full mb-4 text-base font-bold"
-                              >
-                                {clientIdentity(index)}
-                              </h3>
-                              <p className="text-sm font-normal text-gray-light">
-                                {`Do you have any plans or are there any factors within
+                      need && checkNeedData > 0 ? (
+                        need[index] ? (
+                          <>
+                            <h3
+                              key={"heading-secondary-" + index}
+                              className="w-full mb-4 text-base font-bold"
+                            >
+                              {clientIdentity(index)}
+                            </h3>
+                            <p className="text-sm font-normal text-gray-light">
+                              {`Do you have any plans or are there any factors within
                           the next 12 months which may significantly increase or
                           decrease your current income and expenditure position
                           (eg. Receiving an inheritance or borrowing money for
                           investment or purchase of a holiday home, etc.) ?`}
-                              </p>
-                            </>
-                          ) : (
-                            <>
-                              <h3
-                                key={"heading-secondary-" + index}
-                                className="w-full mb-4 text-base font-bold text-gray-soft-strong"
-                              >
-                                {clientIdentity(index)}
-                              </h3>
-                              <p className="text-sm font-normal text-gray-soft-strong">
-                                {`Do you have any plans or are there any factors within
-                          the next 12 months which may significantly increase or
-                          decrease your current income and expenditure position
-                          (eg. Receiving an inheritance or borrowing money for
-                          investment or purchase of a holiday home, etc.) ?`}
-                              </p>
-                            </>
-                          )
+                            </p>
+                          </>
                         ) : (
-                          ""
-                        )}
-                      </>
-                    ) : ( // For single
+                          <>
+                            <h3
+                              key={"heading-secondary-" + index}
+                              className="w-full mb-4 text-base font-bold text-gray-soft-strong"
+                            >
+                              {clientIdentity(index)}
+                            </h3>
+                            <p className="text-sm font-normal text-gray-soft-strong">
+                              {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                            </p>
+                          </>
+                        )
+                      ) : (
+                        ""
+                      )
+                    ) : (
+                      // For single
                       <p className="text-sm font-normal text-gray-light">
                         {`Do you have any plans or are there any factors within
                           the next 12 months which may significantly increase or
@@ -194,33 +192,32 @@ const CashFlow = (props: Props) => {
 
                     {/* For Joint */}
                     {props.pfrType > 1 ? (
-                      <>
-                        {need && checkNeedData > 0 ? (
-                          need[index] ? (
-                            <Select
-                              value=""
-                              className="my-4"
-                              datas={fillInformation}
-                              handleChange={(event) =>
-                                setData(eval(event.target.value))
-                              }
-                            />
-                          ) : (
-                            <Select
-                              disabled={true}
-                              value=""
-                              className="my-4"
-                              datas={fillInformation}
-                              handleChange={(event) =>
-                                setData(eval(event.target.value))
-                              }
-                            />
-                          )
+                      need && checkNeedData > 0 ? (
+                        need[index] ? (
+                          <Select
+                            value=""
+                            className="my-4"
+                            datas={fillInformation}
+                            handleChange={(event) =>
+                              setData(eval(event.target.value))
+                            }
+                          />
                         ) : (
-                          ""
-                        )}
-                      </>
-                    ) : ( // For single
+                          <Select
+                            disabled={true}
+                            value=""
+                            className="my-4"
+                            datas={fillInformation}
+                            handleChange={(event) =>
+                              setData(eval(event.target.value))
+                            }
+                          />
+                        )
+                      ) : (
+                        ""
+                      )
+                    ) : (
+                      // For single
                       <Select
                         value=""
                         className="my-4"
@@ -240,14 +237,12 @@ const CashFlow = (props: Props) => {
                 getPfrLength.map((data, index) => (
                   <div className="flex-1" key={index}>
                     {props.pfrType > 1 ? (
-                      <>
-                        <h3
-                          key={"heading-secondary-" + index}
-                          className="w-full mb-10 text-base font-bold"
-                        >
-                          {clientIdentity(index)}
-                        </h3>
-                      </>
+                      <h3
+                        key={"heading-secondary-" + index}
+                        className="w-full mb-10 text-base font-bold"
+                      >
+                        {clientIdentity(index)}
+                      </h3>
                     ) : (
                       ""
                     )}
@@ -270,23 +265,10 @@ const CashFlow = (props: Props) => {
             </RowDouble>
             <RowDouble>
               {getPfrLength?.length &&
-                getPfrLength.map((data, index) => (
-                  <>
-                    {need ? (
-                      need[index] == 1 ? (
-                        <div className="flex-1"></div>
-                      ) : (
-                        <div className="flex-1" key={index}>
-                          <TextArea
-                            className="my-4"
-                            defaultValue="test text area"
-                            needValidation={true}
-                            logic={
-                              need ? (need[index] == 1 ? true : false) : false
-                            }
-                          />
-                        </div>
-                      )
+                getPfrLength.map((data, index) =>
+                  need ? (
+                    need[index] == 1 ? (
+                      <div className="flex-1" key={index}></div>
                     ) : (
                       <div className="flex-1" key={index}>
                         <TextArea
@@ -298,9 +280,18 @@ const CashFlow = (props: Props) => {
                           }
                         />
                       </div>
-                    )}
-                  </>
-                ))}
+                    )
+                  ) : (
+                    <div className="flex-1" key={index}>
+                      <TextArea
+                        className="my-4"
+                        defaultValue="test text area"
+                        needValidation={true}
+                        logic={need ? (need[index] == 1 ? true : false) : false}
+                      />
+                    </div>
+                  )
+                )}
             </RowDouble>
           </SectionCardSingleGrid>
         </>

@@ -240,21 +240,20 @@ const SwitchingReplacement = (props: Props) => {
     return errors;
   }
 
-  useEffect(() => {
-    getPfrLength.map((data, index) => {
-      if (showReasonTwo[index] == 0) {
-        const productList = sectionTenData.originalProduct.filter(val => val.owner !== index);
-        setSectionTenData({
-          ...sectionTenData,
-          originalProduct: productList
-        });
-      }
-    });
-  }, [showReasonTwo]);
+  // useEffect(() => {
+  //   getPfrLength.map((data, index) => {
+  //     if (showReasonTwo[index] == 0) {
+  //       const productList = sectionTenData.originalProduct.filter(val => val.owner !== index);
+  //       setSectionTenData({
+  //         ...sectionTenData,
+  //         originalProduct: productList
+  //       });
+  //     }
+  //   });
 
-  useEffect(() => {
-    localStorage.setItem('section10', JSON.stringify(sectionTenData));
-  }, [sectionTenData]);
+  //   localStorage.setItem('section10', JSON.stringify(sectionTenData));
+
+  // }, [sectionTenData]);
 
   const scrollPosition = useScrollPosition(10)
   return (
@@ -287,7 +286,7 @@ const SwitchingReplacement = (props: Props) => {
           {getPfrLength?.length &&
             getPfrLength.map((data, index) => {
               return (
-                <div className="flex-1">
+                <div key={"asas"+index} className="flex-1">
                 <TextThin>
                   Client {index + 1}
                 </TextThin>
@@ -339,7 +338,7 @@ const SwitchingReplacement = (props: Props) => {
         <RowDouble className="mb-10">
           {getPfrLength?.length &&
             getPfrLength.map((data, index) => (
-              <div className="flex-1">
+              <div key={"sdds"+index} className="flex-1">
                 <TextThin>
                   Client {index + 1}
                 </TextThin>
@@ -360,7 +359,7 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"asasa"+index} className="flex-1">
                   <TextThin>
                     Client {index + 1}
                   </TextThin>
@@ -395,7 +394,7 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"saas"+index} className="flex-1">
                     <TextThin>
                       Client {index + 1}
                     </TextThin>
@@ -685,7 +684,7 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"asas"+index} className="flex-1">
                     <TextThin>
                       Client {index + 1}
                     </TextThin>
@@ -721,7 +720,7 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"asaa"+index} className="flex-1">
                     <TextThin>
                       Client {index + 1}
                     </TextThin>
@@ -758,7 +757,7 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"asa"+index} className="flex-1">
                     <TextThin>
                       Client {index + 1}
                     </TextThin>
@@ -795,7 +794,7 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"asadd"+index} className="flex-1">
                     <TextThin>
                       Client {index + 1}
                     </TextThin>
@@ -831,7 +830,7 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"asa"+index} className="flex-1">
                     <TextThin>
                       Client {index + 1}
                     </TextThin>
@@ -868,7 +867,7 @@ const SwitchingReplacement = (props: Props) => {
             <RowDouble className="mb-10">
               {getPfrLength?.length &&
                 getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"asda"+index} className="flex-1">
                     <TextThin>
                       Client {index + 1}
                     </TextThin>

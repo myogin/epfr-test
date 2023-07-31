@@ -424,11 +424,8 @@ const ClientsAcknowledgment = (props: Props) => {
       fetchData();
     }
     
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('section11', JSON.stringify(sectionElevenData));
-  }, [sectionElevenData]);
+    localStorage.setItem('section12', JSON.stringify(sectionElevenData));
+  }, [scrollPosition, sectionElevenData]);
 
   return (
     <div id={props.id}>
@@ -448,7 +445,7 @@ const ClientsAcknowledgment = (props: Props) => {
             {props.pfrType && props.pfrType > 1 && (
               <RowDouble>
                 {getPfrLength.map((data, index) => (
-                  <div className="flex-1">
+                  <div key={"ssds"+index} className="flex-1">
                     <h3
                       key={"heading-secondary-" + index}
                       className="w-full text-base font-bold text-green-deep">

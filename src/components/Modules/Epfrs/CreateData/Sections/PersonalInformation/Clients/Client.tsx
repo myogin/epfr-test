@@ -28,7 +28,7 @@ const Client = (props: Props) => {
         }
 
         if (name === "clientTitle") {
-          updateGender(indexdata,value);
+          updateGender(indexdata, value);
         }
         break;
       case "generalInfo":
@@ -507,434 +507,416 @@ const Client = (props: Props) => {
           </div>
         </>
       ) : (
-        <>
-          {getPfrLength?.length &&
-            getPfrLength.map((data, index) => (
-              <div key={index}>
-                {/* Selected Form */}
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Title"
-                  name="clientTitle"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].clientTitle : ""}
-                  datas={clientTitles}
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].clientTitle === "" ||
-                        clientInfo[index].clientTitle === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Principal Name"
-                  type="text"
-                  name="clientName"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].clientName : ""}
-                  placeholder="Margo Madison"
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].clientName === "" ||
-                        clientInfo[index].clientName === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
+        getPfrLength?.length &&
+        getPfrLength.map((data, index) => (
+          <div key={"asasa"+index}>
+            {/* Selected Form */}
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Title"
+              name="clientTitle"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].clientTitle : ""}
+              datas={clientTitles}
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].clientTitle === "" ||
+                    clientInfo[index].clientTitle === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Principal Name"
+              type="text"
+              name="clientName"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].clientName : ""}
+              placeholder="Margo Madison"
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].clientName === "" ||
+                    clientInfo[index].clientName === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
 
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="NRIC / FIN"
-                  type="text"
-                  name="passportNo"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].passportNo : ""}
-                  placeholder="12981289129"
-                  handleChange={handleInputChange}
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Email Address"
-                  type="text"
-                  name="email"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].email : ""}
-                  placeholder="margomadison@gmail.com"
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].email === "" ||
-                        clientInfo[index].email === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                {/* Selected Form */}
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Sex"
-                  name="gender"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].gender : ""}
-                  datas={clientSex}
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].gender === "" ||
-                        clientInfo[index].gender === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Race"
-                  name="race"
-                  type="text"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].race : ""}
-                  placeholder="Chinesse"
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].race === "" ||
-                        clientInfo[index].race === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Date of Birth"
-                  type="date"
-                  name="dateOfBirth"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].dateOfBirth : ""}
-                  placeholder="01 January 1998"
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].dateOfBirth === "" ||
-                        clientInfo[index].dateOfBirth === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Country of Birth"
-                  name="birthCountryId"
-                  indexData={index}
-                  value={
-                    clientInfo[index] ? clientInfo[index].birthCountryId : ""
-                  }
-                  datas={country}
-                  handleChange={handleInputChange}
-                />
-                {/* Selected Form */}
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Nationality"
-                  name="nationality"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].nationality : ""}
-                  datas={country}
-                  handleChange={handleInputChange}
-                />
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Residency Status"
-                  name="residencyTwo"
-                  indexData={index}
-                  value={
-                    clientInfo[index] ? clientInfo[index].residencyTwo : ""
-                  }
-                  datas={recidence}
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].residencyTwo === "" ||
-                        clientInfo[index].residencyTwo === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                {/* Selected Form */}
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Pass Type"
-                  name="residency"
-                  indexData={index}
-                  value={clientInfo[index].residency}
-                  datas={recidence}
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index].residency === "" ||
-                    clientInfo[index].residency === "-"
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="NRIC / FIN"
+              type="text"
+              name="passportNo"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].passportNo : ""}
+              placeholder="12981289129"
+              handleChange={handleInputChange}
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Email Address"
+              type="text"
+              name="email"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].email : ""}
+              placeholder="margomadison@gmail.com"
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].email === "" ||
+                    clientInfo[index].email === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            {/* Selected Form */}
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Sex"
+              name="gender"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].gender : ""}
+              datas={clientSex}
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].gender === "" ||
+                    clientInfo[index].gender === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Race"
+              name="race"
+              type="text"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].race : ""}
+              placeholder="Chinesse"
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].race === "" ||
+                    clientInfo[index].race === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Date of Birth"
+              type="date"
+              name="dateOfBirth"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].dateOfBirth : ""}
+              placeholder="01 January 1998"
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].dateOfBirth === "" ||
+                    clientInfo[index].dateOfBirth === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Country of Birth"
+              name="birthCountryId"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].birthCountryId : ""}
+              datas={country}
+              handleChange={handleInputChange}
+            />
+            {/* Selected Form */}
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Nationality"
+              name="nationality"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].nationality : ""}
+              datas={country}
+              handleChange={handleInputChange}
+            />
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Residency Status"
+              name="residencyTwo"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].residencyTwo : ""}
+              datas={recidence}
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].residencyTwo === "" ||
+                    clientInfo[index].residencyTwo === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            {/* Selected Form */}
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Pass Type"
+              name="residency"
+              indexData={index}
+              value={clientInfo[index].residency}
+              datas={recidence}
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index].residency === "" ||
+                clientInfo[index].residency === "-"
+                  ? false
+                  : true
+              }
+            />
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Marital Status"
+              name="marital"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].marital : ""}
+              datas={marital}
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].marital === "" ||
+                    clientInfo[index].marital === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            {/* Selected Form */}
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              name="employmentStatus"
+              indexData={index}
+              label="Employment Status"
+              value={
+                clientInfo[index] ? clientInfo[index].employmentStatus : ""
+              }
+              datas={employment}
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].employmentStatus === "" ||
+                    clientInfo[index].employmentStatus === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Occupation"
+              type="text"
+              name="occupation"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].occupation : ""}
+              placeholder="Manager"
+              handleChange={handleInputChange}
+            />
+            {/* Selected Form */}
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Employment Sector"
+              name="businessNature"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].businessNature : ""}
+              datas={employmentSector}
+              handleChange={handleInputChange}
+            />
+            {/* Selected Form */}
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              name="companyName"
+              indexData={index}
+              label="Company Name"
+              value={clientInfo[index] ? clientInfo[index].companyName : ""}
+              datas={companyMaster}
+              handleChange={handleInputChange}
+            />
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Annual Income"
+              name="annualIncome"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].annualIncome : ""}
+              datas={annualIncome}
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].annualIncome === "" ||
+                    clientInfo[index].annualIncome === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Contact Detail [Home]"
+              type="text"
+              name="contactHome"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].contactHome : ""}
+              placeholder="981271291"
+              handleChange={handleInputChange}
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Mobile Number"
+              type="text"
+              name="contactMobile"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].contactMobile : ""}
+              placeholder="2121921298"
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].contactMobile === "" ||
+                    clientInfo[index].contactMobile === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Registered Address"
+              type="text"
+              name="residentialAddr"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].residentialAddr : ""}
+              placeholder="Singapore"
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].residentialAddr === "" ||
+                    clientInfo[index].residentialAddr === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            <Input
+              dataType="clientInfo"
+              className="mb-10"
+              label="Mailing Address"
+              type="text"
+              name="mailingAddr"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].mailingAddr : ""}
+              placeholder="Set as same like registered address"
+              handleChange={handleInputChange}
+            />
+            {/* Selected Form */}
+
+            <Select
+              dataType="clientInfo"
+              className="mb-10"
+              label="Smoker"
+              name="smoker"
+              indexData={index}
+              value={clientInfo[index] ? clientInfo[index].smoker : ""}
+              datas={clientSmoker}
+              handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].smoker === "" ||
+                    clientInfo[index].smoker === "-"
+                    ? false
+                    : true
+                  : true
+              }
+            />
+            {index === 0 ? (
+              <Input
+                dataType="generalInfo"
+                className="mb-10"
+                label="Review Date"
+                type="date"
+                name="reviewDate"
+                value={reviewDate}
+                placeholder="01 January 1998"
+                handleChange={handleInputChange}
+                needValidation={true}
+                logic={reviewDate === "" || reviewDate === "-" ? false : true}
+              />
+            ) : (
+              ""
+            )}
+            {index === 1 ? (
+              <Select
+                dataType="clientInfo"
+                className="mb-10"
+                label="Relationship To Client 1"
+                name="relationship"
+                indexData={index}
+                value={clientInfo[index] ? clientInfo[index].relationship : ""}
+                datas={relationships}
+                handleChange={handleInputChange}
+                needValidation={true}
+                logic={
+                  clientInfo[index]
+                    ? clientInfo[index].relationship === "" ||
+                      clientInfo[index].relationship === "-"
                       ? false
                       : true
-                  }
-                />
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Marital Status"
-                  name="marital"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].marital : ""}
-                  datas={marital}
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].marital === "" ||
-                        clientInfo[index].marital === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                {/* Selected Form */}
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  name="employmentStatus"
-                  indexData={index}
-                  label="Employment Status"
-                  value={
-                    clientInfo[index] ? clientInfo[index].employmentStatus : ""
-                  }
-                  datas={employment}
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].employmentStatus === "" ||
-                        clientInfo[index].employmentStatus === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Occupation"
-                  type="text"
-                  name="occupation"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].occupation : ""}
-                  placeholder="Manager"
-                  handleChange={handleInputChange}
-                />
-                {/* Selected Form */}
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Employment Sector"
-                  name="businessNature"
-                  indexData={index}
-                  value={
-                    clientInfo[index] ? clientInfo[index].businessNature : ""
-                  }
-                  datas={employmentSector}
-                  handleChange={handleInputChange}
-                />
-                {/* Selected Form */}
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  name="companyName"
-                  indexData={index}
-                  label="Company Name"
-                  value={clientInfo[index] ? clientInfo[index].companyName : ""}
-                  datas={companyMaster}
-                  handleChange={handleInputChange}
-                />
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Annual Income"
-                  name="annualIncome"
-                  indexData={index}
-                  value={
-                    clientInfo[index] ? clientInfo[index].annualIncome : ""
-                  }
-                  datas={annualIncome}
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].annualIncome === "" ||
-                        clientInfo[index].annualIncome === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Contact Detail [Home]"
-                  type="text"
-                  name="contactHome"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].contactHome : ""}
-                  placeholder="981271291"
-                  handleChange={handleInputChange}
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Mobile Number"
-                  type="text"
-                  name="contactMobile"
-                  indexData={index}
-                  value={
-                    clientInfo[index] ? clientInfo[index].contactMobile : ""
-                  }
-                  placeholder="2121921298"
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].contactMobile === "" ||
-                        clientInfo[index].contactMobile === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Registered Address"
-                  type="text"
-                  name="residentialAddr"
-                  indexData={index}
-                  value={
-                    clientInfo[index] ? clientInfo[index].residentialAddr : ""
-                  }
-                  placeholder="Singapore"
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].residentialAddr === "" ||
-                        clientInfo[index].residentialAddr === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                <Input
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Mailing Address"
-                  type="text"
-                  name="mailingAddr"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].mailingAddr : ""}
-                  placeholder="Set as same like registered address"
-                  handleChange={handleInputChange}
-                />
-                {/* Selected Form */}
-
-                <Select
-                  dataType="clientInfo"
-                  className="mb-10"
-                  label="Smoker"
-                  name="smoker"
-                  indexData={index}
-                  value={clientInfo[index] ? clientInfo[index].smoker : ""}
-                  datas={clientSmoker}
-                  handleChange={handleInputChange}
-                  needValidation={true}
-                  logic={
-                    clientInfo[index]
-                      ? clientInfo[index].smoker === "" ||
-                        clientInfo[index].smoker === "-"
-                        ? false
-                        : true
-                      : true
-                  }
-                />
-                {index === 0 ? (
-                  <Input
-                    dataType="generalInfo"
-                    className="mb-10"
-                    label="Review Date"
-                    type="date"
-                    name="reviewDate"
-                    value={reviewDate}
-                    placeholder="01 January 1998"
-                    handleChange={handleInputChange}
-                    needValidation={true}
-                    logic={
-                      reviewDate === "" || reviewDate === "-" ? false : true
-                    }
-                  />
-                ) : (
-                  ""
-                )}
-                {index === 1 ? (
-                  <Select
-                    dataType="clientInfo"
-                    className="mb-10"
-                    label="Relationship To Client 1"
-                    name="relationship"
-                    indexData={index}
-                    value={
-                      clientInfo[index] ? clientInfo[index].relationship : ""
-                    }
-                    datas={relationships}
-                    handleChange={handleInputChange}
-                    needValidation={true}
-                    logic={
-                      clientInfo[index]
-                        ? clientInfo[index].relationship === "" ||
-                          clientInfo[index].relationship === "-"
-                          ? false
-                          : true
-                        : true
-                    }
-                  />
-                ) : (
-                  ""
-                )}
-              </div>
-            ))}
-        </>
+                    : true
+                }
+              />
+            ) : (
+              ""
+            )}
+          </div>
+        ))
       )}
     </SectionCardDoubleGrid>
   );

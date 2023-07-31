@@ -3,12 +3,13 @@ import React from 'react'
 interface Props {
     children?: React.ReactNode;
     className?: string;
+    key?:any
   }
 
-const RowDinamycGrid = ({ children, className }: Props) => {
+const RowDinamycGrid = (props: Props) => {
   return (
-    <div className={`grid ${className} grid-cols-1 gap-8 mb-5`}>
-      {children}
+    <div key={"asdas"+props.key} className={`grid ${props.className} grid-cols-1 gap-8 mb-5`}>
+      {props.children}
     </div>
   )
 }

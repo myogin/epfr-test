@@ -22,11 +22,28 @@ export const checkCountData = (datas: any) => {
   return data;
 };
 
+export const checkCountDataOther = (datas: any) => {
+  let data: number = 0;
+  if (datas?.length) {
+    if (datas[0].key === "") {
+      data = datas.length;
+    } else {
+      data = datas.length + 1;
+    }
+  } else {
+    data = datas.length + 1;
+  }
+
+  return data;
+};
+
 export const getClientCustom = (clients: any) => {
   let clientCustom: any[] = [];
 
   if (clients?.length) {
-    clients.map((data: any, index: any) => {});
+    clients.map((data: any, index: any) => {
+      clientCustom.push({ id: index, name: data.clientName });
+    });
   }
 
   return clientCustom;

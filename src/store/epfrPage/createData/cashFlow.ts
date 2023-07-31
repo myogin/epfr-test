@@ -5,7 +5,15 @@ import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
   setAnnualIncome: (clientType: number, name: string, value: any) => any;
-  setAnnualExpanse: (clientType: number, name: string, value: any) => any;
+  setAnnualExpanse: (
+    key: string,
+    indexData: number,
+    indexClient: number,
+    value: any
+  ) => any;
+  setOthers: (annualType: string, index: number, params: any) => any;
+  patchOthers: (annualType: string, params: any) => any;
+  removeOthers: (annualType: string, params: any) => any;
   setData: (indexData: number, params: any) => any;
   setAnnualSurplus: (indexData: number, params: any) => any;
   setAnswer: (indexData: number, params: any) => any;
@@ -19,31 +27,19 @@ const initialState: SectionThree = {
   others: {
     annualIncome: [
       {
-        id: 1,
+        id: 0,
         editting: false,
-        key: "Test Other A",
-        values: [10,20],
-      },
-      {
-        id: 2,
-        editting: false,
-        key: "Test Other C",
-        values: [10,20],
+        key: "",
+        values: [0, 0],
       },
     ],
     annualExpense: [
       {
-        id: 1,
+        id: 0,
         editting: false,
-        key: "Test Other expense A",
-        values: [10,30],
+        key: "",
+        values: [0, 0],
       },
-      {
-        id: 2,
-        editting: false,
-        key: "Test Other expense B",
-        values: [10,20],
-      }
     ],
   },
   data: [
@@ -87,49 +83,49 @@ const initialState: SectionThree = {
       key: "household",
       title: "Household",
       selected: false,
-      values: [1200, 0, 0, 0],
+      values: [0, 0],
     },
     {
       key: "transportation",
       title: "Transportation",
       selected: false,
-      values: [2400, 0, 0, 0],
+      values: [0, 0],
     },
     {
       key: "telco",
       title: "Telco",
       selected: false,
-      values: [3600, 0, 0, 0],
+      values: [0, 0],
     },
     {
       key: "dependents",
       title: "Dependents",
       selected: false,
-      values: [4800, 0, 0, 0],
+      values: [0, 0],
     },
     {
       key: "personal",
       title: "Personal",
       selected: false,
-      values: [6000, 0, 0, 0],
+      values: [0, 0],
     },
     {
       key: "luxury",
       title: "Luxury",
       selected: false,
-      values: [7200, 0, 0, 0],
+      values: [0, 0],
     },
     {
       key: "insurancePremiums",
       title: "Insurance Premiums",
       selected: false,
-      values: [1200, 0, 0, 0],
+      values: [0, 0],
     },
     {
       key: "loanRepayments",
       title: "Loan Repayments",
       selected: false,
-      values: [12000, 0, 0, 0],
+      values: [0, 0],
     },
   ],
   issues: [],
@@ -164,11 +160,104 @@ const cashFlow = create(
               data[name] = value;
             })
           ),
-        setAnnualExpanse: (clientType: number, name: string, value: any) =>
+        setAnnualExpanse: (
+          key: string,
+          indexData: number,
+          indexClient: number,
+          value: any
+        ) =>
           set(
             produce((draft) => {
-              let data = draft.annualExpense[clientType].key;
-              data[name] = value;
+              let household = draft.annualExpense[indexData];
+              household.values[indexClient] = value;
+              household.selected = true;
+            })
+          ),
+        setOthers: (annualType: string, indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              if (annualType === "annualIncome") {
+                if (indexData === 0 && get().others?.annualIncome.length) {
+                  let othersReplace = draft.others.annualIncome[indexData];
+                  othersReplace.id = params.id;
+                  othersReplace.editting = true;
+                  othersReplace.key = params.key;
+                  othersReplace.values[0] = params.values[0]
+                    ? params.values[0]
+                    : 0;
+                  othersReplace.values[1] = params.values[1]
+                    ? params.values[1]
+                    : 0;
+                } else {
+                  draft.others.annualIncome.push(params);
+                }
+              } else {
+                if (indexData === 0 && get().others?.annualExpense.length) {
+                  let othersReplace = draft.others.annualExpense[indexData];
+                  othersReplace.id = params.id;
+                  othersReplace.editting = true;
+                  othersReplace.key = params.key;
+                  othersReplace.values[0] = params.values[0]
+                    ? params.values[0]
+                    : 0;
+                  othersReplace.values[1] = params.values[1]
+                    ? params.values[1]
+                    : 0;
+                } else {
+                  draft.others.annualExpense.push(params);
+                }
+              }
+            })
+          ),
+        patchOthers: (annualType: string, params: any) =>
+          set(
+            produce((draft) => {
+              const other = draft.others[annualType].find(
+                (el: any) => el.id === params.id
+              );
+
+              other.editting = true;
+              other.key = params.key;
+              other.values[0] = params.values[0] ? params.values[0] : 0;
+              other.values[1] = params.values[1] ? params.values[1] : 0;
+            })
+          ),
+        removeOthers: (annualType: string, params: any) =>
+          set(
+            produce((draft) => {
+              if (annualType === "annualIncome") {
+                if (get().others?.annualIncome?.length > 1) {
+                  const otherIndex = draft.others?.annualIncome.findIndex(
+                    (el: any) => el.id === params
+                  );
+                  console.log("masuk disini");
+                  draft.others.annualIncome.splice(otherIndex, 1);
+
+                  // reset index 0 dependent data
+                } else {
+                  let otherReplace = draft.others.annualIncome[0];
+                  otherReplace.id = 0;
+                  otherReplace.editting = false;
+                  otherReplace.key = "";
+                  otherReplace.values = [0, 0];
+                }
+              } else {
+                if (get().others?.annualExpense?.length > 1) {
+                  const otherIndex = draft.others?.annualExpense.findIndex(
+                    (el: any) => el.id === params
+                  );
+                  console.log("masuk disini");
+                  draft.others.annualExpense.splice(otherIndex, 1);
+
+                  // reset index 0 dependent data
+                } else {
+                  let otherReplace = draft.others.annualExpense[0];
+                  otherReplace.id = 0;
+                  otherReplace.editting = false;
+                  otherReplace.key = "";
+                  otherReplace.values = [0, 0];
+                }
+              }
             })
           ),
         setAnnualSurplus: (indexData: number, params: any) =>
@@ -197,8 +286,7 @@ const cashFlow = create(
         setNeed: (indexData: number, params: any) =>
           set(
             produce((draft) => {
-
-              console.log("Masuk sini nggak")
+              console.log("Masuk sini nggak");
 
               let need = draft.need;
               need[indexData] = params;

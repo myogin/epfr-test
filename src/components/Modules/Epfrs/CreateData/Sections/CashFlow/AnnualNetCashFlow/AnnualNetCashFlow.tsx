@@ -7,7 +7,7 @@ import Input from "@/components/Forms/Input";
 import TextArea from "@/components/Forms/TextArea";
 import { getLength } from "@/libs/helper";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 
 interface Props {
   pfrType?: any;
@@ -39,10 +39,10 @@ const AnnualNetCashFlow = (props: Props) => {
         ></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
-            <>
+            <Fragment key={"sasa"+index}>
               <div className="text-sm font-bold text-right">Monthly</div>
               <div className="text-sm font-bold text-right">Annual</div>
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -59,7 +59,7 @@ const AnnualNetCashFlow = (props: Props) => {
         </div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
-            <>
+            <Fragment key={"asas"+index}>
               {need ? (
                 need[index] ? (
                   <>
@@ -102,7 +102,7 @@ const AnnualNetCashFlow = (props: Props) => {
                   </div>
                 </>
               )}
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
       <RowDinamycGrid
@@ -120,7 +120,7 @@ const AnnualNetCashFlow = (props: Props) => {
 
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
-            <>
+            <Fragment key={"sasa"+index}>
               <div className={`${props.pfrType > 1 ? "col-span-2" : ""}`}>
                 <TextArea
                   className="my-4"
@@ -128,7 +128,7 @@ const AnnualNetCashFlow = (props: Props) => {
                   defaultValue="test text area"
                 />
               </div>
-            </>
+            </Fragment>
           ))}
       </RowDinamycGrid>
     </SectionCardSingleGrid>

@@ -31,11 +31,6 @@ interface Props {
 }
 
 const ExistingPortofolio = (props: Props) => {
-  let fillInformation = [
-    { id: 0, name: "Nil" },
-    { id: 1, name: "Review" },
-  ];
-
   let {
     need,
     reason,
@@ -53,10 +48,6 @@ const ExistingPortofolio = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
 
-  const saveData = (params: any) => {
-    showDetailData(params);
-  };
-
   const handleToggle = (object: string, clientType: number, value: boolean) => {
     setToggle(object, clientType, "editting", value);
   };
@@ -65,14 +56,7 @@ const ExistingPortofolio = (props: Props) => {
 
   const scrollPosition = useScrollPosition(2);
 
-  // console.log("Test logic scroll " +scrollPosition);
-
-  // if (typeof window !== "undefined") {
-  //   localStorage.setItem("section2", JSON.stringify(sectionTwo));
-  // }
-
   // useEffect(() => {
-  //   localStorage.setItem("section2", JSON.stringify(sectionTwo));
   // }, []);
 
   return (
@@ -226,6 +210,15 @@ const ExistingPortofolio = (props: Props) => {
             onChange={() => setGlobal("need", !need)}
             lableStyle="text-sm font-normal text-gray-light"
             label=" Would you like your assets and liabilities to be taken into consideration for the Needs Analysis and Recommendation(s)?"
+            needValidation={true}
+            textError="Need portfolio at least"
+            logic={summaryOfProperty[0].editting ||
+              summaryOfInvestment[0].editting ||
+              summaryOfSavings[0].editting ||
+              summaryOfCPF[0].editting ||
+              summaryOfInsurance[0].editting ||
+              summaryOfSRS[0].editting ||
+              summaryOfLoans[0].editting ? true : false}
           />
         </RowSingle>
         {!need ? (

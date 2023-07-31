@@ -18,9 +18,6 @@ const AppSecondaryLayout = (prop: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className='flex flex-row w-full min-h-screen font-sans bg-white'>
-        {/* <Sidebar /> */}
-
-        {/* {prop.typeMenu == "1" ? <PfrNavigation /> : <SubmissionNavigation />} */}
         {prop.children}
       </div>
     </>
