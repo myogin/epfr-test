@@ -235,6 +235,10 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   const addOther = () => {
     setSaveType("add");
+    initialState.values[0] = 0;
+    initialState.values[1] = 0;
+    setAnnualDataOther([0,0])
+    setMonthlyDataOther([0,0])
     setNewData(initialState);
     setShowModalOther(true);
   };
@@ -245,12 +249,21 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
   const editOther = (params: number) => {
     setSaveType("update");
+
+    setAnnualDataOther([0,0])
+    setMonthlyDataOther([0,0])
+    
     const detailData = others?.annualIncome.filter((obj) => obj.id === params);
 
     console.log("check data filter")
     console.log(detailData[0])
 
-    setNewData(detailData[0]);
+    initialState.id = detailData[0].id;
+    initialState.key = detailData[0].key;
+    initialState.values[0] = detailData[0].values[0];
+    initialState.values[1] = detailData[0].values[1];
+
+    setNewData(initialState);
     setShowModalOther(true);
   };
 

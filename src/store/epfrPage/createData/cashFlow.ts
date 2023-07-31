@@ -11,11 +11,7 @@ type Actions = {
     indexClient: number,
     value: any
   ) => any;
-  setOthers: (
-    annualType: string,
-    index: number,
-    params: any
-  ) => any;
+  setOthers: (annualType: string, index: number, params: any) => any;
   patchOthers: (annualType: string, params: any) => any;
   removeOthers: (annualType: string, params: any) => any;
   setData: (indexData: number, params: any) => any;
@@ -177,37 +173,42 @@ const cashFlow = create(
               household.selected = true;
             })
           ),
-        setOthers: (
-          annualType: string,
-          indexData: number,
-          params: any
-        ) => set(produce((draft) => {
-
-            if(annualType === "annualIncome") {
-              if (indexData === 0 && get().others?.annualIncome.length) {
-                let othersReplace = draft.others.annualIncome[indexData];
-                othersReplace.id = params.id;
-                othersReplace.editting = params.editting;
-                othersReplace.key = params.key;
-                othersReplace.values[0] = params.values[0];
-                othersReplace.values[1] = params.values[1];
+        setOthers: (annualType: string, indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              if (annualType === "annualIncome") {
+                if (indexData === 0 && get().others?.annualIncome.length) {
+                  let othersReplace = draft.others.annualIncome[indexData];
+                  othersReplace.id = params.id;
+                  othersReplace.editting = true;
+                  othersReplace.key = params.key;
+                  othersReplace.values[0] = params.values[0]
+                    ? params.values[0]
+                    : 0;
+                  othersReplace.values[1] = params.values[1]
+                    ? params.values[1]
+                    : 0;
+                } else {
+                  draft.others.annualIncome.push(params);
+                }
               } else {
-                draft.others.annualIncome.push(params);
+                if (indexData === 0 && get().others?.annualExpense.length) {
+                  let othersReplace = draft.others.annualExpense[indexData];
+                  othersReplace.id = params.id;
+                  othersReplace.editting = true;
+                  othersReplace.key = params.key;
+                  othersReplace.values[0] = params.values[0]
+                    ? params.values[0]
+                    : 0;
+                  othersReplace.values[1] = params.values[1]
+                    ? params.values[1]
+                    : 0;
+                } else {
+                  draft.others.annualExpense.push(params);
+                }
               }
-            }else {
-              if (indexData === 0 && get().others?.annualExpense.length) {
-                let othersReplace = draft.others.annualExpense[indexData];
-                othersReplace.id = params.id;
-                othersReplace.editting = params.editting;
-                othersReplace.key = params.key;
-                othersReplace.values = params.value;
-              } else {
-                draft.others.annualExpense.push(params);
-              }
-
-            }
-            
-          })),
+            })
+          ),
         patchOthers: (annualType: string, params: any) =>
           set(
             produce((draft) => {
@@ -215,46 +216,46 @@ const cashFlow = create(
                 (el: any) => el.id === params.id
               );
 
-              other.editting = params.editting;
+              other.editting = true;
               other.key = params.key;
-              other.values = params.value;
+              other.values[0] = params.values[0] ? params.values[0] : 0;
+              other.values[1] = params.values[1] ? params.values[1] : 0;
             })
           ),
-          removeOthers: (annualType: string,params: any) =>
+        removeOthers: (annualType: string, params: any) =>
           set(
             produce((draft) => {
-
-              if(annualType === "annualIncome") {
+              if (annualType === "annualIncome") {
                 if (get().others?.annualIncome?.length > 1) {
                   const otherIndex = draft.others?.annualIncome.findIndex(
                     (el: any) => el.id === params
                   );
                   console.log("masuk disini");
                   draft.others.annualIncome.splice(otherIndex, 1);
-  
+
                   // reset index 0 dependent data
                 } else {
                   let otherReplace = draft.others.annualIncome[0];
                   otherReplace.id = 0;
                   otherReplace.editting = false;
                   otherReplace.key = "";
-                  otherReplace.values = [0,0];
+                  otherReplace.values = [0, 0];
                 }
-              }else {
+              } else {
                 if (get().others?.annualExpense?.length > 1) {
                   const otherIndex = draft.others?.annualExpense.findIndex(
                     (el: any) => el.id === params
                   );
                   console.log("masuk disini");
                   draft.others.annualExpense.splice(otherIndex, 1);
-  
+
                   // reset index 0 dependent data
                 } else {
                   let otherReplace = draft.others.annualExpense[0];
                   otherReplace.id = 0;
                   otherReplace.editting = false;
                   otherReplace.key = "";
-                  otherReplace.values = [0,0];
+                  otherReplace.values = [0, 0];
                 }
               }
             })
