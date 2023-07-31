@@ -3,6 +3,7 @@ interface Product {
     selected:                   boolean;
     edit:                       boolean;
     subjectId:                  number;
+    companyId:                  number;
     name:                       string;
     type:                       number;
     productType:                number;

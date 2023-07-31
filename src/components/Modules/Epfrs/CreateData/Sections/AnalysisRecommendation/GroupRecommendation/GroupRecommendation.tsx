@@ -1,17 +1,36 @@
+import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
+import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
-import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonRedMedium from "@/components/Forms/Buttons/ButtonRedMedium";
+import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
+
+import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
+import Select from "@/components/Forms/Select";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useAnalysisRecommendationGroup } from "@/store/epfrPage/createData/analysisRecommendationGroup";
+
+// Service
+import {getPfr, getRecommendationGroup, pfrSection} from "@/services/pfrService";
+import {getAllCompany} from "@/services/companyService";
+import {productFindOne} from "@/services/productService";
+// import {getPfrSection} from "@/services/getPfrSection";
+
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
+
 const GroupRecommendation = () => {
+  let {
+    section9RecommendGroup
+  } = useAnalysisRecommendationGroup();
+
   let groupName: any = localStorage.getItem("group_name");
 
   let {showDetailData} = useNavigationSection();
@@ -23,6 +42,32 @@ const GroupRecommendation = () => {
   const saveData = (params: any) => {
     showDetailData(params);
   };
+
+  // Code
+  useEffect(() => {
+    const pfrId = localStorage.getItem("s9_PfrId");
+    const pfrGroupId = localStorage.getItem("s9_dataGroup");
+    console.log('pfrGroupId', pfrGroupId)
+    // Find Pfr 
+    getPfr(10653).then((data:any) => {
+        console.log('getPfr', data)
+    })    
+
+    // Find Group Recommend
+    getRecommendationGroup(10653, pfrGroupId).then((data: any) => {
+        console.log('getRecommendationGroup', data)
+    });
+
+    // FInd Pfr Section 8
+    pfrSection(8, 10653).then((data: any) => {
+        console.log('pfrSection', data)
+    });
+
+    // FInd Pfr Section 9
+    pfrSection(8, 10653).then((data: any) => {
+        console.log('pfrSection', data)
+    });
+  }, [section9RecommendGroup]);
 
   return (
     <>

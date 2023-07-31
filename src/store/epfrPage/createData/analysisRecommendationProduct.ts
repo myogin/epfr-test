@@ -3,7 +3,9 @@ import { devtools } from "zustand/middleware";
 import { produce } from "immer";
 import { SectionNineRecommendation } from "@/models/SectionNineRecommendation";
 import { group } from "console";
-
+import {productFindOne} from "@/services/productService";
+import {getPfr} from "@/services/pfrService";
+import React, { useState, useEffect } from "react";
 
 
 const initialState: SectionNineRecommendation = {
@@ -19,6 +21,7 @@ const initialState: SectionNineRecommendation = {
             productType: 0,
             id: 0,
             categoryId: 0,
+            companyId: 0,
             policyTerm: "",
             sumAssured: "",
             premiumPaymentType: "",

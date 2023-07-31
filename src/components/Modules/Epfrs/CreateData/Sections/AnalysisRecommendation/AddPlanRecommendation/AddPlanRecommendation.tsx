@@ -246,7 +246,6 @@ const AddPlanRecommendation = () => {
     const resultCateg: Array<any> = []
     const resDataOwner: Array<any> = [];
     getWholeContext(pfrId).then((data) => {
-      console.log('data', data)
       setInitWhole(data);
 
       // For Cis If ProductGroupId Exist
@@ -358,11 +357,11 @@ const AddPlanRecommendation = () => {
       setCategory(resultCateg)
 
       // Section5
-      console.log('data.section5Result', data.section5Result)
-      const section5Arr: Array<any> = []
-      data.section5Result.map((outcome:any, i: any) => {
-        section5Arr.push(outcome['outcome']);
-      })
+      const section5Arr: Array<any> = data.section5Result
+      // data.section5Result.map((outcome:any, i: any) => {
+      //   section5Arr.push(outcome['outcome']);
+      // })
+
       setSection5data(section5Arr)
 
       // Section6
@@ -374,42 +373,42 @@ const AddPlanRecommendation = () => {
 
       // Get Model Portofolio Risk
       const resModelPort: Array<any> = [];
-      if(section5Arr[section9Recommend.product.nameOfOwner] == 0){
+      if(section5Arr[section9Recommend.product.nameOfOwner] == '0'){
         resModelPort.push({
           id: 1,
           name: 'Capital Preservation'
         })
       }
 
-      if(section5Arr[section9Recommend.product.nameOfOwner] == 1){
+      if(section5Arr[section9Recommend.product.nameOfOwner] == '1'){
         resModelPort.push({
           id: 2,
           name: 'Conservative'
         })
       }
 
-      if(section5Arr[section9Recommend.product.nameOfOwner] == 2){
+      if(section5Arr[section9Recommend.product.nameOfOwner] == '2'){
         resModelPort.push({
           id: 3,
           name: 'Balanced'
         })
       }
 
-      if(section5Arr[section9Recommend.product.nameOfOwner] == 3){
+      if(section5Arr[section9Recommend.product.nameOfOwner] == '3'){
         resModelPort.push({
           id: 4,
           name: 'Growth'
         })
       }
 
-      if(section5Arr[section9Recommend.product.nameOfOwner] == 4){
+      if(section5Arr[section9Recommend.product.nameOfOwner] == '4'){
         resModelPort.push({
           id: 5,
           name: 'Aggressive'
         })
       }
 
-      if(section5Arr[section9Recommend.product.nameOfOwner] == 5){
+      if(section5Arr[section9Recommend.product.nameOfOwner] == '5'){
         resModelPort.push({
           id: 6,
           name: 'N/A - Client not following model portfolio'
@@ -434,7 +433,13 @@ const AddPlanRecommendation = () => {
       })
     })
 
+    // Set Insurance
+
+
+    // Set Cis
     console.log('section9Recommend', section9Recommend)
+    setDataSelectedCategoryId(section9Recommend.product.categoryId);
+    setCompany(section9Recommend.product.companyId);
   }, [section9Recommend]);
 
   const onChangePortfolio = () => {
@@ -473,6 +478,7 @@ const AddPlanRecommendation = () => {
   const changeDataCategory = (event: any) => {
     const { name, value } = event.target;
     var selectedProducts: Array<any> = [];
+    // setProduct(value, 'modelPortfolioRiskCategory', null)
     setSelectedCategory(value)
     setSelectedCompany("")
     setProductValueSelect(0);
@@ -740,9 +746,9 @@ const AddPlanRecommendation = () => {
         var lengthData = 0;
         var dataFunds: Array<any> = [];
 
-        if(dataProduct?.ilp){
-          if(dataProduct.ilp.platform.funds.length > 0){
-            dataProduct.ilp.platform.funds.map((valueRes:any, indexRes:any) => {
+        if(getSelectProductone['ilp']){
+          if(getSelectProductone['ilp'].platform.funds.length > 0){
+            getSelectProductone['ilp'].platform.funds.map((valueRes:any, indexRes:any) => {
               dataFunds.push({
                 allocation: valueRes.allocation,
                 fundId: valueRes.fundId,
@@ -1367,7 +1373,7 @@ const AddPlanRecommendation = () => {
       section9Recommend.product.funds = []
     }else {
       let index = initWhole.cis.findIndex((cis: any) => {
-        if(cis['id'] == section9Recommend.product.portfolio) {
+        if(cis['id'] == value) {
           return true
         }
       })
@@ -1391,6 +1397,14 @@ const AddPlanRecommendation = () => {
     }
   }
 
+  const saveData = (params:any) => {
+    localStorage.setItem("section9Recommend", JSON.stringify(section9Recommend));
+    showDetailData(params);
+  }
+
+  const cancleData = (params:any) => {
+    showDetailData(params);
+  }
 
 
   return (
@@ -1791,10 +1805,6 @@ const AddPlanRecommendation = () => {
                   </>) 
                   : '' }
                 </SectionCardSingleGrid>
-                <SectionCardFooter className="mx-8 2xl:mx-60">
-                  <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
-                  <ButtonRedMedium>Cancel</ButtonRedMedium>
-                </SectionCardFooter>
               </>
             ) : (
               ""
@@ -1944,12 +1954,12 @@ const AddPlanRecommendation = () => {
             {cisDataBenRisk.length > 0 ? (
               <>
                 <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
-                  {dataProductSelected.benefits?.length > 0 ? 
+                  {cisDataBenRisk.benefits?.length > 0 ? 
                     (<>
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Benefit Details</h2>
                     </div>
-                    {dataProductSelected.benefits.map((benefit: any, index: any) => (
+                    {cisDataBenRisk.benefits.map((benefit: any, index: any) => (
                       <div className="w-full p-5 border rounded-md border-gray-soft-strong" key={index}>
                         <div className="flex items-center justify-start gap-4 mb-5">
                           <Checkbox label={benefit.title} name="benefitData" isChecked={checkBenefit(benefit.id)} value={benefit.id} onChange={(event) => handleBenefits(event, index) }/>
@@ -1967,11 +1977,11 @@ const AddPlanRecommendation = () => {
                 </SectionCardSingleGrid>
 
                 <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
-                  {dataProductSelected.risks?.length > 0 ? (<>
+                  {cisDataBenRisk.risk?.length > 0 ? (<>
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Risk Details</h2>
                     </div>
-                    {dataProductSelected.risks.map((risk: any, index: any) => (
+                    {cisDataBenRisk.risk.map((risk: any, index: any) => (
                       <div
                         className="w-full p-5 border rounded-md border-gray-soft-strong"
                         key={index}
@@ -2084,10 +2094,6 @@ const AddPlanRecommendation = () => {
                   </>) 
                   : '' }
                 </SectionCardSingleGrid>
-                <SectionCardFooter className="mx-8 2xl:mx-60">
-                  <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
-                  <ButtonRedMedium>Cancel</ButtonRedMedium>
-                </SectionCardFooter>
               </>
             ) : (
               ""
@@ -2096,6 +2102,10 @@ const AddPlanRecommendation = () => {
         </>
         )
       : ''}
+       <SectionCardFooter className="mx-8 2xl:mx-60">
+          <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
+          <ButtonRedMedium onClick={() => cancleData(91)}>Cancel</ButtonRedMedium>
+        </SectionCardFooter>
     </>
     );
 };

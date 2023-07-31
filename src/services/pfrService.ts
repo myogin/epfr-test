@@ -59,6 +59,37 @@ export const getRecommendation = async (id:any) => {
   
   return data;
 };
+
+export const getRecommendationGroup = async (id:any, groupId: any) => {
+  const headers = {'Authorization': 'Bearer $2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'};
+  const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/get/recommendGroup/${id}/${groupId}`,
+      {
+          'headers':{
+              'Authorization': '$2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'
+          }
+      }
+  );
+  const data = await response.json();
+  
+  return data;
+};
+
+
+export const getPfr = async (id:any) => {
+  const headers = {'Authorization': 'Bearer $2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'};
+  const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/get/${id}`, 
+      {
+          'headers':{
+              'Authorization': '$2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'
+          }
+      }
+  );
+  const data = await response.json();
+  
+  return data;
+};
 // export const updatePfr = async (id : any, data : any) => {
 //   return await http.post(`/category/${id}`, data, { headers: authHeader() });
 // }
