@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
 
         const { token } = credentials as any;
         const res = await fetch(
-          "http://localhost:8009/api/pfr/validate-params",
+          `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/validate-params`,
           {
             method: "POST",
             headers: { Authorization: token },
