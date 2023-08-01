@@ -1,13 +1,12 @@
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowDinamycGrid from "@/components/Attributes/Rows/Grids/RowDinamycGrid";
-import RowTripleGrid from "@/components/Attributes/Rows/Grids/RowTripleGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import { checkCountDataOther, getLength } from "@/libs/helper";
-import { AnnualExpanse, AnnualGeneral } from "@/models/SectionThree";
+import { AnnualGeneral } from "@/models/SectionThree";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { useState, Fragment } from "react";
@@ -19,9 +18,6 @@ interface Props {
   pfrType?: number;
 }
 const AnnualExpenseCashFlow = (props: Props) => {
-  const setData = (params: any) => {
-    console.log(params);
-  };
 
   let getPfrLength = getLength(props.pfrType);
 
@@ -581,7 +577,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
                 key={"annualExpense-" + index}
               >
                 <div className={`${props.pfrType == 1 ? "" : "col-span-2"}`}>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between">
                     <div className="text-sm font-bold text-gray-light">
                       {data.key}
                     </div>
