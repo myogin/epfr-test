@@ -20,6 +20,7 @@ import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import React, {useState, useEffect} from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import { useAffordability } from "@/store/epfrPage/createData/affordability";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   id?: any;
@@ -34,6 +35,8 @@ const Affordability = (props: Props) => {
     setSourceOfWealth,
     setAssetOrSurplus
   } = useAffordability();
+
+  let getPfrLength = getLength(props.pfrType);
 
   let fillInformation: Array<any> = [
     { id: 0, name: "No" },
@@ -142,7 +145,7 @@ const Affordability = (props: Props) => {
                       placeholder=""
                       name="relationShip"
                       dataType="payorDetail"
-                      label={`PAYOR RELATIONSHIP TO CLIENT1 : ${key+1}`}
+                      label={`PAYOR RELATIONSHIP TO CLIENT : ${key+1}`}
                       handleChange={(event) => handlePayorDetail(event, key)}
                       needValidation={true}
                       logic={(value.relationShip == "" || value.relationShip == null)  ? false : true}

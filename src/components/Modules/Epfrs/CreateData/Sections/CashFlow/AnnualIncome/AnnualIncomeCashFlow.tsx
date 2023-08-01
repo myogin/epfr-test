@@ -20,9 +20,6 @@ interface Props {
 }
 
 const AnnualIncomeCashFlow = (props: Props) => {
-  const setData = (params: any) => {
-    console.log(params);
-  };
 
   let getPfrLength = getLength(props.pfrType);
 
@@ -31,7 +28,6 @@ const AnnualIncomeCashFlow = (props: Props) => {
     data,
     others,
     setAnnualIncome,
-    setAnnualSurplus,
     setOthers,
     patchOthers,
     removeOthers,
@@ -321,7 +317,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
     setShowModalOther(false);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+  });
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -758,7 +755,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
                 key={"annualIncome-" + index}
               >
                 <div className={`${props.pfrType == 1 ? "" : "col-span-2"}`}>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between">
                     <div className="text-sm font-bold text-gray-light">
                       {data.key}
                     </div>

@@ -1,7 +1,5 @@
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
-import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
 import RowDinamycGrid from "@/components/Attributes/Rows/Grids/RowDinamycGrid";
-import RowTripleGrid from "@/components/Attributes/Rows/Grids/RowTripleGrid";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import Input from "@/components/Forms/Input";
 import TextArea from "@/components/Forms/TextArea";

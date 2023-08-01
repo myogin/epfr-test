@@ -571,7 +571,7 @@ type Actions = {
     name: string,
     groupData: any
   ) => any;
-  setNeed: (value: number, indexClient: number, name: string) => any;
+  setNeed: (indexClient: number, indexSub: number, value: boolean) => any;
   setNeedDependant: (value: number, indexClient: number, name: string) => any;
   setAnswerDefaultCheck: (
     value: number,
@@ -687,10 +687,10 @@ const prioritiesNeedAnalysis = create(
             value;
         })
       ),
-    setNeed: (value: number, indexClient: number, name: any) =>
+    setNeed: (indexClient: number, indexSub : number, value: boolean) =>
       set(
         produce((draft) => {
-          draft.section7.answer.need.client[indexClient][name] = value;
+          draft.section7.answer.need.client[indexClient][indexSub] = value;
         })
       ),
     setNeedDependant: (value: number, indexClient: number, name: any) =>
