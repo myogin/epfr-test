@@ -444,8 +444,6 @@ const ClientsAcknowledgment = (props: Props) => {
     return false;
   }
 
-  const scrollPosition = useScrollPosition(11)
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -825,19 +823,6 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-<<<<<<< HEAD
-          <RowDouble className="mb-5">
-            {(() => {
-              let htmlBlock = [];
-              for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1" key={i}>
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 6, 0)} isChecked={!!sectionElevenData.data[i][6][0]} />
-                </div>);
-              }
-              return htmlBlock;
-            })()}
-          </RowDouble>
-=======
             <RowDouble className="mb-5">
               {(() => {
                 let htmlBlock = [];
@@ -849,7 +834,6 @@ const ClientsAcknowledgment = (props: Props) => {
                 return htmlBlock;
               })()}
             </RowDouble>
->>>>>>> feature/epfr-group-four
           </div>
         </RowFourthGrid>
         <TextArea needValidation={reasonForAccept() && (sectionElevenData.remark1 == '' || sectionElevenData.remark1 == undefined)} label="Remarks" className="mb-10" defaultValue={sectionElevenData.remark} />
