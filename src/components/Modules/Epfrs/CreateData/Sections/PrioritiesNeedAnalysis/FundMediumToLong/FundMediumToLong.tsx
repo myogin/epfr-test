@@ -10,12 +10,14 @@ import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritie
 import Select from "@/components/Forms/Select";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import AddBoxFillIcon from "remixicon-react/AddBoxFillIcon";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   datas?: Array<any>;
+  pfrType: number;
 }
 
-const FundMediumToLong = () => {
+const FundMediumToLong = (props: Props) => {
   let {
     section7,
     setClient,
@@ -26,8 +28,10 @@ const FundMediumToLong = () => {
     setAdditional,
   } = usePrioritiesNeedAnalysis();
 
+  let getPfrLength = getLength(props.pfrType);
+
   // Total Data Client & Deoendants
-  let total = section7.typeClient + section7.totalDependant;
+  let total = props.pfrType + section7.totalDependant;
   var totalClient = [];
   var totalDependant = [];
   for (var i = 0; i < section7.typeClient; i++) {
@@ -85,35 +89,33 @@ const FundMediumToLong = () => {
               </TextSmall>
             </td>
             {total > 1
-              ? totalClient.map(function (i) {
-                  return (
-                    <td key={"saas" + i} className={``}>
-                      <div className="text-right text-green-deep">
-                        Client {i + 1}{" "}
+              ? getPfrLength.map((data, i) => (
+                  <td key={"saas" + i} className={``}>
+                    <div className="text-right text-green-deep">
+                      Client {i + 1}{" "}
+                    </div>
+                    <div
+                      className="items-center justify-start gap-2 mb-10 text-right"
+                      id={`custome-checkbox-${i}`}
+                    >
+                      <div className="items-start justify-start gap-4">
+                        <input
+                          type="checkbox"
+                          checked={section7.answer.need.client[i][4]}
+                          onChange={(event) =>
+                            handleClient(
+                              !section7.answer.need.client[i][4],
+                              i,
+                              4
+                            )
+                          }
+                          className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                        />
+                        <span className={``}> Review</span>
                       </div>
-                      <div
-                        className="items-center justify-start gap-2 mb-10 text-right"
-                        id={`custome-checkbox-${i}`}
-                      >
-                        <div className="items-start justify-start gap-4">
-                          <input
-                            type="checkbox"
-                            checked={section7.answer.need.client[i][4]}
-                            onChange={(event) =>
-                              handleClient(
-                                !section7.answer.need.client[i][4],
-                                i,
-                                4
-                              )
-                            }
-                            className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
-                          />
-                          <span className={``}> Review</span>
-                        </div>
-                      </div>
-                    </td>
-                  );
-                })
+                    </div>
+                  </td>
+                ))
               : ""}
 
             {totalDependant.length > 0
@@ -153,8 +155,7 @@ const FundMediumToLong = () => {
             <td className="w-1/2 align-top">
               <TextSmall className="text-gray-light">Objective ($)</TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
+            {getPfrLength.map((data, i) => (
                 <td key={"saas" + i} className={``}>
                   <Input
                     formStyle="text-right"
@@ -170,8 +171,7 @@ const FundMediumToLong = () => {
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
-              );
-            })}
+              ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -200,8 +200,7 @@ const FundMediumToLong = () => {
                 Goal Description
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
+            {getPfrLength.map((data, i) => (
                 <td key={"saas" + i} className={``}>
                   <Input
                     formStyle="text-right"
@@ -217,8 +216,7 @@ const FundMediumToLong = () => {
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
-              );
-            })}
+              ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -247,8 +245,7 @@ const FundMediumToLong = () => {
                 Years to Reach Goal
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
+            {getPfrLength.map((data, i) => (
                 <td key={"saas" + i} className={``}>
                   <Input
                     formStyle="text-right"
@@ -264,8 +261,7 @@ const FundMediumToLong = () => {
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
-              );
-            })}
+              ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -294,8 +290,7 @@ const FundMediumToLong = () => {
                 Less : Future value of existing resources for goal ($)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
+            {getPfrLength.map((data, i) => (
                 <td key={"saas" + i} className={``}>
                   <Input
                     formStyle="text-right"
@@ -310,8 +305,7 @@ const FundMediumToLong = () => {
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>
-              );
-            })}
+              ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -338,8 +332,7 @@ const FundMediumToLong = () => {
                 Net amount required ($)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
+            {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className="align-top">
                   <TextSmall className="text-right uppercase text-green-deep">
                     $
@@ -349,8 +342,7 @@ const FundMediumToLong = () => {
                     }
                   </TextSmall>
                 </td>
-              );
-            })}
+              ))}
 
             {totalDependant.map(function (i) {
               return (

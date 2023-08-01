@@ -8,9 +8,11 @@ import Input from "@/components/Forms/Input";
 import React, { useState } from "react";
 import Toggle from "@/components/Forms/Toggle";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   datas?: Array<any>;
+  pfrType: number;
 }
 
 const FundLongTermCare = (props: Props) => {
@@ -24,8 +26,10 @@ const FundLongTermCare = (props: Props) => {
     setAdditional,
   } = usePrioritiesNeedAnalysis();
 
+  let getPfrLength = getLength(props.pfrType);
+
   // Total Data Client & Deoendants
-  let total = section7.typeClient + section7.totalDependant;
+  let total = props.pfrType + section7.totalDependant;
   var totalClient = [];
   var totalDependant = [];
   for (var i = 0; i < section7.typeClient; i++) {
@@ -82,7 +86,7 @@ const FundLongTermCare = (props: Props) => {
   // Default Check
   const handleDefaultCheck = (e: any) => {
     const { name, checked, value } = e.target;
-    setAnswerDefaultCheck(checked, "", name);
+    setAnswerDefaultCheck(checked, 0, name);
   };
 
   // Additional Note
@@ -102,35 +106,33 @@ const FundLongTermCare = (props: Props) => {
               </TextSmall>
             </td>
             {total > 1
-              ? totalClient.map(function (i) {
-                  return (
-                    <td key={"assda" + i} className={``}>
-                      <div className="text-right text-green-deep">
-                        Client {i + 1}{" "}
+              ? getPfrLength.map((data, i) => (
+                  <td key={"assda" + i} className={``}>
+                    <div className="text-right text-green-deep">
+                      Client {i + 1}{" "}
+                    </div>
+                    <div
+                      className="items-center justify-start gap-2 mb-10 text-right"
+                      id={`custome-checkbox-${i}`}
+                    >
+                      <div className="items-start justify-start gap-4">
+                        <input
+                          type="checkbox"
+                          checked={section7.answer.need.client[i][7]}
+                          onChange={(event) =>
+                            handleClient(
+                              !section7.answer.need.client[i][7],
+                              i,
+                              7
+                            )
+                          }
+                          className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                        />
+                        <span className={``}> Review</span>
                       </div>
-                      <div
-                        className="items-center justify-start gap-2 mb-10 text-right"
-                        id={`custome-checkbox-${i}`}
-                      >
-                        <div className="items-start justify-start gap-4">
-                          <input
-                            type="checkbox"
-                            checked={section7.answer.need.client[i][7]}
-                            onChange={(event) =>
-                              handleClient(
-                                !section7.answer.need.client[i][7],
-                                i,
-                                7
-                              )
-                            }
-                            className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
-                          />
-                          <span className={``}> Review</span>
-                        </div>
-                      </div>
-                    </td>
-                  );
-                })
+                    </div>
+                  </td>
+                ))
               : ""}
 
             {totalDependant.length > 0
@@ -171,25 +173,23 @@ const FundLongTermCare = (props: Props) => {
                 Desired Monthly Cash Payout ($)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"assda" + i} className={``}>
-                  <Input
-                    formStyle="text-right"
-                    className="mb-10"
-                    type="text"
-                    placeholder="1,000,000"
-                    name="desiredMonthlyCashPayout"
-                    dataType="fundLongTermCare"
-                    value={
-                      section7.answer.clientData[i].fundLongTermCare
-                        .desiredMonthlyCashPayout
-                    }
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"assda" + i} className={``}>
+                <Input
+                  formStyle="text-right"
+                  className="mb-10"
+                  type="text"
+                  placeholder="1,000,000"
+                  name="desiredMonthlyCashPayout"
+                  dataType="fundLongTermCare"
+                  value={
+                    section7.answer.clientData[i].fundLongTermCare
+                      .desiredMonthlyCashPayout
+                  }
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -217,25 +217,23 @@ const FundLongTermCare = (props: Props) => {
                 Name of Existing Long Term Care Insurance (if any)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"assda" + i} className={``}>
-                  <Input
-                    formStyle="text-right"
-                    className="mb-10"
-                    type="text"
-                    placeholder="1,000,000"
-                    name="nameOfExistingLongTermCareInsurance"
-                    dataType="fundLongTermCare"
-                    value={
-                      section7.answer.clientData[i].fundLongTermCare
-                        .nameOfExistingLongTermCareInsurance
-                    }
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"assda" + i} className={``}>
+                <Input
+                  formStyle="text-right"
+                  className="mb-10"
+                  type="text"
+                  placeholder="1,000,000"
+                  name="nameOfExistingLongTermCareInsurance"
+                  dataType="fundLongTermCare"
+                  value={
+                    section7.answer.clientData[i].fundLongTermCare
+                      .nameOfExistingLongTermCareInsurance
+                  }
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -263,22 +261,20 @@ const FundLongTermCare = (props: Props) => {
                 Less : existing insurance benefit payout ($)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"assda" + i} className={``}>
-                  <Input
-                    formStyle="text-right"
-                    className="mb-10"
-                    type="text"
-                    placeholder="1,000,000"
-                    name="less"
-                    dataType="fundLongTermCare"
-                    value={section7.answer.clientData[i].fundLongTermCare.less}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"assda" + i} className={``}>
+                <Input
+                  formStyle="text-right"
+                  className="mb-10"
+                  type="text"
+                  placeholder="1,000,000"
+                  name="less"
+                  dataType="fundLongTermCare"
+                  value={section7.answer.clientData[i].fundLongTermCare.less}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -305,22 +301,20 @@ const FundLongTermCare = (props: Props) => {
                 NET AMOUNT REQUIRED ($)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"asd"+i}>
-                  <TextSmall className="text-right uppercase text-green-deep">
-                    $
-                    {
-                      section7.answer.clientData[i].fundLongTermCare
-                        .netAmountRequired
-                    }
-                  </TextSmall>
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"asd" + i}>
+                <TextSmall className="text-right uppercase text-green-deep">
+                  $
+                  {
+                    section7.answer.clientData[i].fundLongTermCare
+                      .netAmountRequired
+                  }
+                </TextSmall>
+              </td>
+            ))}
             {totalDependant.map(function (i) {
               return (
-                <td key={"sda"+i}>
+                <td key={"sda" + i}>
                   <TextSmall className="text-right uppercase text-green-deep">
                     $
                     {

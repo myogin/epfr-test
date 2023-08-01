@@ -49,8 +49,8 @@ const EpfrPage: Page = () => {
             <TitleMedium>Please choose EPFR type</TitleMedium>
           </div>
           <div className="flex justify-between gap-10">
-            <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
-              <Link href="create/single">
+            <Link href="create/single">
+              <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
                 <button className="mb-3">
                   <File3FillIcon className="text-green-deep" size={50} />
                 </button>
@@ -58,10 +58,10 @@ const EpfrPage: Page = () => {
                 <span className="text-sm text-gray-light">
                   This EPFR for one person
                 </span>
-              </Link>
-            </div>
-            <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
-              <Link href="create/joint">
+              </div>
+            </Link>
+            <Link href="create/joint">
+              <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
                 <button className="mb-3">
                   <File3FillIcon className="text-green-deep" size={50} />
                 </button>
@@ -69,8 +69,8 @@ const EpfrPage: Page = () => {
                 <span className="text-sm text-gray-light">
                   This EPFR for two persons
                 </span>
-              </Link>
-            </div>
+              </div>
+            </Link>
           </div>
         </div>
       </GlobalCard>
