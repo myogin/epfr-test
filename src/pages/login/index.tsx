@@ -44,7 +44,7 @@ const EpfrLogin: Page = () => {
     loginTest(localT);
   });
 
-  return <div>...Loading aja</div>;
+  return <div>...Loading</div>;
 };
 
 EpfrLogin.getLayout = function getLayout(content: any) {

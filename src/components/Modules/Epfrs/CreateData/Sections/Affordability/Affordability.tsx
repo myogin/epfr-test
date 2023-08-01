@@ -1,5 +1,3 @@
-import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
-import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowFourthGrid from "@/components/Attributes/Rows/Grids/RowFourthGrid";
@@ -10,15 +8,13 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import TextThin from "@/components/Attributes/Typography/TextThin";
-import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React, {useState, useEffect} from "react";
-import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
+import React, {useEffect} from "react";
 import { useAffordability } from "@/store/epfrPage/createData/affordability";
 import { getLength } from "@/libs/helper";
 

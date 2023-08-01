@@ -510,7 +510,6 @@ const Client = (props: Props) => {
         getPfrLength?.length &&
         getPfrLength.map((data, index) => (
           <div key={"asasa"+index}>
-            {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
@@ -582,7 +581,6 @@ const Client = (props: Props) => {
                   : true
               }
             />
-            {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
@@ -652,7 +650,6 @@ const Client = (props: Props) => {
               datas={country}
               handleChange={handleInputChange}
             />
-            {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
@@ -682,7 +679,6 @@ const Client = (props: Props) => {
                   : true
               }
             />
-            {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
@@ -719,7 +715,6 @@ const Client = (props: Props) => {
                   : true
               }
             />
-            {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
@@ -752,7 +747,6 @@ const Client = (props: Props) => {
               placeholder="Manager"
               handleChange={handleInputChange}
             />
-            {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
@@ -763,7 +757,6 @@ const Client = (props: Props) => {
               datas={employmentSector}
               handleChange={handleInputChange}
             />
-            {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
@@ -855,7 +848,6 @@ const Client = (props: Props) => {
               placeholder="Set as same like registered address"
               handleChange={handleInputChange}
             />
-            {/* Selected Form */}
 
             <Select
               dataType="clientInfo"

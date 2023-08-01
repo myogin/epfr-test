@@ -29,6 +29,8 @@ const BalanceSheet = (props: Props) => {
 
   const [dataS4, setDataS4] = useState(null);
 
+  const scrollPosition = useScrollPosition(4);
+
   useEffect(() => {
     // const headers = {
     //   Authorization:
@@ -48,12 +50,13 @@ const BalanceSheet = (props: Props) => {
     // }
     // getDataS4();
 
+    if(scrollPosition === "okSec4") {
+      console.log("Masuk Section 4")
+    }
+
     calcTotal();
-  }, [others]);
-  function retrieveClientData(data: any) {
-    data.sumaryOfProperty;
-  }
-  const scrollPosition = useScrollPosition(4);
+  }, [scrollPosition]);
+  
 
   return (
     <div id={props.id}>

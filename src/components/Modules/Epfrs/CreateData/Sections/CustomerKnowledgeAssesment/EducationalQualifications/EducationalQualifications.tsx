@@ -4,7 +4,7 @@ import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import MultipleCheckbox from "../components/MultipleCheckbox";
 import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJointGrid";
 import { getLength } from "@/libs/helper";
@@ -74,14 +74,14 @@ const EducationalQualifications = (props: Props) => {
 
       <RowSingleORDouble pfrType={props.pfrType}>
         {getPfrLength.map((e2, userIndex) => (
-          <>
+          <Fragment key={"ds"+userIndex}>
             {answers[userIndex].education[0].every(checkValidate) &&
             need[userIndex] ? (
               <div className="text-xs font-normal text-red">Required</div>
             ) : (
               <div></div>
             )}
-          </>
+          </Fragment>
         ))}
       </RowSingleORDouble>
 
@@ -98,7 +98,7 @@ const EducationalQualifications = (props: Props) => {
         qa[0].answers.map((answer: any, index: number) => (
           <RowSingleORDouble pfrType={props.pfrType} key={index}>
             {getPfrLength.map((e2, userIndex) => (
-              <>
+              <Fragment key={"as"+userIndex}>
                 <div>
                   <Checkbox
                     isDisabled={!need[userIndex]}
@@ -109,7 +109,7 @@ const EducationalQualifications = (props: Props) => {
                     label={answer.answer}
                   />
                 </div>
-              </>
+              </Fragment>
             ))}
           </RowSingleORDouble>
         ))}
@@ -124,14 +124,14 @@ const EducationalQualifications = (props: Props) => {
 
       <RowSingleORDouble pfrType={props.pfrType}>
         {getPfrLength.map((e2, userIndex) => (
-          <>
+          <Fragment key={"asa"+userIndex}>
             {answers[userIndex].education[1].every(checkValidate) &&
             need[userIndex] ? (
               <div className="text-xs font-normal text-red">Required</div>
             ) : (
               <div></div>
             )}
-          </>
+          </Fragment>
         ))}
       </RowSingleORDouble>
 
@@ -146,7 +146,7 @@ const EducationalQualifications = (props: Props) => {
         qa[1].answers.map((answer: any, index: number) => (
           <RowSingleORDouble pfrType={props.pfrType} key={index}>
             {getPfrLength.map((e2, userIndex) => (
-              <>
+              <Fragment key={"asa"+userIndex}>
                 <div>
                   <Checkbox
                     isDisabled={!need[userIndex]}
@@ -157,7 +157,7 @@ const EducationalQualifications = (props: Props) => {
                     label={answer.answer}
                   />
                 </div>
-              </>
+              </Fragment>
             ))}
           </RowSingleORDouble>
         ))}

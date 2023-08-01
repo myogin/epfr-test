@@ -122,7 +122,7 @@ const PersonalInformation = (props: Props) => {
           </div>
           <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
             {getPfrLength.map((data, index) => (
-              <div key={index}>
+              <div key={"as"+index}>
                 <h3 className="w-full mb-10 text-base font-bold text-green-deep">
                   {clientIdentity(index)}
                 </h3>
