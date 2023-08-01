@@ -8,6 +8,7 @@ import TextThin from "@/components/Attributes/Typography/TextThin";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
+import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { getLength } from "@/libs/helper";
 import { getAllPfrData } from "@/services/pfrService";
@@ -404,10 +405,15 @@ const ClientsAcknowledgment = (props: Props) => {
       ...sectionElevenData,
       data: sectionElevenData.data.map((client, idx) => {
         if(i === idx) {
-          console.log("section index: ", idx);
           const copyData = client;
+          if (firstIndex == 6 && e.target.checked) {
+            if (secondIndex == 1) {
+              copyData[firstIndex][0] = false;
+            } else {
+              copyData[firstIndex][1] = false;
+            }
+          }
           copyData[firstIndex][secondIndex] = e.target.checked;
-          console.log('Copy Data: ', copyData);
           return copyData;
         } else {
           return client;
@@ -415,6 +421,36 @@ const ClientsAcknowledgment = (props: Props) => {
       })
     });
   }
+
+  const checkRemarkValidation = (clientId:number) => {
+    return sectionElevenData.data[clientId][6][0] || sectionElevenData.data[clientId][6][1];
+  }
+
+  const reasonForAccept = () => {
+    for(let i = 0 ; i < props.pfrType ; i ++ ) {
+      if(sectionElevenData.data[i][6][0] && sectionElevenData.data[i][6][1]) {
+        return true
+      }
+    };
+    return false
+  }
+
+  const reasonForDontAccept = () => {
+    for(let i = 0 ; i < props.pfrType ; i ++ ) {
+      if(sectionElevenData.data[i][6][1] == true) {
+        return true
+      }
+    };
+    return false;
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('section12', JSON.stringify(sectionElevenData));
+  }, [sectionElevenData]);
 
   const scrollPosition = useScrollPosition(11)
 
@@ -771,6 +807,15 @@ const ClientsAcknowledgment = (props: Props) => {
         7. My/Our Legacy FA Representative Has Explained in Detail The Recommendation(s) Made and I/We :
       </HeadingSecondarySection>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+
+        {getPfrLength.map((data, index) => {
+          if (!checkRemarkValidation(index)) {
+            return <span className="text-red text-xs">
+              Client { index + 1 } needs to check either one.
+            </span>
+          }
+        })}
+
         <RowFourthGrid>
           <div className="col-span-3">
             <TextThin>
@@ -778,19 +823,20 @@ const ClientsAcknowledgment = (props: Props) => {
             </TextThin>
           </div>
           <div className="text-right">
-          <RowDouble className="mb-5">
-            {(() => {
-              let htmlBlock = [];
-              for (let i=0; i<props.pfrType; i++) {
-                htmlBlock.push(<div className="flex-1" key={i}>
-                  <Checkbox onChange={(e) => onChangeSectionData(e, i, 6, 0)} isChecked={!!sectionElevenData.data[i][6][0]} />
-                </div>);
-              }
-              return htmlBlock;
-            })()}
-          </RowDouble>
+            <RowDouble className="mb-5">
+              {(() => {
+                let htmlBlock = [];
+                for (let i=0; i<props.pfrType; i++) {
+                  htmlBlock.push(<div className="flex-1">
+                    <Checkbox onChange={(e) => onChangeSectionData(e, i, 6, 0)} isChecked={!!sectionElevenData.data[i][6][0]} />
+                  </div>);
+                }
+                return htmlBlock;
+              })()}
+            </RowDouble>
           </div>
         </RowFourthGrid>
+        <TextArea needValidation={reasonForAccept() && (sectionElevenData.remark1 == '' || sectionElevenData.remark1 == undefined)} label="Remarks" className="mb-10" defaultValue={sectionElevenData.remark} />
 
         <RowFourthGrid>
           <div className="col-span-3">
@@ -812,6 +858,8 @@ const ClientsAcknowledgment = (props: Props) => {
           </RowDouble>
           </div>
         </RowFourthGrid>
+        <TextArea needValidation={ reasonForDontAccept() && (sectionElevenData.remark == '' || sectionElevenData.remark == undefined) } label="Remarks" className="mb-10" />
+
       </SectionCardSingleGrid>
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         8. Introducer Disclosure Acknowledgement
