@@ -1,15 +1,10 @@
 import React, { useEffect } from "react";
-import Head from "next/head";
 import { Page } from "@/pages/_app";
 import AppLayout from "@/components/Layouts/AppLayout";
-import GlobalCard from "@/components/Attributes/Cards/GlobalCard";
-import TitleMedium from "@/components/Attributes/Typography/TitleMedium";
 import { useRouter } from "next/router";
-import CheckboxCircleFillIcon from "remixicon-react/CheckboxCircleFillIcon";
-import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
-import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 import { signIn, useSession } from "next-auth/react";
 import { useLoginData } from "@/store/login/logindata";
+import { localToken } from "@/libs/helper";
 
 const EpfrLogin: Page = () => {
   const router = useRouter();
@@ -32,11 +27,16 @@ const EpfrLogin: Page = () => {
   };
 
   useEffect(() => {
-    if (router.query.token == undefined) {
+
+    let tokenFix = localToken();
+
+    let localT = tokenFix === null ? router.query.token : tokenFix;
+
+    if (localT == undefined || localT == null) {
       router.push("/unauthorized");
     }
-    setLogin(router.query.token, router.query.ownerId);
-    loginTest(router.query.token);
+    setLogin(localT, router.query.ownerId);
+    loginTest(localT);
   });
   return <div>...Loading</div>;
 };

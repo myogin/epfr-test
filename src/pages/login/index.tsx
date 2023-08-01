@@ -10,6 +10,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 import { signIn, useSession } from "next-auth/react";
 import { useLoginData } from "@/store/login/logindata";
+import { localToken } from "@/libs/helper";
 
 const EpfrLogin: Page = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const EpfrLogin: Page = () => {
       });
 
       if (result?.status == 200) {
-        router.push("/");
+        router.push("/epfr");
       } else {
         router.push("/unauthorized");
       }
@@ -32,13 +33,18 @@ const EpfrLogin: Page = () => {
   };
 
   useEffect(() => {
-    if (router.query.token == undefined) {
+    let tokenFix = localToken();
+
+    let localT = tokenFix === null ? router.query.token : tokenFix;
+
+    if (localT == undefined || localT == null) {
       router.push("/unauthorized");
     }
-    setLogin(router.query.token, router.query.ownerId);
-    loginTest(router.query.token);
+    setLogin(localT, router.query.ownerId);
+    loginTest(localT);
   });
-  return <div>...Loading</div>;
+
+  return <div>...Loading aja</div>;
 };
 
 EpfrLogin.getLayout = function getLayout(content: any) {

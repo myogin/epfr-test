@@ -21,7 +21,6 @@ const inter = Inter({ subsets: ["latin"] });
 const EpfrPage: Page = () => {
   const router = useRouter();
   const { status } = useSession();
-  const { setLogin, token } = useLoginData();
 
   const getGeneralData = async () => {
     if (router.query.edit) {

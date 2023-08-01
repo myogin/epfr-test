@@ -89,3 +89,22 @@ export const sgdFormat = (currency: any) => {
     currency: "SGD",
   }).format(currency);
 };
+
+export const localToken = () => {
+  let checkToken = localStorage.getItem("login")
+    ? localStorage.getItem("login")
+    : null;
+  let tokenFix = null;
+  if (checkToken) {
+    let token = JSON.parse(checkToken);
+    let check = token.state.token;
+
+    if (check == null || check == undefined || check == "") {
+      tokenFix = null;
+    } else {
+      tokenFix = check;
+    }
+  }
+
+  return tokenFix;
+};
