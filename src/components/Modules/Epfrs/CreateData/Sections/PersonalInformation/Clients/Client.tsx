@@ -156,7 +156,6 @@ const Client = (props: Props) => {
       {props.pfrType === 1 ? (
         <Fragment>
           <div>
-            {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
