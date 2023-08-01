@@ -746,18 +746,18 @@ const AddPlanRecommendation = () => {
         var lengthData = 0;
         var dataFunds: Array<any> = [];
 
-        if(dataProduct.length > 0){
-          if(dataProduct.ilp?.platform.funds.length > 0){
-            dataProduct?.ilp?.platform.funds.map((valueRes:any, indexRes:any) => {
-              dataFunds.push({
-                allocation: valueRes.allocation,
-                fundId: valueRes.fundId,
-                groupId: valueRes.fund.groupId,
-                name: valueRes.fund.name,
-              });
-            })
-          }
-        }
+        // if(dataProduct.length > 0){
+        //   if(dataProduct.ilp?.platform.funds.length > 0){
+        //     dataProduct?.ilp?.platform.funds.map((valueRes:any, indexRes:any) => {
+        //       dataFunds.push({
+        //         allocation: valueRes.allocation,
+        //         fundId: valueRes.fundId,
+        //         groupId: valueRes.fund.groupId,
+        //         name: valueRes.fund.name,
+        //       });
+        //     })
+        //   }
+        // }
 
         setProductArr(dataFunds, 'funds', null);
       }   

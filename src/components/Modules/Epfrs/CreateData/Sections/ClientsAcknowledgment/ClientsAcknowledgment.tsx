@@ -810,7 +810,7 @@ const ClientsAcknowledgment = (props: Props) => {
 
         {getPfrLength.map((data, index) => {
           if (!checkRemarkValidation(index)) {
-            return <span className="text-red text-xs">
+            return <span className="text-xs text-red" key={"dss"+index}>
               Client { index + 1 } needs to check either one.
             </span>
           }
