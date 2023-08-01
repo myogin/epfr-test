@@ -1,55 +1,56 @@
-import SectionCardSingleGrid from '@/components/Attributes/Cards/SectionCardSingleGrid'
-import RowDoubleGrid from '@/components/Attributes/Rows/Grids/RowDoubleGrid'
-import TextSmall from '@/components/Attributes/Typography/TextSmall'
-import TextThin from '@/components/Attributes/Typography/TextThin'
-import ButtonBox from '@/components/Forms/Buttons/ButtonBox'
-import Checkbox from '@/components/Forms/Checkbox'
-import Input from '@/components/Forms/Input'
-import React, {useState} from 'react'
-import Dependent from '../../PersonalInformation/Dependent'
+import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
+import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
+import TextSmall from "@/components/Attributes/Typography/TextSmall";
+import TextThin from "@/components/Attributes/Typography/TextThin";
+import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
+import Checkbox from "@/components/Forms/Checkbox";
+import Input from "@/components/Forms/Input";
+import React, { useState } from "react";
 import Toggle from "@/components/Forms/Toggle";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
-import Select from '@/components/Forms/Select'
+import Select from "@/components/Forms/Select";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   datas?: Array<any>;
+  pfrType: number;
 }
 
-const FundHospitalExpenses = (props : Props) => {
+const FundHospitalExpenses = (props: Props) => {
   let desHospital: Array<any> = [
     { id: "Private ", name: "Private " },
-    { id: "Public", name: "Public" }
+    { id: "Public", name: "Public" },
   ];
 
   let desWard: Array<any> = [
     { id: "A", name: "A" },
     { id: "B1", name: "B1" },
     { id: "B2", name: "B2" },
-    { id: "C", name: "C" }
+    { id: "C", name: "C" },
   ];
 
   let desCover: Array<any> = [
     { id: "Basic Plan", name: "Basic Plan" },
     { id: "Rider", name: "Rider" },
-    { id: "Basic Plan & Rider", name: "Basic Plan & Rider" }
+    { id: "Basic Plan & Rider", name: "Basic Plan & Rider" },
   ];
 
   let exisHospital: Array<any> = [
     { id: "Private ", name: "Private " },
-    { id: "Public", name: "Public" }
+    { id: "Public", name: "Public" },
   ];
 
   let exisCovered: Array<any> = [
     { id: "A", name: "A" },
     { id: "B1", name: "B1" },
     { id: "B2", name: "B2" },
-    { id: "C", name: "C" }
+    { id: "C", name: "C" },
   ];
 
   let exisCover: Array<any> = [
     { id: "Basic Plan", name: "Basic Plan" },
     { id: "Rider", name: "Rider" },
-    { id: "Basic Plan & Rider", name: "Basic Plan & Rider" }
+    { id: "Basic Plan & Rider", name: "Basic Plan & Rider" },
   ];
 
   let {
@@ -62,34 +63,34 @@ const FundHospitalExpenses = (props : Props) => {
     setAdditional,
   } = usePrioritiesNeedAnalysis();
 
-
+  let getPfrLength = getLength(props.pfrType);
   // Total Data Client & Deoendants
-    let total = section7.typeClient + section7.totalDependant;
-    var totalClient = [];
-    var totalDependant = [];
-    for (var i = 0; i < section7.typeClient; i++) {
-      totalClient.push(i);
-    }
+  let total = props.pfrType + section7.totalDependant;
+  var totalClient = [];
+  var totalDependant = [];
+  for (var i = 0; i < section7.typeClient; i++) {
+    totalClient.push(i);
+  }
 
-    for (var i = 0; i < section7.totalDependant; i++) {
-      totalDependant.push(i);
-    }
-  
+  for (var i = 0; i < section7.totalDependant; i++) {
+    totalDependant.push(i);
+  }
+
   // Handle Checkbox Client & Dependant
-  const handleClient = (value:any, i: any, dataI:any) => {
+  const handleClient = (value: any, i: any, dataI: any) => {
     setNeed(value, i, dataI);
-  }
+  };
 
-  const handleDependant = (value:any, i: any, dataI:any) => {
+  const handleDependant = (value: any, i: any, dataI: any) => {
     setNeedDependant(value, i, dataI);
-  }
+  };
 
   // Set Client Data
   const setDataClient = (event: any, i: any) => {
     const { groupdata } = event.target.dataset;
     const { name, value } = event.target;
     setClient(value, i, name, groupdata);
-  }
+  };
 
   // Set Dependant Data
   const setDataDependant = (event: any, i: any) => {
@@ -102,7 +103,7 @@ const FundHospitalExpenses = (props : Props) => {
     // const dataIncome = [...dependantData];
     // dataIncome[groupdata].dependantId = groupdata+1;
     // dataIncome[groupdata].fundHospitalExpense[name] = value;
-    
+
     // const resCapitalSum = capitalSumRequired(dataIncome[groupdata].fundHospitalExpense);
     // dataIncome[groupdata].fundHospitalExpense['capitalSumRequired'] = resCapitalSum;
 
@@ -116,90 +117,113 @@ const FundHospitalExpenses = (props : Props) => {
     // dataIncome[groupdata].fundHospitalExpense['netAmountRequired'] = totalNetAmount;
 
     // setDependantData(dataIncome);
-  }
+  };
 
   // Default Check
   const handleDefaultCheck = (e: any) => {
     const { name, checked, value } = e.target;
-    setAnswerDefaultCheck(checked, '', name)
-  }
-  
+    setAnswerDefaultCheck(checked, 0, name);
+  };
+
   // Additional Note
   const handleAdditional = (e: any) => {
-    const {name, value} = e.target;
-    setAdditional(value, 8, name)
-    
-  }
+    const { name, value } = e.target;
+    setAdditional(value, 8, name);
+  };
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-       <table className="border-separate table-auto border-spacing-5">
+      <table className="border-separate table-auto border-spacing-5">
         <tbody className="">
           <tr>
-            <td className='align-top'>
+            <td className="align-top">
               <TextSmall className="uppercase text-gray-light">
-              Fund Hospital Expense
+                Fund Hospital Expense
               </TextSmall>
             </td>
-            { 
-              (total > 1) ? 
-              totalClient.map(function (i) {
-                return (
+            {total > 1
+              ? getPfrLength.map((data, i) => (
                   <td key={"tsdys" + i} className={``}>
-                    <div className="text-right text-green-deep">Client {i+1} </div>
-                    <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
-                      <div className='items-start justify-start gap-4'>
+                    <div className="text-right text-green-deep">
+                      Client {i + 1}{" "}
+                    </div>
+                    <div
+                      className="items-center justify-start gap-2 mb-10 text-right"
+                      id={`custome-checkbox-${i}`}
+                    >
+                      <div className="items-start justify-start gap-4">
                         <input
-                          type="checkbox" checked={section7.answer.need.client[i][8]} onChange={(event) => handleClient(!section7.answer.need.client[i][8], i, 8) } className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                          type="checkbox"
+                          checked={section7.answer.need.client[i][8]}
+                          onChange={(event) =>
+                            handleClient(
+                              !section7.answer.need.client[i][8],
+                              i,
+                              8
+                            )
+                          }
+                          className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                        />
                         <span className={``}> Review</span>
                       </div>
                     </div>
                   </td>
-                );
-              })
-              
-              : ''
-            }
+                ))
+              : ""}
 
-            {
-              (totalDependant.length > 0) ? 
-                totalDependant.map(function (i) {
+            {totalDependant.length > 0
+              ? totalDependant.map(function (i) {
                   return (
                     <td key={"tsdys" + i} className={``}>
-                      <div className="text-right text-green-deep">Dependant {i+1} </div>
-                      <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-dependant-${i}`}>
-                        <div className='items-start justify-start gap-4'>
+                      <div className="text-right text-green-deep">
+                        Dependant {i + 1}{" "}
+                      </div>
+                      <div
+                        className="items-center justify-start gap-2 mb-10 text-right"
+                        id={`custome-checkbox-dependant-${i}`}
+                      >
+                        <div className="items-start justify-start gap-4">
                           <input
-                            type="checkbox" checked={section7.answer.need.dependant[i][8]} onChange={(event) => handleDependant(!section7.answer.need.dependant[i][8], i, 8) } className='p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+                            type="checkbox"
+                            checked={section7.answer.need.dependant[i][8]}
+                            onChange={(event) =>
+                              handleDependant(
+                                !section7.answer.need.dependant[i][8],
+                                i,
+                                8
+                              )
+                            }
+                            className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                          />
                           <span className={``}> Review</span>
                         </div>
                       </div>
                     </td>
                   );
                 })
-              : ''
-            }
+              : ""}
           </tr>
           <tr>
-            <td className='w-1/2 align-top'>
+            <td className="w-1/2 align-top">
               <TextSmall className="text-gray-light">
-              Desired Choice of Hospital Type
+                Desired Choice of Hospital Type
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"tsdys" + i} className={``}>
-                  <Select
-                    className="mb-10"
-                    name="disiredChoiceOfHospitalType"
-                    dataType="fundHospitalExpense"
-                    value={section7.answer.clientData[i].fundHospitalExpense.disiredChoiceOfHospitalType}
-                    datas={desHospital}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"tsdys" + i} className={``}>
+                <Select
+                  className="mb-10"
+                  name="disiredChoiceOfHospitalType"
+                  dataType="fundHospitalExpense"
+                  value={
+                    section7.answer.clientData[i].fundHospitalExpense
+                      .disiredChoiceOfHospitalType
+                  }
+                  datas={desHospital}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -208,7 +232,10 @@ const FundHospitalExpenses = (props : Props) => {
                     className="mb-10"
                     name="disiredChoiceOfHospitalType"
                     dataType="fundHospitalExpense"
-                    value={section7.answer.dependantData[i].fundHospitalExpense.disiredChoiceOfHospitalType}
+                    value={
+                      section7.answer.dependantData[i].fundHospitalExpense
+                        .disiredChoiceOfHospitalType
+                    }
                     datas={desHospital}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
@@ -217,61 +244,66 @@ const FundHospitalExpenses = (props : Props) => {
             })}
           </tr>
           <tr>
-            <td className='w-1/2 align-top'>
+            <td className="w-1/2 align-top">
               <TextSmall className="text-gray-light">
-              Desired Choice of Ward Class
+                Desired Choice of Ward Class
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
+            {getPfrLength.map((data, i) => (
+              <td key={"tsdys" + i} className={``}>
+                <Select
+                  className="mb-10"
+                  name="disiredChoiceOfWardClass"
+                  dataType="fundHospitalExpense"
+                  value={
+                    section7.answer.clientData[i].fundHospitalExpense
+                      .disiredChoiceOfWardClass
+                  }
+                  datas={desWard}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
+
+            {totalDependant.map(function (i) {
               return (
                 <td key={"tsdys" + i} className={``}>
                   <Select
                     className="mb-10"
                     name="disiredChoiceOfWardClass"
                     dataType="fundHospitalExpense"
-                    value={section7.answer.clientData[i].fundHospitalExpense.disiredChoiceOfWardClass}
+                    value={
+                      section7.answer.dependantData[i].fundHospitalExpense
+                        .disiredChoiceOfWardClass
+                    }
                     datas={desWard}
-                    handleChange={(event) => setDataClient(event, i)}
+                    handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
-              );
-            })}
-
-            {totalDependant.map(function (i) {
-              return (
-                  <td key={"tsdys" + i} className={``}>
-                    <Select
-                      className="mb-10"
-                      name="disiredChoiceOfWardClass"
-                      dataType="fundHospitalExpense"
-                      value={section7.answer.dependantData[i].fundHospitalExpense.disiredChoiceOfWardClass}
-                      datas={desWard}
-                      handleChange={(event) => setDataDependant(event, i)}
-                    />
-                  </td>
               );
             })}
           </tr>
           <tr>
-            <td className='w-1/2 align-top'>
+            <td className="w-1/2 align-top">
               <TextSmall className="text-gray-light">
-              Desired Type of Cover
+                Desired Type of Cover
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"tsdys" + i} className={``}>
-                  <Select
-                    className="mb-10"
-                    name="desiredTypeOfCover"
-                    dataType="fundHospitalExpense"
-                    value={section7.answer.clientData[i].fundHospitalExpense.desiredTypeOfCover}
-                    datas={desCover}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"tsdys" + i} className={``}>
+                <Select
+                  className="mb-10"
+                  name="desiredTypeOfCover"
+                  dataType="fundHospitalExpense"
+                  value={
+                    section7.answer.clientData[i].fundHospitalExpense
+                      .desiredTypeOfCover
+                  }
+                  datas={desCover}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -280,7 +312,10 @@ const FundHospitalExpenses = (props : Props) => {
                     className="mb-10"
                     name="desiredTypeOfCover"
                     dataType="fundHospitalExpense"
-                    value={section7.answer.dependantData[i].fundHospitalExpense.desiredTypeOfCover}
+                    value={
+                      section7.answer.dependantData[i].fundHospitalExpense
+                        .desiredTypeOfCover
+                    }
                     datas={desCover}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
@@ -289,27 +324,28 @@ const FundHospitalExpenses = (props : Props) => {
             })}
           </tr>
           <tr>
-            <td className='w-1/2 align-top'>
+            <td className="w-1/2 align-top">
               <TextSmall className="text-gray-light">
-              Name of Existing Hospitalization Plan (if any)
+                Name of Existing Hospitalization Plan (if any)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"tsdys" + i} className={``}>
-                  <Input
-                    formStyle="text-right"
-                    className="mb-10"
-                    type="text"
-                    placeholder="1,000,000"
-                    name="nameOfExistingHospitalizationPlan"
-                    dataType="fundHospitalExpense"
-                    value={section7.answer.clientData[i].fundHospitalExpense.nameOfExistingHospitalizationPlan}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"tsdys" + i} className={``}>
+                <Input
+                  formStyle="text-right"
+                  className="mb-10"
+                  type="text"
+                  placeholder="1,000,000"
+                  name="nameOfExistingHospitalizationPlan"
+                  dataType="fundHospitalExpense"
+                  value={
+                    section7.answer.clientData[i].fundHospitalExpense
+                      .nameOfExistingHospitalizationPlan
+                  }
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -321,7 +357,10 @@ const FundHospitalExpenses = (props : Props) => {
                     placeholder="1,000,000"
                     name="nameOfExistingHospitalizationPlan"
                     dataType="fundHospitalExpense"
-                    value={section7.answer.dependantData[i].fundHospitalExpense.nameOfExistingHospitalizationPlan}
+                    value={
+                      section7.answer.dependantData[i].fundHospitalExpense
+                        .nameOfExistingHospitalizationPlan
+                    }
                     handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
@@ -329,25 +368,26 @@ const FundHospitalExpenses = (props : Props) => {
             })}
           </tr>
           <tr>
-            <td className='w-1/2 align-top'>
+            <td className="w-1/2 align-top">
               <TextSmall className="text-gray-light">
-              Existing Type of Hospital Covered
+                Existing Type of Hospital Covered
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"tsdys" + i} className={``}>
-                  <Select
-                    className="mb-10"
-                    name="existingTypeOfHospitalCovered"
-                    dataType="fundHospitalExpense"
-                    value={section7.answer.clientData[i].fundHospitalExpense.existingTypeOfHospitalCovered}
-                    datas={exisHospital}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"tsdys" + i} className={``}>
+                <Select
+                  className="mb-10"
+                  name="existingTypeOfHospitalCovered"
+                  dataType="fundHospitalExpense"
+                  value={
+                    section7.answer.clientData[i].fundHospitalExpense
+                      .existingTypeOfHospitalCovered
+                  }
+                  datas={exisHospital}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -356,7 +396,10 @@ const FundHospitalExpenses = (props : Props) => {
                     className="mb-10"
                     name="existingTypeOfHospitalCovered"
                     dataType="fundHospitalExpense"
-                    value={section7.answer.dependantData[i].fundHospitalExpense.existingTypeOfHospitalCovered}
+                    value={
+                      section7.answer.dependantData[i].fundHospitalExpense
+                        .existingTypeOfHospitalCovered
+                    }
                     datas={exisHospital}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
@@ -365,25 +408,26 @@ const FundHospitalExpenses = (props : Props) => {
             })}
           </tr>
           <tr>
-            <td className='w-1/2 align-top'>
+            <td className="w-1/2 align-top">
               <TextSmall className="text-gray-light">
-              Existing Class of Ward Covered
+                Existing Class of Ward Covered
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"tsdys" + i} className={``}>
-                  <Select
-                    className="mb-10"
-                    name="existingClassOfWardCovered"
-                    dataType="fundHospitalExpense"
-                    value={section7.answer.clientData[i].fundHospitalExpense.existingClassOfWardCovered}
-                    datas={exisCovered}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"tsdys" + i} className={``}>
+                <Select
+                  className="mb-10"
+                  name="existingClassOfWardCovered"
+                  dataType="fundHospitalExpense"
+                  value={
+                    section7.answer.clientData[i].fundHospitalExpense
+                      .existingClassOfWardCovered
+                  }
+                  datas={exisCovered}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -392,7 +436,10 @@ const FundHospitalExpenses = (props : Props) => {
                     className="mb-10"
                     name="existingClassOfWardCovered"
                     dataType="fundHospitalExpense"
-                    value={section7.answer.dependantData[i].fundHospitalExpense.existingClassOfWardCovered}
+                    value={
+                      section7.answer.dependantData[i].fundHospitalExpense
+                        .existingClassOfWardCovered
+                    }
                     datas={exisCovered}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
@@ -401,25 +448,26 @@ const FundHospitalExpenses = (props : Props) => {
             })}
           </tr>
           <tr>
-            <td className='w-1/2 align-top'>
+            <td className="w-1/2 align-top">
               <TextSmall className="text-gray-light">
-              Existing Type of Cover
+                Existing Type of Cover
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"tsdys" + i} className={``}>
-                  <Select
-                    className="mb-10"
-                    name="existingTypeOfCover"
-                    dataType="fundHospitalExpense"
-                    value={section7.answer.clientData[i].fundHospitalExpense.existingTypeOfCover}
-                    datas={exisCover}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"tsdys" + i} className={``}>
+                <Select
+                  className="mb-10"
+                  name="existingTypeOfCover"
+                  dataType="fundHospitalExpense"
+                  value={
+                    section7.answer.clientData[i].fundHospitalExpense
+                      .existingTypeOfCover
+                  }
+                  datas={exisCover}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
@@ -428,7 +476,10 @@ const FundHospitalExpenses = (props : Props) => {
                     className="mb-10"
                     name="existingTypeOfCover"
                     dataType="fundHospitalExpense"
-                    value={section7.answer.dependantData[i].fundHospitalExpense.existingTypeOfCover}
+                    value={
+                      section7.answer.dependantData[i].fundHospitalExpense
+                        .existingTypeOfCover
+                    }
                     datas={exisCover}
                     handleChange={(event) => setDataDependant(event, i)}
                   />
@@ -438,11 +489,13 @@ const FundHospitalExpenses = (props : Props) => {
           </tr>
           <tr>
             <td colSpan={total}>
-              <TextSmall className="text-gray-light">Additional Notes</TextSmall>
+              <TextSmall className="text-gray-light">
+                Additional Notes
+              </TextSmall>
             </td>
           </tr>
           <tr>
-            <td colSpan={total+1}>
+            <td colSpan={total + 1}>
               <Input
                 formStyle="text-right"
                 className="mb-10"
@@ -457,7 +510,7 @@ const FundHospitalExpenses = (props : Props) => {
         </tbody>
       </table>
     </SectionCardSingleGrid>
-  )
-}
+  );
+};
 
-export default FundHospitalExpenses
+export default FundHospitalExpenses;

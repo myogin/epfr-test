@@ -23,7 +23,7 @@ import { Result } from "postcss";
 import { parse } from "path";
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const PrioritiesNeedAnalysis = (props: Props) => {

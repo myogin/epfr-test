@@ -4,7 +4,7 @@ import Select from "@/components/Forms/Select";
 import { getLength } from "@/libs/helper";
 import { Clientformation } from "@/models/SectionOne";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 interface Props {
   pfrType?: number;
@@ -154,7 +154,7 @@ const Client = (props: Props) => {
   return (
     <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
       {props.pfrType === 1 ? (
-        <>
+        <Fragment>
           <div>
             {/* Selected Form */}
             <Select
@@ -505,7 +505,7 @@ const Client = (props: Props) => {
               }
             />
           </div>
-        </>
+        </Fragment>
       ) : (
         getPfrLength?.length &&
         getPfrLength.map((data, index) => (

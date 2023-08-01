@@ -18,11 +18,6 @@ interface Props {
 }
 
 const Select = (props: Props) => {
-  // function selectedChange(event: ChangeEvent<HTMLSelectElement>): void {
-  //   let selectedValue : any = event.target.value;
-  //   prop.handleChange(selectedValue);
-  // }
-
   return (
     <div className={`w-full ${props.className} space-y-3`}>
       {props.label ? (
@@ -48,7 +43,7 @@ const Select = (props: Props) => {
         </option>
         {props.datas?.length &&
           props.datas.map((val, index) => (
-            <option key={"select-box"+index} value={val.id}>
+            <option key={"select-box"+val.id} value={val.id}>
               {val.name}
             </option>
           ))}
