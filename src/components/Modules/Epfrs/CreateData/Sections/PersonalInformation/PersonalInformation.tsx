@@ -16,6 +16,7 @@ import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoub
 import { clientIdentity, getLength } from "@/libs/helper";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import { Accompaniment } from "@/models/SectionOne";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -37,6 +38,10 @@ const PersonalInformation = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(1);
+  const scrollPositionBottom = useScrollPositionBottom(1);
+
+  console.log("help me");
+  console.log(scrollPositionBottom);
 
   let {
     ownerId,
@@ -122,7 +127,7 @@ const PersonalInformation = (props: Props) => {
           </div>
           <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
             {getPfrLength.map((data, index) => (
-              <div key={"as"+index}>
+              <div key={"as" + index}>
                 <h3 className="w-full mb-10 text-base font-bold text-green-deep">
                   {clientIdentity(index)}
                 </h3>
