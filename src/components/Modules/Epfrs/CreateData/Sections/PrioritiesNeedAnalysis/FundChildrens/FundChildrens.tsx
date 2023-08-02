@@ -11,9 +11,11 @@ import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritie
 import Select from '@/components/Forms/Select'
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import AddBoxFillIcon from "remixicon-react/AddBoxFillIcon";
+import { getLength } from '@/libs/helper'
 
 interface Props {
   datas?: Array<any>;
+  pfrType: number;
 }
 
 const FundChildrens =(props : Props) => {
@@ -35,8 +37,10 @@ const FundChildrens =(props : Props) => {
     { id: 2, name: "Test 2" }
   ];
 
+  let getPfrLength = getLength(props.pfrType);
+
   // Total Data Client & Deoendants
-    let total = section7.typeClient;
+    let total = props.pfrType;
     var totalClient = [];
     var totalChildFund = [];
     var totalDependant = [];

@@ -13,9 +13,16 @@ import Client from "./Clients/Client";
 import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
-import { clientIdentity, getLength } from "@/libs/helper";
+import {
+  clientIdentity,
+  getLength,
+  localOwnerId,
+  localPfrId,
+} from "@/libs/helper";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import { Accompaniment } from "@/models/SectionOne";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import { useLoginData } from "@/store/login/logindata";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -37,6 +44,7 @@ const PersonalInformation = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(1);
+  const scrollPositionBottom = useScrollPositionBottom(1);
 
   let {
     ownerId,
@@ -47,6 +55,7 @@ const PersonalInformation = (props: Props) => {
     issues,
     status,
     setTrustedIndividuals,
+    setGlobal,
   } = usePersonalInformation();
 
   let checkAccompainment = CheckAccompainment(
@@ -54,16 +63,19 @@ const PersonalInformation = (props: Props) => {
     setTrustedIndividuals
   );
 
-  console.log("Test check");
-  console.log(checkAccompainment);
 
   useEffect(() => {
+    let localOwner = localOwnerId();
+    let localPfr = localPfrId();
+    
+    setGlobal("ownerId", localOwner);
+    setGlobal("id", localPfr);
+    setGlobal("type", props.pfrType);
+
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
   }, [dependant]);
-
-  console.log(getPfrLength);
 
   return (
     <div id={props.id}>
@@ -127,7 +139,7 @@ const PersonalInformation = (props: Props) => {
           </div>
           <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
             {getPfrLength.map((data, index) => (
-              <div key={index}>
+              <div key={"as" + index}>
                 <h3 className="w-full mb-10 text-base font-bold text-green-deep">
                   {clientIdentity(index)}
                 </h3>

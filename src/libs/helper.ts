@@ -89,3 +89,60 @@ export const sgdFormat = (currency: any) => {
     currency: "SGD",
   }).format(currency);
 };
+
+export const localToken = () => {
+  let checkData = localStorage.getItem("login")
+    ? localStorage.getItem("login")
+    : null;
+  let dataFix = null;
+  if (checkData) {
+    let data = JSON.parse(checkData);
+    let check = data.state.token;
+
+    if (check == null || check == undefined || check == "") {
+      dataFix = null;
+    } else {
+      dataFix = check;
+    }
+  }
+
+  return dataFix;
+};
+
+export const localOwnerId = () => {
+  let checkData = localStorage.getItem("login")
+    ? localStorage.getItem("login")
+    : null;
+  let dataFix = null;
+  if (checkData) {
+    let data = JSON.parse(checkData);
+    let check = data.state.ownerId;
+
+    if (check == null || check == undefined || check == "") {
+      dataFix = null;
+    } else {
+      dataFix = check;
+    }
+  }
+
+  return dataFix;
+};
+
+export const localPfrId = () => {
+  let checkData = localStorage.getItem("login")
+    ? localStorage.getItem("login")
+    : null;
+  let dataFix = null;
+  if (checkData) {
+    let data = JSON.parse(checkData);
+    let check = data.state.pfrId;
+
+    if (check == null || check == undefined || check == "") {
+      dataFix = null;
+    } else {
+      dataFix = check;
+    }
+  }
+
+  return dataFix;
+};

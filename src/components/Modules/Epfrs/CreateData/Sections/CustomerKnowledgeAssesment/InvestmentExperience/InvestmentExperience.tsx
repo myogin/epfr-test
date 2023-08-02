@@ -9,7 +9,7 @@ import TitleSmall from "@/components/Attributes/Typography/TitleSmall";
 import Checkbox from "@/components/Forms/Checkbox";
 import { getLength } from "@/libs/helper";
 import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
-import React from "react";
+import React, { Fragment } from "react";
 interface Props {
   pfrType: number;
 }
@@ -44,14 +44,14 @@ const InvestmentExperience = (props: Props) => {
 
       <RowSingleORDouble pfrType={props.pfrType}>
         {getPfrLength.map((e2, userIndex) => (
-          <>
+          <Fragment key={"as"+userIndex}>
             {answers[userIndex].investment.every(checkValidate) &&
             need[userIndex] ? (
               <div className="text-xs font-normal text-red">Required</div>
             ) : (
               <div></div>
             )}
-          </>
+          </Fragment>
         ))}
       </RowSingleORDouble>
 
@@ -68,7 +68,7 @@ const InvestmentExperience = (props: Props) => {
         qa[0].answers.map((answer: any, index: number) => (
           <RowSingleORDouble pfrType={props.pfrType} key={index}>
             {getPfrLength.map((e2, userIndex) => (
-              <>
+              <Fragment key={"asa"+userIndex}>
                 <div>
                   <Checkbox
                     isDisabled={!need[userIndex]}
@@ -79,7 +79,7 @@ const InvestmentExperience = (props: Props) => {
                     label={answer.answer}
                   />
                 </div>
-              </>
+              </Fragment>
             ))}
           </RowSingleORDouble>
         ))}

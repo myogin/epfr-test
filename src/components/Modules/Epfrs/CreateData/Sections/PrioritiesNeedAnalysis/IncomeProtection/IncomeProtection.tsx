@@ -5,7 +5,6 @@ import TextThin from "@/components/Attributes/Typography/TextThin";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
-
 import React, { useState, useEffect } from "react";
 import Dependent from "../../PersonalInformation/Dependents/Dependent";
 import Toggle from "@/components/Forms/Toggle";
@@ -132,46 +131,48 @@ const IncomeProtection = (props: Props) => {
             <tr>
               <td className="align-top">
                 <TextSmall className="uppercase text-gray-light">
-                  Income Protection Upon Death
+                  Income Protection Upon Death {total}
                 </TextSmall>
               </td>
 
               {total > 1
-                ? getPfrLength.map(function (i) {
-                    return (
-                      <td key={"a" + i} className={``}>
-                        <div className="text-right text-green-deep">
-                          Client {i + 1}{" "}
+                ? getPfrLength.map((data, i) => (
+                    <td key={"a" + i}>
+                      <div className="text-right text-green-deep">
+                        Client {i + 1}{" "}
+                      </div>
+                      <div
+                        className="items-center justify-start gap-2 mb-10 text-right"
+                        id={`custome-checkbox-${i}`}
+                      >
+                        <div className="items-start justify-start gap-4">
+                          <input
+                            type="checkbox"
+                            checked={
+                              section7.answer.need.client[i]
+                                ? section7.answer.need.client[i][0]
+                                : false
+                            }
+                            onChange={(event) =>
+                              handleClient(
+                                !section7.answer.need.client[i][0],
+                                i,
+                                0
+                              )
+                            }
+                            className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:rin, dataI:g-1"
+                          />
+                          <span> Review</span>
                         </div>
-                        <div
-                          className="items-center justify-start gap-2 mb-10 text-right"
-                          id={`custome-checkbox-${i}`}
-                        >
-                          <div className="items-start justify-start gap-4">
-                            <input
-                              type="checkbox"
-                              checked={section7.answer.need.client[i][0]}
-                              onChange={(event) =>
-                                handleClient(
-                                  !section7.answer.need.client[i][0],
-                                  i,
-                                  0
-                                )
-                              }
-                              className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:rin, dataI:g-1"
-                            />
-                            <span className={``}> Review</span>
-                          </div>
-                        </div>
-                      </td>
-                    );
-                  })
+                      </div>
+                    </td>
+                  ))
                 : ""}
 
               {totalDependant.length > 0
                 ? totalDependant.map(function (i) {
                     return (
-                      <td key={"b" + i} className={``}>
+                      <td key={"b" + i}>
                         <div className="text-right text-green-deep">
                           Dependant {i + 1}{" "}
                         </div>
@@ -182,7 +183,11 @@ const IncomeProtection = (props: Props) => {
                           <div className="items-start justify-start gap-4">
                             <input
                               type="checkbox"
-                              checked={section7.answer.need.dependant[i][0]}
+                              checked={
+                                section7.answer.need.dependant[i]
+                                  ? section7.answer.need.dependant[i][0]
+                                  : false
+                              }
                               onChange={(event) =>
                                 handleDependant(
                                   !section7.answer.need.dependant[i][0],
@@ -192,7 +197,7 @@ const IncomeProtection = (props: Props) => {
                               }
                               className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
                             />
-                            <span className={``}> Review</span>
+                            <span> Review</span>
                           </div>
                         </div>
                       </td>
@@ -207,7 +212,7 @@ const IncomeProtection = (props: Props) => {
                 </TextSmall>
               </td>
               {getPfrLength.map((data, i) => (
-                <td key={"c" + i} className={``}>
+                <td key={"c" + i}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -226,7 +231,7 @@ const IncomeProtection = (props: Props) => {
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"d" + i} className={``}>
+                  <td key={"d" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -250,29 +255,27 @@ const IncomeProtection = (props: Props) => {
                   Number of Years Needed
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"e" + i} className={``}>
-                    <Input
-                      formStyle="text-right"
-                      className="mb-10"
-                      type="text"
-                      placeholder="1,000,000"
-                      name="numberOfYearsNeed"
-                      dataType="incomeProtectionUponDeath"
-                      value={
-                        section7.answer.clientData[i].incomeProtectionUponDeath
-                          .numberOfYearsNeed
-                      }
-                      handleChange={(event) => setDataClient(event, i)}
-                    />
-                  </td>
-                );
-              })}
+              {getPfrLength.map((data, i) => (
+                <td key={"e" + i}>
+                  <Input
+                    formStyle="text-right"
+                    className="mb-10"
+                    type="text"
+                    placeholder="1,000,000"
+                    name="numberOfYearsNeed"
+                    dataType="incomeProtectionUponDeath"
+                    value={
+                      section7.answer.clientData[i].incomeProtectionUponDeath
+                        .numberOfYearsNeed
+                    }
+                    handleChange={(event) => setDataClient(event, i)}
+                  />
+                </td>
+              ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"f" + i} className={``}>
+                  <td key={"f" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -296,9 +299,8 @@ const IncomeProtection = (props: Props) => {
                   Net Rate of Return (adjusted for inflation)
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"g" + i} className={``}>
+              {getPfrLength.map((data, i) => (
+                  <td key={"g" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -313,12 +315,11 @@ const IncomeProtection = (props: Props) => {
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"h" + i} className={``}>
+                  <td key={"h" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -342,8 +343,7 @@ const IncomeProtection = (props: Props) => {
                   A. CAPITAN SUM REQUIRED
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
+              {getPfrLength.map((data, i) => (
                   <td key={"i" + i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       $
@@ -353,8 +353,7 @@ const IncomeProtection = (props: Props) => {
                       }
                     </TextSmall>
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
@@ -376,9 +375,8 @@ const IncomeProtection = (props: Props) => {
                   Final Expense ($)
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"k" + i} className={``}>
+              {getPfrLength.map((data, i) => (
+                  <td key={"k" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -393,12 +391,11 @@ const IncomeProtection = (props: Props) => {
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"l" + i} className={``}>
+                  <td key={"l" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -422,9 +419,8 @@ const IncomeProtection = (props: Props) => {
                   Emergency Fund ($)
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"m" + i} className={``}>
+              {getPfrLength.map((data, i) => (
+                  <td key={"m" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -439,12 +435,11 @@ const IncomeProtection = (props: Props) => {
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"n" + i} className={``}>
+                  <td key={"n" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -484,9 +479,8 @@ const IncomeProtection = (props: Props) => {
                   </div>
                 </div>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"o" + i} className={``}>
+              {getPfrLength.map((data, i) => (
+                  <td key={"o" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -501,12 +495,11 @@ const IncomeProtection = (props: Props) => {
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"p" + i} className={``}>
+                  <td key={"p" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -546,9 +539,8 @@ const IncomeProtection = (props: Props) => {
                   </div>
                 </div>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"q" + i} className={``}>
+              {getPfrLength.map((data, i) => (
+                  <td key={"q" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -563,12 +555,11 @@ const IncomeProtection = (props: Props) => {
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"r" + i} className={``}>
+                  <td key={"r" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -608,9 +599,8 @@ const IncomeProtection = (props: Props) => {
                   </div>
                 </div>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"s" + i} className={``}>
+              {getPfrLength.map((data, i) => (
+                  <td key={"s" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -625,12 +615,11 @@ const IncomeProtection = (props: Props) => {
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"t" + i} className={``}>
+                  <td key={"t" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -654,8 +643,7 @@ const IncomeProtection = (props: Props) => {
                   B. TOTAL CASH OUT FLOW ($)
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
+              {getPfrLength.map((data, i) => (
                   <td key={"u" + i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       $
@@ -665,8 +653,7 @@ const IncomeProtection = (props: Props) => {
                       }
                     </TextSmall>
                   </td>
-                );
-              })}
+                ))}
               {totalDependant.map(function (i) {
                 return (
                   <td key={"p" + i}>
@@ -687,8 +674,7 @@ const IncomeProtection = (props: Props) => {
                   TOTAL A + B ($)
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
+              {getPfrLength.map((data, i) => (
                   <td key={"w" + i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       $
@@ -698,8 +684,7 @@ const IncomeProtection = (props: Props) => {
                       }
                     </TextSmall>
                   </td>
-                );
-              })}
+                ))}
               {totalDependant.map(function (i) {
                 return (
                   <td key={"x" + i}>
@@ -736,9 +721,8 @@ const IncomeProtection = (props: Props) => {
                   </div>
                 </div>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"y" + i} className={``}>
+              {getPfrLength.map((data, i) => (
+                  <td key={"y" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -753,12 +737,11 @@ const IncomeProtection = (props: Props) => {
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"z" + i} className={``}>
+                  <td key={"z" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -783,9 +766,8 @@ const IncomeProtection = (props: Props) => {
                   Less: existing resource ($) (if any)
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
-                  <td key={"aa" + i} className={``}>
+              {getPfrLength.map((data, i) => (
+                  <td key={"aa" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -800,12 +782,11 @@ const IncomeProtection = (props: Props) => {
                       handleChange={(event) => setDataClient(event, i)}
                     />
                   </td>
-                );
-              })}
+                ))}
 
               {totalDependant.map(function (i) {
                 return (
-                  <td key={"bb" + i} className={``}>
+                  <td key={"bb" + i}>
                     <Input
                       formStyle="text-right"
                       className="mb-10"
@@ -829,8 +810,7 @@ const IncomeProtection = (props: Props) => {
                   NET AMOUNT REQUIRED ($)
                 </TextSmall>
               </td>
-              {totalClient.map(function (i) {
-                return (
+              {getPfrLength.map((data, i) => (
                   <td key={"cc" + i}>
                     <TextSmall className="text-right uppercase text-green-deep">
                       $
@@ -840,8 +820,7 @@ const IncomeProtection = (props: Props) => {
                       }
                     </TextSmall>
                   </td>
-                );
-              })}
+                ))}
               {totalDependant.map(function (i) {
                 return (
                   <td key={"dd" + i}>

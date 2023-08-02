@@ -11,9 +11,11 @@ import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritie
 import Select from "@/components/Forms/Select";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   datas?: Array<any>;
+  pfrType: number;
 }
 
 const MaternityPlan = (props: Props) => {
@@ -38,6 +40,8 @@ const MaternityPlan = (props: Props) => {
     removeMaternity(index);
   };
 
+  let getPfrLength = getLength(props.pfrType);
+
   const handleMaternity = (e: any, index: any, indexSub: any) => {
     const { groupdata } = e.target.dataset;
     const { name, value } = e.target;
@@ -45,7 +49,7 @@ const MaternityPlan = (props: Props) => {
   };
 
   // Total Data Client & Deoendants
-  let total = section7.typeClient + section7.totalDependant;
+  let total = props.pfrType + section7.totalDependant;
   var totalClient = [];
   var totalDependant = [];
   for (var i = 0; i < section7.typeClient; i++) {
@@ -101,41 +105,39 @@ const MaternityPlan = (props: Props) => {
               </TextSmall>
             </td>
             {total > 1
-              ? totalClient.map(function (i) {
-                  return (
-                    <td key={"asda"+i} className={``}>
-                      <div className="text-right text-green-deep">
-                        Client {i + 1}{" "}
+              ? getPfrLength.map((data, i) => (
+                  <td key={"asda" + i} className={``}>
+                    <div className="text-right text-green-deep">
+                      Client {i + 1}{" "}
+                    </div>
+                    <div
+                      className="items-center justify-start gap-2 mb-10 text-right"
+                      id={`custome-checkbox-${i}`}
+                    >
+                      <div className="items-start justify-start gap-4">
+                        <input
+                          type="checkbox"
+                          checked={section7.answer.need.client[i][9]}
+                          onChange={(event) =>
+                            handleClient(
+                              !section7.answer.need.client[i][9],
+                              i,
+                              9
+                            )
+                          }
+                          className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                        />
+                        <span className={``}> Review</span>
                       </div>
-                      <div
-                        className="items-center justify-start gap-2 mb-10 text-right"
-                        id={`custome-checkbox-${i}`}
-                      >
-                        <div className="items-start justify-start gap-4">
-                          <input
-                            type="checkbox"
-                            checked={section7.answer.need.client[i][9]}
-                            onChange={(event) =>
-                              handleClient(
-                                !section7.answer.need.client[i][9],
-                                i,
-                                9
-                              )
-                            }
-                            className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
-                          />
-                          <span className={``}> Review</span>
-                        </div>
-                      </div>
-                    </td>
-                  );
-                })
+                    </div>
+                  </td>
+                ))
               : ""}
 
             {totalDependant.length > 0
               ? totalDependant.map(function (i) {
                   return (
-                    <td key={"asda"+i} className={``}>
+                    <td key={"asda" + i} className={``}>
                       <div className="text-right text-green-deep">
                         Dependant {i + 1}{" "}
                       </div>
@@ -170,26 +172,24 @@ const MaternityPlan = (props: Props) => {
                 Amount Needed ($)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"asda"+i} className={``}>
-                  <Input
-                    formStyle="text-right"
-                    className="mb-10"
-                    type="text"
-                    placeholder="1,000,000"
-                    name="amountNeeded"
-                    dataType="maternity"
-                    value={section7.answer.clientData[i].maternity.amountNeeded}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"asda" + i} className={``}>
+                <Input
+                  formStyle="text-right"
+                  className="mb-10"
+                  type="text"
+                  placeholder="1,000,000"
+                  name="amountNeeded"
+                  dataType="maternity"
+                  value={section7.answer.clientData[i].maternity.amountNeeded}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
-                <td key={"asda"+i} className={``}>
+                <td key={"asda" + i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -227,26 +227,24 @@ const MaternityPlan = (props: Props) => {
                 </button>
               </div>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"asda"+i} className={``}>
-                  <Input
-                    formStyle="text-right"
-                    className="mb-10"
-                    type="text"
-                    placeholder="1,000,000"
-                    name="less"
-                    dataType="maternity"
-                    value={section7.answer.clientData[i].maternity.less}
-                    handleChange={(event) => setDataClient(event, i)}
-                  />
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"asda" + i} className={``}>
+                <Input
+                  formStyle="text-right"
+                  className="mb-10"
+                  type="text"
+                  placeholder="1,000,000"
+                  name="less"
+                  dataType="maternity"
+                  value={section7.answer.clientData[i].maternity.less}
+                  handleChange={(event) => setDataClient(event, i)}
+                />
+              </td>
+            ))}
 
             {totalDependant.map(function (i) {
               return (
-                <td key={"asda"+i} className={``}>
+                <td key={"asda" + i} className={``}>
                   <Input
                     formStyle="text-right"
                     className="mb-10"
@@ -264,7 +262,7 @@ const MaternityPlan = (props: Props) => {
           {section7.answer.addtionalMaternityPlan.map(
             (maternity: any, index: any) => {
               return (
-                <tr key={"aadasa"+i}>
+                <tr key={"aadasa" + i}>
                   <td>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="col-end-1">
@@ -292,7 +290,7 @@ const MaternityPlan = (props: Props) => {
                   </td>
                   {maternity.client.map(function (v: any, i: any) {
                     return (
-                      <td key={"asda"+i} className={``}>
+                      <td key={"asda" + i} className={``}>
                         <Input
                           formStyle="text-right"
                           className="mb-10"
@@ -310,7 +308,7 @@ const MaternityPlan = (props: Props) => {
                   })}
                   {maternity.dependants.map(function (v: any, i: any) {
                     return (
-                      <td key={"asda"+i} className={``}>
+                      <td key={"asda" + i} className={``}>
                         <Input
                           formStyle="text-right"
                           className="mb-10"
@@ -336,18 +334,16 @@ const MaternityPlan = (props: Props) => {
                 Net amount required ($)
               </TextSmall>
             </td>
-            {totalClient.map(function (i) {
-              return (
-                <td key={"dsdsa"+i} className="align-top">
-                  <TextSmall className="text-right uppercase text-green-deep">
-                    ${section7.answer.clientData[i].maternity.netAmountRequired}
-                  </TextSmall>
-                </td>
-              );
-            })}
+            {getPfrLength.map((data, i) => (
+              <td key={"dsdsa" + i} className="align-top">
+                <TextSmall className="text-right uppercase text-green-deep">
+                  ${section7.answer.clientData[i].maternity.netAmountRequired}
+                </TextSmall>
+              </td>
+            ))}
             {totalDependant.map(function (i) {
               return (
-                <td key={"asdaas"+i} className="align-top">
+                <td key={"asdaas" + i} className="align-top">
                   <TextSmall className="text-right uppercase text-green-deep">
                     $
                     {

@@ -184,7 +184,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
                 className="my-4"
                 label="The Reason"
                 name="reason"
-                value={reason[index]}
+                defaultValue={reason[index]}
                 handleChange={(e) => {
                   updateReason(index, e.target.value, props.pfrType);
                 }}

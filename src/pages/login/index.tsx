@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
+import Head from "next/head";
 import { Page } from "@/pages/_app";
 import AppLayout from "@/components/Layouts/AppLayout";
+import GlobalCard from "@/components/Attributes/Cards/GlobalCard";
+import TitleMedium from "@/components/Attributes/Typography/TitleMedium";
 import { useRouter } from "next/router";
+import CheckboxCircleFillIcon from "remixicon-react/CheckboxCircleFillIcon";
+import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 import { signIn, useSession } from "next-auth/react";
 import { useLoginData } from "@/store/login/logindata";
 import { localOwnerId, localPfrId, localToken } from "@/libs/helper";
@@ -27,7 +33,6 @@ const EpfrLogin: Page = () => {
   };
 
   useEffect(() => {
-
     let tokenFix = localToken();
     let ownerFix = localOwnerId();
     let pfrFix = localPfrId();
@@ -42,6 +47,7 @@ const EpfrLogin: Page = () => {
     setLogin(localT, ownerId, Number(pfrId));
     loginTest(localT);
   });
+
   return <div>...Loading</div>;
 };
 

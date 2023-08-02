@@ -23,7 +23,7 @@ import { Result } from "postcss";
 import { parse } from "path";
 interface Props {
   id?: any;
-  pfrType?: number;
+  pfrType: number;
 }
 
 const PrioritiesNeedAnalysis = (props: Props) => {
@@ -47,52 +47,52 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   const resTotal = section7.typeClient + section7.totalDependant;
   let { showDetailData } = useNavigationSection();
 
-  const setIncomeProtection = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setIncomeProtection = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setFundDisability = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setFundDisability = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setFundCritical = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setFundCritical = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setFundChildren = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setFundChildren = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setFundMediumToLong = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setFundMediumToLong = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setFundRetirement = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setFundRetirement = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setCoverForPersonal = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setCoverForPersonal = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setFundLongTermCare = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setFundLongTermCare = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setFundHospitalExpense = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setFundHospitalExpense = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setMaternityPlan = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setMaternityPlan = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setEstatePlanning = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setEstatePlanning = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
-  const setOtherInsurance = (data: any, indexClient: any, i: any) => {
-    setNeed(data, indexClient, i);
+  const setOtherInsurance = (data: boolean, indexClient: number, indexSub: number) => {
+    setNeed(indexClient, indexSub, data);
   };
 
   const scrollPosition = useScrollPosition(7);
@@ -536,7 +536,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][1] ? <FundDisability /> : ""}
+        {section7.answer.need.client[0][1] ? <FundDisability pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -549,7 +549,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][2] ? <FundCritical/> : ""}
+        {section7.answer.need.client[0][2] ? <FundCritical pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -562,7 +562,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][3] ? <FundChildrens/> : ""}
+        {section7.answer.need.client[0][3] ? <FundChildrens pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -576,7 +576,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][4] ? <FundMediumToLong/> : ""}
+        {section7.answer.need.client[0][4] ? <FundMediumToLong pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -589,7 +589,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][5] ? <FundRetirement/> : ""}
+        {section7.answer.need.client[0][5] ? <FundRetirement pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -602,7 +602,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][6] ? <CoverForPersonal/> : ""}
+        {section7.answer.need.client[0][6] ? <CoverForPersonal pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -615,7 +615,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][7] ? <FundLongTermCare/> : ""}
+        {section7.answer.need.client[0][7] ? <FundLongTermCare pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -628,7 +628,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][8] ? <FundHospitalExpenses/> : ""}
+        {section7.answer.need.client[0][8] ? <FundHospitalExpenses pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.10 Maternity Plan</h2>
@@ -639,7 +639,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][9] ? <MaternityPlan/> : ""}
+        {section7.answer.need.client[0][9] ? <MaternityPlan pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.11 Estate Planning</h2>
@@ -650,7 +650,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][10] ? <EstatePlanning/> : ""}
+        {section7.answer.need.client[0][10] ? <EstatePlanning pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.12 Other Insurance(s)</h2>
@@ -661,7 +661,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][11] ? <OtherInsurance/> : ""}
+        {section7.answer.need.client[0][11] ? <OtherInsurance pfrType={props.pfrType}/> : ""}
       </>
 
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>

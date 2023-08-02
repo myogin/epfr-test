@@ -14,16 +14,17 @@ const initialState: Login = {
 };
 
 type Actions = {
-  setLogin: (token: any, ownerId: any) => any;
+  setLogin: (token: any, ownerId: any, pfrId:number) => any;
 };
 
 const loginData = (set: any) => ({
   ...initialState,
-  setLogin: (token: any, ownerId: any) =>
+  setLogin: (token: any, ownerId: any, pfrId: number) =>
     set(
       produce((drafts: any) => {
         drafts.token = token;
         drafts.ownerId = ownerId;
+        drafts.pfrId = pfrId;
       })
     ),
 });

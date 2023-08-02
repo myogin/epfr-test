@@ -15,7 +15,7 @@ export const getPfrSection = async (params: any) => {
 };
 
 export const postPfr = async (group: any, data: any) => {
-  return await http.post(`/create-pfr-lite/${group}`, data, {
+  return await http.post(`/pfr/create-pfr-lite/${group}`, data, {
     headers: authHeader(),
   });
 };

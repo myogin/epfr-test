@@ -1,5 +1,3 @@
-import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
-import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
 import RowFourthGrid from "@/components/Attributes/Rows/Grids/RowFourthGrid";
@@ -10,16 +8,15 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import TextThin from "@/components/Attributes/Typography/TextThin";
-import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React, {useState, useEffect} from "react";
-import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
+import React, {useEffect} from "react";
 import { useAffordability } from "@/store/epfrPage/createData/affordability";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   id?: any;
@@ -34,6 +31,8 @@ const Affordability = (props: Props) => {
     setSourceOfWealth,
     setAssetOrSurplus
   } = useAffordability();
+
+  let getPfrLength = getLength(props.pfrType);
 
   let fillInformation: Array<any> = [
     { id: 0, name: "No" },
@@ -142,7 +141,7 @@ const Affordability = (props: Props) => {
                       placeholder=""
                       name="relationShip"
                       dataType="payorDetail"
-                      label={`PAYOR RELATIONSHIP TO CLIENT1 : ${key+1}`}
+                      label={`PAYOR RELATIONSHIP TO CLIENT : ${key+1}`}
                       handleChange={(event) => handlePayorDetail(event, key)}
                       needValidation={true}
                       logic={(value.relationShip == "" || value.relationShip == null)  ? false : true}

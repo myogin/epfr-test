@@ -5,11 +5,13 @@ interface Props {
   placeholder?: any;
   isDisabled?: boolean;
   defaultValue?: any;
+  indexData?: number;
+  indexClient?: number;
+  dataType?: string;
   className?: string;
   rows?: number;
   name?: string;
   handleChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  value?: string | undefined | null;
   needValidation?: boolean;
   logic?: boolean;
   textError?: string;
@@ -31,6 +33,9 @@ const TextArea = (props: Props) => {
         ""
       )}
       <textarea
+        data-groupdata={props.dataType}
+        data-indexdata={props.indexData}
+        data-indexclient={props.indexClient}
         defaultValue={props.defaultValue}
         rows={props.rows}
         className={`w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong ${
@@ -39,7 +44,6 @@ const TextArea = (props: Props) => {
         placeholder={props.placeholder}
         name={props.name}
         onChange={props.handleChange}
-        value={props.value == null ? "" : props.value}
         disabled={props.isDisabled}
       ></textarea>
 
