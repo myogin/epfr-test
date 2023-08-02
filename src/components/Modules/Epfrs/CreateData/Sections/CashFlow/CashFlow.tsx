@@ -131,7 +131,7 @@ const CashFlow = (props: Props) => {
   useEffect(() => {
     if (scrollPositionBottom === "Process3") {
       // console.log("oke")
-      // storeData();
+      storeData();
     }
   }, [scrollPositionBottom]);
 
