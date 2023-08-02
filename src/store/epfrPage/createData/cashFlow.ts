@@ -17,7 +17,8 @@ type Actions = {
   removeOthers: (annualType: string, params: any) => any;
   setData: (indexData: number, params: any) => any;
   setAnnualSurplus: (indexData: number, params: any) => any;
-  setAnswer: (indexData: number, params: any) => any;
+  setReasonSurplus: (indexData: number, params: any) => any;
+  setReason: (indexData: number, params: any) => any;
   setNeed: (indexData: number, params: any) => any;
 };
 
@@ -55,11 +56,11 @@ const initialState: SectionThree = {
       annualSurplus: {
         annualSurplus: 0,
       },
+      reasonForSurplus: "",
       answer: {
         state: 0,
         answer: "",
       },
-      reasonForSurplus: "",
     },
     {
       id: 1,
@@ -72,11 +73,11 @@ const initialState: SectionThree = {
       annualSurplus: {
         annualSurplus: 0,
       },
+      reasonForSurplus: "",
       answer: {
         state: 0,
         answer: "",
       },
-      reasonForSurplus: "",
     },
   ],
   annualExpense: [
@@ -271,31 +272,27 @@ const cashFlow = create(
         setAnnualSurplus: (indexData: number, params: any) =>
           set(
             produce((draft) => {
-              if (indexData === 0 && get().data?.length) {
-                let dataReplace = draft.data[indexData];
-                dataReplace.annualSurplus.annualSurplus = params.annualSurplus;
-              } else {
-                draft.data.push(params);
-              }
+              let data = draft.data[indexData].annualSurplus;
+              data.annualSurplus = params;
             })
           ),
-        setAnswer: (indexData: number, params: any) =>
+        setReasonSurplus: (indexData: number, params: any) =>
           set(
             produce((draft) => {
-              if (indexData === 0 && get().data?.length) {
-                let dataReplace = draft.data[indexData];
-                dataReplace.answer.answer = params.answer;
-                dataReplace.answer.state = params.state;
-              } else {
-                draft.data.push(params);
-              }
+              let dataReplace = draft.data[indexData];
+              dataReplace.reasonForSurplus = params;
+            })
+          ),
+        setReason: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              let reason = draft.reason;
+              reason[indexData] = params;
             })
           ),
         setNeed: (indexData: number, params: any) =>
           set(
             produce((draft) => {
-              console.log("Masuk sini nggak");
-
               let need = draft.need;
               need[indexData] = params;
             })
