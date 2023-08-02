@@ -32,10 +32,12 @@ const EpfrLogin: Page = () => {
 
     let localT = tokenFix === null ? router.query.token : tokenFix;
 
+    let pfrId = router.query.pfrId ? router.query.pfrId : 0;
+
     if (localT == undefined || localT == null) {
       router.push("/unauthorized");
     }
-    setLogin(localT, router.query.ownerId);
+    setLogin(localT, router.query.ownerId, Number(pfrId));
     loginTest(localT);
   });
   return <div>...Loading</div>;
