@@ -118,7 +118,7 @@ export const localOwnerId = () => {
     let data = JSON.parse(checkData);
     let check = data.state.ownerId;
 
-    if (check == null || check == undefined || check == "") {
+    if (check == null || check == undefined || check == "" || check == 0) {
       dataFix = null;
     } else {
       dataFix = check;
@@ -137,7 +137,7 @@ export const localPfrId = () => {
     let data = JSON.parse(checkData);
     let check = data.state.pfrId;
 
-    if (check == null || check == undefined || check == "") {
+    if (check == null || check == undefined || check == "" || check == 0) {
       dataFix = null;
     } else {
       dataFix = check;

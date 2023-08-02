@@ -37,9 +37,9 @@ const EpfrLogin: Page = () => {
     let ownerFix = localOwnerId();
     let pfrFix = localPfrId();
 
-    let localT = tokenFix === null ? router.query.token : tokenFix;
-    let pfrId = pfrFix === null ? router.query.pfrId : pfrFix;
-    let ownerId = ownerFix === null ? router.query.ownerId : ownerFix;
+    let localT = router.query.token === null ? tokenFix : router.query.token;
+    let pfrId = router.query.pfrId === null ? pfrFix : router.query.pfrId;
+    let ownerId = router.query.ownerId === null ? ownerFix : router.query.ownerId;
 
     if (localT == undefined || localT == null) {
       router.push("/unauthorized");
