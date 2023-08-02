@@ -91,20 +91,58 @@ export const sgdFormat = (currency: any) => {
 };
 
 export const localToken = () => {
-  let checkToken = localStorage.getItem("login")
+  let checkData = localStorage.getItem("login")
     ? localStorage.getItem("login")
     : null;
-  let tokenFix = null;
-  if (checkToken) {
-    let token = JSON.parse(checkToken);
-    let check = token.state.token;
+  let dataFix = null;
+  if (checkData) {
+    let data = JSON.parse(checkData);
+    let check = data.state.token;
 
     if (check == null || check == undefined || check == "") {
-      tokenFix = null;
+      dataFix = null;
     } else {
-      tokenFix = check;
+      dataFix = check;
     }
   }
 
-  return tokenFix;
+  return dataFix;
+};
+
+export const localOwnerId = () => {
+  let checkData = localStorage.getItem("login")
+    ? localStorage.getItem("login")
+    : null;
+  let dataFix = null;
+  if (checkData) {
+    let data = JSON.parse(checkData);
+    let check = data.state.ownerId;
+
+    if (check == null || check == undefined || check == "") {
+      dataFix = null;
+    } else {
+      dataFix = check;
+    }
+  }
+
+  return dataFix;
+};
+
+export const localPfrId = () => {
+  let checkData = localStorage.getItem("login")
+    ? localStorage.getItem("login")
+    : null;
+  let dataFix = null;
+  if (checkData) {
+    let data = JSON.parse(checkData);
+    let check = data.state.pfrId;
+
+    if (check == null || check == undefined || check == "") {
+      dataFix = null;
+    } else {
+      dataFix = check;
+    }
+  }
+
+  return dataFix;
 };

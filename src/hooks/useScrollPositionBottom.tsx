@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export const useScrollPositionBottom = (scrollFactor = 1) => {
-  const [scrollPosition, setScrollPosition] = useState<any>("");
+  const [scrollPositionBottom, setScrollPositionBottom] = useState<any>("");
 
   useEffect(() => {
     const updatePosition = () => {
@@ -15,13 +15,13 @@ export const useScrollPositionBottom = (scrollFactor = 1) => {
         var checkBounderis = target.getBoundingClientRect();
         var offsetPosition = elementPosition - headerOffset;
 
-        console.log(checkBounderis);
-        if (offsetPosition < 200 && offsetPosition >=0) {
+        // console.log(checkBounderis);
+        if (offsetPosition < 300 && offsetPosition >=0) {
           // setScrollPosition("ok Sec Bottom " + scrollFactor + " offset " + offsetPosition + " element "+ elementPosition + " inner " +  window.innerHeight + " scroll y " + window.scrollY);
-          setScrollPosition("Process" + scrollFactor);
+          setScrollPositionBottom("Process" + scrollFactor);
         } else {
           // setScrollPosition("Not Ok Sec Bottom " + scrollFactor + " offset " + offsetPosition + " element " + elementPosition + " inner " +  window.innerHeight + " scroll y " + window.scrollY);
-          setScrollPosition("NoProcess" + scrollFactor);
+          setScrollPositionBottom("NoProcess" + scrollFactor);
         }
       }
     };
@@ -33,5 +33,5 @@ export const useScrollPositionBottom = (scrollFactor = 1) => {
     return () => window.removeEventListener("scroll", updatePosition);
   }, []);
 
-  return scrollPosition;
+  return scrollPositionBottom;
 };

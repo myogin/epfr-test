@@ -43,6 +43,8 @@ const CashFlow = (props: Props) => {
   const scrollPosition = useScrollPosition(3);
   const scrollPositionBottom = useScrollPositionBottom(3);
 
+  console.log(scrollPositionBottom);
+
   let { need, reason, totalNetSurplus, setNeed } = useCashFlow();
 
   let checkNeedData = checkAllNeed(need);

@@ -13,10 +13,16 @@ import Client from "./Clients/Client";
 import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
-import { clientIdentity, getLength } from "@/libs/helper";
+import {
+  clientIdentity,
+  getLength,
+  localOwnerId,
+  localPfrId,
+} from "@/libs/helper";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import { Accompaniment } from "@/models/SectionOne";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import { useLoginData } from "@/store/login/logindata";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -40,7 +46,6 @@ const PersonalInformation = (props: Props) => {
   const scrollPosition = useScrollPosition(1);
   const scrollPositionBottom = useScrollPositionBottom(1);
 
-  console.log("help me");
   console.log(scrollPositionBottom);
 
   let {
@@ -52,6 +57,7 @@ const PersonalInformation = (props: Props) => {
     issues,
     status,
     setTrustedIndividuals,
+    setGlobal,
   } = usePersonalInformation();
 
   let checkAccompainment = CheckAccompainment(
@@ -59,11 +65,20 @@ const PersonalInformation = (props: Props) => {
     setTrustedIndividuals
   );
 
+  let localOwner = localOwnerId();
+  let localPfr = localPfrId();
+
+  console.log("cek id params");
+  console.log(localOwner);
+  console.log(localPfr);
   useEffect(() => {
+    setGlobal("ownerId", localOwner);
+    setGlobal("id", localPfr);
+
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
-  }, [dependant]);
+  }, [dependant, localOwner, localPfr]);
 
   return (
     <div id={props.id}>
