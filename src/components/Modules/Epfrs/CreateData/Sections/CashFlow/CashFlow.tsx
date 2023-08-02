@@ -20,6 +20,7 @@ import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
 import { clientIdentity, getLength } from "@/libs/helper";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 
 interface Props {
   id?: any;
@@ -40,6 +41,7 @@ const CashFlow = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
   const scrollPosition = useScrollPosition(3);
+  const scrollPositionBottom = useScrollPositionBottom(3);
 
   let { need, reason, totalNetSurplus, setNeed } = useCashFlow();
 

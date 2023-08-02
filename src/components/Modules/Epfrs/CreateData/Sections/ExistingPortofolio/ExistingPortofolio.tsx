@@ -24,6 +24,7 @@ import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionTwo } from "@/models/SectionTwo";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 
 interface Props {
   id?: any;
@@ -55,6 +56,7 @@ const ExistingPortofolio = (props: Props) => {
   const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
 
   const scrollPosition = useScrollPosition(2);
+  const scrollPositionBottom = useScrollPositionBottom(2);
 
   // useEffect(() => {
   // }, []);
