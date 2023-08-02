@@ -48,6 +48,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/",
   },
+  secret: process.env.NEXTAUTH_SECRET
   // callbacks: {
   //   async signIn({ credentials }) {
   //     const isAllowedToSignIn = true;
