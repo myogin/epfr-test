@@ -87,7 +87,7 @@ const CashFlow = (props: Props) => {
       section3: dataThreeFix,
     }
 
-    await postPfr(1, groupOneData);
+    await postPfr(1, JSON.stringify(groupOneData));
   }
 
   useEffect(() => {
