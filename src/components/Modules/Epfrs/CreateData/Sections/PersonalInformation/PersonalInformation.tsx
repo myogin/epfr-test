@@ -65,10 +65,11 @@ const PersonalInformation = (props: Props) => {
     setTrustedIndividuals
   );
 
-  let localOwner = localOwnerId();
-  let localPfr = localPfrId();
 
   useEffect(() => {
+    let localOwner = localOwnerId();
+    let localPfr = localPfrId();
+    
     setGlobal("ownerId", localOwner);
     setGlobal("id", localPfr);
     setGlobal("type", props.pfrType);
