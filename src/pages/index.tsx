@@ -4,7 +4,7 @@ import AppLayout from "@/components/Layouts/AppLayout";
 import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
 import { useLoginData } from "@/store/login/logindata";
-import { localToken } from "@/libs/helper";
+import { localOwnerId, localPfrId, localToken } from "@/libs/helper";
 
 const EpfrLogin: Page = () => {
   const router = useRouter();
@@ -29,15 +29,17 @@ const EpfrLogin: Page = () => {
   useEffect(() => {
 
     let tokenFix = localToken();
+    let ownerFix = localOwnerId();
+    let pfrFix = localPfrId();
 
     let localT = tokenFix === null ? router.query.token : tokenFix;
-
-    let pfrId = router.query.pfrId ? router.query.pfrId : 0;
+    let pfrId = ownerFix === null ? router.query.ownerId : ownerFix;
+    let ownerId = pfrFix === null ? router.query.pfrId : pfrFix;
 
     if (localT == undefined || localT == null) {
       router.push("/unauthorized");
     }
-    setLogin(localT, router.query.ownerId, Number(pfrId));
+    setLogin(localT, ownerId, Number(pfrId));
     loginTest(localT);
   });
   return <div>...Loading</div>;

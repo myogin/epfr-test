@@ -6,7 +6,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import AnnualExpenseCashFlow from "./AnnualExpense/AnnualExpenseCashFlow";
 import AnnualIncomeCashFlow from "./AnnualIncome/AnnualIncomeCashFlow";
@@ -52,8 +52,51 @@ const CashFlow = (props: Props) => {
   const handleReview = (index: number, params: any) => {
     setNeed(index, params);
   };
-  // let post = postPfr(1)
 
+  const storeData = async () => {
+    let localDataOne = localStorage.getItem("section1") ? localStorage.getItem("section1") : "";
+
+    let dataOneFix = {};
+    if(localDataOne) {
+      let data = JSON.parse(localDataOne);
+      dataOneFix = data.state;
+    }
+
+
+    let localDataTwo = localStorage.getItem("section2") ? localStorage.getItem("section2") : "";
+
+    let dataTwoFix = {};
+    if(localDataTwo) {
+      let data = JSON.parse(localDataTwo);
+      dataTwoFix = data.state;
+    }
+
+
+    let localDataThree = localStorage.getItem("section3") ? localStorage.getItem("section3") : "";
+
+    let dataThreeFix = {};
+    if(localDataThree) {
+      let data = JSON.parse(localDataThree);
+      dataThreeFix = data.state;
+    }
+
+
+    const groupOneData = {
+      section1: dataOneFix,
+      section2: dataTwoFix,
+      section3: dataThreeFix,
+    }
+
+    await postPfr(1, groupOneData);
+  }
+
+  useEffect(() => {
+    if (scrollPositionBottom === "Process3") {
+      // console.log("oke")
+      storeData()
+    }
+  }, [scrollPositionBottom]);
+  
   return (
     <div id={props.id}>
       <div
