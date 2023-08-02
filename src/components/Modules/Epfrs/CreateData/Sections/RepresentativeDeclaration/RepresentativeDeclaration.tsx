@@ -12,7 +12,7 @@ import Checkbox from "@/components/Forms/Checkbox";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { getPfrStep } from "@/services/pfrService";
+import { getPfrStep, postPfr } from "@/services/pfrService";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
@@ -29,13 +29,24 @@ const RepresentativeDeclaration = (props: Props) => {
 
   const {push} = useRouter();
 
-  const scrollPosition = useScrollPosition(12)
+  const scrollPosition = useScrollPosition(12);
 
-  const finish = () => {
+  const saveData = async() => {
+      const groupFourData = {
+        section10: localStorage.getItem('section10'),
+        section12: localStorage.getItem('section11'),
+        section13: localStorage.getItem('section12'),
+      }
+      await postPfr(4, groupFourData);
+  }
+
+  const finish = async () => {
+    await saveData();
     push('/create/finish')
   }
 
-  const review = () => {
+  const review = async () => {
+    await saveData();
     push(`/create/review/${props.pfrType === 1? 'single': 'joint'}`);
   }
 
