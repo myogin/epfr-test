@@ -11,6 +11,7 @@ type Actions = {
   setAccompaniment: (clientType: number, name: string, value: any) => any;
   setTrustedIndividuals: (name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
+  fetchClient: (clientType: number, params:any) => any
 };
 
 const initialState: SectionOne = {
@@ -88,7 +89,7 @@ const initialState: SectionOne = {
       year: "0",
       certNumber: "",
       nric: "",
-      sponsored: ""
+      sponsored: "",
     },
   ],
   accompaniment: [
@@ -130,6 +131,38 @@ const personalInformation = create(
     persist<SectionOne & Actions>(
       (set, get) => ({
         ...initialState,
+        fetchClient: (clientType: number, params: any) => 
+        set(
+          produce((draft) => {
+            draft.clientInfo[clientType].clientTitle = params.clientTitle;
+            draft.clientInfo[clientType].clientName = params.clientName;
+            draft.clientInfo[clientType].otherName = params.otherName;
+            draft.clientInfo[clientType].relationship = params.relationship;
+            draft.clientInfo[clientType].race = params.race;
+            draft.clientInfo[clientType].gender = params.gender;
+            draft.clientInfo[clientType].birthCountryId = params.birthCountryId;
+            draft.clientInfo[clientType].passportNo = params.passportNo;
+            draft.clientInfo[clientType].nationality = params.nationality;
+            draft.clientInfo[clientType].residency = params.residency;
+            draft.clientInfo[clientType].residencyTwo = params.residencyTwo;
+            draft.clientInfo[clientType].residencyOther = params.residencyOther;
+            draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth;
+            draft.clientInfo[clientType].marital = params.marital;
+            draft.clientInfo[clientType].smoker = params.smoker;
+            draft.clientInfo[clientType].employmentStatus = params.employmentStatus;
+            draft.clientInfo[clientType].occupation = params.occupation;
+            draft.clientInfo[clientType].companyName = params.companyName;
+            draft.clientInfo[clientType].businessNature = params.businessNature;
+            draft.clientInfo[clientType].annualIncome = params.annualIncome;
+            draft.clientInfo[clientType].contactHome = params.contactHome;
+            draft.clientInfo[clientType].contactMobile = params.contactMobile;
+            draft.clientInfo[clientType].contactOffice = params.contactOffice;
+            draft.clientInfo[clientType].contactFax = params.contactFax;
+            draft.clientInfo[clientType].email = params.email;
+            draft.clientInfo[clientType].residentialAddr = params.residentialAddr;
+            draft.clientInfo[clientType].mailingAddr = params.mailingAddr;
+          })
+        ),
         setClient: (clientType: number, name: string, value: any) =>
           set(
             produce((draft) => {

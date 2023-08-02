@@ -29,10 +29,6 @@ interface Props {
 }
 
 const CashFlow = (props: Props) => {
-  const setData = (params: any) => {
-    console.log(params);
-  };
-
   let getPfrLength = getLength(props.pfrType);
 
   let fillInformation = [
@@ -40,7 +36,6 @@ const CashFlow = (props: Props) => {
     { id: 1, name: "Yes" },
   ];
 
-  let { showDetailData } = useNavigationSection();
   const scrollPosition = useScrollPosition(3);
   const scrollPositionBottom = useScrollPositionBottom(3);
 
@@ -57,8 +52,6 @@ const CashFlow = (props: Props) => {
   let { id, setGlobal } = usePersonalInformation();
 
   let checkNeedData = checkAllNeed(need);
-
-  const [reviewAll, setReviewAll] = useState(true);
 
   const handleReview = (index: number, params: any) => {
     setNeed(index, params);
@@ -153,37 +146,31 @@ const CashFlow = (props: Props) => {
           Section 3. Cash Flow
         </HeadingPrimarySection>
       </div>
+      <Fragment>
+        <HeadingSecondaryDynamicGrid
+          className={`mx-8 2xl:mx-60 ${
+            props.pfrType == 2
+              ? "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
+              : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
+          }`}
+          pfrType={props.pfrType}
+        >
+          3.1 Annual Income
+        </HeadingSecondaryDynamicGrid>
+        <AnnualIncomeCashFlow pfrType={props.pfrType} />
 
-      {/* If check */}
-      {reviewAll ? (
-        <Fragment>
-          <HeadingSecondaryDynamicGrid
-            className={`mx-8 2xl:mx-60 ${
-              props.pfrType == 2
-                ? "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
-                : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
-            }`}
-            pfrType={props.pfrType}
-          >
-            3.1 Annual Income
-          </HeadingSecondaryDynamicGrid>
-          <AnnualIncomeCashFlow pfrType={props.pfrType} />
-
-          <HeadingSecondaryDynamicGrid
-            className={`mx-8 2xl:mx-60 ${
-              props.pfrType == 2
-                ? "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
-                : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
-            }`}
-            pfrType={props.pfrType}
-          >
-            3.2 Annual Expense
-          </HeadingSecondaryDynamicGrid>
-          <AnnualExpenseCashFlow pfrType={props.pfrType} />
-        </Fragment>
-      ) : (
-        ""
-      )}
+        <HeadingSecondaryDynamicGrid
+          className={`mx-8 2xl:mx-60 ${
+            props.pfrType == 2
+              ? "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
+              : "lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
+          }`}
+          pfrType={props.pfrType}
+        >
+          3.2 Annual Expense
+        </HeadingSecondaryDynamicGrid>
+        <AnnualExpenseCashFlow pfrType={props.pfrType} />
+      </Fragment>
       <HeadingSecondaryDynamicGrid
         className={`mx-8 2xl:mx-60 ${
           props.pfrType == 2
@@ -195,56 +182,23 @@ const CashFlow = (props: Props) => {
         3.3 Annual Net Cash Flow
       </HeadingSecondaryDynamicGrid>
       <AnnualNetCashFlow pfrType={props.pfrType} />
-      {/*  */}
-      {reviewAll ? (
-        <>
-          <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            <RowDouble>
-              {getPfrLength?.length &&
-                getPfrLength.map((dataB, index) => (
-                  <div className="flex-1" key={"cashflow-qa-" + index}>
-                    {/* For Joint */}
-                    {props.pfrType > 1 ? (
-                      need && checkNeedData > 0 ? (
-                        need[index] ? (
-                          <>
-                            <h3
-                              key={"heading-secondary-" + index}
-                              className="w-full mb-4 text-base font-bold"
-                            >
-                              {clientIdentity(index)}
-                            </h3>
-                            <p className="text-sm font-normal text-gray-light">
-                              {`Do you have any plans or are there any factors within
-                          the next 12 months which may significantly increase or
-                          decrease your current income and expenditure position
-                          (eg. Receiving an inheritance or borrowing money for
-                          investment or purchase of a holiday home, etc.) ?`}
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <h3
-                              key={"heading-secondary-" + index}
-                              className="w-full mb-4 text-base font-bold text-gray-soft-strong"
-                            >
-                              {clientIdentity(index)}
-                            </h3>
-                            <p className="text-sm font-normal text-gray-soft-strong">
-                              {`Do you have any plans or are there any factors within
-                          the next 12 months which may significantly increase or
-                          decrease your current income and expenditure position
-                          (eg. Receiving an inheritance or borrowing money for
-                          investment or purchase of a holiday home, etc.) ?`}
-                            </p>
-                          </>
-                        )
-                      ) : (
-                        ""
-                      )
-                    ) : need && checkNeedData > 0 ? (
-                      need[index] ? (
-                        // For single
+
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowDouble>
+          {getPfrLength?.length &&
+            getPfrLength.map((dataB, index) => (
+              <div className="flex-1" key={"cashflow-qa-" + index}>
+                {/* For Joint */}
+                {props.pfrType > 1 ? (
+                  need && checkNeedData > 0 ? (
+                    need[index] ? (
+                      <>
+                        <h3
+                          key={"heading-secondary-" + index}
+                          className="w-full mb-4 text-base font-bold"
+                        >
+                          {clientIdentity(index)}
+                        </h3>
                         <p className="text-sm font-normal text-gray-light">
                           {`Do you have any plans or are there any factors within
                           the next 12 months which may significantly increase or
@@ -252,161 +206,175 @@ const CashFlow = (props: Props) => {
                           (eg. Receiving an inheritance or borrowing money for
                           investment or purchase of a holiday home, etc.) ?`}
                         </p>
-                      ) : (
-                        ""
-                      )
+                      </>
                     ) : (
-                      ""
-                    )}
-
-                    {/* For Joint */}
-                    {props.pfrType > 1 ? (
-                      need && checkNeedData > 0 ? (
-                        need[index] ? (
-                          <Select
-                            value={
-                              data[index].answer.state
-                                ? data[index].answer.state
-                                : 0
-                            }
-                            className="my-4"
-                            name="state"
-                            indexClient={index}
-                            datas={fillInformation}
-                            handleChange={handleAnswer}
-                          />
-                        ) : (
-                          <Select disabled={true} value="" className="my-4" />
-                        )
-                      ) : (
-                        ""
-                      )
-                    ) : need && checkNeedData > 0 ? (
-                      need[index] ? (
-                        <Select
-                          value={
-                            data[index].answer.state
-                              ? data[index].answer.state
-                              : 0
-                          }
-                          className="my-4"
-                          name="state"
-                          indexClient={index}
-                          datas={fillInformation}
-                          handleChange={handleAnswer}
-                        />
-                      ) : (
-                        ""
-                      )
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                ))}
-            </RowDouble>
-            <RowDouble>
-              {getPfrLength?.length &&
-                getPfrLength.map((dataB, index) =>
-                  need ? (
-                    need[index] == 0 ? (
-                      <div className="flex-1" key={index}></div>
-                    ) : data[index].answer.state == 1 ? (
-                      <div className="flex-1" key={index}>
-                        <TextArea
-                          defaultValue={
-                            data[index].answer.answer
-                              ? data[index].answer.answer
-                              : ""
-                          }
-                          name="answer"
-                          indexClient={index}
-                          className="my-4"
-                          needValidation={true}
-                          handleChange={handleAnswer}
-                          logic={
-                            need ? (need[index] == 1 ? true : false) : false
-                          }
-                        />
-                      </div>
-                    ) : (
-                      ""
+                      <>
+                        <h3
+                          key={"heading-secondary-" + index}
+                          className="w-full mb-4 text-base font-bold text-gray-soft-strong"
+                        >
+                          {clientIdentity(index)}
+                        </h3>
+                        <p className="text-sm font-normal text-gray-soft-strong">
+                          {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                        </p>
+                      </>
                     )
                   ) : (
-                    <div className="flex-1" key={index}>
-                      <TextArea className="my-4" isDisabled={true} />
-                    </div>
+                    ""
                   )
+                ) : need && checkNeedData > 0 ? (
+                  need[index] ? (
+                    // For single
+                    <p className="text-sm font-normal text-gray-light">
+                      {`Do you have any plans or are there any factors within
+                          the next 12 months which may significantly increase or
+                          decrease your current income and expenditure position
+                          (eg. Receiving an inheritance or borrowing money for
+                          investment or purchase of a holiday home, etc.) ?`}
+                    </p>
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  ""
                 )}
-            </RowDouble>
-          </SectionCardSingleGrid>
-          <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-            <RowDouble>
-              {getPfrLength?.length &&
-                getPfrLength.map((dataB, index) => (
-                  <div className="flex-1" key={index}>
-                    {props.pfrType > 1 ? (
-                      <h3
-                        key={"heading-secondary-" + index}
-                        className="w-full mb-10 text-base font-bold"
-                      >
-                        {clientIdentity(index)}
-                      </h3>
+
+                {/* For Joint */}
+                {props.pfrType > 1 ? (
+                  need && checkNeedData > 0 ? (
+                    need[index] ? (
+                      <Select
+                        value={
+                          data[index].answer.state
+                            ? data[index].answer.state
+                            : 0
+                        }
+                        className="my-4"
+                        name="state"
+                        indexClient={index}
+                        datas={fillInformation}
+                        handleChange={handleAnswer}
+                      />
                     ) : (
-                      ""
-                    )}
-                    <Checkbox
-                      isChecked={
-                        need ? (need[index] == 1 ? true : false) : false
+                      <Select disabled={true} value="" className="my-4" />
+                    )
+                  ) : (
+                    ""
+                  )
+                ) : need && checkNeedData > 0 ? (
+                  need[index] ? (
+                    <Select
+                      value={
+                        data[index].answer.state ? data[index].answer.state : 0
                       }
-                      onChange={() =>
-                        handleReview(
-                          index,
-                          need ? (need[index] == 0 ? 1 : 0) : 0
-                        )
+                      className="my-4"
+                      name="state"
+                      indexClient={index}
+                      datas={fillInformation}
+                      handleChange={handleAnswer}
+                    />
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  ""
+                )}
+              </div>
+            ))}
+        </RowDouble>
+        <RowDouble>
+          {getPfrLength?.length &&
+            getPfrLength.map((dataB, index) =>
+              need ? (
+                need[index] == 0 ? (
+                  <div className="flex-1" key={index}></div>
+                ) : data[index].answer.state == 1 ? (
+                  <div className="flex-1" key={index}>
+                    <TextArea
+                      defaultValue={
+                        data[index].answer.answer
+                          ? data[index].answer.answer
+                          : ""
                       }
-                      lableStyle="text-sm font-normal text-gray-light"
-                      label="The Client would not like their cash flow to be taken into consideration for the Needs Analysis and Recommendation(s)"
+                      name="answer"
+                      indexClient={index}
+                      className="my-4"
+                      needValidation={true}
+                      handleChange={handleAnswer}
+                      logic={need ? (need[index] == 1 ? true : false) : false}
                     />
                   </div>
-                ))}
-            </RowDouble>
-            <RowDouble>
-              {getPfrLength?.length &&
-                getPfrLength.map((dataB, index) =>
-                  need ? (
-                    need[index] == 1 ? (
-                      <div className="flex-1" key={index}></div>
-                    ) : (
-                      <div className="flex-1" key={index}>
-                        <TextArea
-                          defaultValue={reason ? reason[index] : ""}
-                          name="reason"
-                          indexClient={index}
-                          className="my-4"
-                          needValidation={true}
-                          handleChange={handleReason}
-                          logic={
-                            reason
-                              ? reason[index] == ""
-                                ? true
-                                : false
-                              : false
-                          }
-                        />
-                      </div>
-                    )
-                  ) : (
-                    <div className="flex-1" key={index}>
-                      <TextArea className="my-4" isDisabled={true} />
-                    </div>
-                  )
+                ) : (
+                  ""
+                )
+              ) : (
+                <div className="flex-1" key={index}>
+                  <TextArea className="my-4" isDisabled={true} />
+                </div>
+              )
+            )}
+        </RowDouble>
+      </SectionCardSingleGrid>
+      <SectionCardSingleGrid className="mx-8 2xl:mx-60">
+        <RowDouble>
+          {getPfrLength?.length &&
+            getPfrLength.map((dataB, index) => (
+              <div className="flex-1" key={index}>
+                {props.pfrType > 1 ? (
+                  <h3
+                    key={"heading-secondary-" + index}
+                    className="w-full mb-10 text-base font-bold"
+                  >
+                    {clientIdentity(index)}
+                  </h3>
+                ) : (
+                  ""
                 )}
-            </RowDouble>
-          </SectionCardSingleGrid>
-        </>
-      ) : (
-        ""
-      )}
+                <Checkbox
+                  isChecked={need ? (need[index] == 1 ? true : false) : false}
+                  onChange={() =>
+                    handleReview(index, need ? (need[index] == 0 ? 1 : 0) : 0)
+                  }
+                  lableStyle="text-sm font-normal text-gray-light"
+                  label="The Client would not like their cash flow to be taken into consideration for the Needs Analysis and Recommendation(s)"
+                />
+              </div>
+            ))}
+        </RowDouble>
+        <RowDouble>
+          {getPfrLength?.length &&
+            getPfrLength.map((dataB, index) =>
+              need ? (
+                need[index] == 1 ? (
+                  <div className="flex-1" key={index}></div>
+                ) : (
+                  <div className="flex-1" key={index}>
+                    <TextArea
+                      defaultValue={reason ? reason[index] : ""}
+                      name="reason"
+                      indexClient={index}
+                      className="my-4"
+                      needValidation={true}
+                      handleChange={handleReason}
+                      logic={
+                        reason ? (reason[index] == "" ? true : false) : false
+                      }
+                    />
+                  </div>
+                )
+              ) : (
+                <div className="flex-1" key={index}>
+                  <TextArea className="my-4" isDisabled={true} />
+                </div>
+              )
+            )}
+        </RowDouble>
+      </SectionCardSingleGrid>
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
       {/* <SectionCardFooter>
         <ButtonGreenMedium onClick={() => saveData(4)}>

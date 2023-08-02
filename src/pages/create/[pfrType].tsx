@@ -26,6 +26,9 @@ import ScrollSpy from "react-ui-scrollspy";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 import { useRouter } from "next/router";
+import { localPfrId } from "@/libs/helper";
+import { getAllPfrData } from "@/services/pfrService";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
@@ -34,6 +37,8 @@ const CreatePfrPage: Page = () => {
   let pfrTypeId = pfrType === "single" ? 1 : 2;
 
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
+  let { setTrustedIndividuals, setGlobal, fetchClient } =
+    usePersonalInformation();
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -55,8 +60,6 @@ const CreatePfrPage: Page = () => {
       });
     }
   };
-
-  // console.log("scroll position div "+parentScrollContainerRef.current?.id);
 
   let menuNavigation = [
     {
@@ -147,6 +150,32 @@ const CreatePfrPage: Page = () => {
   ) {
     switchDisplay = true;
   }
+
+  const getGeneralData = async (params: any) => {
+    let generalData = await getAllPfrData(params);
+    // console.log(generalData);
+    // console.log(generalData.dependantsData);
+    // console.log(generalData.clients);
+
+    // Fetch Client
+    if (generalData.clients.length > 0) {
+      generalData.clients.map((data: any, index: number) => {
+        storeDataClientToState(index, data);
+      });
+    }
+  };
+
+  const storeDataClientToState = (index: number, data: any) => {
+    fetchClient(index, data);
+  };
+
+  useEffect(() => {
+    let pfrIdLocal = localPfrId();
+
+    if (pfrIdLocal !== null) {
+      getGeneralData(pfrIdLocal);
+    }
+  }, []);
 
   return (
     <>
