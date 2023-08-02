@@ -746,20 +746,6 @@ const AddPlanRecommendation = () => {
         var lengthData = 0;
         var dataFunds: Array<any> = [];
 
-<<<<<<< HEAD
-        // if(dataProduct.length > 0){
-        //   if(dataProduct.ilp?.platform.funds.length > 0){
-        //     dataProduct?.ilp?.platform.funds.map((valueRes:any, indexRes:any) => {
-        //       dataFunds.push({
-        //         allocation: valueRes.allocation,
-        //         fundId: valueRes.fundId,
-        //         groupId: valueRes.fund.groupId,
-        //         name: valueRes.fund.name,
-        //       });
-        //     })
-        //   }
-        // }
-=======
         if(getSelectProductone['ilp']){
           if(getSelectProductone['ilp'].platform.funds.length > 0){
             getSelectProductone['ilp'].platform.funds.map((valueRes:any, indexRes:any) => {
@@ -772,7 +758,6 @@ const AddPlanRecommendation = () => {
             })
           }
         }
->>>>>>> origin/adriyan
 
         setProductArr(dataFunds, 'funds', null);
       }   
