@@ -18,11 +18,45 @@ const AnnualNetCashFlow = (props: Props) => {
 
   let getPfrLength = getLength(props.pfrType);
 
-  let { need, totalNetSurplus } = useCashFlow();
+  let [annualData, setAnnualData] = useState([0, 0]);
+  let [monthlyData, setMonthlyData] = useState([0, 0]);
 
-  const handleInputChange = () => {
+  let { need, data, setAnnualSurplus, setReasonSurplus } = useCashFlow();
 
-  }
+  const handleReason = (event: any) => {
+    console.log(event.target);
+    const { name, value, defaultValue } = event.target;
+    const { groupdata, indexclient } = event.target.dataset;
+
+    if (name == "annualSurplus") {
+      if (groupdata === "annualy") {
+        const newArray = [...annualData];
+        newArray[indexclient] = value;
+
+        const newArrayMonthly = [...monthlyData];
+        newArrayMonthly[indexclient] = value / 12;
+
+        setAnnualData(newArray);
+        setMonthlyData(newArrayMonthly);
+
+        setAnnualSurplus(indexclient, value);
+      } else {
+        const newArray = [...monthlyData];
+        newArray[indexclient] = value;
+
+        const newArrayAnnualy = [...annualData];
+        newArrayAnnualy[indexclient] = value * 12;
+
+        setAnnualData(newArrayAnnualy);
+        setMonthlyData(newArray);
+
+        setAnnualSurplus(indexclient, value * 12);
+      }
+    } else {
+      setReasonSurplus(indexclient, value);
+    }
+  };
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <RowDinamycGrid
@@ -32,12 +66,10 @@ const AnnualNetCashFlow = (props: Props) => {
             : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
-        <div
-          className={`col-span-3`}
-        ></div>
+        <div className={`col-span-3`}></div>
         {getPfrLength?.length &&
           getPfrLength.map((data, index) => (
-            <Fragment key={"sasa"+index}>
+            <Fragment key={"sasa" + index}>
               <div className="text-sm font-bold text-right">Monthly</div>
               <div className="text-sm font-bold text-right">Annual</div>
             </Fragment>
@@ -56,8 +88,8 @@ const AnnualNetCashFlow = (props: Props) => {
           </TextSmall>
         </div>
         {getPfrLength?.length &&
-          getPfrLength.map((data, index) => (
-            <Fragment key={"asas"+index}>
+          getPfrLength.map((dataB, index) => (
+            <Fragment key={"asas" + index}>
               {need ? (
                 need[index] ? (
                   <>
@@ -74,19 +106,33 @@ const AnnualNetCashFlow = (props: Props) => {
                       dataType="monthly"
                       className="my-4"
                       type="text"
-                      name="less"
+                      indexClient={index}
+                      name="annualSurplus"
                       formStyle="text-right"
-                      value=""
-                      handleChange={handleInputChange}
+                      value={
+                        monthlyData[index] > 0
+                          ? monthlyData[index]
+                          : data[index]
+                          ? data[index].annualSurplus.annualSurplus / 12
+                          : 0
+                      }
+                      handleChange={handleReason}
                     />
                     <Input
                       dataType="annualy"
                       className="my-4"
                       type="text"
-                      name="less"
+                      indexClient={index}
+                      name="annualSurplus"
                       formStyle="text-right"
-                      value=""
-                      handleChange={handleInputChange}
+                      value={
+                        annualData[index] > 0
+                          ? annualData[index]
+                          : data[index]
+                          ? data[index].annualSurplus.annualSurplus
+                          : 0
+                      }
+                      handleChange={handleReason}
                     />
                   </>
                 )
@@ -110,24 +156,23 @@ const AnnualNetCashFlow = (props: Props) => {
             : "lg:grid-cols-7 sm:grid-cols-7 md:grid-cols-7"
         }`}
       >
-        {props.pfrType > 1 ? (
-          <div
-            className={`col-span-3`}
-          ></div>
-        ) : null}
+        {props.pfrType > 1 ? <div className={`col-span-3`}></div> : null}
 
         {getPfrLength?.length &&
-          getPfrLength.map((data, index) => (
-            <Fragment key={"sasa"+index}>
+          getPfrLength.map((dataB, index) => data[index].annualSurplus.annualSurplus === 0 ? (
+            <Fragment key={"sasa" + index}>
               <div className={`${props.pfrType > 1 ? "col-span-2" : ""}`}>
                 <TextArea
                   className="my-4"
+                  name="reasonForSurplus"
                   label="Reason is needed if Surplus Is ≤ $0"
-                  defaultValue="test text area"
+                  defaultValue={data[index].reasonForSurplus}
+                  indexClient={index}
+                  handleChange={handleReason}
                 />
               </div>
             </Fragment>
-          ))}
+          ) : (""))}
       </RowDinamycGrid>
     </SectionCardSingleGrid>
   );

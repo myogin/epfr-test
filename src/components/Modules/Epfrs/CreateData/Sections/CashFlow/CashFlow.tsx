@@ -6,7 +6,7 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import AnnualExpenseCashFlow from "./AnnualExpense/AnnualExpenseCashFlow";
 import AnnualIncomeCashFlow from "./AnnualIncome/AnnualIncomeCashFlow";
@@ -44,8 +44,15 @@ const CashFlow = (props: Props) => {
   const scrollPosition = useScrollPosition(3);
   const scrollPositionBottom = useScrollPositionBottom(3);
 
-  let { need, data, reason, totalNetSurplus, setNeed, setAnswerData } =
-    useCashFlow();
+  let {
+    need,
+    data,
+    reason,
+    totalNetSurplus,
+    setNeed,
+    setAnswerData,
+    setReason,
+  } = useCashFlow();
 
   let { id, setGlobal } = usePersonalInformation();
 
@@ -57,11 +64,18 @@ const CashFlow = (props: Props) => {
     setNeed(index, params);
   };
 
+  const handleReason = (event: any) => {
+    const { name, value } = event.target;
+    const { groupdata, indexclient } = event.target.dataset;
+
+    setReason(indexclient, value);
+  };
+
   const handleAnswer = (event: any) => {
     const { name, value } = event.target;
-    const { groupdata, indexdata } = event.target.dataset;
+    const { groupdata, indexclient } = event.target.dataset;
 
-    setAnswerData(indexdata, name, value);
+    setAnswerData(indexclient, name, value);
   };
 
   const storeData = async () => {
@@ -108,10 +122,9 @@ const CashFlow = (props: Props) => {
     console.log(storeDataGroupOne);
 
     if (storeDataGroupOne.data.result === "success") {
-      if(id === 0 || id === null || id === undefined) {
+      if (id === 0 || id === null || id === undefined) {
         setGlobal("id", storeDataGroupOne.data.pfrId);
       }
-      
     }
   };
 
@@ -140,8 +153,10 @@ const CashFlow = (props: Props) => {
           Section 3. Cash Flow
         </HeadingPrimarySection>
       </div>
+
+      {/* If check */}
       {reviewAll ? (
-        <>
+        <Fragment>
           <HeadingSecondaryDynamicGrid
             className={`mx-8 2xl:mx-60 ${
               props.pfrType == 2
@@ -165,30 +180,7 @@ const CashFlow = (props: Props) => {
             3.2 Annual Expense
           </HeadingSecondaryDynamicGrid>
           <AnnualExpenseCashFlow pfrType={props.pfrType} />
-        </>
-      ) : (
-        ""
-      )}
-
-      {!reviewAll ? (
-        <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-          <RowSingle>
-            <Checkbox
-              isChecked={reviewAll}
-              onChange={() => setReviewAll(!reviewAll)}
-              lableStyle="text-sm font-normal text-gray-light"
-              label="The Client would not like their cash flow to be taken into
-            consideration for the Needs Analysis and Recommendation(s)"
-            />
-          </RowSingle>
-          <RowSingle>
-            <TextArea
-              className="my-4"
-              label="Reason is needed if Net Worth ≤ $0"
-              defaultValue="test text area"
-            />
-          </RowSingle>
-        </SectionCardSingleGrid>
+        </Fragment>
       ) : (
         ""
       )}
@@ -203,6 +195,7 @@ const CashFlow = (props: Props) => {
         3.3 Annual Net Cash Flow
       </HeadingSecondaryDynamicGrid>
       <AnnualNetCashFlow pfrType={props.pfrType} />
+      {/*  */}
       {reviewAll ? (
         <>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -249,15 +242,21 @@ const CashFlow = (props: Props) => {
                       ) : (
                         ""
                       )
-                    ) : (
-                      // For single
-                      <p className="text-sm font-normal text-gray-light">
-                        {`Do you have any plans or are there any factors within
+                    ) : need && checkNeedData > 0 ? (
+                      need[index] ? (
+                        // For single
+                        <p className="text-sm font-normal text-gray-light">
+                          {`Do you have any plans or are there any factors within
                           the next 12 months which may significantly increase or
                           decrease your current income and expenditure position
                           (eg. Receiving an inheritance or borrowing money for
                           investment or purchase of a holiday home, etc.) ?`}
-                      </p>
+                        </p>
+                      ) : (
+                        ""
+                      )
+                    ) : (
+                      ""
                     )}
 
                     {/* For Joint */}
@@ -277,38 +276,67 @@ const CashFlow = (props: Props) => {
                             handleChange={handleAnswer}
                           />
                         ) : (
-                          <Select
-                            disabled={true}
-                            value=""
-                            className="my-4"
-                            datas={fillInformation}
-                            handleChange={(event) =>
-                              setData(eval(event.target.value))
-                            }
-                          />
+                          <Select disabled={true} value="" className="my-4" />
                         )
                       ) : (
                         ""
                       )
+                    ) : need && checkNeedData > 0 ? (
+                      need[index] ? (
+                        <Select
+                          value={
+                            data[index].answer.state
+                              ? data[index].answer.state
+                              : 0
+                          }
+                          className="my-4"
+                          name="state"
+                          indexClient={index}
+                          datas={fillInformation}
+                          handleChange={handleAnswer}
+                        />
+                      ) : (
+                        ""
+                      )
                     ) : (
-                      // For single
-                      <Select
-                        value={
-                          data[index].answer.state
-                            ? data[index].answer.state
-                            : 0
-                        }
-                        className="my-4"
-                        name="state"
-                        indexClient={index}
-                        datas={fillInformation}
-                        handleChange={(event) =>
-                          setData(eval(event.target.value))
-                        }
-                      />
+                      ""
                     )}
                   </div>
                 ))}
+            </RowDouble>
+            <RowDouble>
+              {getPfrLength?.length &&
+                getPfrLength.map((dataB, index) =>
+                  need ? (
+                    need[index] == 0 ? (
+                      <div className="flex-1" key={index}></div>
+                    ) : data[index].answer.state == 1 ? (
+                      <div className="flex-1" key={index}>
+                        <TextArea
+                          defaultValue={
+                            data[index].answer.answer
+                              ? data[index].answer.answer
+                              : ""
+                          }
+                          name="answer"
+                          indexClient={index}
+                          className="my-4"
+                          needValidation={true}
+                          handleChange={handleAnswer}
+                          logic={
+                            need ? (need[index] == 1 ? true : false) : false
+                          }
+                        />
+                      </div>
+                    ) : (
+                      ""
+                    )
+                  ) : (
+                    <div className="flex-1" key={index}>
+                      <TextArea className="my-4" isDisabled={true} />
+                    </div>
+                  )
+                )}
             </RowDouble>
           </SectionCardSingleGrid>
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -337,8 +365,7 @@ const CashFlow = (props: Props) => {
                         )
                       }
                       lableStyle="text-sm font-normal text-gray-light"
-                      label="The Client would not like their cash flow to be taken into
-            consideration for the Needs Analysis and Recommendation(s)"
+                      label="The Client would not like their cash flow to be taken into consideration for the Needs Analysis and Recommendation(s)"
                     />
                   </div>
                 ))}
@@ -352,35 +379,25 @@ const CashFlow = (props: Props) => {
                     ) : (
                       <div className="flex-1" key={index}>
                         <TextArea
-                          defaultValue={
-                            data[index].answer.answer
-                              ? data[index].answer.answer
-                              : ""
-                          }
-                          name="answer"
+                          defaultValue={reason ? reason[index] : ""}
+                          name="reason"
                           indexClient={index}
                           className="my-4"
                           needValidation={true}
+                          handleChange={handleReason}
                           logic={
-                            need ? (need[index] == 1 ? true : false) : false
+                            reason
+                              ? reason[index] == ""
+                                ? true
+                                : false
+                              : false
                           }
                         />
                       </div>
                     )
                   ) : (
                     <div className="flex-1" key={index}>
-                      <TextArea
-                        className="my-4"
-                        defaultValue={
-                          data[index].answer.answer
-                            ? data[index].answer.answer
-                            : ""
-                        }
-                        name="answer"
-                        indexClient={index}
-                        needValidation={true}
-                        logic={need ? (need[index] == 1 ? true : false) : false}
-                      />
+                      <TextArea className="my-4" isDisabled={true} />
                     </div>
                   )
                 )}
