@@ -21,6 +21,7 @@ import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/Headin
 import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
 import { clientIdentity, getLength } from "@/libs/helper";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 interface Props {
   id?: any;
@@ -43,7 +44,10 @@ const CashFlow = (props: Props) => {
   const scrollPosition = useScrollPosition(3);
   const scrollPositionBottom = useScrollPositionBottom(3);
 
-  let { need, reason, totalNetSurplus, setNeed } = useCashFlow();
+  let { need, data, reason, totalNetSurplus, setNeed, setAnswerData } =
+    useCashFlow();
+
+  let { id, setGlobal } = usePersonalInformation();
 
   let checkNeedData = checkAllNeed(need);
 
@@ -53,50 +57,71 @@ const CashFlow = (props: Props) => {
     setNeed(index, params);
   };
 
+  const handleAnswer = (event: any) => {
+    const { name, value } = event.target;
+    const { groupdata, indexdata } = event.target.dataset;
+
+    setAnswerData(indexdata, name, value);
+  };
+
   const storeData = async () => {
-    let localDataOne = localStorage.getItem("section1") ? localStorage.getItem("section1") : "";
+    let localDataOne = localStorage.getItem("section1")
+      ? localStorage.getItem("section1")
+      : "";
 
     let dataOneFix = {};
-    if(localDataOne) {
+    if (localDataOne) {
       let data = JSON.parse(localDataOne);
       dataOneFix = data.state;
     }
 
-
-    let localDataTwo = localStorage.getItem("section2") ? localStorage.getItem("section2") : "";
+    let localDataTwo = localStorage.getItem("section2")
+      ? localStorage.getItem("section2")
+      : "";
 
     let dataTwoFix = {};
-    if(localDataTwo) {
+    if (localDataTwo) {
       let data = JSON.parse(localDataTwo);
       dataTwoFix = data.state;
     }
 
-
-    let localDataThree = localStorage.getItem("section3") ? localStorage.getItem("section3") : "";
+    let localDataThree = localStorage.getItem("section3")
+      ? localStorage.getItem("section3")
+      : "";
 
     let dataThreeFix = {};
-    if(localDataThree) {
+    if (localDataThree) {
       let data = JSON.parse(localDataThree);
       dataThreeFix = data.state;
     }
-
 
     const groupOneData = {
       section1: dataOneFix,
       section2: dataTwoFix,
       section3: dataThreeFix,
-    }
+    };
 
-    await postPfr(1, JSON.stringify(groupOneData));
-  }
+    let storeDataGroupOne = await postPfr(1, JSON.stringify(groupOneData));
+
+    console.log("test response");
+    console.log(storeDataGroupOne.data.pfrId);
+    console.log(storeDataGroupOne);
+
+    if (storeDataGroupOne.data.result === "success") {
+      if(id === 0 || id === null || id === undefined) {
+        setGlobal("id", storeDataGroupOne.data.pfrId);
+      }
+      
+    }
+  };
 
   useEffect(() => {
     if (scrollPositionBottom === "Process3") {
       // console.log("oke")
-      storeData()
+      storeData();
     }
   }, [scrollPositionBottom]);
-  
+
   return (
     <div id={props.id}>
       <div
@@ -183,7 +208,7 @@ const CashFlow = (props: Props) => {
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
             <RowDouble>
               {getPfrLength?.length &&
-                getPfrLength.map((data, index) => (
+                getPfrLength.map((dataB, index) => (
                   <div className="flex-1" key={"cashflow-qa-" + index}>
                     {/* For Joint */}
                     {props.pfrType > 1 ? (
@@ -240,12 +265,16 @@ const CashFlow = (props: Props) => {
                       need && checkNeedData > 0 ? (
                         need[index] ? (
                           <Select
-                            value=""
-                            className="my-4"
-                            datas={fillInformation}
-                            handleChange={(event) =>
-                              setData(eval(event.target.value))
+                            value={
+                              data[index].answer.state
+                                ? data[index].answer.state
+                                : 0
                             }
+                            className="my-4"
+                            name="state"
+                            indexClient={index}
+                            datas={fillInformation}
+                            handleChange={handleAnswer}
                           />
                         ) : (
                           <Select
@@ -264,8 +293,14 @@ const CashFlow = (props: Props) => {
                     ) : (
                       // For single
                       <Select
-                        value=""
+                        value={
+                          data[index].answer.state
+                            ? data[index].answer.state
+                            : 0
+                        }
                         className="my-4"
+                        name="state"
+                        indexClient={index}
                         datas={fillInformation}
                         handleChange={(event) =>
                           setData(eval(event.target.value))
@@ -279,7 +314,7 @@ const CashFlow = (props: Props) => {
           <SectionCardSingleGrid className="mx-8 2xl:mx-60">
             <RowDouble>
               {getPfrLength?.length &&
-                getPfrLength.map((data, index) => (
+                getPfrLength.map((dataB, index) => (
                   <div className="flex-1" key={index}>
                     {props.pfrType > 1 ? (
                       <h3
@@ -310,15 +345,21 @@ const CashFlow = (props: Props) => {
             </RowDouble>
             <RowDouble>
               {getPfrLength?.length &&
-                getPfrLength.map((data, index) =>
+                getPfrLength.map((dataB, index) =>
                   need ? (
                     need[index] == 1 ? (
                       <div className="flex-1" key={index}></div>
                     ) : (
                       <div className="flex-1" key={index}>
                         <TextArea
+                          defaultValue={
+                            data[index].answer.answer
+                              ? data[index].answer.answer
+                              : ""
+                          }
+                          name="answer"
+                          indexClient={index}
                           className="my-4"
-                          defaultValue="test text area"
                           needValidation={true}
                           logic={
                             need ? (need[index] == 1 ? true : false) : false
@@ -330,7 +371,13 @@ const CashFlow = (props: Props) => {
                     <div className="flex-1" key={index}>
                       <TextArea
                         className="my-4"
-                        defaultValue="test text area"
+                        defaultValue={
+                          data[index].answer.answer
+                            ? data[index].answer.answer
+                            : ""
+                        }
+                        name="answer"
+                        indexClient={index}
                         needValidation={true}
                         logic={need ? (need[index] == 1 ? true : false) : false}
                       />

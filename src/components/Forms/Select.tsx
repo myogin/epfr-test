@@ -8,6 +8,7 @@ interface Props {
   handleChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   datas?: Array<any>;
   className?: string;
+  indexClient?: number;
   dataType?: string;
   indexData?: number;
   intro?: string;
@@ -29,6 +30,7 @@ const Select = (props: Props) => {
       )}
 
       <select
+        data-indexclient={props.indexClient}
         data-groupdata={props.dataType}
         data-indexdata={props.indexData}
         placeholder={props.placeholder}
@@ -43,7 +45,7 @@ const Select = (props: Props) => {
         </option>
         {props.datas?.length &&
           props.datas.map((val, index) => (
-            <option key={"select-box"+val.id} value={val.id}>
+            <option key={"select-box" + val.id} value={val.id}>
               {val.name}
             </option>
           ))}
@@ -51,7 +53,9 @@ const Select = (props: Props) => {
 
       {/* Error Validation */}
       {props.needValidation && !props.logic ? (
-        <div className="w-full text-xs text-left text-red">{props.textError ? props.textError : "Required field"}</div>
+        <div className="w-full text-xs text-left text-red">
+          {props.textError ? props.textError : "Required field"}
+        </div>
       ) : null}
     </div>
   );

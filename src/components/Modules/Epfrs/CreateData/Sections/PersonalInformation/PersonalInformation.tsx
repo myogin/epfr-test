@@ -46,8 +46,6 @@ const PersonalInformation = (props: Props) => {
   const scrollPosition = useScrollPosition(1);
   const scrollPositionBottom = useScrollPositionBottom(1);
 
-  console.log(scrollPositionBottom);
-
   let {
     ownerId,
     type,

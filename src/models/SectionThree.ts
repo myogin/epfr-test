@@ -24,7 +24,7 @@ export interface AnnualSurplus {
 }
 
 export interface Answers {
-  state: string;
+  state: number;
   answer: string;
 }
 

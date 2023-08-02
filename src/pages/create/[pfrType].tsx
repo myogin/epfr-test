@@ -161,7 +161,7 @@ const CreatePfrPage: Page = () => {
         </div>
         <div className="mb-7">
           {" "}
-          <Link href="/" className="flex text-white">
+          <Link href="/epfr" className="flex text-white">
             <ArrowLeftSLineIcon /> Back to EPFR list
           </Link>
         </div>
@@ -190,7 +190,7 @@ const CreatePfrPage: Page = () => {
         <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
           <GlobalCard className="min-h-screen pt-16">
             <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60 mb-14">
-              <Link href="/" className="flex text-green-deep">
+              <Link href="/epfr" className="flex text-green-deep">
                 <ArrowLeftSLineIcon /> Back
               </Link>
               <TitleMedium>New EPFR Documents</TitleMedium>

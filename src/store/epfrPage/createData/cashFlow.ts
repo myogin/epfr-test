@@ -5,6 +5,7 @@ import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
   setAnnualIncome: (clientType: number, name: string, value: any) => any;
+  setAnswerData: (clientType: number, name: string, value: any) => any;
   setAnnualExpanse: (
     key: string,
     indexData: number,
@@ -30,7 +31,7 @@ const initialState: SectionThree = {
         id: 0,
         editting: false,
         key: "",
-        values: [0, 0],
+        values: [0, 0, 0, 0],
       },
     ],
     annualExpense: [
@@ -38,7 +39,7 @@ const initialState: SectionThree = {
         id: 0,
         editting: false,
         key: "",
-        values: [0, 0],
+        values: [0, 0, 0, 0],
       },
     ],
   },
@@ -55,7 +56,7 @@ const initialState: SectionThree = {
         annualSurplus: 0,
       },
       answer: {
-        state: "",
+        state: 0,
         answer: "",
       },
       reasonForSurplus: "",
@@ -72,7 +73,7 @@ const initialState: SectionThree = {
         annualSurplus: 0,
       },
       answer: {
-        state: "",
+        state: 0,
         answer: "",
       },
       reasonForSurplus: "",
@@ -83,49 +84,49 @@ const initialState: SectionThree = {
       key: "household",
       title: "Household",
       selected: false,
-      values: [0, 0],
+      values: [0, 0, 0, 0],
     },
     {
       key: "transportation",
       title: "Transportation",
       selected: false,
-      values: [0, 0],
+      values: [0, 0, 0, 0],
     },
     {
       key: "telco",
       title: "Telco",
       selected: false,
-      values: [0, 0],
+      values: [0, 0, 0, 0],
     },
     {
       key: "dependents",
       title: "Dependents",
       selected: false,
-      values: [0, 0],
+      values: [0, 0, 0, 0],
     },
     {
       key: "personal",
       title: "Personal",
       selected: false,
-      values: [0, 0],
+      values: [0, 0, 0, 0],
     },
     {
       key: "luxury",
       title: "Luxury",
       selected: false,
-      values: [0, 0],
+      values: [0, 0, 0, 0],
     },
     {
       key: "insurancePremiums",
       title: "Insurance Premiums",
       selected: false,
-      values: [0, 0],
+      values: [0, 0, 0, 0],
     },
     {
       key: "loanRepayments",
       title: "Loan Repayments",
       selected: false,
-      values: [0, 0],
+      values: [0, 0, 0, 0],
     },
   ],
   issues: [],
@@ -151,6 +152,13 @@ const cashFlow = create(
               } else {
                 draft.data.push(params);
               }
+            })
+          ),
+        setAnswerData: (clientType: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              let data = draft.data[clientType].answer;
+              data[name] = value;
             })
           ),
         setAnnualIncome: (clientType: number, name: string, value: any) =>
