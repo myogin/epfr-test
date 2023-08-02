@@ -58,7 +58,6 @@ const ExistingPortofolio = (props: Props) => {
   const scrollPosition = useScrollPosition(2);
   const scrollPositionBottom = useScrollPositionBottom(2);
 
-  console.log(scrollPositionBottom);
   // useEffect(() => {
   // }, []);
 

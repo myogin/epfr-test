@@ -68,17 +68,15 @@ const PersonalInformation = (props: Props) => {
   let localOwner = localOwnerId();
   let localPfr = localPfrId();
 
-  console.log("cek id params");
-  console.log(localOwner);
-  console.log(localPfr);
   useEffect(() => {
     setGlobal("ownerId", localOwner);
     setGlobal("id", localPfr);
+    setGlobal("type", props.pfrType);
 
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
-  }, [dependant, localOwner, localPfr]);
+  }, [dependant]);
 
   return (
     <div id={props.id}>

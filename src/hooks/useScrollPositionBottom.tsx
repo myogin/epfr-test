@@ -12,7 +12,6 @@ export const useScrollPositionBottom = (scrollFactor = 1) => {
       if (target) {
         var headerOffset = window.innerHeight;
         var elementPosition = target.getBoundingClientRect().bottom;
-        var checkBounderis = target.getBoundingClientRect();
         var offsetPosition = elementPosition - headerOffset;
 
         // console.log(checkBounderis);
