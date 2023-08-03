@@ -146,3 +146,23 @@ export const localPfrId = () => {
 
   return dataFix;
 };
+
+
+export const localType = () => {
+  let checkData = localStorage.getItem("login")
+    ? localStorage.getItem("login")
+    : null;
+  let dataFix = null;
+  if (checkData) {
+    let data = JSON.parse(checkData);
+    let check = data.state.typeEpfr;
+
+    if (check == null || check == undefined || check == "" || check == 0) {
+      dataFix = null;
+    } else {
+      dataFix = check;
+    }
+  }
+
+  return dataFix;
+};

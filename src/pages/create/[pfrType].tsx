@@ -26,10 +26,11 @@ import ScrollSpy from "react-ui-scrollspy";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 import { useRouter } from "next/router";
-import { localOwnerId, localPfrId } from "@/libs/helper";
+import { localOwnerId, localPfrId, localType } from "@/libs/helper";
 import { getAllPfrData } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import LoadingPage from "@/components/Attributes/Informations/LoadingPage";
+import RetrieveClientDataNew from "@/components/Modules/Epfrs/CreateData/RetrieveSingpass/RetrieveClientDataNew";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
@@ -129,7 +130,7 @@ const CreatePfrPage: Page = () => {
 
   switch (sectionCreateEpfrId) {
     case 100:
-      elementActive = <RetrieveClientData />;
+      elementActive = <RetrieveClientDataNew />;
       break;
     case 91:
       elementActive = <GroupRecommendation />;
@@ -138,7 +139,7 @@ const CreatePfrPage: Page = () => {
       elementActive = <AddPlanRecommendation />;
       break;
     default:
-      elementActive = <RetrieveClientData />;
+      elementActive = <RetrieveClientDataNew />;
       break;
   }
 
@@ -157,12 +158,6 @@ const CreatePfrPage: Page = () => {
   const getGeneralData = async (params: any) => {
     try {
       setLoading(true); // Set loading before sending API request
-
-      let localOwner = localOwnerId();
-
-      setGlobal("ownerId", localOwner);
-      setGlobal("id", params);
-      setGlobal("type", pfrTypeId);
 
       let generalData = await getAllPfrData(params);
 
@@ -184,8 +179,20 @@ const CreatePfrPage: Page = () => {
     fetchClient(index, data);
   };
 
+  const setStartingDoc = (pfrIdLocal: number, localOwner: any, localT: any) => {
+    console.log("masuk sini nggak " + localOwner);
+
+    setGlobal("ownerId", localOwner);
+    setGlobal("id", pfrIdLocal);
+    setGlobal("type", localT == null ? pfrTypeId : localT);
+  };
+
   useEffect(() => {
     let pfrIdLocal = localPfrId();
+    let localOwner = localOwnerId();
+    let localT = localType();
+
+    setStartingDoc(pfrIdLocal, localOwner, localT);
 
     if (pfrIdLocal !== null) {
       getGeneralData(pfrIdLocal);

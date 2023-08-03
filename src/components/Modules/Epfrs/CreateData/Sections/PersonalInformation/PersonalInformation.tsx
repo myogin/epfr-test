@@ -37,7 +37,7 @@ const PersonalInformation = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
 
-  const showDetail = (params: any) => {
+  const showDetail = (params: any, clientType : number) => {
     showDetailData(params);
   };
 
@@ -70,7 +70,7 @@ const PersonalInformation = (props: Props) => {
           <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60">
             <button
               className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-strong"
-              onClick={() => showDetail(100)}
+              onClick={() => showDetail(100, 1)}
             >
               <span className="flex">
                 <FlashlightLineIcon /> AUTOFILL PROFILE FORM

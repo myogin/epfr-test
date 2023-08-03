@@ -8,18 +8,8 @@ import Image from "next/image";
 import { SingpassData } from "@/models/SingpassData";
 import { v4 as uuidv4 } from 'uuid';
 
-interface Props {
-  handleParentModal: Function;
-}
 
-const singpassParam = {
-  agent_uuid: "",
-  epfr_uuid: "",
-  client_uuid: "",
-  applicant_type: "",
-};
-
-const RetrieveSingpassChecklist = (props: Props) => {
+const RetrieveSingpassModal = () => {
   const [showModalSecondary, setShowModalSecondary] = useState(false);
 
   const closeModal = () => {
@@ -28,21 +18,22 @@ const RetrieveSingpassChecklist = (props: Props) => {
 
   const openModal = () => {
     setShowModalSecondary(true);
-    props.handleParentModal(true);
   };
 
   const storeSingpassInfo = () => {
     
   };
 
+  const singpassParam = {
+    agent_uuid: "",
+    epfr_uuid: "",
+    client_uuid: "",
+    applicant_type: "",
+  };
+  
   return (
     <div>
-      <button onClick={openModal}>
-        <h2>In person Session</h2>
-        <span className="text-sm text-gray-light">
-          This session for offline consultation.
-        </span>
-      </button>
+      <ButtonRedMedium onClick={openModal}>Retrieve MyInfo</ButtonRedMedium>
       <Transition appear show={showModalSecondary} as={Fragment}>
         <Dialog as="div" className="relative z-30" onClose={closeModal}>
           <Transition.Child
@@ -144,4 +135,4 @@ const RetrieveSingpassChecklist = (props: Props) => {
   );
 };
 
-export default RetrieveSingpassChecklist;
+export default RetrieveSingpassModal;

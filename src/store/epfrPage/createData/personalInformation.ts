@@ -295,6 +295,7 @@ const personalInformation = create(
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
+              console.log("masuk sini nggak global")
               draft[name] = value;
             })
           ),
