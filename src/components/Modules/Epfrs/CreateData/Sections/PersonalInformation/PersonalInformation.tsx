@@ -21,11 +21,9 @@ import {
 } from "@/libs/helper";
 import { Accompaniment } from "@/models/SectionOne";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import LoadingPage from "@/components/Attributes/Informations/LoadingPage";
 interface Props {
   id?: any;
   pfrType?: number;
-  loading: boolean;
 }
 
 const PersonalInformation = (props: Props) => {
@@ -47,15 +45,9 @@ const PersonalInformation = (props: Props) => {
   const scrollPositionBottom = useScrollPositionBottom(1);
 
   let {
-    ownerId,
-    type,
-    id,
     dependant,
     accompaniment,
-    issues,
-    status,
     setTrustedIndividuals,
-    setGlobal,
   } = usePersonalInformation();
 
   let checkAccompainment = CheckAccompainment(
@@ -64,23 +56,13 @@ const PersonalInformation = (props: Props) => {
   );
 
   useEffect(() => {
-    let localOwner = localOwnerId();
-    let localPfr = localPfrId();
-
-    setGlobal("ownerId", localOwner);
-    setGlobal("id", localPfr);
-    setGlobal("type", props.pfrType);
 
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
   }, [dependant]);
 
-  return props.loading ? (
-    <div className="flex flex-row items-center justify-center mx-8 2xl:mx-60">
-      <LoadingPage />
-    </div>
-  ) : (
+  return (
     <div id={props.id}>
       {/* Sec 1 */}
       {props.pfrType === 1 ? (
