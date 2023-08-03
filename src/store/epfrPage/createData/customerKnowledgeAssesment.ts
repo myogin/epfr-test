@@ -11,10 +11,10 @@ function validate(drafts: any, pfrType: number): number {
   for (let index = 0; index < pfrType; index++) {
     if (drafts.need[index]) {
       if (
-        drafts.answers[index].education[0].every(isFalse) ||
-        drafts.answers[index].education[1].every(isFalse) ||
-        drafts.answers[index].investment.every(isFalse) ||
-        drafts.answers[index].work.every(isFalse)
+        drafts.answer[index].education[0].every(isFalse) ||
+        drafts.answer[index].education[1].every(isFalse) ||
+        drafts.answer[index].investment.every(isFalse) ||
+        drafts.answer[index].work.every(isFalse)
       ) {
         validateAnswer[index] = false;
       } else {
@@ -93,10 +93,10 @@ function validateNeed(drafts: any, pfrType: number) {
   }
 }
 const initialState: SectionSix = {
-  id: 0,
+  id: 10952,
   need: [true, true],
   reason: [null, null],
-  answers: [
+  answer: [
     {
       education: [
         [
@@ -164,7 +164,7 @@ const initialState: SectionSix = {
       work: [false, false, false, false, false, false, false],
     },
   ],
-  outcome: [],
+  outcome: [true, true, true, true],
   outcomeChanged: true,
   issues: [],
   status: 0,
@@ -196,8 +196,8 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
           (education === 0 && question === 11) ||
           (education === 1 && question === 10)
         ) {
-          if (drafts.answers[user].education[education][question] === false) {
-            drafts.answers[user].education[education] = drafts.answers[
+          if (drafts.answer[user].education[education][question] === false) {
+            drafts.answer[user].education[education] = drafts.answer[
               user
             ].education[education].map(() => {
               return false;
@@ -205,18 +205,18 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
           }
         }
         if (education === 0 && question !== 11) {
-          if (drafts.answers[user].education[education][question] != true) {
-            drafts.answers[user].education[education][11] = false;
+          if (drafts.answer[user].education[education][question] != true) {
+            drafts.answer[user].education[education][11] = false;
           }
         }
         if (education === 1 && question !== 10) {
-          if (drafts.answers[user].education[education][question] != true) {
-            drafts.answers[user].education[education][10] = false;
+          if (drafts.answer[user].education[education][question] != true) {
+            drafts.answer[user].education[education][10] = false;
           }
         }
 
-        drafts.answers[user].education[education][question] =
-          !drafts.answers[user].education[education][question];
+        drafts.answer[user].education[education][question] =
+          !drafts.answer[user].education[education][question];
         drafts.status = validate(drafts, pfrType);
       })
     ),
@@ -224,21 +224,21 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
     set(
       produce((drafts: any) => {
         if (question === 2) {
-          if (drafts.answers[user].investment[question] === false) {
-            drafts.answers[user].investment = drafts.answers[
-              user
-            ].investment.map(() => {
-              return false;
-            });
+          if (drafts.answer[user].investment[question] === false) {
+            drafts.answer[user].investment = drafts.answer[user].investment.map(
+              () => {
+                return false;
+              }
+            );
           }
         }
         if (question !== 2) {
-          if (drafts.answers[user].investment[question] != true) {
-            drafts.answers[user].investment[2] = false;
+          if (drafts.answer[user].investment[question] != true) {
+            drafts.answer[user].investment[2] = false;
           }
         }
-        drafts.answers[user].investment[question] =
-          !drafts.answers[user].investment[question];
+        drafts.answer[user].investment[question] =
+          !drafts.answer[user].investment[question];
         drafts.status = validate(drafts, pfrType);
       })
     ),
@@ -246,19 +246,19 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
     set(
       produce((drafts: any) => {
         if (question === 6) {
-          if (drafts.answers[user].work[question] === false) {
-            drafts.answers[user].work = drafts.answers[user].work.map(() => {
+          if (drafts.answer[user].work[question] === false) {
+            drafts.answer[user].work = drafts.answer[user].work.map(() => {
               return false;
             });
           }
         }
         if (question !== 6) {
-          if (drafts.answers[user].work[question] != true) {
-            drafts.answers[user].work[6] = false;
+          if (drafts.answer[user].work[question] != true) {
+            drafts.answer[user].work[6] = false;
           }
         }
-        drafts.answers[user].work[question] =
-          !drafts.answers[user].work[question];
+        drafts.answer[user].work[question] =
+          !drafts.answer[user].work[question];
         drafts.status = validate(drafts, pfrType);
       })
     ),
@@ -282,7 +282,7 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
 export const useCustomerKnowledgeAssesment = create(
   devtools(
     persist<SectionSix & Actions>(customerKnowledgeAssesment, {
-      name: "section6New",
+      name: "section6",
     })
   )
 );

@@ -44,7 +44,7 @@ function validateNeed(drafts: any, pfrType: number) {
 }
 
 const initialState: SectionFour = {
-  id: 0,
+  id: 10952,
   need: [1, 1],
   reason: [null, null],
   others: {
@@ -158,7 +158,7 @@ const balanceSheet = (set: any, get: any) => ({
 export const useBalanceSheet = create(
   devtools(
     persist<SectionFour & Actions>(balanceSheet, {
-      name: "sectionFourv2",
+      name: "section4",
     })
   )
 );

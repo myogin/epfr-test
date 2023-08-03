@@ -16,6 +16,8 @@ import { SectionSix } from "@/models/SectionSix";
 import { getLength } from "@/libs/helper";
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import { postPfr } from "@/services/pfrService";
 
 interface Props {
   id?: any;
@@ -26,7 +28,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
   const scrollPosition = useScrollPosition(6);
   // zustand
-  const { answers, need, updateNeed, reason, updateReason } =
+  const { answer, need, updateNeed, reason, updateReason } =
     useCustomerKnowledgeAssesment();
 
   const [showSection, setShowSection] = useState(false);
@@ -38,17 +40,17 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       let outcome = [-1, -1];
       for (let i = 0; i < props.pfrType; i++) {
         if (
-          answers[i].education[0].every((e) => e == false) &&
-          answers[i].education[1].every((e) => e == false) &&
-          answers[i].investment.every((e) => e == false) &&
-          answers[i].work.every((e) => e == false)
+          answer[i].education[0].every((e) => e == false) &&
+          answer[i].education[1].every((e) => e == false) &&
+          answer[i].investment.every((e) => e == false) &&
+          answer[i].work.every((e) => e == false)
         ) {
           outcome[i] = -1;
         } else if (
-          answers[i].education[0][11] == true &&
-          answers[i].education[1][10] == true &&
-          answers[i].investment[2] == true &&
-          answers[i].work[6] == true
+          answer[i].education[0][11] == true &&
+          answer[i].education[1][10] == true &&
+          answer[i].investment[2] == true &&
+          answer[i].work[6] == true
         ) {
           outcome[i] = 0;
         } else {
@@ -59,7 +61,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
     }
 
     setOutcome(outcomeCalc());
-  }, [answers, props.pfrType]);
+  }, [answer, props.pfrType]);
   useEffect(() => {
     if (props.pfrType == 1) {
       setShowSection(need[0]);
@@ -72,6 +74,53 @@ const CustomerKnowledgeAssesment = (props: Props) => {
     }
   }, [need, props.pfrType]);
 
+  const scrollPositionBottom = useScrollPositionBottom(6);
+  const storeData = async () => {
+    let localDataFour = localStorage.getItem("section4")
+      ? localStorage.getItem("section4")
+      : "";
+
+    let dataFourFix = {};
+    if (localDataFour) {
+      let data = JSON.parse(localDataFour);
+      dataFourFix = data.state;
+    }
+
+    let localDataFive = localStorage.getItem("section5")
+      ? localStorage.getItem("section5")
+      : "";
+
+    let dataFiveFix = {};
+    if (localDataFive) {
+      let data = JSON.parse(localDataFive);
+      dataFiveFix = data;
+    }
+
+    let localDataSix = localStorage.getItem("section6")
+      ? localStorage.getItem("section6")
+      : "";
+
+    let dataSixFix = {};
+    if (localDataSix) {
+      let data = JSON.parse(localDataSix);
+      dataSixFix = data.state;
+    }
+
+    const groupTwoData = {
+      section4: dataFourFix,
+      section5: dataFiveFix,
+      section6: dataSixFix,
+    };
+
+    await postPfr(2, JSON.stringify(groupTwoData));
+  };
+
+  useEffect(() => {
+    if (scrollPositionBottom === "Process6") {
+      // console.log("oke")
+      storeData();
+    }
+  }, [scrollPositionBottom]);
   return (
     <div id={props.id}>
       <div

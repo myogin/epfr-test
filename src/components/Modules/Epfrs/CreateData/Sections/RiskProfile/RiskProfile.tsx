@@ -41,7 +41,7 @@ const RiskProfile = (props: Props) => {
   const scrollPosition = useScrollPosition(5);
 
   const [sectionFive, setSectionFive] = useState<SectionFive>({
-    id: 0,
+    id: 10952,
     need: [],
     reason: [],
     answers: [
@@ -53,7 +53,7 @@ const RiskProfile = (props: Props) => {
     riskCapacity: [0, 0, 0, 0],
     riskAttitude: [0, 0, 0, 0],
     issues: [],
-    status: 0,
+    status: 1,
   });
 
   if (typeof window !== "undefined") {
@@ -459,7 +459,7 @@ const RiskProfile = (props: Props) => {
             {qa[0].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"asa"+userIndex}>
+                  <Fragment key={"asa" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -495,7 +495,7 @@ const RiskProfile = (props: Props) => {
             {qa[1].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"asa"+userIndex}>
+                  <Fragment key={"asa" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -531,7 +531,7 @@ const RiskProfile = (props: Props) => {
             {qa[2].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"as"+userIndex}>
+                  <Fragment key={"as" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -567,7 +567,7 @@ const RiskProfile = (props: Props) => {
             {qa[3].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"sasa"+userIndex}>
+                  <Fragment key={"sasa" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -602,7 +602,7 @@ const RiskProfile = (props: Props) => {
             {qa[4].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"sas"+userIndex}>
+                  <Fragment key={"sas" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -639,7 +639,7 @@ const RiskProfile = (props: Props) => {
             {qa[5].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"s"+userIndex}>
+                  <Fragment key={"s" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -674,7 +674,7 @@ const RiskProfile = (props: Props) => {
             {qa[6].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"as"+userIndex}>
+                  <Fragment key={"as" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -709,7 +709,7 @@ const RiskProfile = (props: Props) => {
             {qa[7].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"a"+userIndex}>
+                  <Fragment key={"a" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -744,7 +744,7 @@ const RiskProfile = (props: Props) => {
             {qa[8].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
-                  <Fragment key={"sa"+userIndex}>
+                  <Fragment key={"sa" + userIndex}>
                     <div>
                       <Checkbox
                         value={e.score}
@@ -774,7 +774,7 @@ const RiskProfile = (props: Props) => {
               <div></div>
             </RowFourthGrid>
             {getPfrLength.map((e, i) => (
-              <Fragment key={"sa"+i}>
+              <Fragment key={"sa" + i}>
                 <RowFourthGrid>
                   {props.pfrType > 1 ? (
                     <div>Client {i + 1}</div>
