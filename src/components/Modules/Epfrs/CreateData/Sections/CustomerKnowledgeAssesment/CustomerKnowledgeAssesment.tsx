@@ -18,6 +18,8 @@ import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDou
 import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { postPfr } from "@/services/pfrService";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 
 interface Props {
   id?: any;
@@ -28,9 +30,8 @@ const CustomerKnowledgeAssesment = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
   const scrollPosition = useScrollPosition(6);
   // zustand
-  const { answer, need, updateNeed, reason, updateReason } =
+  const { answer, need, updateNeed, reason, updateReason, updateID } =
     useCustomerKnowledgeAssesment();
-
   const [showSection, setShowSection] = useState(false);
   const [outcome, setOutcome] = useState([-1, -1]);
 
@@ -121,6 +122,13 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       storeData();
     }
   }, [scrollPositionBottom]);
+
+  // get id from group 1 and paste to grou 2
+  let { id } = usePersonalInformation();
+
+  useEffect(() => {
+    updateID(id);
+  }, [id, updateID]);
   return (
     <div id={props.id}>
       <div

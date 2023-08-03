@@ -93,7 +93,7 @@ function validateNeed(drafts: any, pfrType: number) {
   }
 }
 const initialState: SectionSix = {
-  id: 10952,
+  id: 0,
   need: [true, true],
   reason: [null, null],
   answer: [
@@ -181,6 +181,7 @@ type Actions = {
   updateWork: (user: number, question: number, pfrType: number) => any;
   updateNeed: (client: number, value: boolean, pfrType: number) => any;
   updateReason: (client: number, reason: string, pfrType: number) => any;
+  updateID: (id: any) => any;
 };
 const customerKnowledgeAssesment = (set: any, get: any) => ({
   ...initialState,
@@ -275,6 +276,13 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
       produce((drafts: any) => {
         drafts.reason[client] = reason;
         drafts.status = validate(drafts, pfrType);
+      })
+    );
+  },
+  updateID: (id: any) => {
+    set(
+      produce((drafts: any) => {
+        drafts.id = parseInt(id);
       })
     );
   },

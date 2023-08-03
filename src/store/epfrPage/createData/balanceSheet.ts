@@ -44,7 +44,7 @@ function validateNeed(drafts: any, pfrType: number) {
 }
 
 const initialState: SectionFour = {
-  id: 10952,
+  id: 0,
   need: [1, 1],
   reason: [null, null],
   others: {
@@ -70,6 +70,7 @@ type Actions = {
   calcTotal: (api?: any) => any;
   updateNeed: (client: number, value: number, pfrType: number) => any;
   updateReason: (client: number, reason: string, pfrType: number) => any;
+  updateID: (id: any) => any;
 };
 
 const balanceSheet = (set: any, get: any) => ({
@@ -150,6 +151,13 @@ const balanceSheet = (set: any, get: any) => ({
       produce((drafts: any) => {
         drafts.reason[client] = reason;
         drafts.status = validate(drafts, pfrType);
+      })
+    );
+  },
+  updateID: (id: any) => {
+    set(
+      produce((drafts: any) => {
+        drafts.id = parseInt(id);
       })
     );
   },

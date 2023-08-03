@@ -30,6 +30,7 @@ import RowSingleJointGrid from "@/components/Attributes/Rows/Grids/RowSingleJoin
 import { getLength } from "@/libs/helper";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 interface Props {
   id?: any;
   pfrType: number;
@@ -41,7 +42,7 @@ const RiskProfile = (props: Props) => {
   const scrollPosition = useScrollPosition(5);
 
   const [sectionFive, setSectionFive] = useState<SectionFive>({
-    id: 10952,
+    id: 0,
     need: [],
     reason: [],
     answers: [
@@ -418,6 +419,15 @@ const RiskProfile = (props: Props) => {
     updateAnswersState(statusQ, score, user, 8);
   };
   // end handle q1-9state
+
+  // get id from group 1 and paste to grou 2
+  let { id } = usePersonalInformation();
+  useEffect(() => {
+    setSectionFive((e: any) => {
+      return { id: id, ...e };
+    });
+  }, [id]);
+
   return (
     <div id={props.id}>
       <div
