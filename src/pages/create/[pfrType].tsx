@@ -26,9 +26,10 @@ import ScrollSpy from "react-ui-scrollspy";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 import { useRouter } from "next/router";
-import { localPfrId } from "@/libs/helper";
+import { localOwnerId, localPfrId } from "@/libs/helper";
 import { getAllPfrData } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import LoadingPage from "@/components/Attributes/Informations/LoadingPage";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
@@ -156,6 +157,13 @@ const CreatePfrPage: Page = () => {
   const getGeneralData = async (params: any) => {
     try {
       setLoading(true); // Set loading before sending API request
+
+      let localOwner = localOwnerId();
+
+      setGlobal("ownerId", localOwner);
+      setGlobal("id", params);
+      setGlobal("type", pfrTypeId);
+
       let generalData = await getAllPfrData(params);
 
       // Fetch Client
@@ -222,61 +230,72 @@ const CreatePfrPage: Page = () => {
           ))}
         </div>
       </aside>
-      <main className="flex-1 md:ml-56">
-        <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
-          <GlobalCard className="min-h-screen pt-16">
-            <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60 mb-14">
-              <Link href="/epfr" className="flex text-green-deep">
-                <ArrowLeftSLineIcon /> Back
-              </Link>
-              <TitleMedium>New EPFR Documents</TitleMedium>
-            </div>
-            <div id="dataPfr">
-              {switchDisplay ? (
-                <>{elementActive}</>
-              ) : (
-                <div ref={parentScrollContainerRef}>
-                  <ScrollSpy
-                    // parentScrollContainerRef={parentScrollContainerRef}
-                    activeClass="sub-menu-epfr-active"
-                    offsetBottom={0}
-                    scrollThrottle={80}
-                    useBoxMethod
-                  >
-                    <PersonalInformation pfrType={pfrTypeId} id="section-1" loading={loading} />
-                    <ExistingPortofolio pfrType={pfrTypeId} id="section-2" />
-                    <CashFlow pfrType={pfrTypeId} id="section-3" />
-                    <BalanceSheet pfrType={pfrTypeId} id="section-4" />
-                    <RiskProfile pfrType={pfrTypeId} id="section-5" />
-                    <CustomerKnowledgeAssesment
-                      pfrType={pfrTypeId}
-                      id="section-6"
-                    />
-                    <PrioritiesNeedAnalysis
-                      pfrType={pfrTypeId}
-                      id="section-7"
-                    />
-                    <Affordability pfrType={pfrTypeId} id="section-8" />
-                    <AnalysisRecommendation
-                      pfrType={pfrTypeId}
-                      id="section-9"
-                    />
-                    <SwitchingReplacement pfrType={pfrTypeId} id="section-10" />
-                    <ClientsAcknowledgment
-                      pfrType={pfrTypeId}
-                      id="section-11"
-                    />
-                    <RepresentativeDeclaration
-                      pfrType={pfrTypeId}
-                      id="section-12"
-                    />
-                  </ScrollSpy>
-                </div>
-              )}
-            </div>
-          </GlobalCard>
-        </section>
-      </main>
+      {loading ? (
+        <main className="flex-1 md:ml-56">
+          <div className="flex flex-row items-center justify-center h-screen mx-8 2xl:mx-60">
+            <LoadingPage />
+          </div>
+        </main>
+      ) : (
+        <main className="flex-1 md:ml-56">
+          <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
+            <GlobalCard className="min-h-screen pt-16">
+              <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60 mb-14">
+                <Link href="/epfr" className="flex text-green-deep">
+                  <ArrowLeftSLineIcon /> Back
+                </Link>
+                <TitleMedium>New EPFR Documents</TitleMedium>
+              </div>
+              <div id="dataPfr">
+                {switchDisplay ? (
+                  <>{elementActive}</>
+                ) : (
+                  <div ref={parentScrollContainerRef}>
+                    <ScrollSpy
+                      // parentScrollContainerRef={parentScrollContainerRef}
+                      activeClass="sub-menu-epfr-active"
+                      offsetBottom={0}
+                      scrollThrottle={80}
+                      useBoxMethod
+                    >
+                      <PersonalInformation pfrType={pfrTypeId} id="section-1" />
+                      <ExistingPortofolio pfrType={pfrTypeId} id="section-2" />
+                      <CashFlow pfrType={pfrTypeId} id="section-3" />
+                      <BalanceSheet pfrType={pfrTypeId} id="section-4" />
+                      <RiskProfile pfrType={pfrTypeId} id="section-5" />
+                      <CustomerKnowledgeAssesment
+                        pfrType={pfrTypeId}
+                        id="section-6"
+                      />
+                      <PrioritiesNeedAnalysis
+                        pfrType={pfrTypeId}
+                        id="section-7"
+                      />
+                      <Affordability pfrType={pfrTypeId} id="section-8" />
+                      <AnalysisRecommendation
+                        pfrType={pfrTypeId}
+                        id="section-9"
+                      />
+                      <SwitchingReplacement
+                        pfrType={pfrTypeId}
+                        id="section-10"
+                      />
+                      <ClientsAcknowledgment
+                        pfrType={pfrTypeId}
+                        id="section-11"
+                      />
+                      <RepresentativeDeclaration
+                        pfrType={pfrTypeId}
+                        id="section-12"
+                      />
+                    </ScrollSpy>
+                  </div>
+                )}
+              </div>
+            </GlobalCard>
+          </section>
+        </main>
+      )}
     </>
   );
 };
