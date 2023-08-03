@@ -17,3 +17,11 @@ export const postSingpass = async (data: any) => {
 
   return res.data;
 };
+
+export const storeEnv = async (data: any) => {
+  const res = await http.post(`/singpass/env`, data, {
+    headers: authHeader(),
+  });
+
+  return res.data;
+}

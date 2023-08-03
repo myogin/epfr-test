@@ -9,6 +9,8 @@ import EditLineIcon from "remixicon-react/EditLineIcon"
 import FlashlightLineIcon from "remixicon-react/FlashlightLineIcon"
 import RetrieveSingpassModal from "./RetrieveSingpassModal";
 
+
+
 const RetrieveClientDataNew = () => {
   const test = () => {
     console.log("test");

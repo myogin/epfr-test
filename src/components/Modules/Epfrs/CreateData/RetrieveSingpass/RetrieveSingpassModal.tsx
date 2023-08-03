@@ -5,12 +5,32 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import SingpassIcon from "../../../../../../public/singpasIcon.png";
 import Image from "next/image";
-import { SingpassData } from "@/models/SingpassData";
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 as uuidv4 } from "uuid";
+import { useLoginData } from "@/store/login/logindata";
+import { useNavigationSection } from "@/store/epfrPage/navigationSection";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { postSingpass, storeEnv } from "@/services/singpassService";
 
 const RetrieveSingpassModal = () => {
+  const initialState = {
+    agent_uuid: "",
+    epfr_uuid: "",
+    client_uuid: "",
+    applicant_type: "",
+  };
+
+  const [singpassParam, setSingpassParam] = useState(initialState);
+
   const [showModalSecondary, setShowModalSecondary] = useState(false);
+  let ownerId = useLoginData((state) => state.ownerId);
+  let pfrType = usePersonalInformation((state) => state.type);
+  let clientInfo = usePersonalInformation((state) => state.clientInfo);
+  let dependant = usePersonalInformation((state) => state.dependant);
+  let accompaniment = usePersonalInformation((state) => state.accompaniment);
+  let trustedIndividuals = usePersonalInformation(
+    (state) => state.trustedIndividuals
+  );
+  let { clientType } = useNavigationSection();
 
   const closeModal = () => {
     setShowModalSecondary(false);
@@ -20,17 +40,44 @@ const RetrieveSingpassModal = () => {
     setShowModalSecondary(true);
   };
 
-  const storeSingpassInfo = () => {
-    
+  const storeSingpassInfo = async () => {
+    let pfrData = {
+      ownerId: ownerId,
+      type: pfrType,
+      id: 0,
+      clientInfo: clientInfo,
+      dependant: dependant,
+      accompaniment: accompaniment,
+      trustedIndividuals: trustedIndividuals,
+      issues: [],
+      reviewDate: "",
+    };
+
+    console.log(pfrData);
+
+    let postData = await postSingpass(pfrData);
+
+    console.log(postData);
+
+    if (postData.pfrId) {
+      let dataI = clientType + 1;
+      setSingpassParam({
+        agent_uuid: ownerId,
+        epfr_uuid: postData.pfrId,
+        client_uuid: uuidv4(),
+        applicant_type: dataI + "-" + pfrType,
+      });
+
+      let postEnv = await storeEnv(singpassParam);
+
+      if (postEnv.success) {
+        window.location.href = postEnv.url;
+      } else {
+        console.log("error");
+      }
+    }
   };
 
-  const singpassParam = {
-    agent_uuid: "",
-    epfr_uuid: "",
-    client_uuid: "",
-    applicant_type: "",
-  };
-  
   return (
     <div>
       <ButtonRedMedium onClick={openModal}>Retrieve MyInfo</ButtonRedMedium>
