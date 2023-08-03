@@ -10,7 +10,7 @@ import { Page } from "@/pages/_app";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
 import CustomerKnowledgeAssesment from "@/components/Modules/Epfrs/CreateData/Sections/CustomerKnowledgeAssesment/CustomerKnowledgeAssesment";
 import Affordability from "@/components/Modules/Epfrs/CreateData/Sections/Affordability/Affordability";
@@ -151,17 +151,24 @@ const CreatePfrPage: Page = () => {
     switchDisplay = true;
   }
 
-  const getGeneralData = async (params: any) => {
-    let generalData = await getAllPfrData(params);
-    // console.log(generalData);
-    // console.log(generalData.dependantsData);
-    // console.log(generalData.clients);
+  const [loading, setLoading] = useState(false);
 
-    // Fetch Client
-    if (generalData.clients.length > 0) {
-      generalData.clients.map((data: any, index: number) => {
-        storeDataClientToState(index, data);
-      });
+  const getGeneralData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let generalData = await getAllPfrData(params);
+
+      // Fetch Client
+      if (generalData.clients.length > 0) {
+        generalData.clients.map((data: any, index: number) => {
+          storeDataClientToState(index, data);
+        });
+      }
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
     }
   };
 
@@ -236,7 +243,7 @@ const CreatePfrPage: Page = () => {
                     scrollThrottle={80}
                     useBoxMethod
                   >
-                    <PersonalInformation pfrType={pfrTypeId} id="section-1" />
+                    <PersonalInformation pfrType={pfrTypeId} id="section-1" loading={loading} />
                     <ExistingPortofolio pfrType={pfrTypeId} id="section-2" />
                     <CashFlow pfrType={pfrTypeId} id="section-3" />
                     <BalanceSheet pfrType={pfrTypeId} id="section-4" />

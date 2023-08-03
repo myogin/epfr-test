@@ -19,13 +19,13 @@ import {
   localOwnerId,
   localPfrId,
 } from "@/libs/helper";
-import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import { Accompaniment } from "@/models/SectionOne";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import { useLoginData } from "@/store/login/logindata";
+import LoadingPage from "@/components/Attributes/Informations/LoadingPage";
 interface Props {
   id?: any;
   pfrType?: number;
+  loading: boolean;
 }
 
 const PersonalInformation = (props: Props) => {
@@ -63,11 +63,10 @@ const PersonalInformation = (props: Props) => {
     setTrustedIndividuals
   );
 
-
   useEffect(() => {
     let localOwner = localOwnerId();
     let localPfr = localPfrId();
-    
+
     setGlobal("ownerId", localOwner);
     setGlobal("id", localPfr);
     setGlobal("type", props.pfrType);
@@ -77,7 +76,11 @@ const PersonalInformation = (props: Props) => {
     }
   }, [dependant]);
 
-  return (
+  return props.loading ? (
+    <div className="flex flex-row items-center justify-center mx-8 2xl:mx-60">
+      <LoadingPage />
+    </div>
+  ) : (
     <div id={props.id}>
       {/* Sec 1 */}
       {props.pfrType === 1 ? (
