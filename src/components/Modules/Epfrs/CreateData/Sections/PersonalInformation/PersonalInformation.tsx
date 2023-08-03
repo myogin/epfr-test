@@ -37,18 +37,15 @@ const PersonalInformation = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
 
-  const showDetail = (params: any, clientType : number) => {
-    showDetailData(params);
+  const showDetail = (params: any, clientType: any) => {
+    showDetailData(params, clientType);
   };
 
   const scrollPosition = useScrollPosition(1);
   const scrollPositionBottom = useScrollPositionBottom(1);
 
-  let {
-    dependant,
-    accompaniment,
-    setTrustedIndividuals,
-  } = usePersonalInformation();
+  let { dependant, accompaniment, setTrustedIndividuals } =
+    usePersonalInformation();
 
   let checkAccompainment = CheckAccompainment(
     accompaniment,
@@ -56,7 +53,6 @@ const PersonalInformation = (props: Props) => {
   );
 
   useEffect(() => {
-
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
@@ -70,7 +66,7 @@ const PersonalInformation = (props: Props) => {
           <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60">
             <button
               className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-strong"
-              onClick={() => showDetail(100, 1)}
+              onClick={() => showDetail(100, 0)}
             >
               <span className="flex">
                 <FlashlightLineIcon /> AUTOFILL PROFILE FORM
@@ -129,7 +125,10 @@ const PersonalInformation = (props: Props) => {
                   {clientIdentity(index)}
                 </h3>
                 <div className="flex flex-row items-center justify-between">
-                  <button className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light">
+                  <button
+                    className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light"
+                    onClick={() => showDetail(100, index)}
+                  >
                     <span className="flex">
                       <FlashlightLineIcon /> AUTOFILL PROFILE FORM
                     </span>
