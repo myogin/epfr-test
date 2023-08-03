@@ -22,10 +22,14 @@ interface Props {
   pfrType: number;
 }
 
-const pfrId = 12016;
-const pfrType = 1;
-
 const ClientsAcknowledgment = (props: Props) => {
+  const [pfrId, setPfrId] = useState(0);
+
+  useEffect(() => {
+    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    setPfrId(section1?.state?.id);
+  });
+  
   let getPfrLength = getLength(props.pfrType);
   let { showDetailData } = useNavigationSection();
 
@@ -37,7 +41,6 @@ const ClientsAcknowledgment = (props: Props) => {
   const [deviateCount, setDeviateCount] = useState([0, 0]);
   const [outcomes, setOutComes] = useState([0, 0]);
   const [section6Need, setSection6Need] = useState([0, 0]);
-  const [nftf, setNftf] = useState(false);
 
   const sectionData = [
     [
@@ -152,11 +155,8 @@ const ClientsAcknowledgment = (props: Props) => {
   }
 
   const [sectionElevenData, setSectionElevenData] = useState<SectionEleven>({
-    id: 0,
-    data: [
-      sectionData,
-      sectionDataTwo
-    ],
+    id: pfrId,
+    data: [sectionData, sectionDataTwo],
     remark: null,
     remark1: null,
     introducer: null,
@@ -188,10 +188,10 @@ const ClientsAcknowledgment = (props: Props) => {
   ]);
 
   const fetchData = async () => {
-    const pfr:any = await getAllPfrData(pfrId);
-    const s12Res:any = await getPfrStep(12, pfrId);
-    const s10Res:any = await getPfrStep(10, pfrId);
-    const s13Res:any = await getPfrStep(13, pfrId);
+    
+    const s12Res: any = await getPfrStep(12, pfrId);
+    // const s10Res: any = await getPfrStep(10, pfrId);
+    // const s13Res: any = await getPfrStep(13, pfrId);
 
     if (s12Res['answer'] != null) {
       let data = JSON.parse(s12Res['answer']['data']);
@@ -250,7 +250,7 @@ const ClientsAcknowledgment = (props: Props) => {
       });
     });
 
-    for(let i = 0 ; i < pfrType ; i ++ ) {
+    for (let i = 0; i < props.pfrType; i++) {
       // setSectionElevenData(prevData => {
       //   return prevData.map((client, idx) => {
       //     if(i === idx) {
@@ -318,11 +318,12 @@ const ClientsAcknowledgment = (props: Props) => {
       });
     }
 
-    let section10 = s10Res;
-    let answers = section10['data'];
-    answers.forEach( (answer:any, i:any) => {
-      let _1b = answer['answer1b']
-      if(i < pfrType) {
+    // let section10 = s10Res;
+    const section10 = JSON.parse(localStorage.getItem('section10')?? "{'data':[]}")
+    let answers = section10["data"];
+    answers.forEach((answer: any, i: any) => {
+      let _1b = answer["answer1b"];
+      if (i < props.pfrType) {
         // setSectionElevenData(prevData => {
         //   return prevData.map((client, idx) => {
         //     if(i === idx) {
@@ -349,18 +350,18 @@ const ClientsAcknowledgment = (props: Props) => {
       }
     });
 
-    if(s13Res['note'] != null) {
-      var cekData = false;
-      if(s13Res['note']['nftf']){
-        if((s13Res['note']['nftf'] === true) || s13Res['note']['nftf'] === 1){
-          cekData = true;
-        }else{
-          cekData = false;
-        }
-      }
-      setNftf(cekData);
-    }
-  }
+    // if (s13Res["note"] != null) {
+    //   var cekData = false;
+    //   if (s13Res["note"]["nftf"]) {
+    //     if (s13Res["note"]["nftf"] === true || s13Res["note"]["nftf"] === 1) {
+    //       cekData = true;
+    //     } else {
+    //       cekData = false;
+    //     }
+    //   }
+    //   setNftf(cekData);
+    // }
+  };
 
   const onCheckMatirx = (e:React.ChangeEvent<HTMLInputElement>, i:any, iKey:any) => {
     // setSectionElevenData(prevData => {
@@ -446,14 +447,16 @@ const ClientsAcknowledgment = (props: Props) => {
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem('section11', JSON.stringify(sectionElevenData));
   }, [sectionElevenData]);
 
   const scrollPosition = useScrollPosition(11)
+
+  useEffect(() => {
+    if (scrollPosition === "okSec11") {
+      fetchData();
+    }
+  }, [scrollPosition]);
 
   return (
     <div id={props.id}>
