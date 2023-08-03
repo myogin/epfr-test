@@ -33,9 +33,9 @@ const RepresentativeDeclaration = (props: Props) => {
 
   const saveData = async() => {
       const groupFourData = {
-        section10: localStorage.getItem('section10'),
-        section12: localStorage.getItem('section11'),
-        section13: localStorage.getItem('section12'),
+        section10: JSON.parse(localStorage.getItem('section10')?? '{}'),
+        section12: JSON.parse(localStorage.getItem('section11')?? '{}'),
+        section13: JSON.parse(localStorage.getItem('section12')?? '{}'),
       }
       await postPfr(4, groupFourData);
   }
