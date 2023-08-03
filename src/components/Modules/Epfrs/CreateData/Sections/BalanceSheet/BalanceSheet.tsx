@@ -15,6 +15,7 @@ import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import { getLength } from "@/libs/helper";
 import axios from "axios";
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 interface Props {
   id?: any;
@@ -24,8 +25,15 @@ interface Props {
 const BalanceSheet = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
   // zustand
-  const { others, calcTotal, need, updateNeed, reason, updateReason } =
-    useBalanceSheet();
+  const {
+    others,
+    calcTotal,
+    need,
+    updateNeed,
+    reason,
+    updateReason,
+    updateID,
+  } = useBalanceSheet();
 
   const [dataS4, setDataS4] = useState(null);
 
@@ -50,13 +58,18 @@ const BalanceSheet = (props: Props) => {
     // }
     // getDataS4();
 
-    if(scrollPosition === "okSec4") {
-      console.log("Masuk Section 4")
+    if (scrollPosition === "okSec4") {
+      console.log("Masuk Section 4");
     }
 
     calcTotal();
   }, [scrollPosition]);
-  
+  // get id from group 1 and paste to grou 2
+  let { id } = usePersonalInformation();
+
+  useEffect(() => {
+    updateID(id);
+  }, [id, updateID]);
 
   return (
     <div id={props.id}>
@@ -85,7 +98,7 @@ const BalanceSheet = (props: Props) => {
             </div>
             <div className="grid grid-cols-2">
               {getPfrLength.map((e, index) => (
-                <Fragment key={"key"+index}>
+                <Fragment key={"key" + index}>
                   {props.pfrType > 1 ? (
                     <h3
                       key={"heading-secondary-" + index}
@@ -107,7 +120,7 @@ const BalanceSheet = (props: Props) => {
             </div>
             <div className="grid grid-cols-2">
               {getPfrLength.map((e, index) => (
-                <Fragment key={"sdas"+index}>
+                <Fragment key={"sdas" + index}>
                   {props.pfrType > 1 ? (
                     <h3
                       key={"heading-secondary-" + index}
@@ -129,7 +142,7 @@ const BalanceSheet = (props: Props) => {
             </div>
             <div className="grid grid-cols-2">
               {getPfrLength.map((e, index) => (
-                <Fragment key={"sasd"+index}>
+                <Fragment key={"sasd" + index}>
                   {props.pfrType > 1 ? (
                     <h3
                       key={"heading-secondary-" + index}

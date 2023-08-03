@@ -29,7 +29,7 @@ const InvestmentExperience = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
   // zustand
-  const { answers, updateInvestment, need } = useCustomerKnowledgeAssesment();
+  const { answer, updateInvestment, need } = useCustomerKnowledgeAssesment();
   const checkValidate = (e: any) => e == false;
 
   return (
@@ -44,8 +44,8 @@ const InvestmentExperience = (props: Props) => {
 
       <RowSingleORDouble pfrType={props.pfrType}>
         {getPfrLength.map((e2, userIndex) => (
-          <Fragment key={"as"+userIndex}>
-            {answers[userIndex].investment.every(checkValidate) &&
+          <Fragment key={"as" + userIndex}>
+            {answer[userIndex].investment.every(checkValidate) &&
             need[userIndex] ? (
               <div className="text-xs font-normal text-red">Required</div>
             ) : (
@@ -65,18 +65,18 @@ const InvestmentExperience = (props: Props) => {
       )}
 
       {qa[0].answers?.length &&
-        qa[0].answers.map((answer: any, index: number) => (
+        qa[0].answers.map((e: any, index: number) => (
           <RowSingleORDouble pfrType={props.pfrType} key={index}>
             {getPfrLength.map((e2, userIndex) => (
-              <Fragment key={"asa"+userIndex}>
+              <Fragment key={"asa" + userIndex}>
                 <div>
                   <Checkbox
                     isDisabled={!need[userIndex]}
                     onChange={() => {
                       updateInvestment(userIndex, index, props.pfrType);
                     }}
-                    isChecked={answers[userIndex].investment[index]}
-                    label={answer.answer}
+                    isChecked={answer[userIndex].investment[index]}
+                    label={e.answer}
                   />
                 </div>
               </Fragment>
