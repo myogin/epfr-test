@@ -12,24 +12,10 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 import { postSingpass, storeEnv } from "@/services/singpassService";
 
 const RetrieveSingpassModal = () => {
-  const initialState = {
-    agent_uuid: "",
-    epfr_uuid: "",
-    client_uuid: "",
-    applicant_type: "",
-  };
-
-  const [singpassParam, setSingpassParam] = useState(initialState);
 
   const [showModalSecondary, setShowModalSecondary] = useState(false);
   let ownerId = useLoginData((state) => state.ownerId);
   let pfrType = usePersonalInformation((state) => state.type);
-  let clientInfo = usePersonalInformation((state) => state.clientInfo);
-  let dependant = usePersonalInformation((state) => state.dependant);
-  let accompaniment = usePersonalInformation((state) => state.accompaniment);
-  let trustedIndividuals = usePersonalInformation(
-    (state) => state.trustedIndividuals
-  );
   let { clientType } = useNavigationSection();
 
   const closeModal = () => {
@@ -41,40 +27,22 @@ const RetrieveSingpassModal = () => {
   };
 
   const storeSingpassInfo = async () => {
-    let pfrData = {
-      ownerId: ownerId,
-      type: pfrType,
-      id: 0,
-      clientInfo: clientInfo,
-      dependant: dependant,
-      accompaniment: accompaniment,
-      trustedIndividuals: trustedIndividuals,
-      issues: [],
-      reviewDate: "",
+
+    let dataI = clientType + 1;
+
+    const singpassParam = {
+      agent_uuid: ownerId,
+      epfr_uuid: uuidv4(),
+      client_uuid: uuidv4(),
+      applicant_type: dataI + "-" + pfrType,
     };
 
-    console.log(pfrData);
+    let postEnv = await storeEnv(singpassParam);
 
-    let postData = await postSingpass(pfrData);
-
-    console.log(postData);
-
-    if (postData.pfrId) {
-      let dataI = clientType + 1;
-      setSingpassParam({
-        agent_uuid: ownerId,
-        epfr_uuid: postData.pfrId,
-        client_uuid: uuidv4(),
-        applicant_type: dataI + "-" + pfrType,
-      });
-
-      let postEnv = await storeEnv(singpassParam);
-
-      if (postEnv.success) {
-        window.location.href = postEnv.url;
-      } else {
-        console.log("error");
-      }
+    if (postEnv.success) {
+      window.location.href = postEnv.url;
+    } else {
+      console.log("error");
     }
   };
 
