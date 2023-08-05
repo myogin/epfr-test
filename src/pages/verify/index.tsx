@@ -1,19 +1,15 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Page } from "@/pages/_app";
 import AuthLayout from "@/components/Layouts/AuthLayout";
-import Input from "@/components/Forms/Input";
-import axios from "axios";
+
 import { useUserData } from "@/store/login/data";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
-import { log } from "console";
 import Image from "next/image";
 import Loading from "@/components/Forms/Loading/Loading";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
-
 import "react-toastify/dist/ReactToastify.css";
-import { useLoginData } from "@/store/login/logindata";
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
   const { push } = useRouter();
