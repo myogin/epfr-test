@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { Page } from "@/pages/_app";
 import AuthLayout from "@/components/Layouts/AuthLayout";
 import Input from "@/components/Forms/Input";
@@ -11,7 +11,9 @@ import { log } from "console";
 import Image from "next/image";
 import Loading from "@/components/Forms/Loading/Loading";
 import style from "./_component/verify.module.css";
+import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 
+import "react-toastify/dist/ReactToastify.css";
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
   const { push } = useRouter();
@@ -41,6 +43,7 @@ const Verify: Page = () => {
   };
   const inputRef = useRef<any[]>([]);
   const [codeNumber, setCodeNumber] = useState<any[]>(["", "", "", "", "", ""]);
+  const [mixInput, setMixInput] = useState(0);
   const verifyCode = (index: number) => {
     let temp = codeNumber.map((e, i) => {
       if (index == i) {
@@ -56,6 +59,7 @@ const Verify: Page = () => {
       const finalCode = parseInt(temp.join(""));
       verify(finalCode);
     }
+    setMixInput(parseInt(temp.join("")));
   };
   function handleFocusVerify(e: any) {
     e.target.select();
@@ -173,6 +177,14 @@ const Verify: Page = () => {
               }}
             />
           </div>
+          <ButtonGreenMedium
+            onClick={() => {
+              verify(mixInput);
+            }}
+            className="justify-center w-full"
+          >
+            Log in
+          </ButtonGreenMedium>
         </div>
         {/* <div className="w-full my-3 text-center">Or</div>
         <ButtonRedMedium className="justify-center w-full">

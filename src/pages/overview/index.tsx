@@ -16,7 +16,7 @@ const Overview = () => {
     <div>
       overview
       <hr />
-      <button onClick={() => signOut()}>Sign out</button>
+      <button onClick={() => signOut({ callbackUrl: "/" })}>Sign out</button>
     </div>
   );
 };
