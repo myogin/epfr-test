@@ -19,11 +19,9 @@ import SwitchingReplacement from "@/components/Modules/Epfrs/CreateData/Sections
 import ClientsAcknowledgment from "@/components/Modules/Epfrs/CreateData/Sections/ClientsAcknowledgment/ClientsAcknowledgment";
 import RepresentativeDeclaration from "@/components/Modules/Epfrs/CreateData/Sections/RepresentativeDeclaration/RepresentativeDeclaration";
 import PrioritiesNeedAnalysis from "@/components/Modules/Epfrs/CreateData/Sections/PrioritiesNeedAnalysis/PrioritiesNeedAnalysis";
-import RetrieveClientData from "@/components/Modules/Epfrs/CreateData/RetrieveClientDatas/RetrieveClientData";
 import GroupRecommendation from "@/components/Modules/Epfrs/CreateData/Sections/AnalysisRecommendation/GroupRecommendation/GroupRecommendation";
 import AddPlanRecommendation from "@/components/Modules/Epfrs/CreateData/Sections/AnalysisRecommendation/AddPlanRecommendation/AddPlanRecommendation";
 import ScrollSpy from "react-ui-scrollspy";
-import { useScrollPosition } from "@/hooks/useScrollPosition";
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 import { useRouter } from "next/router";
 import { localOwnerId, localPfrId, localType } from "@/libs/helper";
@@ -31,6 +29,7 @@ import { getAllPfrData } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import LoadingPage from "@/components/Attributes/Informations/LoadingPage";
 import RetrieveClientDataNew from "@/components/Modules/Epfrs/CreateData/RetrieveSingpass/RetrieveClientDataNew";
+import { siteConfig } from "@/libs/config";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
@@ -39,8 +38,7 @@ const CreatePfrPage: Page = () => {
   let pfrTypeId = pfrType === "single" ? 1 : 2;
 
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
-  let { setTrustedIndividuals, setGlobal, fetchClient } =
-    usePersonalInformation();
+  let { setGlobal, fetchClient } = usePersonalInformation();
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,68 +61,7 @@ const CreatePfrPage: Page = () => {
     }
   };
 
-  let menuNavigation = [
-    {
-      id: 1,
-      name: "Personal Information",
-      url: "section-1",
-    },
-    {
-      id: 2,
-      name: "Existing Portfolio",
-      url: "section-2",
-    },
-    {
-      id: 3,
-      name: "Cash Flow",
-      url: "section-3",
-    },
-    {
-      id: 4,
-      name: "Balance Sheet",
-      url: "section-4",
-    },
-    {
-      id: 5,
-      name: "Risk Profile",
-      url: "section-5",
-    },
-    {
-      id: 6,
-      name: "Customer Knowledge Assesment",
-      url: "section-6",
-    },
-    {
-      id: 7,
-      name: "Priorities & Need Analysis",
-      url: "section-7",
-    },
-    {
-      id: 8,
-      name: "Affordability",
-      url: "section-8",
-    },
-    {
-      id: 9,
-      name: "Analysis & Recommendation",
-      url: "section-9",
-    },
-    {
-      id: 10,
-      name: "Switching / Replacement",
-      url: "section-10",
-    },
-    {
-      id: 11,
-      name: "Client’s Acknowledgment",
-      url: "section-11",
-    },
-    {
-      id: 12,
-      name: "Representative Declaration",
-      url: "section-12",
-    },
-  ];
+  let menuNavigation = siteConfig.epfrMenu;
 
   let elementActive = null;
 
@@ -180,7 +117,6 @@ const CreatePfrPage: Page = () => {
   };
 
   const setStartingDoc = (pfrIdLocal: number, localOwner: any, localT: any) => {
-    console.log("masuk sini nggak " + localOwner);
 
     setGlobal("ownerId", localOwner);
     setGlobal("id", pfrIdLocal);
@@ -197,12 +133,13 @@ const CreatePfrPage: Page = () => {
     if (pfrIdLocal !== null) {
       getGeneralData(pfrIdLocal);
     }
+    
   }, []);
 
   return (
     <>
       <Head>
-        <title>New EPFR Document</title>
+        <title>New EPFR Document | {siteConfig.siteName}</title>
       </Head>
       <aside
         className={`fixed top-0 z-10 w-56 min-h-screen px-6 py-16 bg-blue-midnight text-sm overflow-hidden`}

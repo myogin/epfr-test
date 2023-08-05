@@ -21,6 +21,9 @@ import {
 } from "@/libs/helper";
 import { Accompaniment } from "@/models/SectionOne";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import RetrieveSingpassModal from "../../RetrieveSingpass/RetrieveSingpassModal";
+import TextSmall from "@/components/Attributes/Typography/TextSmall";
+import TextThin from "@/components/Attributes/Typography/TextThin";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -34,13 +37,7 @@ const PersonalInformation = (props: Props) => {
   const handleShowAddDependent = (params: boolean) => {
     setShowAddDependent(params);
   };
-
-  let { showDetailData } = useNavigationSection();
-
-  const showDetail = (params: any, clientType: any) => {
-    showDetailData(params, clientType);
-  };
-
+  
   const scrollPosition = useScrollPosition(1);
   const scrollPositionBottom = useScrollPositionBottom(1);
 
@@ -64,17 +61,21 @@ const PersonalInformation = (props: Props) => {
       {props.pfrType === 1 ? (
         <>
           <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60">
-            <button
-              className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-strong"
-              onClick={() => showDetail(100, 0)}
-            >
-              <span className="flex">
-                <FlashlightLineIcon /> AUTOFILL PROFILE FORM
-              </span>
-              <span className="px-4 py-3 text-white rounded-lg bg-green-deep">
-                Import
-              </span>
-            </button>
+            <div className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-strong">
+              <div>
+                <TextSmall className="flex gap-4">
+                  <FlashlightLineIcon /> AUTOFILL PROFILE FORM BY SINGPASS
+                </TextSmall>
+                <TextThin>
+                  Singpass enables you to retrive your personal data from
+                  partcipating Goverment agencies. With your consent, we can
+                  auto-fill profile form.
+                </TextThin>
+              </div>
+              <div className="flex items-start justify-end">
+                <RetrieveSingpassModal clientType={0} />
+              </div>
+            </div>
           </div>
           <div
             id="section-header-1"
@@ -125,17 +126,21 @@ const PersonalInformation = (props: Props) => {
                   {clientIdentity(index)}
                 </h3>
                 <div className="flex flex-row items-center justify-between">
-                  <button
-                    className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light"
-                    onClick={() => showDetail(100, index)}
-                  >
-                    <span className="flex">
-                      <FlashlightLineIcon /> AUTOFILL PROFILE FORM
-                    </span>
-                    <span className="px-4 py-3 text-white rounded-lg bg-green-deep">
-                      Import
-                    </span>
-                  </button>
+                  <div className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light">
+                    <div>
+                      <TextSmall className="flex gap-4">
+                        <FlashlightLineIcon /> AUTOFILL PROFILE FORM BY SINGPASS
+                      </TextSmall>
+                      <TextThin>
+                        Singpass enables you to retrive your personal data from
+                        partcipating Goverment agencies. With your consent, we
+                        can auto-fill profile form.
+                      </TextThin>
+                    </div>
+                    <div className="flex items-start justify-end">
+                      <RetrieveSingpassModal clientType={index} />
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

@@ -39,7 +39,7 @@ const RetrieveClientDataNew = () => {
             </TextThin>
           </div>
           <div className="flex items-start justify-end">
-            <RetrieveSingpassModal />
+            <RetrieveSingpassModal clientType={0} />
           </div>
         </RowDoubleGrid>
       </SectionCardSingleGrid>

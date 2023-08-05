@@ -36,6 +36,8 @@ const Dependent = (props: Props) => {
     certNumber: "",
     sponsored: "",
     nric: "",
+    clientPfr: "",
+    client: 0
   };
 
   const [showModal, setShowModal] = useState(false);

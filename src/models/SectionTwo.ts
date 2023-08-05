@@ -10,6 +10,7 @@ export interface SummaryOfProperty {
   monthlyLoanRepaymentCash: number;
   monthlyLoanRepaymentCPF: number;
   currentMarketValue: number;
+  clientPfr: string
 }
 
 export interface SummaryOfInvestment {
@@ -90,6 +91,7 @@ export interface SummaryOfLoans {
   lender: string;
   interestRate: number;
   monthlyLoanRepayment: number;
+  clientPfr: string
 }
 
 export interface SummaryOfCPF {
@@ -100,6 +102,7 @@ export interface SummaryOfCPF {
   specialAccount: number;
   medisaveAccount: number;
   retirementAccount: number;
+  clientPfr: string
 }
 
 export interface SummaryOfSRS {

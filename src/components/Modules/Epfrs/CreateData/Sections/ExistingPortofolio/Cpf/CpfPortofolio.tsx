@@ -34,6 +34,7 @@ const CpfPortofolio = () => {
     specialAccount: 0,
     medisaveAccount: 0,
     retirementAccount: 0,
+    clientPfr: ""
   };
 
   const [newData, setNewData] = useState(initialState);

@@ -47,6 +47,7 @@ const initialState: SectionOne = {
       email: "",
       residentialAddr: "",
       mailingAddr: "",
+      clientPfr: ""
     },
     {
       clientTitle: "",
@@ -76,6 +77,7 @@ const initialState: SectionOne = {
       email: "",
       residentialAddr: "",
       mailingAddr: "",
+      clientPfr: ""
     },
   ],
   dependant: [
@@ -90,6 +92,8 @@ const initialState: SectionOne = {
       certNumber: "",
       nric: "",
       sponsored: "",
+      clientPfr: "",
+      client:0
     },
   ],
   accompaniment: [
@@ -98,12 +102,14 @@ const initialState: SectionOne = {
       english_spoken: "",
       english_written: "",
       education_level: "",
+      clientPfr: ""
     },
     {
       age: 0,
       english_spoken: "",
       english_written: "",
       education_level: "",
+      clientPfr: ""
     },
   ],
   trustedIndividuals: {
@@ -161,6 +167,7 @@ const personalInformation = create(
             draft.clientInfo[clientType].email = params.email;
             draft.clientInfo[clientType].residentialAddr = params.residentialAddr;
             draft.clientInfo[clientType].mailingAddr = params.mailingAddr;
+            draft.clientInfo[clientType].clientPfr = params.clientPfr;
           })
         ),
         setClient: (clientType: number, name: string, value: any) =>
@@ -210,6 +217,7 @@ const personalInformation = create(
                 dependentReplace.certNumber = params.certNumber;
                 dependentReplace.sponsored = params.sponsored;
                 dependentReplace.nric = params.nric;
+                dependentReplace.clientPfr = params.clientPfr;
               } else {
                 draft.dependant.push(params);
               }

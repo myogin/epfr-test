@@ -3,7 +3,7 @@ import ButtonRedMedium from "@/components/Forms/Buttons/ButtonRedMedium";
 import Input from "@/components/Forms/Input";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
-import SingpassIcon from "../../../../../../public/singpasIcon.png";
+import SingpassIcon from "../../../../../../public/singpassSmall.png";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import { useLoginData } from "@/store/login/logindata";
@@ -11,24 +11,27 @@ import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { postSingpass, storeEnv } from "@/services/singpassService";
 
-const RetrieveSingpassModal = () => {
+interface Props {
+  clientType: number;
+}
 
+const RetrieveSingpassModal = (props: Props) => {
   const [showModalSecondary, setShowModalSecondary] = useState(false);
   let ownerId = useLoginData((state) => state.ownerId);
   let pfrType = usePersonalInformation((state) => state.type);
-  let { clientType } = useNavigationSection();
 
   const closeModal = () => {
     setShowModalSecondary(false);
   };
 
   const openModal = () => {
+    console.log("check client type");
+    console.log(props.clientType);
     setShowModalSecondary(true);
   };
 
   const storeSingpassInfo = async () => {
-
-    let dataI = clientType + 1;
+    let dataI = props.clientType + 1;
 
     const singpassParam = {
       agent_uuid: ownerId,
@@ -86,8 +89,10 @@ const RetrieveSingpassModal = () => {
                           OF THE FOLLOWING DATA FROM SINGPASS.`}
                         </Dialog.Title>
                       </div>
-                      <div className="basis-1/2">
-                        <Image src={SingpassIcon} alt="Singpass" />
+                      <div className=" basis-1/2">
+                        <div className="flex justify-end w-full">
+                          <Image src={SingpassIcon} alt="Singpass" />
+                        </div>
                       </div>
                     </div>
                   </div>
