@@ -26,7 +26,6 @@ const EpfrPage: Page = () => {
   console.log("Test")
   console.log(session?.id);
   console.log(session);
-  console.log(session?.token);
   console.log(session?.user?.id);
   console.log(session?.user?.token);
 

@@ -10,7 +10,7 @@ export const dateFormat = (params: string) => {
 export const checkCountDataDependent = (datas: any) => {
   let data: number = 0;
   if (datas?.length) {
-    if (datas[0].name === "") {
+    if (datas[0].name === "" && datas[0].clientPfr === "") {
       data = datas.length;
     } else {
       data = datas.length + 1;

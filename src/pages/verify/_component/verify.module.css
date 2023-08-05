@@ -5,7 +5,8 @@
   margin: 0;
 }
 .div input {
-  /* caret-color: transparent; */
+  width: 40px;
+  margin: 0px 10px;
 }
 
 /* Firefox */

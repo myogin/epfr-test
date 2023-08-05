@@ -186,15 +186,15 @@ const existingPortofolio = create(
                 dataReplace.id = params.id;
                 dataReplace.client = params.client;
                 dataReplace.typeOfProperty = params.typeOfProperty;
+                dataReplace.editting = params.editting;
                 dataReplace.yearPurchased = params.yearPurchased;
                 dataReplace.purchasePrice = params.purchasePrice;
                 dataReplace.loanAmount = params.loanAmount;
                 dataReplace.currentOutstanding = params.currentOutstanding;
-                dataReplace.monthlyLoanRepaymentCash =
-                  params.monthlyLoanRepaymentCash;
-                dataReplace.monthlyLoanRepaymentCPF =
-                  params.monthlyLoanRepaymentCPF;
+                dataReplace.monthlyLoanRepaymentCash = params.monthlyLoanRepaymentCash;
+                dataReplace.monthlyLoanRepaymentCPF = params.monthlyLoanRepaymentCPF;
                 dataReplace.currentMarketValue = params.currentMarketValue;
+                dataReplace.clientPfr = params.clientPfr;
               } else {
                 draft.summaryOfProperty.push(params);
               }
@@ -366,11 +366,13 @@ const existingPortofolio = create(
               if (indexData === 0 && get().summaryOfCPF?.length) {
                 let dataReplace = draft.summaryOfCPF[indexData];
                 dataReplace.id = params.id;
+                dataReplace.editting = params.editting;
                 dataReplace.client = params.client;
                 dataReplace.ordinaryAccount = params.ordinaryAccount;
                 dataReplace.specialAccount = params.specialAccount;
                 dataReplace.medisaveAccount = params.medisaveAccount;
                 dataReplace.retirementAccount = params.retirementAccount;
+                dataReplace.clientPfr = params.clientPfr;
               } else {
                 draft.summaryOfCPF.push(params);
               }
@@ -627,6 +629,7 @@ const existingPortofolio = create(
               if (indexData === 0 && get().summaryOfLoans?.length) {
                 let dataReplace = draft.summaryOfLoans[indexData];
                 dataReplace.id = params.id;
+                dataReplace.editting = params.editting;
                 dataReplace.client = params.client;
                 dataReplace.typeOfLoan = params.typeOfLoan;
                 dataReplace.loanTerm = params.loanTerm;
@@ -634,11 +637,11 @@ const existingPortofolio = create(
                 dataReplace.amountBorrowed = params.amountBorrowed;
                 dataReplace.loanStatus = params.loanStatus;
                 dataReplace.typeOfVehicle = params.typeOfVehicle;
-                dataReplace.currentOutstandingLoan =
-                  params.currentOutstandingLoan;
+                dataReplace.currentOutstandingLoan = params.currentOutstandingLoan;
                 dataReplace.lender = params.lender;
                 dataReplace.interestRate = params.interestRate;
                 dataReplace.monthlyLoanRepayment = params.monthlyLoanRepayment;
+                dataReplace.clientPfr = params.clientPfr;
               } else {
                 draft.summaryOfLoans.push(params);
               }

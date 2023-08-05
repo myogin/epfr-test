@@ -38,8 +38,7 @@ const CallbackPage: Page = () => {
   };
 
   const storeDataDependentToState = (data: DependantInformation[]) => {
-    let checkTotalData =
-      dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
+    let checkTotalData = dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
     let checkIndex = checkCountDataDependent(dependant);
     if (data?.length > 0) {
@@ -56,8 +55,7 @@ const CallbackPage: Page = () => {
   };
 
   const storeDataSponsoreChildToState = (data: DependantInformation[]) => {
-    let checkTotalData =
-      dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
+    let checkTotalData = dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
     let checkIndex = checkCountDataDependent(dependant);
     if (data?.length > 0) {
@@ -134,31 +132,44 @@ const CallbackPage: Page = () => {
     let loan = singpassBase.loan ? singpassBase.loan : null;
 
     if (clients !== null) {
+      console.log("clients")
+      console.log(clients)
       storeDataClientToState(clientType, clients);
     }
 
     if (dataDependant !== null) {
-      dataDependant.length;
+      console.log("dataDependant")
+      console.log(dataDependant)
       storeDataDependentToState(dataDependant);
     }
 
     if (dataSpons !== null) {
+      console.log("dataSpons")
+      console.log(dataSpons)
       storeDataSponsoreChildToState(dataSpons);
     }
 
     if (dataAccomp !== null) {
+      console.log("dataAccomp")
+      console.log(dataAccomp)
       storeDataAccompainmentToState(clientType, dataAccomp);
     }
 
     if (property !== null) {
-      storeDataPropertyToState(clients);
+      console.log("property")
+      console.log(property)
+      storeDataPropertyToState(property);
     }
 
     if (loan !== null) {
+      console.log("loan")
+      console.log(loan)
       storeDataLoanToState(loan);
     }
 
     if (cpfs !== null) {
+      console.log("cpfs")
+      console.log(cpfs)
       storeDataCpfToState(cpfs);
     }
   }, [router.isReady, router.query]);

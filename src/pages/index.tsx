@@ -51,6 +51,19 @@ const LoginPage: Page = () => {
   return (
     <div className="grid w-full grid-cols-1 lg:grid-cols-2">
       <Loading isLoading={isLoading} />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className="grid h-screen place-items-center">
         <div className="min-w-[400px] ">
           <div className="mb-6">
@@ -80,19 +93,6 @@ const LoginPage: Page = () => {
             </ButtonGreenMedium>
             {/* Forgot your password? */}
           </div>
-
-          <ToastContainer
-            position="top-right"
-            autoClose={2000}
-            hideProgressBar
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-          />
 
           {/* <div className="w-full my-3 text-center">Or</div>
         <ButtonRedMedium className="justify-center w-full">
