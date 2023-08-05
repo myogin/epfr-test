@@ -70,6 +70,7 @@ type Actions = {
   calcTotal: (api?: any) => any;
   updateNeed: (client: number, value: number, pfrType: number) => any;
   updateReason: (client: number, reason: string, pfrType: number) => any;
+  updateID: (id: any) => any;
 };
 
 const balanceSheet = (set: any, get: any) => ({
@@ -153,12 +154,19 @@ const balanceSheet = (set: any, get: any) => ({
       })
     );
   },
+  updateID: (id: any) => {
+    set(
+      produce((drafts: any) => {
+        drafts.id = parseInt(id);
+      })
+    );
+  },
 });
 
 export const useBalanceSheet = create(
   devtools(
     persist<SectionFour & Actions>(balanceSheet, {
-      name: "sectionFourv2",
+      name: "section4",
     })
   )
 );

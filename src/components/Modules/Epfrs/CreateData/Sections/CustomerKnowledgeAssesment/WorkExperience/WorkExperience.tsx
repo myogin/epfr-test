@@ -40,7 +40,7 @@ const WorkExperience = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
   // zustand
-  const { answers, updateWork, need } = useCustomerKnowledgeAssesment();
+  const { answer, updateWork, need } = useCustomerKnowledgeAssesment();
 
   const checkValidate = (e: any) => e == false;
 
@@ -55,8 +55,8 @@ const WorkExperience = (props: Props) => {
 
       <RowSingleORDouble pfrType={props.pfrType}>
         {getPfrLength.map((e2, userIndex) => (
-          <Fragment key={"sa"+userIndex}>
-            {answers[userIndex].work.every(checkValidate) && need[userIndex] ? (
+          <Fragment key={"sa" + userIndex}>
+            {answer[userIndex].work.every(checkValidate) && need[userIndex] ? (
               <div className="text-xs font-normal text-red">Required</div>
             ) : (
               <div></div>
@@ -75,18 +75,18 @@ const WorkExperience = (props: Props) => {
       )}
 
       {qa[0].answers?.length &&
-        qa[0].answers.map((answer: any, index: number) => (
+        qa[0].answers.map((e: any, index: number) => (
           <RowSingleORDouble pfrType={props.pfrType} key={index}>
             {getPfrLength.map((e2, userIndex) => (
-              <Fragment key={"sa"+userIndex}>
+              <Fragment key={"sa" + userIndex}>
                 <div>
                   <Checkbox
                     isDisabled={!need[userIndex]}
                     onChange={() => {
                       updateWork(userIndex, index, props.pfrType);
                     }}
-                    isChecked={answers[userIndex].work[index]}
-                    label={answer.answer}
+                    isChecked={answer[userIndex].work[index]}
+                    label={e.answer}
                   />
                 </div>
               </Fragment>

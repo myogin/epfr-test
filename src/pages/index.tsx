@@ -1,60 +1,131 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Page } from "@/pages/_app";
 import AppLayout from "@/components/Layouts/AppLayout";
 import { useRouter } from "next/router";
-import { signIn, useSession } from "next-auth/react";
-import { useLoginData } from "@/store/login/logindata";
-import { localOwnerId, localPfrId, localToken, localType } from "@/libs/helper";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useUserData } from "@/store/login/data";
+import Loading from "@/components/Forms/Loading/Loading";
+import Image from "next/image";
+import Input from "@/components/Forms/Input";
+import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import ChartLogin from "../../public/ChartLogin.png"
+import LogoLfa from "../../public/LegacyFALogo.png"
 
-const EpfrLogin: Page = () => {
-  const router = useRouter();
-  const { status } = useSession();
-  const { setLogin, token } = useLoginData();
+const LoginPage: Page = () => {
+  const { push } = useRouter();
+  const [isLoading, setLoading] = useState(false);
 
-  const loginTest = async (token1: any, typeEpfr: number) => {
-    if (token1) {
-      const result = await signIn("credentials", {
-        token: token1,
-        redirect: false,
-      });
+  const error = (text: string) => toast.error(text);
+  const success = (text: string) => toast.success(text);
 
-      if (result?.status == 200) {
-        if(typeEpfr != null && typeEpfr != undefined) {
-          let typeString = typeEpfr !== null ? typeEpfr == 1 ? "single" : "joint" : ""
-          router.push("/create/"+typeString+"#section-1");
-        }else {
-          router.push("/epfr");
-        }
-        
-      } else {
-        router.push("/unauthorized");
-      }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const actionLogin = () => {
+    if (email === "" || password === "") {
+      console.log("cannot login");
+    } else {
+      push("/dashboard");
     }
   };
+  const { userEmail, setUserEmail } = useUserData();
+  const login = async () => {
+    setLoading(true);
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_BASE_URL}/login`, {
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        const msg = res.data.result;
+        setUserEmail(email);
+        // success(msg);
+      })
+      .then((data) => {
+        push("/verify");
 
-  useEffect(() => {
+        setLoading(false);
+      })
+      .catch((err) => {
+        const msg = err.response.data.error;
+        setLoading(false);
+        error(msg);
+      });
+  };
+  return (
+    <div className="grid w-full grid-cols-1 lg:grid-cols-2">
+      <Loading isLoading={isLoading} />
+      <div className="grid h-screen place-items-center">
+        <div className="min-w-[400px] ">
+          <div className="mb-6">
+            <Image src={LogoLfa} alt="logo" />
+          </div>
+          <div className="text-base font-normal mb-9 text-gray-light">
+            {`Log in to your account and let’s get strated.`}
+          </div>
+          <div className="mb-12">
+            <Input
+              type="email"
+              label="Email"
+              className="mb-4"
+              handleChange={(event) => setEmail(event.target.value)}
+            />
+            <Input
+              type="password"
+              label="Password"
+              className="mb-4"
+              handleChange={(event) => setPassword(event.target.value)}
+            />
+            <ButtonGreenMedium
+              onClick={login}
+              className="justify-center w-full"
+            >
+              Log in
+            </ButtonGreenMedium>
+            {/* Forgot your password? */}
+          </div>
 
-    let tokenFix = localToken();
-    let ownerFix = localOwnerId();
-    let pfrFix = localPfrId();
-    let typeEpfrFix = localType();
+          <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
 
-    let localT = router.query.token == null || router.query.token == undefined ? tokenFix : router.query.token;
-    let pfrId = router.query.pfrId == null || router.query.pfrId == undefined ? pfrFix : router.query.pfrId;
-    let ownerId = router.query.ownerId == null || router.query.ownerId == undefined ? ownerFix : router.query.ownerId;
-    let typeEpfr = router.query.typeEpfr == null || router.query.typeEpfr == undefined ? typeEpfrFix : router.query.typeEpfr;
-
-    if (localT == undefined || localT == null) {
-      router.push("/unauthorized");
-    }
-    setLogin(localT, ownerId, Number(pfrId), typeEpfr);
-    loginTest(localT,typeEpfr);
-  });
-  return <div>...Loading</div>;
+          {/* <div className="w-full my-3 text-center">Or</div>
+        <ButtonRedMedium className="justify-center w-full">
+          Log in with singpass
+        </ButtonRedMedium> */}
+          <div className="w-full my-4 text-center">
+            {/* {`Don't have account.? Register Now`} */}
+          </div>
+        </div>
+      </div>
+      <div className="hidden w-full bg-blue-midnight lg:block">
+        <div className="p-20 text-3xl text-white">
+          Hi, Welcome Back!
+          <br />
+          {`Let’s get start with wide range of insurance products that are
+          tailored to our client’s needs.`}
+        </div>
+        <div>
+          <Image src={ChartLogin} alt="Chart" />
+        </div>
+      </div>
+    </div>
+  );
 };
 
-EpfrLogin.getLayout = function getLayout(content: any) {
+LoginPage.getLayout = function getLayout(content: any) {
   return <AppLayout>{content}</AppLayout>;
 };
 
-export default EpfrLogin;
+export default LoginPage;

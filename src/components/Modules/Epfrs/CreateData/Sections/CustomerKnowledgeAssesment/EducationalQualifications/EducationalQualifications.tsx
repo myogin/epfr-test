@@ -60,7 +60,8 @@ const EducationalQualifications = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
   // zustand
-  const { answers, updateEducation, need } = useCustomerKnowledgeAssesment();
+  const { answer, updateEducation, need } = useCustomerKnowledgeAssesment();
+  console.log(answer);
 
   const checkValidate = (e: any) => e == false;
   return (
@@ -74,8 +75,8 @@ const EducationalQualifications = (props: Props) => {
 
       <RowSingleORDouble pfrType={props.pfrType}>
         {getPfrLength.map((e2, userIndex) => (
-          <Fragment key={"ds"+userIndex}>
-            {answers[userIndex].education[0].every(checkValidate) &&
+          <Fragment key={"ds" + userIndex}>
+            {answer[userIndex].education[0].every(checkValidate) &&
             need[userIndex] ? (
               <div className="text-xs font-normal text-red">Required</div>
             ) : (
@@ -95,18 +96,18 @@ const EducationalQualifications = (props: Props) => {
       )}
 
       {qa[0].answers?.length &&
-        qa[0].answers.map((answer: any, index: number) => (
+        qa[0].answers.map((e: any, index: number) => (
           <RowSingleORDouble pfrType={props.pfrType} key={index}>
             {getPfrLength.map((e2, userIndex) => (
-              <Fragment key={"as"+userIndex}>
+              <Fragment key={"as" + userIndex}>
                 <div>
                   <Checkbox
                     isDisabled={!need[userIndex]}
                     onChange={() => {
                       updateEducation(userIndex, 0, index, props.pfrType);
                     }}
-                    isChecked={answers[userIndex].education[0][index]}
-                    label={answer.answer}
+                    isChecked={answer[userIndex].education[0][index]}
+                    label={e.answer}
                   />
                 </div>
               </Fragment>
@@ -124,8 +125,8 @@ const EducationalQualifications = (props: Props) => {
 
       <RowSingleORDouble pfrType={props.pfrType}>
         {getPfrLength.map((e2, userIndex) => (
-          <Fragment key={"asa"+userIndex}>
-            {answers[userIndex].education[1].every(checkValidate) &&
+          <Fragment key={"asa" + userIndex}>
+            {answer[userIndex].education[1].every(checkValidate) &&
             need[userIndex] ? (
               <div className="text-xs font-normal text-red">Required</div>
             ) : (
@@ -143,18 +144,18 @@ const EducationalQualifications = (props: Props) => {
       )}
 
       {qa[1].answers?.length &&
-        qa[1].answers.map((answer: any, index: number) => (
+        qa[1].answers.map((e: any, index: number) => (
           <RowSingleORDouble pfrType={props.pfrType} key={index}>
             {getPfrLength.map((e2, userIndex) => (
-              <Fragment key={"asa"+userIndex}>
+              <Fragment key={"asa" + userIndex}>
                 <div>
                   <Checkbox
                     isDisabled={!need[userIndex]}
                     onChange={() => {
                       updateEducation(userIndex, 1, index, props.pfrType);
                     }}
-                    isChecked={answers[userIndex].education[1][index]}
-                    label={answer.answer}
+                    isChecked={answer[userIndex].education[1][index]}
+                    label={e.answer}
                   />
                 </div>
               </Fragment>
