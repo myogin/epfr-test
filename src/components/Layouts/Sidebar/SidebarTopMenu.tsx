@@ -67,65 +67,65 @@ const SidebarTopMenu = (prop: Props) => {
 
   let topMenu = [
     {
-      url: "/dashboard",
+      url: "/overview",
       name: "Overview",
       logo: <DashboardLineIcon />,
       logo_active: <DashboardFillIcon />,
     },
     {
-      url: "/epfrs",
+      url: "/epfr",
       name: "EPFR",
       logo: <File3LineIcon />,
       logo_active: <File3FillIcon />,
     },
-    {
-      url: "/submissions",
-      name: "Submission",
-      logo: <FileTextLineIcon />,
-      logo_active: <FileTextFillIcon />,
-    },
-    {
-      url: "/clients",
-      name: "Client",
-      logo: <UserLineIcon />,
-      logo_active: <UserFillIcon />,
-    },
-    {
-      url: "/products",
-      name: "Product",
-      logo: <ArchiveLineIcon />,
-      logo_active: <ArchiveFillIcon />,
-    },
-    {
-      url: "/providers",
-      name: "Provider",
-      logo: <Building2LineIcon />,
-      logo_active: <Building2FillIcon />,
-    },
-    {
-      url: "/payrolls",
-      name: "Payroll",
-      logo: <WalletLineIcon />,
-      logo_active: <WalletFillIcon />,
-    },
-    {
-      url: "/users",
-      name: "User Account",
-      logo: <FolderUserLineIcon />,
-      logo_active: <FolderUserFillIcon />,
-    },
-    {
-      url: "/salesassociates",
-      name: "Sales Associates",
-      logo: <User2LineIcon />,
-      logo_active: <User2FillIcon />,
-    },
-    {
-      url: "/selections",
-      name: "Selection",
-      logo: <SoundModuleLineIcon />,
-      logo_active: <SoundModuleFillIcon />,
-    },
+    // {
+    //   url: "/submissions",
+    //   name: "Submission",
+    //   logo: <FileTextLineIcon />,
+    //   logo_active: <FileTextFillIcon />,
+    // },
+    // {
+    //   url: "/clients",
+    //   name: "Client",
+    //   logo: <UserLineIcon />,
+    //   logo_active: <UserFillIcon />,
+    // },
+    // {
+    //   url: "/products",
+    //   name: "Product",
+    //   logo: <ArchiveLineIcon />,
+    //   logo_active: <ArchiveFillIcon />,
+    // },
+    // {
+    //   url: "/providers",
+    //   name: "Provider",
+    //   logo: <Building2LineIcon />,
+    //   logo_active: <Building2FillIcon />,
+    // },
+    // {
+    //   url: "/payrolls",
+    //   name: "Payroll",
+    //   logo: <WalletLineIcon />,
+    //   logo_active: <WalletFillIcon />,
+    // },
+    // {
+    //   url: "/users",
+    //   name: "User Account",
+    //   logo: <FolderUserLineIcon />,
+    //   logo_active: <FolderUserFillIcon />,
+    // },
+    // {
+    //   url: "/salesassociates",
+    //   name: "Sales Associates",
+    //   logo: <User2LineIcon />,
+    //   logo_active: <User2FillIcon />,
+    // },
+    // {
+    //   url: "/selections",
+    //   name: "Selection",
+    //   logo: <SoundModuleLineIcon />,
+    //   logo_active: <SoundModuleFillIcon />,
+    // },
   ];
 
   return (

@@ -6,7 +6,7 @@ interface Props {
   children?: ReactNode;
 }
 
-const AppLayout = ({ children }: Props) => {
+const DashboardLayout = ({ children }: Props) => {
   return (
     <>
       <Head>
@@ -16,11 +16,11 @@ const AppLayout = ({ children }: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-row w-full min-h-screen font-sans bg-white">
-        {/* <Sidebar /> */}
+        <Sidebar />
         {children}
       </div>
     </>
   );
 };
 
-export default AppLayout;
+export default DashboardLayout;

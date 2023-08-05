@@ -20,23 +20,18 @@ const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
   const router = useRouter();
-  const { data: session } = useSession();
-
-  
-  console.log("Test")
-  console.log(session?.id);
-  console.log(session);
-  console.log(session?.user?.id);
-  console.log(session?.user?.token);
+  const { data: session, status } = useSession();
+  const {setLogin} = useLoginData();
 
   const getGeneralData = async () => {
     if (router.query.edit) {
       const pfr: any = await getAllPfrData(router.query.pfrId);
     }
   };
-
+  console.log(status);
   useEffect(() => {
     getGeneralData();
+    setLogin(session?.user?.token, session?.user?.id)
   });
 
   return (
@@ -46,7 +41,7 @@ const EpfrPage: Page = () => {
       </Head>
       <GlobalCard className="flex flex-col w-full min-h-screen">
         <div className="fixed pt-14 pl-14">
-          <Link href="/" className="flex text-green-deep">
+          <Link href="/overview" className="flex text-green-deep">
             <ArrowLeftSLineIcon /> Back to EPFR list
           </Link>
         </div>
