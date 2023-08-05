@@ -7,6 +7,21 @@ export const dateFormat = (params: string) => {
   return NewDate;
 };
 
+export const checkCountDataDependent = (datas: any) => {
+  let data: number = 0;
+  if (datas?.length) {
+    if (datas[0].name === "") {
+      data = datas.length;
+    } else {
+      data = datas.length + 1;
+    }
+  } else {
+    data = datas.length + 1;
+  }
+
+  return data;
+};
+
 export const checkCountData = (datas: any) => {
   let data: number = 0;
   if (datas?.length) {

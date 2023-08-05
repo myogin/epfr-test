@@ -6,11 +6,18 @@ import { useUserData } from "@/store/login/data";
 
 const Overview = () => {
   const { data: session, status } = useSession();
+
   const { deleteEmail } = useUserData();
+
+  console.log("Test")
+  console.log(session?.id);
+  console.log(session?.token);
+
   useEffect(() => {
     deleteEmail();
   });
-  console.log(session);
+
+ 
 
   return (
     <div>

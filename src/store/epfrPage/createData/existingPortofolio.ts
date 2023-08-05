@@ -170,6 +170,7 @@ const initialState: SectionTwo = {
   totalNetWorth: [],
   networthReason: [],
   status: 0,
+  editableStatus: 0
 };
 
 const existingPortofolio = create(

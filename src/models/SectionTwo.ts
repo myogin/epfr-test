@@ -129,4 +129,5 @@ export interface SectionTwo {
   totalNetWorth?: Array<any>;
   networthReason?: Array<any>;
   status?: number;
+  editableStatus?: number;
 }

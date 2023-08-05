@@ -12,7 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { DependantInformation } from "@/models/SectionOne";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import moment from "moment";
-import { answerYesNo, checkCountData } from "@/libs/helper";
+import { answerYesNo, checkCountDataDependent } from "@/libs/helper";
 
 interface Props {
   datas?: Array<any>;
@@ -23,7 +23,7 @@ const Dependent = (props: Props) => {
   let { dependant, setDependent, removeDependent, patchDependent } =
     usePersonalInformation();
 
-  let checkIndex = checkCountData(dependant);
+  let checkIndex = checkCountDataDependent(dependant);
   // Initiate new local state for new data
   let initialState: DependantInformation = {
     id: checkIndex,

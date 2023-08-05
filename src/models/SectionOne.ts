@@ -45,6 +45,7 @@ export interface DependantInformation {
 }
 
 export interface Accompaniment {
+  clientType:number;
   age: number;
   english_spoken: string;
   english_written: string;
@@ -80,4 +81,5 @@ export interface SectionOne {
   issues?: [];
   reviewDate?: string;
   status?: number;
+  editableStatus?: number;
 }

@@ -11,7 +11,8 @@ type Actions = {
   setAccompaniment: (clientType: number, name: string, value: any) => any;
   setTrustedIndividuals: (name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
-  fetchClient: (clientType: number, params:any) => any
+  fetchClient: (clientType: number, params: any) => any;
+  fetchAccompainment: (clientType: number, params: any) => any;
 };
 
 const initialState: SectionOne = {
@@ -47,7 +48,7 @@ const initialState: SectionOne = {
       email: "",
       residentialAddr: "",
       mailingAddr: "",
-      clientPfr: ""
+      clientPfr: "",
     },
     {
       clientTitle: "",
@@ -77,7 +78,7 @@ const initialState: SectionOne = {
       email: "",
       residentialAddr: "",
       mailingAddr: "",
-      clientPfr: ""
+      clientPfr: "",
     },
   ],
   dependant: [
@@ -93,23 +94,25 @@ const initialState: SectionOne = {
       nric: "",
       sponsored: "",
       clientPfr: "",
-      client:0
+      client: 0,
     },
   ],
   accompaniment: [
     {
+      clientType: 0,
       age: 0,
       english_spoken: "",
       english_written: "",
       education_level: "",
-      clientPfr: ""
+      clientPfr: "",
     },
     {
+      clientType: 0,
       age: 0,
       english_spoken: "",
       english_written: "",
       education_level: "",
-      clientPfr: ""
+      clientPfr: "",
     },
   ],
   trustedIndividuals: {
@@ -130,6 +133,7 @@ const initialState: SectionOne = {
   issues: [],
   reviewDate: "",
   status: 0,
+  editableStatus: 0,
 };
 
 const personalInformation = create(
@@ -137,39 +141,44 @@ const personalInformation = create(
     persist<SectionOne & Actions>(
       (set, get) => ({
         ...initialState,
-        fetchClient: (clientType: number, params: any) => 
-        set(
-          produce((draft) => {
-            draft.clientInfo[clientType].clientTitle = params.clientTitle;
-            draft.clientInfo[clientType].clientName = params.clientName;
-            draft.clientInfo[clientType].otherName = params.otherName;
-            draft.clientInfo[clientType].relationship = params.relationship;
-            draft.clientInfo[clientType].race = params.race;
-            draft.clientInfo[clientType].gender = params.gender;
-            draft.clientInfo[clientType].birthCountryId = params.birthCountryId;
-            draft.clientInfo[clientType].passportNo = params.passportNo;
-            draft.clientInfo[clientType].nationality = params.nationality;
-            draft.clientInfo[clientType].residency = params.residency;
-            draft.clientInfo[clientType].residencyTwo = params.residencyTwo;
-            draft.clientInfo[clientType].residencyOther = params.residencyOther;
-            draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth;
-            draft.clientInfo[clientType].marital = params.marital;
-            draft.clientInfo[clientType].smoker = params.smoker;
-            draft.clientInfo[clientType].employmentStatus = params.employmentStatus;
-            draft.clientInfo[clientType].occupation = params.occupation;
-            draft.clientInfo[clientType].companyName = params.companyName;
-            draft.clientInfo[clientType].businessNature = params.businessNature;
-            draft.clientInfo[clientType].annualIncome = params.annualIncome;
-            draft.clientInfo[clientType].contactHome = params.contactHome;
-            draft.clientInfo[clientType].contactMobile = params.contactMobile;
-            draft.clientInfo[clientType].contactOffice = params.contactOffice;
-            draft.clientInfo[clientType].contactFax = params.contactFax;
-            draft.clientInfo[clientType].email = params.email;
-            draft.clientInfo[clientType].residentialAddr = params.residentialAddr;
-            draft.clientInfo[clientType].mailingAddr = params.mailingAddr;
-            draft.clientInfo[clientType].clientPfr = params.clientPfr;
-          })
-        ),
+        fetchClient: (clientType: number, params: any) =>
+          set(
+            produce((draft) => {
+              draft.clientInfo[clientType].clientTitle = params.clientTitle;
+              draft.clientInfo[clientType].clientName = params.clientName;
+              draft.clientInfo[clientType].otherName = params.otherName;
+              draft.clientInfo[clientType].relationship = params.relationship;
+              draft.clientInfo[clientType].race = params.race;
+              draft.clientInfo[clientType].gender = params.gender;
+              draft.clientInfo[clientType].birthCountryId =
+                params.birthCountryId;
+              draft.clientInfo[clientType].passportNo = params.passportNo;
+              draft.clientInfo[clientType].nationality = params.nationality;
+              draft.clientInfo[clientType].residency = params.residency;
+              draft.clientInfo[clientType].residencyTwo = params.residencyTwo;
+              draft.clientInfo[clientType].residencyOther =
+                params.residencyOther;
+              draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth;
+              draft.clientInfo[clientType].marital = params.marital;
+              draft.clientInfo[clientType].smoker = params.smoker;
+              draft.clientInfo[clientType].employmentStatus =
+                params.employmentStatus;
+              draft.clientInfo[clientType].occupation = params.occupation;
+              draft.clientInfo[clientType].companyName = params.companyName;
+              draft.clientInfo[clientType].businessNature =
+                params.businessNature;
+              draft.clientInfo[clientType].annualIncome = params.annualIncome;
+              draft.clientInfo[clientType].contactHome = params.contactHome;
+              draft.clientInfo[clientType].contactMobile = params.contactMobile;
+              draft.clientInfo[clientType].contactOffice = params.contactOffice;
+              draft.clientInfo[clientType].contactFax = params.contactFax;
+              draft.clientInfo[clientType].email = params.email;
+              draft.clientInfo[clientType].residentialAddr =
+                params.residentialAddr;
+              draft.clientInfo[clientType].mailingAddr = params.mailingAddr;
+              draft.clientInfo[clientType].clientPfr = params.clientPfr;
+            })
+          ),
         setClient: (clientType: number, name: string, value: any) =>
           set(
             produce((draft) => {
@@ -218,6 +227,7 @@ const personalInformation = create(
                 dependentReplace.sponsored = params.sponsored;
                 dependentReplace.nric = params.nric;
                 dependentReplace.clientPfr = params.clientPfr;
+                dependentReplace.client = params.client;
               } else {
                 draft.dependant.push(params);
               }
@@ -265,6 +275,7 @@ const personalInformation = create(
                 dependentReplace.certNumber = "";
                 dependentReplace.sponsored = "";
                 dependentReplace.nric = "";
+                dependentReplace.clientPfr = "";
               }
             })
           ),
@@ -286,6 +297,20 @@ const personalInformation = create(
               dependant.nric = params.nric;
             })
           ),
+        fetchAccompainment: (clientType: number, params: any) =>
+          set(
+            produce((draft) => {
+              draft.accompaniment[clientType].clientType = params.clientType;
+              draft.accompaniment[clientType].age = params.age;
+              draft.accompaniment[clientType].english_spoken =
+                params.english_spoken;
+              draft.accompaniment[clientType].english_written =
+                params.english_written;
+              draft.accompaniment[clientType].education_level =
+                params.education_level;
+              draft.accompaniment[clientType].clientPfr = params.clientPfr;
+            })
+          ),
         setAccompaniment: (clientType: number, name: string, value: any) =>
           set(
             produce((draft) => {
@@ -303,7 +328,7 @@ const personalInformation = create(
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
-              console.log("masuk sini nggak global")
+              console.log("masuk sini nggak global");
               draft[name] = value;
             })
           ),

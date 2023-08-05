@@ -20,14 +20,22 @@ const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session } = useSession();
+
+  
+  console.log("Test")
+  console.log(session?.id);
+  console.log(session);
+  console.log(session?.token);
+  console.log(session?.user?.id);
+  console.log(session?.user?.token);
 
   const getGeneralData = async () => {
     if (router.query.edit) {
       const pfr: any = await getAllPfrData(router.query.pfrId);
     }
   };
-  console.log(status);
+
   useEffect(() => {
     getGeneralData();
   });

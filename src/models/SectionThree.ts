@@ -51,4 +51,5 @@ export interface SectionThree {
   issues?: Array<any>;
   totalNetSurplus?: Array<any>;
   status?: number;
+  editableStatus?: number;
 }

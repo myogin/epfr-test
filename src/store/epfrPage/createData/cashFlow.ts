@@ -133,6 +133,7 @@ const initialState: SectionThree = {
   issues: [],
   totalNetSurplus: [230, 345],
   status: 0,
+  editableStatus: 0
 };
 
 const cashFlow = create(
