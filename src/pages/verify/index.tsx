@@ -11,6 +11,7 @@ import { log } from "console";
 import Image from "next/image";
 import Loading from "@/components/Forms/Loading/Loading";
 import style from "./_component/verify.module.css";
+import { useLoginData } from "@/store/login/logindata";
 
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
@@ -18,6 +19,7 @@ const Verify: Page = () => {
   const error = (text: string) => toast.error(text);
   const success = (text: string) => toast.success(text);
   const { userEmail, deleteEmail } = useUserData();
+  const {setLogin} = useLoginData();
 
   useEffect(() => {
     if (userEmail === "") {
@@ -33,6 +35,7 @@ const Verify: Page = () => {
     });
 
     if (result?.status == 200) {
+      // setLogin()
       push("/overview");
     } else {
       error("Code error. Check your code or re-send please");
@@ -62,7 +65,7 @@ const Verify: Page = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 w-full lg:grid-cols-2">
+    <div className="grid w-full grid-cols-1 lg:grid-cols-2">
       <Loading isLoading={isLoading} />
       <ToastContainer
         position="top-right"
@@ -76,7 +79,7 @@ const Verify: Page = () => {
         pauseOnHover
         theme="colored"
       />
-      <div className="grid place-items-center h-screen">
+      <div className="grid h-screen place-items-center">
         <div className="min-w-[400px] ">
           <div className="mb-6">
             <Image src="/LegacyFALogo.png" alt="logo" width={146} height={48} />
@@ -182,8 +185,8 @@ const Verify: Page = () => {
           {/* {`Don't have account.? Register Now`} */}
         </div>
       </div>
-      <div className="bg-blue-midnight w-full hidden lg:block">
-        <div className="text-3xl text-white p-20">
+      <div className="hidden w-full bg-blue-midnight lg:block">
+        <div className="p-20 text-3xl text-white">
           Hi, Welcome Back!
           <br />
           {`Let’s get start with wide range of insurance products that are

@@ -23,14 +23,8 @@ const LoginPage: Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const actionLogin = () => {
-    if (email === "" || password === "") {
-      console.log("cannot login");
-    } else {
-      push("/dashboard");
-    }
-  };
   const { userEmail, setUserEmail } = useUserData();
+  
   const login = async () => {
     setLoading(true);
     await axios
