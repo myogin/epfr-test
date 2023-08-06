@@ -16,6 +16,7 @@ import Search2LineIcon from "remixicon-react/Search2LineIcon";
 import { useFilterDataSubMenu } from "@/store/shared/filterDataSubMenu";
 import { useLoginData } from "@/store/login/logindata";
 import axios from "axios";
+import { siteConfig } from "@/libs/config";
 const Overview = () => {
   const { data: session, status } = useSession();
   const { setLogin } = useLoginData();
@@ -113,7 +114,7 @@ const Overview = () => {
   return (
     <>
       <Head>
-        <title>Epfrs - Unicorn Project</title>
+        <title>{`Epfr Datas | ${siteConfig.siteName}`}</title>
       </Head>
       <main className="flex-1 md:ml-64 bg-white-bone">
         <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>

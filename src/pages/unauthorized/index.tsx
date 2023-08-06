@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import CheckboxCircleFillIcon from "remixicon-react/CheckboxCircleFillIcon";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
+import { siteConfig } from "@/libs/config";
 
 const Unauthorized: Page = () => {
   const { push } = useRouter();
@@ -19,12 +20,12 @@ const Unauthorized: Page = () => {
   return (
     <>
       <Head>
-        <title>Unauthorized</title>
+        <title>{`Unauthorized | ${siteConfig.siteName}`}</title>
       </Head>
       <GlobalCard className="flex flex-col items-center justify-center w-full min-h-screen pt-16 bg-gray-soft-white-soft">
-        <div className="flex flex-col  text-center">
+        <div className="flex flex-col text-center">
           <h1 className="text-[240px] text-gray-soft-strong">403</h1>
-          <span className="font-bold mb-8">Access Denied</span>
+          <span className="mb-8 font-bold">Access Denied</span>
           <p>
             We are sorry the page you are trying to access has restricted <br />
             access. Please refer to system administrator.

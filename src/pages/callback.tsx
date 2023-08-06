@@ -15,6 +15,8 @@ import {
 } from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { checkCountData, checkCountDataDependent } from "@/libs/helper";
+import Head from "next/head";
+import { siteConfig } from "@/libs/config";
 
 const CallbackPage: Page = () => {
   const router = useRouter();
@@ -39,9 +41,9 @@ const CallbackPage: Page = () => {
 
   const storeDataDependentToState = (data: DependantInformation[]) => {
     let checkIndex = checkCountDataDependent(dependant);
-    let checkTotalData = dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
+    let checkTotalData =
+      dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
-    
     if (data?.length > 0) {
       data.map((data, index) => {
         if (checkTotalData > 0) {
@@ -56,7 +58,8 @@ const CallbackPage: Page = () => {
   };
 
   const storeDataSponsoreChildToState = (data: DependantInformation[]) => {
-    let checkTotalData = dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
+    let checkTotalData =
+      dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
     let checkIndex = checkCountDataDependent(dependant);
     if (data?.length > 0) {
@@ -122,8 +125,12 @@ const CallbackPage: Page = () => {
     let clientType =
       clients !== null ? (Number(clients.clientType) === 1 ? 0 : 1) : 0;
 
-      let pfrType =
-      clients !== null ? (Number(clients.pfrType) === 1 ? "single" : "joint") : "single";
+    let pfrType =
+      clients !== null
+        ? Number(clients.pfrType) === 1
+          ? "single"
+          : "joint"
+        : "single";
 
     let dataDependant = singpassBase.dataDependant
       ? singpassBase.dataDependant
@@ -136,54 +143,58 @@ const CallbackPage: Page = () => {
     let loan = singpassBase.loan ? singpassBase.loan : null;
 
     if (clients !== null) {
-      console.log("clients")
-      console.log(clients)
+      console.log("clients");
+      console.log(clients);
       storeDataClientToState(clientType, clients);
     }
 
     if (dataDependant !== null) {
-      console.log("dataDependant")
-      console.log(dataDependant)
+      console.log("dataDependant");
+      console.log(dataDependant);
       storeDataDependentToState(dataDependant);
     }
 
     if (dataSpons !== null) {
-      console.log("dataSpons")
-      console.log(dataSpons)
+      console.log("dataSpons");
+      console.log(dataSpons);
       storeDataSponsoreChildToState(dataSpons);
     }
 
     if (dataAccomp !== null) {
-      console.log("dataAccomp")
-      console.log(dataAccomp)
+      console.log("dataAccomp");
+      console.log(dataAccomp);
       storeDataAccompainmentToState(clientType, dataAccomp);
     }
 
     if (property !== null) {
-      console.log("property")
-      console.log(property)
+      console.log("property");
+      console.log(property);
       storeDataPropertyToState(property);
     }
 
     if (loan !== null) {
-      console.log("loan")
-      console.log(loan)
+      console.log("loan");
+      console.log(loan);
       storeDataLoanToState(loan);
     }
 
     if (cpfs !== null) {
-      console.log("cpfs")
-      console.log(cpfs)
+      console.log("cpfs");
+      console.log(cpfs);
       storeDataCpfToState(cpfs);
     }
 
-    router.push(`/create/${pfrType}#section-1`)
-
+    router.push(`/create/${pfrType}#section-1`);
   }, [router.isReady, router.query]);
   return (
-    <div className="flex items-center justify-center w-full h-screen">
-      Singpass Proses
-    </div>
+    <>
+      <Head>
+        <title>{`Singpass Proses | ${siteConfig.siteName}`}</title>
+      </Head>
+      <div className="flex items-center justify-center w-full h-screen">
+        Singpass Proses
+      </div>
+    </>
   );
 };
 

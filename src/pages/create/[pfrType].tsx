@@ -139,7 +139,7 @@ const CreatePfrPage: Page = () => {
   return (
     <>
       <Head>
-        <title>New EPFR Document | {siteConfig.siteName}</title>
+        <title>{`New EPFR Document | ${siteConfig.siteName}`}</title>
       </Head>
       <aside
         className={`fixed top-0 z-10 w-56 min-h-screen px-6 py-16 bg-blue-midnight text-sm overflow-hidden`}

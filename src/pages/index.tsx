@@ -12,6 +12,8 @@ import Input from "@/components/Forms/Input";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ChartLogin from "../../public/ChartLogin.png";
 import LogoLfa from "../../public/LegacyFALogo.png";
+import Head from "next/head";
+import { siteConfig } from "@/libs/config";
 
 const LoginPage: Page = () => {
   const { push } = useRouter();
@@ -49,64 +51,69 @@ const LoginPage: Page = () => {
       });
   };
   return (
-    <div className="grid w-full grid-cols-1 lg:grid-cols-2">
-      <div className="grid h-screen place-items-center">
-        <div className="min-w-[400px] ">
-          <div className="mb-6">
-            <Image src={LogoLfa} alt="logo" />
-          </div>
-          <div className="text-base font-normal mb-9 text-gray-light">
-            {`Log in to your account and let’s get strated.`}
-          </div>
-          <div className="mb-12">
-            <Input
-              type="email"
-              label="Email"
-              className="mb-4"
-              handleChange={(event) => setEmail(event.target.value)}
-            />
-            <Input
-              type="password"
-              label="Password"
-              className="mb-4"
-              handleChange={(event) => setPassword(event.target.value)}
-            />
-            <ButtonGreenMedium
-              onClick={login}
-              className="justify-center w-full"
-            >
-              Log in
-            </ButtonGreenMedium>
-            {/* Forgot your password? */}
+    <>
+      <Head>
+        <title>{`Login | ${siteConfig.siteName}`}</title>
+      </Head>
+      <div className="grid w-full grid-cols-1 lg:grid-cols-2">
+        <div className="grid h-screen place-items-center">
+          <div className="min-w-[400px] ">
+            <div className="mb-6">
+              <Image src={LogoLfa} alt="logo" />
+            </div>
+            <div className="text-base font-normal mb-9 text-gray-light">
+              {`Log in to your account and let’s get strated.`}
+            </div>
+            <div className="mb-12">
+              <Input
+                type="email"
+                label="Email"
+                className="mb-4"
+                handleChange={(event) => setEmail(event.target.value)}
+              />
+              <Input
+                type="password"
+                label="Password"
+                className="mb-4"
+                handleChange={(event) => setPassword(event.target.value)}
+              />
+              <ButtonGreenMedium
+                onClick={login}
+                className="justify-center w-full"
+              >
+                Log in
+              </ButtonGreenMedium>
+              {/* Forgot your password? */}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="hidden w-full bg-blue-midnight lg:block">
-        <div className="p-20 text-3xl text-white">
-          Hi, Welcome Back!
-          <br />
-          {`Let’s get start with wide range of insurance products that are
+        <div className="hidden w-full bg-blue-midnight lg:block">
+          <div className="p-20 text-3xl text-white">
+            Hi, Welcome Back!
+            <br />
+            {`Let’s get start with wide range of insurance products that are
           tailored to our client’s needs.`}
+          </div>
+          <div>
+            <Image src={ChartLogin} alt="Chart" />
+          </div>
         </div>
-        <div>
-          <Image src={ChartLogin} alt="Chart" />
-        </div>
-      </div>
-      <Loading isLoading={isLoading} />
+        <Loading isLoading={isLoading} />
 
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
-    </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+      </div>
+    </>
   );
 };
 

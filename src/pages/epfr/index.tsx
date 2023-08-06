@@ -15,6 +15,7 @@ import { log } from "console";
 import http from "@/libs/httpSetting";
 import authHeader from "@/libs/authHeader";
 import { signIn, useSession } from "next-auth/react";
+import { siteConfig } from "@/libs/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,7 +38,7 @@ const EpfrPage: Page = () => {
   return (
     <>
       <Head>
-        <title>Epfr Lite</title>
+        <title>{`Choose Type | ${siteConfig.siteName}`}</title>
       </Head>
       <GlobalCard className="flex flex-col w-full min-h-screen">
         <div className="fixed pt-14 pl-14">
