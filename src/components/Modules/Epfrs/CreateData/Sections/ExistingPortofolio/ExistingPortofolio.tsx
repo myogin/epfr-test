@@ -25,6 +25,7 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionTwo } from "@/models/SectionTwo";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 
 interface Props {
   id?: any;
@@ -272,6 +273,11 @@ const ExistingPortofolio = (props: Props) => {
           ""
         )}
       </SectionCardSingleGrid>
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating title="Save section 2" />
+      ) : (
+        ""
+      )}
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
       {/* <SectionCardFooter>
         <ButtonGreenMedium onClick={() => saveData(3)}>
