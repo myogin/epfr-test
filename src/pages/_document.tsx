@@ -14,7 +14,7 @@ export default function Document() {
           content={siteConfig.description}
           itemProp="description"
         />
-        <meta name="keywords" content={siteConfig.keyword} itemProp="keywords" />
+        <meta name="keywords" content={siteConfig.keywords} itemProp="keywords" />
         <meta name="author" content={siteConfig.creator} />
         <meta name="copyright" content={siteConfig.copyright} itemProp="dateline" />
         <meta name="thumbnailUrl" content="" itemProp="thumbnailUrl" />
