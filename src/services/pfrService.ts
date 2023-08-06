@@ -20,6 +20,12 @@ export const postPfr = async (group: any, data: any) => {
   });
 };
 
+export const postPfrSections = async (sections: any, data: any) => {
+  return await http.post(`/pfr/create-pfr-lite-section/${sections}`, data, {
+    headers: authHeader(),
+  });
+};
+
 export const getWholeContext = async (id: any) => {
   const res = await http.get(`/pfr/getWhole/${id}`, { headers: authHeader() });
   return res.data;

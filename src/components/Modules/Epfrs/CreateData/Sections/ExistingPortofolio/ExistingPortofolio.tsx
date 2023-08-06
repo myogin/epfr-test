@@ -33,6 +33,8 @@ interface Props {
 
 const ExistingPortofolio = (props: Props) => {
   let {
+    editableStatus,
+    status,
     need,
     reason,
     summaryOfProperty,
@@ -58,8 +60,18 @@ const ExistingPortofolio = (props: Props) => {
   const scrollPosition = useScrollPosition(2);
   const scrollPositionBottom = useScrollPositionBottom(2);
 
-  // useEffect(() => {
-  // }, []);
+  useEffect(() => {
+    if (scrollPositionBottom === "Process2") {
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("can save now");
+      }else {
+        console.log("Your data not complete Section 2");
+      }
+    }
+  }, [scrollPositionBottom, editableStatus, status]);
 
   return (
     <div id={props.id}>
@@ -214,13 +226,17 @@ const ExistingPortofolio = (props: Props) => {
             label=" Would you like your assets and liabilities to be taken into consideration for the Needs Analysis and Recommendation(s)?"
             needValidation={true}
             textError="Need portfolio at least"
-            logic={summaryOfProperty[0].editting ||
+            logic={
+              summaryOfProperty[0].editting ||
               summaryOfInvestment[0].editting ||
               summaryOfSavings[0].editting ||
               summaryOfCPF[0].editting ||
               summaryOfInsurance[0].editting ||
               summaryOfSRS[0].editting ||
-              summaryOfLoans[0].editting ? true : false}
+              summaryOfLoans[0].editting
+                ? true
+                : false
+            }
           />
         </RowSingle>
         {!need ? (

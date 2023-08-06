@@ -198,7 +198,7 @@ const CreatePfrPage: Page = () => {
                     <ScrollSpy
                       // parentScrollContainerRef={parentScrollContainerRef}
                       activeClass="sub-menu-epfr-active"
-                      offsetBottom={0}
+                      offsetBottom={300}
                       scrollThrottle={80}
                       useBoxMethod
                     >

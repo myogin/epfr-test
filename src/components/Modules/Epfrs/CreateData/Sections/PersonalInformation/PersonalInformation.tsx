@@ -37,23 +37,40 @@ const PersonalInformation = (props: Props) => {
   const handleShowAddDependent = (params: boolean) => {
     setShowAddDependent(params);
   };
-  
+
   const scrollPosition = useScrollPosition(1);
   const scrollPositionBottom = useScrollPositionBottom(1);
 
-  let { dependant, accompaniment, setTrustedIndividuals } =
-    usePersonalInformation();
+  let dependant = usePersonalInformation((state) => state.dependant);
+  let accompaniment = usePersonalInformation((state) => state.accompaniment);
+  let setTrustedIndividuals = usePersonalInformation((state) => state.setTrustedIndividuals);
+
 
   let checkAccompainment = CheckAccompainment(
     accompaniment,
     setTrustedIndividuals
   );
 
+  // Get status and editable status for checking active and non active the save function
+  let status = usePersonalInformation((state) => state.status);
+  let editableStatus = usePersonalInformation((state) => state.editableStatus);
+
   useEffect(() => {
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
-  }, [dependant]);
+
+    if (scrollPositionBottom === "Process1") {
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("can save now");
+      }else {
+        console.log("Your data not complete Section 1");
+      }
+    }
+  }, [dependant, editableStatus, status, scrollPositionBottom]);
 
   return (
     <div id={props.id}>

@@ -1,4 +1,4 @@
-import { SectionOne } from "@/models/SectionOne";
+import { DependantInformation, SectionOne } from "@/models/SectionOne";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
@@ -12,6 +12,7 @@ type Actions = {
   setTrustedIndividuals: (name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
   fetchClient: (clientType: number, params: any) => any;
+  fetchDependent: (datas: DependantInformation[]) => any;
   fetchAccompainment: (clientType: number, params: any) => any;
 };
 
@@ -209,6 +210,56 @@ const personalInformation = create(
               } else {
                 draft.status = 1;
               }
+            })
+          ),
+          fetchDependent: (datas: DependantInformation[]) => set (
+            produce((draft) => {
+
+              let checkLengthDependent = get().dependant?.length
+
+              if(datas.length > 0) {
+                datas.map((param, index) => {
+                  if (index === 0 && checkLengthDependent === 1) {
+                    let dependentReplace = draft.dependant[index];
+                    dependentReplace.id = 1;
+                    dependentReplace.name = param.name;
+                    dependentReplace.relationship = param.relationship;
+                    dependentReplace.dateOfBirth = param.dateOfBirth;
+                    dependentReplace.age = param.age;
+                    dependentReplace.gender = param.gender;
+                    dependentReplace.year = param.year;
+                    dependentReplace.certNumber = param.certNumber;
+                    dependentReplace.sponsored = param.sponsored;
+                    dependentReplace.nric = param.nric;
+                    dependentReplace.clientPfr = param.clientPfr;
+                    dependentReplace.client = param.client;
+                  } else {
+                    let newId = checkLengthDependent++
+                    param['id'] = newId;
+                    draft.dependant.push(param);
+                  }
+                })
+                // check validation
+                // let checkDependent = 0;
+                // draft.dependant.map((value: any, index: any) => {
+                //   if (
+                //     value.name === "" ||
+                //     value.relationship === "" ||
+                //     value.dateOfBirth === "" ||
+                //     value.gender === ""
+                //   ) {
+                //     checkDependent++;
+                //   }
+                // });
+  
+                // if (checkDependent > 0) {
+                //   draft.status = 0;
+                // } else {
+                //   draft.status = 1;
+                // }
+              }
+              
+
             })
           ),
         setDependent: (indexData: number, params: any) =>

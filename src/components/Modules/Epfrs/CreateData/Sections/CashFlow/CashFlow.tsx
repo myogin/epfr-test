@@ -40,6 +40,8 @@ const CashFlow = (props: Props) => {
   const scrollPositionBottom = useScrollPositionBottom(3);
 
   let {
+    status,
+    editableStatus,
     need,
     data,
     reason,
@@ -123,10 +125,17 @@ const CashFlow = (props: Props) => {
 
   useEffect(() => {
     if (scrollPositionBottom === "Process3") {
-      // console.log("oke")
-      storeData();
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("can save now");
+        // storeData();
+      }else {
+        console.log("Your data not complete Section 3");
+      }
     }
-  }, [scrollPositionBottom]);
+  }, [scrollPositionBottom, editableStatus, status]);
 
   return (
     <div id={props.id}>
