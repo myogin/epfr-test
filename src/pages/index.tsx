@@ -10,8 +10,8 @@ import Loading from "@/components/Forms/Loading/Loading";
 import Image from "next/image";
 import Input from "@/components/Forms/Input";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
-import ChartLogin from "../../public/ChartLogin.png"
-import LogoLfa from "../../public/LegacyFALogo.png"
+import ChartLogin from "../../public/ChartLogin.png";
+import LogoLfa from "../../public/LegacyFALogo.png";
 
 const LoginPage: Page = () => {
   const { push } = useRouter();
@@ -24,7 +24,7 @@ const LoginPage: Page = () => {
   const [password, setPassword] = useState("");
 
   const { userEmail, setUserEmail } = useUserData();
-  
+
   const login = async () => {
     setLoading(true);
     await axios
@@ -52,18 +52,6 @@ const LoginPage: Page = () => {
     <div className="grid w-full grid-cols-1 lg:grid-cols-2">
       <Loading isLoading={isLoading} />
 
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
       <div className="grid h-screen place-items-center">
         <div className="min-w-[400px] ">
           <div className="mb-6">
@@ -94,6 +82,18 @@ const LoginPage: Page = () => {
             {/* Forgot your password? */}
           </div>
 
+          <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
           {/* <div className="w-full my-3 text-center">Or</div>
         <ButtonRedMedium className="justify-center w-full">
           Log in with singpass
