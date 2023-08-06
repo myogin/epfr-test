@@ -50,8 +50,6 @@ const LoginPage: Page = () => {
   };
   return (
     <div className="grid w-full grid-cols-1 lg:grid-cols-2">
-      <Loading isLoading={isLoading} />
-
       <div className="grid h-screen place-items-center">
         <div className="min-w-[400px] ">
           <div className="mb-6">
@@ -114,6 +112,20 @@ const LoginPage: Page = () => {
           <Image src={ChartLogin} alt="Chart" />
         </div>
       </div>
+      <Loading isLoading={isLoading} />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

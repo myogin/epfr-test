@@ -38,9 +38,10 @@ const CallbackPage: Page = () => {
   };
 
   const storeDataDependentToState = (data: DependantInformation[]) => {
+    let checkIndex = checkCountDataDependent(dependant);
     let checkTotalData = dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
 
-    let checkIndex = checkCountDataDependent(dependant);
+    
     if (data?.length > 0) {
       data.map((data, index) => {
         if (checkTotalData > 0) {
@@ -121,6 +122,9 @@ const CallbackPage: Page = () => {
     let clientType =
       clients !== null ? (Number(clients.clientType) === 1 ? 0 : 1) : 0;
 
+      let pfrType =
+      clients !== null ? (Number(clients.pfrType) === 1 ? "single" : "joint") : "single";
+
     let dataDependant = singpassBase.dataDependant
       ? singpassBase.dataDependant
       : null;
@@ -172,6 +176,9 @@ const CallbackPage: Page = () => {
       console.log(cpfs)
       storeDataCpfToState(cpfs);
     }
+
+    router.push(`/create/${pfrType}#section-1`)
+
   }, [router.isReady, router.query]);
   return (
     <div className="flex items-center justify-center w-full h-screen">

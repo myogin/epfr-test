@@ -1,20 +1,15 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Page } from "@/pages/_app";
 import AuthLayout from "@/components/Layouts/AuthLayout";
-import Input from "@/components/Forms/Input";
-import axios from "axios";
+
 import { useUserData } from "@/store/login/data";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
-import { log } from "console";
 import Image from "next/image";
 import Loading from "@/components/Forms/Loading/Loading";
-import style from "./_component/verify.module.css";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
-
 import "react-toastify/dist/ReactToastify.css";
-import { useLoginData } from "@/store/login/logindata";
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
   const { push } = useRouter();
@@ -69,125 +64,123 @@ const Verify: Page = () => {
 
   return (
     <div className="grid w-full grid-cols-1 lg:grid-cols-2">
-      <Loading isLoading={isLoading} />
-
       <div className="grid h-screen place-items-center">
-        <div className="min-w-[400px] ">
-          <div className="mb-6">
-            <Image src="/LegacyFALogo.png" alt="logo" width={146} height={48} />
+        <div className="w-[400px]">
+          <div className="flex flex-col">
+            <div className="mb-6">
+              <Image
+                src="/LegacyFALogo.png"
+                alt="logo"
+                width={146}
+                height={48}
+              />
+            </div>
+            <div className="mb-10 text-base font-normal text-gray-light">
+              {`Please check your email`}
+              <br />
+              <span className="text-sm text-gray-light">
+                {`We have sent a message to your email regarding the verification code`}
+              </span>
+            </div>
+            <div className="mb-10">
+              <div className="flex justify-between w-full gap-2">
+                <input
+                  className="w-12 rounded-md"
+                  autoFocus
+                  type="text"
+                  value={codeNumber[0]}
+                  onFocus={(e) => {
+                    handleFocusVerify(e);
+                  }}
+                  onChange={() => {
+                    verifyCode(0);
+                  }}
+                  ref={(element) => {
+                    inputRef.current[0] = element;
+                  }}
+                />
+                <input
+                  className="w-12 rounded-md"
+                  type="text"
+                  value={codeNumber[1]}
+                  onFocus={(e) => {
+                    handleFocusVerify(e);
+                  }}
+                  onChange={() => {
+                    verifyCode(1);
+                  }}
+                  ref={(element) => {
+                    inputRef.current[1] = element;
+                  }}
+                />
+                <input
+                  className="w-12 rounded-md"
+                  type="text"
+                  value={codeNumber[2]}
+                  onFocus={(e) => {
+                    handleFocusVerify(e);
+                  }}
+                  onChange={() => {
+                    verifyCode(2);
+                  }}
+                  ref={(element) => {
+                    inputRef.current[2] = element;
+                  }}
+                />
+                <input
+                  className="w-12 rounded-md"
+                  type="text"
+                  value={codeNumber[3]}
+                  onFocus={(e) => {
+                    handleFocusVerify(e);
+                  }}
+                  onChange={() => {
+                    verifyCode(3);
+                  }}
+                  ref={(element) => {
+                    inputRef.current[3] = element;
+                  }}
+                />
+                <input
+                  className="w-12 rounded-md"
+                  type="text"
+                  value={codeNumber[4]}
+                  onFocus={(e) => {
+                    handleFocusVerify(e);
+                  }}
+                  onChange={() => {
+                    verifyCode(4);
+                  }}
+                  ref={(element) => {
+                    inputRef.current[4] = element;
+                  }}
+                />
+                <input
+                  className="w-12 rounded-md"
+                  type="text"
+                  value={codeNumber[5]}
+                  onFocus={(e) => {
+                    handleFocusVerify(e);
+                  }}
+                  onChange={() => {
+                    verifyCode(5);
+                  }}
+                  ref={(element) => {
+                    inputRef.current[5] = element;
+                  }}
+                />
+              </div>
+            </div>
+
+            <ButtonGreenMedium
+              onClick={() => {
+                verify(mixInput);
+              }}
+              className="justify-center w-full"
+            >
+              Verify
+            </ButtonGreenMedium>
           </div>
-          <div className="text-base font-normal mb-9 text-gray-light">
-            {`Please check your email for code`}
-          </div>
-          {/* <div className="mb-12">
-            <Input
-              type="text"
-              label="Code"
-              className="mb-4"
-              handleChange={(event) => setCode(event.target.value)}
-            />
-          </div> */}
-          <div className={`mb-12 ${style.div}`}>
-            <input
-              autoFocus
-              type="text"
-              value={codeNumber[0]}
-              onFocus={(e) => {
-                handleFocusVerify(e);
-              }}
-              onChange={() => {
-                verifyCode(0);
-              }}
-              ref={(element) => {
-                inputRef.current[0] = element;
-              }}
-            />
-            <input
-              type="text"
-              value={codeNumber[1]}
-              onFocus={(e) => {
-                handleFocusVerify(e);
-              }}
-              onChange={() => {
-                verifyCode(1);
-              }}
-              ref={(element) => {
-                inputRef.current[1] = element;
-              }}
-            />
-            <input
-              type="text"
-              value={codeNumber[2]}
-              onFocus={(e) => {
-                handleFocusVerify(e);
-              }}
-              onChange={() => {
-                verifyCode(2);
-              }}
-              ref={(element) => {
-                inputRef.current[2] = element;
-              }}
-            />
-            <input
-              type="text"
-              value={codeNumber[3]}
-              onFocus={(e) => {
-                handleFocusVerify(e);
-              }}
-              onChange={() => {
-                verifyCode(3);
-              }}
-              ref={(element) => {
-                inputRef.current[3] = element;
-              }}
-            />
-            <input
-              type="text"
-              value={codeNumber[4]}
-              onFocus={(e) => {
-                handleFocusVerify(e);
-              }}
-              onChange={() => {
-                verifyCode(4);
-              }}
-              ref={(element) => {
-                inputRef.current[4] = element;
-              }}
-            />
-            <input
-              type="text"
-              value={codeNumber[5]}
-              onFocus={(e) => {
-                handleFocusVerify(e);
-              }}
-              onChange={() => {
-                verifyCode(5);
-              }}
-              ref={(element) => {
-                inputRef.current[5] = element;
-              }}
-            />
-          </div>
-          <ButtonGreenMedium
-            onClick={() => {
-              verify(mixInput);
-            }}
-            className="justify-center w-full"
-          >
-            Log in
-          </ButtonGreenMedium>
-          <ToastContainer
-            position="top-right"
-            autoClose={2000}
-            hideProgressBar
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-          />
         </div>
         {/* <div className="w-full my-3 text-center">Or</div>
         <ButtonRedMedium className="justify-center w-full">
@@ -208,6 +201,19 @@ const Verify: Page = () => {
           <Image src="/ChartLogin.png" alt="Chart" width={800} height={800} />
         </div>
       </div>
+      <Loading isLoading={isLoading} />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

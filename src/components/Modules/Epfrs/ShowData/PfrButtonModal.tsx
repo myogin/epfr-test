@@ -59,7 +59,7 @@ const PfrButtonModal = () => {
                     <div className="mt-2">
                       <div className="flex justify-between gap-10">
                       <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
-                      <Link href="/epfrs/create/single">
+                      <Link href="/create/single">
                         <button>
                           <File3FillIcon className="text-green-deep" size={30} />
                         </button>
@@ -68,7 +68,7 @@ const PfrButtonModal = () => {
                       </Link>
                     </div>
                     <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
-                      <Link href="/epfrs/create/join">
+                      <Link href="/create/join">
                         <button>
                           <File3FillIcon className="text-green-deep" size={30} />
                         </button>
