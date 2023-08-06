@@ -22,16 +22,9 @@ const Overview = () => {
 
   const { deleteEmail } = useUserData();
 
-  console.log("Test")
-  console.log(session?.user?.id);
-  console.log();
-
   useEffect(() => {
     deleteEmail();
-    
     setLogin(session?.user?.token, session?.user?.id)
-    
-
   });
   console.log(session?.user.id);
   console.log(session?.user.token);
