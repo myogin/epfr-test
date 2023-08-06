@@ -17,36 +17,39 @@ import { useFilterDataSubMenu } from "@/store/shared/filterDataSubMenu";
 import { useLoginData } from "@/store/login/logindata";
 import axios from "axios";
 import { siteConfig } from "@/libs/config";
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
+
+type Repo = {
+  name: string;
+  stargazers_count: number;
+};
 const Overview = () => {
   const { data: session, status } = useSession();
   const { setLogin } = useLoginData();
 
   const { deleteEmail } = useUserData();
-  async function getPfrList() {
-    const userToken = session?.user?.token;
-    const userID = session?.user?.id;
-    console.log(userToken);
+  // async function getPfrList() {
+  //   const userToken = session?.user?.token;
+  //   const userID = session?.user?.id;
 
-    await axios
-      .get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/getAll/${userID}?page=1&per_page=10`,
-        {
-          headers: {
-            Authorization: `${userToken}`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-      });
-  }
-  const Data = getPfrList();
+  //   await axios
+  //     .get(
+  //       `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/getAll/${userID}?page=1&per_page=10`,
+  //       {
+  //         headers: {
+  //           Authorization: `${userToken}`,
+  //         },
+  //       }
+  //     )
+  //     .then((res) => {
+  //       console.log(res);
+  //     });
+  // }
+  // const Data = getPfrList();
 
   useEffect(() => {
     deleteEmail();
     setLogin(session?.user?.token, session?.user?.id);
-    console.log(session);
-    console.log();
   });
 
   let showElement = useDetailDataEpfr(
@@ -141,7 +144,7 @@ const Overview = () => {
               />
             </div>
             <div id="dataPfr">
-              <PfrTable subMenu={epfrSubMenu} />
+              <PfrTable />
             </div>
           </GlobalCard>
           {showElement > 0 ? (
