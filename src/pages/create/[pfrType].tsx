@@ -116,25 +116,15 @@ const CreatePfrPage: Page = () => {
     fetchClient(index, data);
   };
 
-  const setStartingDoc = (pfrIdLocal: number, localOwner: any, localT: any) => {
-
-    setGlobal("ownerId", localOwner);
-    setGlobal("id", pfrIdLocal);
-    setGlobal("type", localT == null ? pfrTypeId : localT);
-  };
-
   useEffect(() => {
-    let pfrIdLocal = localPfrId();
-    let localOwner = localOwnerId();
-    let localT = localType();
 
-    setStartingDoc(pfrIdLocal, localOwner, localT);
+    if (!router.isReady) return;
 
-    if (pfrIdLocal !== null) {
-      getGeneralData(pfrIdLocal);
+    if (router.query.id !== null) {
+      getGeneralData(router.query.id);
     }
     
-  }, []);
+  }, [router.isReady]);
 
   return (
     <>
