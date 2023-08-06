@@ -79,9 +79,8 @@ const Verify: Page = () => {
               {`Please check your email`}
               <br />
               <span className="text-sm text-gray-light">
-              {`We have sent a message to your email regarding the verification code`}
+                {`We have sent a message to your email regarding the verification code`}
               </span>
-              
             </div>
             <div className="mb-10">
               <div className="flex justify-between w-full gap-2">
@@ -182,13 +181,6 @@ const Verify: Page = () => {
               Verify
             </ButtonGreenMedium>
           </div>
-        </div>
-        {/* <div className="w-full my-3 text-center">Or</div>
-        <ButtonRedMedium className="justify-center w-full">
-          Log in with singpass
-        </ButtonRedMedium> */}
-        <div className="w-full my-4 text-center">
-          {/* {`Don't have account.? Register Now`} */}
         </div>
       </div>
       <div className="hidden w-full bg-blue-midnight lg:block">

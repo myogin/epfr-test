@@ -10,8 +10,8 @@ import Loading from "@/components/Forms/Loading/Loading";
 import Image from "next/image";
 import Input from "@/components/Forms/Input";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
-import ChartLogin from "../../public/ChartLogin.png"
-import LogoLfa from "../../public/LegacyFALogo.png"
+import ChartLogin from "../../public/ChartLogin.png";
+import LogoLfa from "../../public/LegacyFALogo.png";
 
 const LoginPage: Page = () => {
   const { push } = useRouter();
@@ -24,7 +24,7 @@ const LoginPage: Page = () => {
   const [password, setPassword] = useState("");
 
   const { userEmail, setUserEmail } = useUserData();
-  
+
   const login = async () => {
     setLoading(true);
     await axios
@@ -78,14 +78,6 @@ const LoginPage: Page = () => {
               Log in
             </ButtonGreenMedium>
             {/* Forgot your password? */}
-          </div>
-
-          {/* <div className="w-full my-3 text-center">Or</div>
-        <ButtonRedMedium className="justify-center w-full">
-          Log in with singpass
-        </ButtonRedMedium> */}
-          <div className="w-full my-4 text-center">
-            {/* {`Don't have account.? Register Now`} */}
           </div>
         </div>
       </div>

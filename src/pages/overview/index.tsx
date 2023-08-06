@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import { useUserData } from "@/store/login/data";
 import DashboardLayout from "@/components/Layouts/DashboardLayout";
@@ -8,27 +8,45 @@ import SubNavbar from "@/components/Attributes/Navs/SubNavbar";
 import TitleMedium from "@/components/Attributes/Typography/TitleMedium";
 import SelectFilter from "@/components/Forms/Filters/SelectFilter";
 import Head from "next/head";
-import PfrSummaryDetail from "@/components/Modules/Epfrs/ShowData/PfrSummaryDetail";
+import PfrSummaryDetail from "./_component/PfrSummaryDetail";
 import { useDetailDataEpfr } from "@/store/epfrPage/detailData";
-import PfrTable from "@/components/Modules/Epfrs/ShowData/PfrTable";
-import PfrButtonModal from "@/components/Modules/Epfrs/ShowData/PfrButtonModal";
-import PfrNavbar from "@/components/Modules/Epfrs/ShowData/PfrNavbar";
+import PfrTable from "./_component/PfrTable";
+import PfrButtonModal from "./_component/PfrButtonModal";
 import Search2LineIcon from "remixicon-react/Search2LineIcon";
 import { useFilterDataSubMenu } from "@/store/shared/filterDataSubMenu";
 import { useLoginData } from "@/store/login/logindata";
+import axios from "axios";
 const Overview = () => {
   const { data: session, status } = useSession();
-  const {setLogin} = useLoginData();
+  const { setLogin } = useLoginData();
 
   const { deleteEmail } = useUserData();
+  async function getPfrList() {
+    const userToken = session?.user?.token;
+    const userID = session?.user?.id;
+    console.log(userToken);
+
+    await axios
+      .get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/getAll/${userID}?page=1&per_page=10`,
+        {
+          headers: {
+            Authorization: `${userToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      });
+  }
+  const Data = getPfrList();
 
   useEffect(() => {
     deleteEmail();
-    setLogin(session?.user?.token, session?.user?.id)
+    setLogin(session?.user?.token, session?.user?.id);
+    console.log(session);
+    console.log();
   });
-  console.log(session?.user.id);
-  console.log(session?.user.token);
-  console.log(session?.token);
 
   let showElement = useDetailDataEpfr(
     (state: { dataId: number }) => state.dataId
@@ -36,9 +54,7 @@ const Overview = () => {
 
   const { epfrSubMenu } = useFilterDataSubMenu();
 
-  const setData = (params: any) => {
-    console.log(params);
-  };
+  const setData = (params: any) => {};
 
   let months: Array<any> = [
     { id: 1, name: "Jan" },
