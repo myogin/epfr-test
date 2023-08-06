@@ -11,9 +11,9 @@ interface Props {
   subMenu?: any;
 }
 
-const PfrTable = async (props: Props) => {
+const PfrTable = (props: Props) => {
   let dataEpfr: Array<any> = datas(props.subMenu);
-  await wait(200);
+  // await wait(200);
   let elementHeader: any;
   switch (props.subMenu) {
     case 1:

@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import { useUserData } from "@/store/login/data";
 import DashboardLayout from "@/components/Layouts/DashboardLayout";
