@@ -186,6 +186,15 @@ const personalInformation = create(
                 client[name] = value;
               }
 
+              console.log("masuk editable status nggak " + get().editableStatus + " statsu " + get().status);
+
+              if(get().editableStatus === 1 && get().status === 1) {
+                console.log("masuk nggak");
+                draft.editableStatus = 2;
+              }else {
+                console.log("masuk sini nggak");
+              }
+
               if (
                 get().clientInfo?.length &&
                 get().clientInfo[clientType].hasOwnProperty("clientTitle")
@@ -286,9 +295,10 @@ const personalInformation = create(
                 dependentReplace.certNumber = params.certNumber;
                 dependentReplace.sponsored = params.sponsored;
                 dependentReplace.nric = params.nric;
-                dependentReplace.clientPfr = params.clientPfr;
-                dependentReplace.client = params.client;
+                dependentReplace.clientPfr = params.clientPfr ? params.clientPfr : "Manual";
+                dependentReplace.client = params.client ? params.client : 0;
               } else {
+                params['clientPfr'] = "Manual";
                 draft.dependant.push(params);
               }
 

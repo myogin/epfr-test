@@ -25,6 +25,7 @@ import RetrieveSingpassModal from "../../RetrieveSingpass/RetrieveSingpassModal"
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import { postPfrSections } from "@/services/pfrService";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -81,7 +82,7 @@ const PersonalInformation = (props: Props) => {
         JSON.stringify(dataOneFix)
       );
 
-      console.log("test response");
+      console.log("test response " + storeDataSectionpOne.data.result);
       console.log(storeDataSectionpOne.data.pfrId);
       console.log(storeDataSectionpOne);
 
@@ -89,6 +90,8 @@ const PersonalInformation = (props: Props) => {
       if (storeDataSectionpOne.data.result === "success") {
         if (id === 0 || id === null || id === undefined) {
           setGlobal("id", storeDataSectionpOne.data.pfrId);
+        } else {
+          setGlobal("id", id);
         }
         setGlobal("editableStatus", 1);
       }
@@ -112,7 +115,7 @@ const PersonalInformation = (props: Props) => {
       ) {
         console.log("can save now");
         // setSaveLoading(true);
-        storeData()
+        storeData();
       } else {
         console.log("Your cannot save data");
       }
@@ -246,6 +249,12 @@ const PersonalInformation = (props: Props) => {
           <TrustedIndividual />
         </>
       ) : null}
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 1" />
+      ) : (
+        ""
+      )}
+
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );

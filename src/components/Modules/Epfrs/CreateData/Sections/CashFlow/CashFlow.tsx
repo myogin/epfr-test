@@ -22,6 +22,7 @@ import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
 import { clientIdentity, getLength } from "@/libs/helper";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 
 interface Props {
   id?: any;
@@ -384,6 +385,11 @@ const CashFlow = (props: Props) => {
             )}
         </RowDouble>
       </SectionCardSingleGrid>
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating title="Save section 2" />
+      ) : (
+        ""
+      )}
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
       {/* <SectionCardFooter>
         <ButtonGreenMedium onClick={() => saveData(4)}>
