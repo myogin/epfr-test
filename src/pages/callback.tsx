@@ -20,17 +20,28 @@ import { siteConfig } from "@/libs/config";
 
 const CallbackPage: Page = () => {
   const router = useRouter();
-  let { dependant, fetchClient, setDependent, fetchAccompainment } =
-    usePersonalInformation();
 
-  let {
-    summaryOfLoans,
-    summaryOfCPF,
-    summaryOfProperty,
-    setProperty,
-    setCpf,
-    setLoan,
-  } = useExistingPortofolio();
+  let summaryOfLoans = useExistingPortofolio((state) => state.summaryOfLoans);
+
+  let summaryOfCPF = useExistingPortofolio((state) => state.summaryOfCPF);
+
+  let summaryOfProperty = useExistingPortofolio(
+    (state) => state.summaryOfProperty
+  );
+
+  let setProperty = useExistingPortofolio((state) => state.setProperty);
+
+  let setCpf = useExistingPortofolio((state) => state.setCpf);
+
+  let setLoan = useExistingPortofolio((state) => state.setLoan);
+
+  let fetchDependent = usePersonalInformation((state) => state.fetchDependent);
+
+  let fetchClient = usePersonalInformation((state) => state.fetchClient);
+
+  let fetchAccompainment = usePersonalInformation(
+    (state) => state.fetchAccompainment
+  );
 
   const storeDataClientToState = (
     clientType: number,
@@ -40,39 +51,11 @@ const CallbackPage: Page = () => {
   };
 
   const storeDataDependentToState = (data: DependantInformation[]) => {
-    let checkIndex = checkCountDataDependent(dependant);
-    let checkTotalData =
-      dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
-
-    if (data?.length > 0) {
-      data.map((data, index) => {
-        if (checkTotalData > 0) {
-          data["id"] = checkIndex;
-          setDependent(checkTotalData, data);
-        } else {
-          data["id"] = checkIndex;
-          setDependent(0, data);
-        }
-      });
-    }
+    fetchDependent(data);
   };
 
   const storeDataSponsoreChildToState = (data: DependantInformation[]) => {
-    let checkTotalData =
-      dependant?.length === 0 || dependant[0].id === 0 ? 0 : 1;
-
-    let checkIndex = checkCountDataDependent(dependant);
-    if (data?.length > 0) {
-      data.map((data, index) => {
-        if (checkTotalData > 0) {
-          data["id"] = checkIndex;
-          setDependent(checkTotalData, data);
-        } else {
-          data["id"] = checkIndex;
-          setDependent(0, data);
-        }
-      });
-    }
+    fetchDependent(data);
   };
 
   const storeDataAccompainmentToState = (
@@ -96,13 +79,8 @@ const CallbackPage: Page = () => {
     let checkIndex = checkCountData(summaryOfLoans);
     if (data?.length > 0) {
       data.map((data, index) => {
-        if (checkTotalData > 0) {
-          data["id"] = checkIndex;
-          setLoan(checkTotalData, data);
-        } else {
-          data["id"] = checkIndex;
-          setLoan(0, data);
-        }
+        data["id"] = checkIndex;
+        setLoan(checkTotalData, data);
       });
     }
   };
