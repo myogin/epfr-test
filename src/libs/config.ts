@@ -1,11 +1,11 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  title: "Epfr Lite",
+  title: "Epfr Apps",
   description: "Epfr Administration",
   creator: "Legacy FA Pte. Ltd",
   copyright: "Legacy FA Pte. Ltd",
-  siteName: "Epfr Lite",
+  siteName: "Epfr Apps",
   epfrMenu: [
     {
       id: 1,
