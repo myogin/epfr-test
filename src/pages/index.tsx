@@ -41,14 +41,12 @@ const LoginPage: Page = () => {
       })
       .then((data) => {
         push("/verify");
-
-        setLoading(false);
       })
       .catch((err) => {
         const msg = err.response.data.error;
-        setLoading(false);
         error(msg);
       });
+    setLoading(false);
   };
   return (
     <>
