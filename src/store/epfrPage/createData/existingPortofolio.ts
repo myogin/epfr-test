@@ -1,4 +1,4 @@
-import { SectionTwo } from "@/models/SectionTwo";
+import { SectionTwo, SummaryOfLoans } from "@/models/SectionTwo";
 import { produce } from "immer";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
@@ -26,6 +26,7 @@ type Actions = {
   patchSrs: (params: any) => any;
   removeSrs: (params: any) => any;
   setLoan: (indexData: number, params: any) => any;
+  fetchLoan: (params: any) => any;
   patchLoan: (params: any) => any;
   removeLoan: (params: any) => any;
   setGlobal: (name: string, value: any) => any;
@@ -620,6 +621,38 @@ const existingPortofolio = create(
                 dataReplace.id = 0;
                 dataReplace.client = "";
                 dataReplace.amount = 0;
+              }
+            })
+          ),
+          fetchLoan: (datas: SummaryOfLoans[]) =>
+          set(
+            produce((draft) => {
+              let checkLengthLoan = get().summaryOfLoans?.length;
+
+              if(datas.length > 0) {
+                datas.map((param, index) => {
+                  if (index === 0 && checkLengthLoan === 1) {
+                    let dataReplace = draft.summaryOfLoans[index];
+                    dataReplace.id = param.id;
+                    dataReplace.editting = param.editting;
+                    dataReplace.client = param.client;
+                    dataReplace.typeOfLoan = param.typeOfLoan;
+                    dataReplace.loanTerm = param.loanTerm;
+                    dataReplace.yearOfLoanTaken = param.yearOfLoanTaken;
+                    dataReplace.amountBorrowed = param.amountBorrowed;
+                    dataReplace.loanStatus = param.loanStatus;
+                    dataReplace.typeOfVehicle = param.typeOfVehicle;
+                    dataReplace.currentOutstandingLoan = param.currentOutstandingLoan;
+                    dataReplace.lender = param.lender;
+                    dataReplace.interestRate = param.interestRate;
+                    dataReplace.monthlyLoanRepayment = param.monthlyLoanRepayment;
+                    dataReplace.clientPfr = param.clientPfr;
+                  } else {
+                    param['id'] = ++checkLengthLoan;
+                    draft.summaryOfLoans.push(param);
+                  }
+                })
+                
               }
             })
           ),

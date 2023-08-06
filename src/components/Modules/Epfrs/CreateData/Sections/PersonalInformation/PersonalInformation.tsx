@@ -24,6 +24,7 @@ import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import RetrieveSingpassModal from "../../RetrieveSingpass/RetrieveSingpassModal";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import TextThin from "@/components/Attributes/Typography/TextThin";
+import { postPfrSections } from "@/services/pfrService";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -43,8 +44,10 @@ const PersonalInformation = (props: Props) => {
 
   let dependant = usePersonalInformation((state) => state.dependant);
   let accompaniment = usePersonalInformation((state) => state.accompaniment);
-  let setTrustedIndividuals = usePersonalInformation((state) => state.setTrustedIndividuals);
-
+  let setTrustedIndividuals = usePersonalInformation(
+    (state) => state.setTrustedIndividuals
+  );
+  let setGlobal = usePersonalInformation((state) => state.setGlobal);
 
   let checkAccompainment = CheckAccompainment(
     accompaniment,
@@ -54,6 +57,48 @@ const PersonalInformation = (props: Props) => {
   // Get status and editable status for checking active and non active the save function
   let status = usePersonalInformation((state) => state.status);
   let editableStatus = usePersonalInformation((state) => state.editableStatus);
+  let id = usePersonalInformation((state) => state.id);
+
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  // Store data
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localDataOne = localStorage.getItem("section1")
+        ? localStorage.getItem("section1")
+        : "";
+
+      let dataOneFix = {};
+      if (localDataOne) {
+        let data = JSON.parse(localDataOne);
+        dataOneFix = data.state;
+      }
+
+      let storeDataSectionpOne = await postPfrSections(
+        1,
+        JSON.stringify(dataOneFix)
+      );
+
+      console.log("test response");
+      console.log(storeDataSectionpOne.data.pfrId);
+      console.log(storeDataSectionpOne);
+
+      // If save success get ID and store to localstorage
+      if (storeDataSectionpOne.data.result === "success") {
+        if (id === 0 || id === null || id === undefined) {
+          setGlobal("id", storeDataSectionpOne.data.pfrId);
+        }
+        setGlobal("editableStatus", 1);
+      }
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (dependant?.length && dependant[0].name !== "") {
@@ -66,8 +111,10 @@ const PersonalInformation = (props: Props) => {
         (editableStatus === 2 && status === 1)
       ) {
         console.log("can save now");
-      }else {
-        console.log("Your data not complete Section 1");
+        // setSaveLoading(true);
+        storeData()
+      } else {
+        console.log("Your cannot save data");
       }
     }
   }, [dependant, editableStatus, status, scrollPositionBottom]);
@@ -109,7 +156,14 @@ const PersonalInformation = (props: Props) => {
                   : "text-2xl font-bold mb-10 mt-10"
               }`}
             >
-              Section 1. Personal Information
+              <span>Section 1. Personal Information</span>
+              {saveLoading ? (
+                <span className="text-xs font-extralight text-gray-light">
+                  Saving...
+                </span>
+              ) : (
+                ""
+              )}
             </HeadingPrimarySection>
           </div>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
