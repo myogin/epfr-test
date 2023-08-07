@@ -5,40 +5,43 @@ import AuthLayout from "@/components/Layouts/AuthLayout";
 import { useUserData } from "@/store/login/data";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Loading from "@/components/Forms/Loading/Loading";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import "react-toastify/dist/ReactToastify.css";
 import Head from "next/head";
 import { siteConfig } from "@/libs/config";
+import { useLoginData } from "@/store/login/logindata";
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
   const { push } = useRouter();
   const error = (text: string) => toast.error(text);
-  const success = (text: string) => toast.success(text);
   const { userEmail, deleteEmail } = useUserData();
-
+  const { data: session, status } = useSession();
+  const { setLogin } = useLoginData();
   useEffect(() => {
     if (userEmail === "") {
       push("/");
     }
-  });
+  }, []);
   const verify = async (code: number) => {
     setLoading(true);
-    const result = await signIn("login", {
+    await signIn("login", {
       code: code,
       email: userEmail,
       redirect: false,
-      // callbackUrl: "/overview",
+    }).then(async (res) => {
+      if (res?.ok == false) {
+        error("Code error. Check your code or re-send please");
+      } else {
+        const session = await getSession();
+        setLogin(session?.user?.token, session?.user?.id);
+        deleteEmail();
+        push("/overview");
+      }
     });
 
-    if (result?.status == 200) {
-      // setLogin()
-      push("/overview");
-    } else {
-      error("Code error. Check your code or re-send please");
-    }
     setLoading(false);
   };
   const inputRef = useRef<any[]>([]);

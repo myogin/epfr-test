@@ -1,7 +1,4 @@
-import { useSession } from "next-auth/react";
-import React, { Suspense, useEffect } from "react";
-import { signOut } from "next-auth/react";
-import { useUserData } from "@/store/login/data";
+import React from "react";
 import DashboardLayout from "@/components/Layouts/DashboardLayout";
 import GlobalCard from "@/components/Attributes/Cards/GlobalCard";
 import SubNavbar from "@/components/Attributes/Navs/SubNavbar";
@@ -17,23 +14,12 @@ import { useFilterDataSubMenu } from "@/store/shared/filterDataSubMenu";
 import { useLoginData } from "@/store/login/logindata";
 import axios from "axios";
 import { siteConfig } from "@/libs/config";
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
 type Repo = {
   name: string;
   stargazers_count: number;
 };
 const Overview = () => {
-  const { data: session, status } = useSession();
-  const { setLogin } = useLoginData();
-
-  const { deleteEmail } = useUserData();
-
-  useEffect(() => {
-    deleteEmail();
-    setLogin(session?.user?.token, session?.user?.id);
-  });
-
   let showElement = useDetailDataEpfr(
     (state: { dataId: number }) => state.dataId
   );
