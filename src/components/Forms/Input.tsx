@@ -48,7 +48,7 @@ const Input = (props: Props) => {
       {/* Error Validation */}
       {props.needValidation && !props.logic ? (
         <div className="w-full text-xs text-left text-red">
-          {props.textError ? props.textError : "Required field"}
+          {props.textError ? props.textError : "Required"}
         </div>
       ) : null}
     </div>

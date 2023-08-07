@@ -103,13 +103,6 @@ const CallbackPage: Page = () => {
     let clientType =
       clients !== null ? (Number(clients.clientType) === 1 ? 0 : 1) : 0;
 
-    let pfrType =
-      clients !== null
-        ? Number(clients.pfrType) === 1
-          ? "single"
-          : "joint"
-        : "single";
-
     let dataDependant = singpassBase.dataDependant
       ? singpassBase.dataDependant
       : null;
@@ -119,6 +112,15 @@ const CallbackPage: Page = () => {
     let property = singpassBase.property ? singpassBase.property : null;
     let cpfs = singpassBase.cpfs ? singpassBase.cpfs : null;
     let loan = singpassBase.loan ? singpassBase.loan : null;
+
+    let pfr = singpassBase.pfr ? singpassBase.pfr : null;
+
+    let pfrType =
+      pfr !== null
+        ? Number(pfr.pfrType) === 1
+          ? "single"
+          : "joint"
+        : "single";
 
     if (clients !== null) {
       storeDataClientToState(clientType, clients);
@@ -148,7 +150,14 @@ const CallbackPage: Page = () => {
       storeDataCpfToState(cpfs);
     }
 
+    // if(pfr.uuid !== null) {
+    //   router.push(`/create/${pfrType}?id=${pfr.uuid}#section-1`);
+    // }else {
+    //   router.push(`/create/${pfrType}#section-1`);
+    // }
+
     router.push(`/create/${pfrType}#section-1`);
+    
   }, [router.isReady, router.query]);
   return (
     <>
