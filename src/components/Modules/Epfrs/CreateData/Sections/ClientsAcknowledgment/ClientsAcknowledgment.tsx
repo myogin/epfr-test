@@ -22,12 +22,6 @@ interface Props {
   pfrType: number;
 }
 
-<<<<<<< HEAD
-const pfrId = 10343;
-const pfrType = 1;
-
-=======
->>>>>>> feature/epfr-group-four
 const ClientsAcknowledgment = (props: Props) => {
   const [pfrId, setPfrId] = useState(0);
 
@@ -115,11 +109,7 @@ const ClientsAcknowledgment = (props: Props) => {
   }
 
   const [sectionElevenData, setSectionElevenData] = useState<SectionEleven>({
-<<<<<<< HEAD
-    id: 0,
-=======
     id: pfrId,
->>>>>>> feature/epfr-group-four
     data: [sectionData, sectionDataTwo],
     remark: null,
     remark1: null,
@@ -224,16 +214,10 @@ const ClientsAcknowledgment = (props: Props) => {
   ]);
 
   const fetchData = async () => {
-<<<<<<< HEAD
-    const s12Res: any = await getPfrStep(12, pfrId);
-    const s10Res: any = await getPfrStep(10, pfrId);
-    const s13Res: any = await getPfrStep(13, pfrId);
-=======
     
     const s12Res: any = await getPfrStep(12, pfrId);
     // const s10Res: any = await getPfrStep(10, pfrId);
     // const s13Res: any = await getPfrStep(13, pfrId);
->>>>>>> feature/epfr-group-four
 
     if (s12Res["answer"] != null) {
       let data = JSON.parse(s12Res["answer"]["data"]);
@@ -308,11 +292,7 @@ const ClientsAcknowledgment = (props: Props) => {
       });
     });
 
-<<<<<<< HEAD
-    for (let i = 0; i < pfrType; i++) {
-=======
     for (let i = 0; i < props.pfrType; i++) {
->>>>>>> feature/epfr-group-four
       // setSectionElevenData(prevData => {
       //   return prevData.map((client, idx) => {
       //     if(i === idx) {
@@ -380,20 +360,12 @@ const ClientsAcknowledgment = (props: Props) => {
       });
     }
 
-<<<<<<< HEAD
-    let section10 = s10Res;
-    let answers = section10["data"];
-    answers.forEach((answer: any, i: any) => {
-      let _1b = answer["answer1b"];
-      if (i < pfrType) {
-=======
     // let section10 = s10Res;
     const section10 = JSON.parse(localStorage.getItem('section10')?? "{'data':[]}")
     let answers = section10["data"];
     answers.forEach((answer: any, i: any) => {
       let _1b = answer["answer1b"];
       if (i < props.pfrType) {
->>>>>>> feature/epfr-group-four
         // setSectionElevenData(prevData => {
         //   return prevData.map((client, idx) => {
         //     if(i === idx) {
@@ -420,19 +392,6 @@ const ClientsAcknowledgment = (props: Props) => {
       }
     });
 
-<<<<<<< HEAD
-    if (s13Res["note"] != null) {
-      var cekData = false;
-      if (s13Res["note"]["nftf"]) {
-        if (s13Res["note"]["nftf"] === true || s13Res["note"]["nftf"] === 1) {
-          cekData = true;
-        } else {
-          cekData = false;
-        }
-      }
-      setNftf(cekData);
-    }
-=======
     // if (s13Res["note"] != null) {
     //   var cekData = false;
     //   if (s13Res["note"]["nftf"]) {
@@ -444,7 +403,6 @@ const ClientsAcknowledgment = (props: Props) => {
     //   }
     //   setNftf(cekData);
     // }
->>>>>>> feature/epfr-group-four
   };
 
   const onCheckMatirx = (
