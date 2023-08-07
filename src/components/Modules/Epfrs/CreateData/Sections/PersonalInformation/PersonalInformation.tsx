@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import FlashlightLineIcon from "remixicon-react/FlashlightLineIcon";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
-import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingSecondarySectionDoubleGrid from "@/components/Attributes/Sections/HeadingSecondarySectionDoubleGrid";
 import Toggle from "@/components/Forms/Toggle";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
