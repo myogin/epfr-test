@@ -29,21 +29,19 @@ const EpfrCreateFinish: Page = () => {
             <CheckboxCircleFillIcon className="text-green-deep" size={30} />
           </div>
           <div className="text-md text-gray-light">
-            You successfully submitted new epfr document. Check your email inbox
-            to continue signing step.
+            You successfully submitted a new EPFR document. Please check your email to continue the signing step.
             <br />
-            Now you will be redirected to old system. Click proceed to continue
-            this action.
+            Please see your document security status:
           </div>
           <div className="flex items-center gap-4 mt-4">
-            <ButtonGreenMedium onClick={back}>Proceed</ButtonGreenMedium>
-            or
+            <ButtonGreenMedium onClick={back}>Complete</ButtonGreenMedium>
+            {/* or
             <ButtonBorderMedium
               className="font-semibold text-green-deep border-green-deep"
               onClick={back}
             >
               Create Other EPFR
-            </ButtonBorderMedium>
+            </ButtonBorderMedium> */}
           </div>
         </div>
       </GlobalCard>

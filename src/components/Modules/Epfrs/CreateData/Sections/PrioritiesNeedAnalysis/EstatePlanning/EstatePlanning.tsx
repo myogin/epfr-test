@@ -75,7 +75,7 @@ const EstatePlanning = (props: Props) => {
 
   // Handle Checkbox Client & Dependant
   const handleClient = (value: any, i: any, dataI: any) => {
-    setNeed(value, i, dataI);
+    setNeed(i, dataI, value);
   };
 
   // Set Client Data

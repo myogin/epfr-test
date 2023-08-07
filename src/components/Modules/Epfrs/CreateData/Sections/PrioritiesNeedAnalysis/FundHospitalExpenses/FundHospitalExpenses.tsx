@@ -78,11 +78,11 @@ const FundHospitalExpenses = (props: Props) => {
 
   // Handle Checkbox Client & Dependant
   const handleClient = (value: any, i: any, dataI: any) => {
-    setNeed(value, i, dataI);
+    setNeed(i, dataI, value);
   };
 
   const handleDependant = (value: any, i: any, dataI: any) => {
-    setNeedDependant(value, i, dataI);
+    setNeedDependant(i, dataI, value);
   };
 
   // Set Client Data

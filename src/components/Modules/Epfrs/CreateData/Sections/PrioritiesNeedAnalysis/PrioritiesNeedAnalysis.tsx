@@ -47,52 +47,70 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   const resTotal = section7.typeClient + section7.totalDependant;
   let { showDetailData } = useNavigationSection();
 
+  const uncheckAll = (data: boolean, indexSub: number) => {
+    if(!data) {
+      setNeed(1, indexSub, data);
+    }
+  }
+
   const setIncomeProtection = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setFundDisability = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setFundCritical = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setFundChildren = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setFundMediumToLong = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setFundRetirement = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setCoverForPersonal = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setFundLongTermCare = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setFundHospitalExpense = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setMaternityPlan = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setEstatePlanning = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const setOtherInsurance = (data: boolean, indexClient: number, indexSub: number) => {
     setNeed(indexClient, indexSub, data);
+    uncheckAll(data, indexSub);
   };
 
   const scrollPosition = useScrollPosition(7);
@@ -517,39 +535,39 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             7.1 Protection (Income Protection Upon Death)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][0]}
-            toggleName={section7.answer.need.client[0][0] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][0] || section7.answer.need.client[1][0]}
+            toggleName={(section7.answer.need.client[0][0] || section7.answer.need.client[1][0]) ? "Review" : "Not Review"}
             onChange={(event) => setIncomeProtection(!section7.answer.need.client[0][0], 0, 0)} />
             {/* <Toggle /> */}
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][0] ? <IncomeProtection pfrType={props.pfrType} /> : ""}
+        {(section7.answer.need.client[0][0] || section7.answer.need.client[1][0]) ? <IncomeProtection pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.2 Protection (Fund Disability Income / Expense)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][1]}
-            toggleName={section7.answer.need.client[0][1] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][1] || section7.answer.need.client[1][1]}
+            toggleName={(section7.answer.need.client[0][1] || section7.answer.need.client[1][1]) ? "Review" : "Not Review"}
             onChange={() => setFundDisability(!section7.answer.need.client[0][1], 0, 1)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][1] ? <FundDisability pfrType={props.pfrType} /> : ""}
+        {(section7.answer.need.client[0][1] || section7.answer.need.client[1][1]) ? <FundDisability pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.3 Protection (Fund Critical Illness Expense)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][2]}
-            toggleName={section7.answer.need.client[0][2] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][2] || section7.answer.need.client[1][2]}
+            toggleName={(section7.answer.need.client[0][2] || section7.answer.need.client[1][2]) ? "Review" : "Not Review"}
             onChange={() => setFundCritical(!section7.answer.need.client[0][2], 0, 2)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][2] ? <FundCritical pfrType={props.pfrType} /> : ""}
+        {(section7.answer.need.client[0][2] || section7.answer.need.client[1][2]) ? <FundCritical pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -570,98 +588,98 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             Investment Needs / Other Goals)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][4]}
-            toggleName={section7.answer.need.client[0][4] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][4] || section7.answer.need.client[1][4]}
+            toggleName={(section7.answer.need.client[0][4] || section7.answer.need.client[1][4]) ? "Review" : "Not Review"}
             onChange={(event) => setFundMediumToLong(!section7.answer.need.client[0][4], 0, 4)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][4] ? <FundMediumToLong pfrType={props.pfrType}/> : ""}
+        {(section7.answer.need.client[0][4] || section7.answer.need.client[1][4]) ? <FundMediumToLong pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.6 Saving & Investment (Fund Retirement Lifestyle)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][5]}
-            toggleName={section7.answer.need.client[0][5] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][5] || section7.answer.need.client[1][5]}
+            toggleName={(section7.answer.need.client[0][5] || section7.answer.need.client[1][5]) ? "Review" : "Not Review"}
             onChange={(event) => setFundRetirement(!section7.answer.need.client[0][5], 0, 5)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][5] ? <FundRetirement pfrType={props.pfrType}/> : ""}
+        {(section7.answer.need.client[0][5] || section7.answer.need.client[1][5]) ? <FundRetirement pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.7 Accident & Health (Cover for Personal Accident)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][6]}
-            toggleName={section7.answer.need.client[0][6] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][6] || section7.answer.need.client[1][6]}
+            toggleName={section7.answer.need.client[0][6] || section7.answer.need.client[1][6] ? "Review" : "Not Review"}
             onChange={(event) => setCoverForPersonal(!section7.answer.need.client[0][6], 0, 6)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][6] ? <CoverForPersonal pfrType={props.pfrType}/> : ""}
+        {section7.answer.need.client[0][6] || section7.answer.need.client[1][6] ? <CoverForPersonal pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.8 Accident & Health (Fund Long Term Care)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][7]}
-            toggleName={section7.answer.need.client[0][7] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][7] || section7.answer.need.client[1][7]}
+            toggleName={(section7.answer.need.client[0][7] || section7.answer.need.client[1][7]) ? "Review" : "Not Review"}
             onChange={(event) => setFundLongTermCare(!section7.answer.need.client[0][7], 0, 7)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][7] ? <FundLongTermCare pfrType={props.pfrType}/> : ""}
+        {(section7.answer.need.client[0][7] || section7.answer.need.client[1][7]) ? <FundLongTermCare pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.9 Accident & Health (Fund Hospital Expenses)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][8]}
-            toggleName={section7.answer.need.client[0][8] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][8] || section7.answer.need.client[1][8]}
+            toggleName={(section7.answer.need.client[0][8] || section7.answer.need.client[1][8]) ? "Review" : "Not Review"}
             onChange={(event) => setFundHospitalExpense(!section7.answer.need.client[0][8], 0, 8)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][8] ? <FundHospitalExpenses pfrType={props.pfrType}/> : ""}
+        {(section7.answer.need.client[0][8] || section7.answer.need.client[1][8]) ? <FundHospitalExpenses pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.10 Maternity Plan</h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][9]}
-            toggleName={section7.answer.need.client[0][9] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][9] || section7.answer.need.client[1][9]}
+            toggleName={(section7.answer.need.client[0][9] || section7.answer.need.client[1][9]) ? "Review" : "Not Review"}
             onChange={(event) => setMaternityPlan(!section7.answer.need.client[0][9], 0, 9)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][9] ? <MaternityPlan pfrType={props.pfrType}/> : ""}
+        {section7.answer.need.client[0][9] || section7.answer.need.client[1][9] ? <MaternityPlan pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.11 Estate Planning</h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][10]}
-            toggleName={section7.answer.need.client[0][10] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][10] || section7.answer.need.client[1][10]}
+            toggleName={(section7.answer.need.client[0][10] || section7.answer.need.client[1][10]) ? "Review" : "Not Review"}
             onChange={(event) => setEstatePlanning(!section7.answer.need.client[0][10], 0, 10)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][10] ? <EstatePlanning pfrType={props.pfrType}/> : ""}
+        {(section7.answer.need.client[0][10] || section7.answer.need.client[1][10]) ? <EstatePlanning pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.12 Other Insurance(s)</h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][11]}
-            toggleName={section7.answer.need.client[0][11] ? "Review" : "Not Review"}
+            isChecked={section7.answer.need.client[0][11] || section7.answer.need.client[1][11]}
+            toggleName={(section7.answer.need.client[0][11] || section7.answer.need.client[1][11]) ? "Review" : "Not Review"}
             onChange={(event) => setOtherInsurance(!section7.answer.need.client[0][11], 0, 11)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][11] ? <OtherInsurance pfrType={props.pfrType}/> : ""}
+        {(section7.answer.need.client[0][11] || section7.answer.need.client[1][11]) ? <OtherInsurance pfrType={props.pfrType}/> : ""}
       </>
 
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
