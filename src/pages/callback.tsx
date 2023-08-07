@@ -43,6 +43,12 @@ const CallbackPage: Page = () => {
     (state) => state.fetchAccompainment
   );
 
+  let resetSectionOne = usePersonalInformation(
+    (state) => state.resetSectionOne
+  );
+
+  let resetSectionTwo = useExistingPortofolio((state) => state.resetSectionTwo);
+
   const storeDataClientToState = (
     clientType: number,
     data: Clientformation
@@ -93,6 +99,12 @@ const CallbackPage: Page = () => {
     setCpf(checkTotalData, data);
   };
 
+  // Reset Data
+  const resetExistingData = () => {
+    resetSectionOne();
+    resetSectionTwo();
+  };
+
   useEffect(() => {
     if (!router.isReady) return;
     let dataSingpass = router.query.dataSingpass as string;
@@ -122,6 +134,8 @@ const CallbackPage: Page = () => {
           : "joint"
         : "single";
 
+    resetExistingData();
+
     if (clients !== null) {
       storeDataClientToState(clientType, clients);
     }
@@ -150,14 +164,16 @@ const CallbackPage: Page = () => {
       storeDataCpfToState(cpfs);
     }
 
-    // if(pfr.uuid !== null) {
-    //   router.push(`/create/${pfrType}?id=${pfr.uuid}#section-1`);
-    // }else {
-    //   router.push(`/create/${pfrType}#section-1`);
-    // }
+    console.log("test masuk apa ini  " + pfr.uuid);
 
-    router.push(`/create/${pfrType}#section-1`);
-    
+    if(pfr.uuid === "" || pfr.uuid === null || pfr.uuid === 0 || pfr.uuid === undefined) {
+      router.push(`/create/${pfrType}?singpass=ok#section-1`);
+    }else {
+      router.push(`/create/${pfrType}?id=${pfr.uuid}&singpass=ok#section-1`);
+      
+    }
+
+    // router.push(`/create/${pfrType}#section-1`);
   }, [router.isReady, router.query]);
   return (
     <>
