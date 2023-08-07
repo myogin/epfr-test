@@ -41,7 +41,7 @@ const Select = (props: Props) => {
         disabled={props.disabled}
       >
         <option value="-">
-          {props.intro ? props.intro : "Please select data"}
+          {props.intro ? props.intro : "Select"}
         </option>
         {props.datas?.length &&
           props.datas.map((val, index) => (
