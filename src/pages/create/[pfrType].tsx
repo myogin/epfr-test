@@ -98,6 +98,7 @@ const CreatePfrPage: Page = () => {
 
       let generalData = await getAllPfrData(params);
 
+      setGlobal("ownerId", params);
       // Fetch Client
       if (generalData.clients.length > 0) {
         generalData.clients.map((data: any, index: number) => {
@@ -116,11 +117,23 @@ const CreatePfrPage: Page = () => {
     fetchClient(index, data);
   };
 
+  const setStartingDoc = (localOwner: any, localT: any) => {
+
+    setGlobal("ownerId", localOwner);
+    setGlobal("type", localT == null ? pfrTypeId : localT);
+  };
+
+
   useEffect(() => {
 
     if (!router.isReady) return;
 
-    if (router.query.id !== null) {
+    let localOwner = localOwnerId();
+    let localT = localType();
+
+    setStartingDoc(localOwner, localT);
+
+    if (router.query.id !== null && router.query.id !== undefined) {
       getGeneralData(router.query.id);
     }
     
