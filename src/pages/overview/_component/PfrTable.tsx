@@ -12,33 +12,24 @@ import React, { Fragment, useEffect, useState } from "react";
 import More2LineIcon from "remixicon-react/More2LineIcon";
 import { pfrProgress } from "./overviewUtils";
 import { useLoginData } from "@/store/login/logindata";
-import { useSession } from "next-auth/react";
 
 interface Props {}
 
 const PfrTable = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pfrList, setPfrList] = useState([]);
-  const { data: session, status } = useSession();
 
   const { token } = useLoginData();
   const { ownerId } = useLoginData();
   useEffect(() => {
     async function getALldata() {
       setIsLoading(true);
-      if (session?.user?.id && session?.user?.token) {
-        let res = await getPfrList(
-          Number(session?.user?.id),
-          session?.user?.token
-        );
-        setPfrList(res.data);
-      }
+      let res = await getPfrList(Number(ownerId));
+      setPfrList(res.data);
       setIsLoading(false);
     }
-    if (session?.user?.id && session?.user?.token) {
-      getALldata();
-    }
-  }, [session]);
+    getALldata();
+  }, []);
 
   if (isLoading)
     return (
