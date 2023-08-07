@@ -58,8 +58,8 @@ const PfrButtonModal = () => {
                   </Dialog.Title>
                   <div className="mt-2">
                     <div className="flex justify-between gap-10">
-                      <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
-                        <Link href="/create/single">
+                      <Link href="/create/single#section-1">
+                        <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
                           <button>
                             <File3FillIcon
                               className="text-green-deep"
@@ -70,10 +70,10 @@ const PfrButtonModal = () => {
                           <span className="text-sm text-gray-light">
                             This EPFR for one person
                           </span>
-                        </Link>
-                      </div>
-                      <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
-                        <Link href="/create/join">
+                        </div>
+                      </Link>
+                      <Link href="/create/join#section-1">
+                        <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
                           <button>
                             <File3FillIcon
                               className="text-green-deep"
@@ -84,8 +84,8 @@ const PfrButtonModal = () => {
                           <span className="text-sm text-gray-light">
                             This EPFR for two persons
                           </span>
-                        </Link>
-                      </div>
+                        </div>
+                      </Link>
                     </div>
                   </div>
                 </Dialog.Panel>

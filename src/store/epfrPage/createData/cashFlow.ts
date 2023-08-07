@@ -20,6 +20,7 @@ type Actions = {
   setReasonSurplus: (indexData: number, params: any) => any;
   setReason: (indexData: number, params: any) => any;
   setNeed: (indexData: number, params: any) => any;
+  resetSectionThree: () => any;
 };
 
 const initialState: SectionThree = {
@@ -133,7 +134,7 @@ const initialState: SectionThree = {
   issues: [],
   totalNetSurplus: [230, 345],
   status: 0,
-  editableStatus: 0
+  editableStatus: 0,
 };
 
 const cashFlow = create(
@@ -298,6 +299,9 @@ const cashFlow = create(
               need[indexData] = params;
             })
           ),
+        resetSectionThree: () => {
+          set(initialState);
+        },
       }),
       {
         name: "section3",
