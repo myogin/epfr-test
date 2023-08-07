@@ -30,6 +30,7 @@ const Verify: Page = () => {
       code: code,
       email: userEmail,
       redirect: false,
+      // callbackUrl: "/overview",
     });
 
     if (result?.status == 200) {

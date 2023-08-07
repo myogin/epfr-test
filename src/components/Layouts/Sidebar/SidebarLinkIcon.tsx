@@ -10,7 +10,7 @@ const SidebarLinkIcon = (prop: Props) => {
   return (
     <Link
       href={prop.val.url}
-      className={`flex w-full justify-start gap-4 p-3 hover:cursor-pointer ${
+      className={`flex w-full justify-start gap-4 p-3 hover:cursor-pointer items-center${
         prop.active ? "bg-white text-blue-midnight rounded-md" : ""
       }`}
     >
