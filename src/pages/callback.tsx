@@ -121,44 +121,30 @@ const CallbackPage: Page = () => {
     let loan = singpassBase.loan ? singpassBase.loan : null;
 
     if (clients !== null) {
-      console.log("clients");
-      console.log(clients);
       storeDataClientToState(clientType, clients);
     }
 
     if (dataDependant !== null) {
-      console.log("dataDependant");
-      console.log(dataDependant);
       storeDataDependentToState(dataDependant);
     }
 
     if (dataSpons !== null) {
-      console.log("dataSpons");
-      console.log(dataSpons);
       storeDataSponsoreChildToState(dataSpons);
     }
 
     if (dataAccomp !== null) {
-      console.log("dataAccomp");
-      console.log(dataAccomp);
       storeDataAccompainmentToState(clientType, dataAccomp);
     }
 
     if (property !== null) {
-      console.log("property");
-      console.log(property);
       storeDataPropertyToState(property);
     }
 
     if (loan !== null) {
-      console.log("loan");
-      console.log(loan);
       storeDataLoanToState(loan);
     }
 
     if (cpfs !== null) {
-      console.log("cpfs");
-      console.log(cpfs);
       storeDataCpfToState(cpfs);
     }
 

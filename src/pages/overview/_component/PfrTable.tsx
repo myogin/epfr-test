@@ -11,103 +11,24 @@ import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
 import More2LineIcon from "remixicon-react/More2LineIcon";
 import { pfrProgress } from "./overviewUtils";
+import { useLoginData } from "@/store/login/logindata";
 
 interface Props {}
 
 const PfrTable = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pfrList, setPfrList] = useState([]);
+
+  const { ownerId } = useLoginData();
   useEffect(() => {
     async function getALldata() {
       setIsLoading(true);
-      let res = await getPfrList();
+      let res = await getPfrList(Number(ownerId));
       setPfrList(res.data);
       setIsLoading(false);
     }
     getALldata();
   }, []);
-  let dataEpfr: Array<any> = [
-    {
-      id: 1,
-      type: "Single",
-      owner: "Ellen Wilson",
-      client: "Ellen Wang",
-      createdAt: "1 Jan 2023",
-      method: "singpass",
-      stepProgress: "Section 12",
-      progress: "100%",
-    },
-    {
-      id: 2,
-      type: "Single",
-      owner: "Ellen Wilson",
-      client: "Juniper",
-      createdAt: "1 Jan 2023",
-      method: "singpass",
-      stepProgress: "Section 4",
-      progress: "45%",
-    },
-    {
-      id: 3,
-      type: "Single",
-      owner: "Ellen Wilson",
-      client: "Julian",
-      createdAt: "1 Jan 2023",
-      method: "singpass",
-      stepProgress: "Section 6",
-      progress: "50%",
-    },
-    {
-      id: 4,
-      type: "Single",
-      owner: "Ellen Wilson",
-      client: "Adrach",
-      createdAt: "1 Jan 2023",
-      method: "singpass",
-      stepProgress: "Section 12",
-      progress: "100%",
-    },
-    {
-      id: 5,
-      type: "Single",
-      owner: "Selena",
-      client: "Gomez",
-      createdAt: "1 Jan 2023",
-      method: "singpass",
-      stepProgress: "Section 7",
-      progress: "65%",
-    },
-    {
-      id: 6,
-      type: "Single",
-      owner: "Selena",
-      client: "Ellen Wilson",
-      createdAt: "1 Jan 2023",
-      method: "singpass",
-      stepProgress: "Section 9",
-      progress: "70%",
-    },
-    {
-      id: 7,
-      type: "Single",
-      owner: "Selena",
-      client: "Ellen Wilson",
-      createdAt: "1 Jan 2023",
-      method: "singpass",
-      stepProgress: "Section 11",
-      progress: "80%",
-    },
-    {
-      id: 8,
-      type: "Single",
-      owner: "Selena",
-      client: "Ellen Wilson",
-      createdAt: "1 Jan 2023",
-      method: "singpass",
-      stepProgress: "Section 12",
-      progress: "100%",
-    },
-  ];
 
   if (isLoading)
     return (
