@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import FlashlightLineIcon from "remixicon-react/FlashlightLineIcon";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
-import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingSecondarySectionDoubleGrid from "@/components/Attributes/Sections/HeadingSecondarySectionDoubleGrid";
 import Toggle from "@/components/Forms/Toggle";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
@@ -15,14 +14,15 @@ import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import {
   clientIdentity,
-  getLength,
-  localOwnerId,
-  localPfrId,
+  getLength
 } from "@/libs/helper";
-import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import { Accompaniment } from "@/models/SectionOne";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import { useLoginData } from "@/store/login/logindata";
+import RetrieveSingpassModal from "../../RetrieveSingpass/RetrieveSingpassModal";
+import TextSmall from "@/components/Attributes/Typography/TextSmall";
+import TextThin from "@/components/Attributes/Typography/TextThin";
+import { postPfrSections } from "@/services/pfrService";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -37,45 +37,83 @@ const PersonalInformation = (props: Props) => {
     setShowAddDependent(params);
   };
 
-  let { showDetailData } = useNavigationSection();
-
-  const showDetail = (params: any) => {
-    showDetailData(params);
-  };
-
   const scrollPosition = useScrollPosition(1);
   const scrollPositionBottom = useScrollPositionBottom(1);
 
-  let {
-    ownerId,
-    type,
-    id,
-    dependant,
-    accompaniment,
-    issues,
-    status,
-    setTrustedIndividuals,
-    setGlobal,
-  } = usePersonalInformation();
+  let dependant = usePersonalInformation((state) => state.dependant);
+  let accompaniment = usePersonalInformation((state) => state.accompaniment);
+  let setTrustedIndividuals = usePersonalInformation(
+    (state) => state.setTrustedIndividuals
+  );
+  let setGlobal = usePersonalInformation((state) => state.setGlobal);
 
   let checkAccompainment = CheckAccompainment(
     accompaniment,
     setTrustedIndividuals
   );
 
+  // Get status and editable status for checking active and non active the save function
+  let status = usePersonalInformation((state) => state.status);
+  let editableStatus = usePersonalInformation((state) => state.editableStatus);
+  let id = usePersonalInformation((state) => state.id);
+
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  // Store data
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section1")
+        ? localStorage.getItem("section1")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data.state;
+      }
+
+      let storeDataSection = await postPfrSections(
+        1,
+        JSON.stringify(dataFix)
+      );
+
+      // If save success get ID and store to localstorage
+      if (storeDataSection.data.result === "success") {
+        if (id === 0 || id === null || id === undefined) {
+          setGlobal("id", storeDataSection.data.pfrId);
+        } else {
+          setGlobal("id", id);
+        }
+        setGlobal("editableStatus", 1);
+      }
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    let localOwner = localOwnerId();
-    let localPfr = localPfrId();
-    
-    setGlobal("ownerId", localOwner);
-    setGlobal("id", localPfr);
-    setGlobal("type", props.pfrType);
-
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
-  }, [dependant]);
+
+    if (scrollPositionBottom === "Process1") {
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("can save now");
+        // setSaveLoading(true);
+        storeData();
+      } else {
+        console.log("Your cannot save data");
+      }
+    }
+  }, [dependant, editableStatus, status, scrollPositionBottom]);
 
   return (
     <div id={props.id}>
@@ -83,17 +121,21 @@ const PersonalInformation = (props: Props) => {
       {props.pfrType === 1 ? (
         <>
           <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60">
-            <button
-              className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-strong"
-              onClick={() => showDetail(100)}
-            >
-              <span className="flex">
-                <FlashlightLineIcon /> AUTOFILL PROFILE FORM
-              </span>
-              <span className="px-4 py-3 text-white rounded-lg bg-green-deep">
-                Import
-              </span>
-            </button>
+            <div className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-strong">
+              <div>
+                <TextSmall className="flex gap-4">
+                  <FlashlightLineIcon /> AUTOFILL PROFILE FORM BY SINGPASS
+                </TextSmall>
+                <TextThin>
+                  Singpass enables you to retrive your personal data from
+                  partcipating Goverment agencies. With your consent, we can
+                  auto-fill profile form.
+                </TextThin>
+              </div>
+              <div className="flex items-start justify-end">
+                <RetrieveSingpassModal clientType={0} />
+              </div>
+            </div>
           </div>
           <div
             id="section-header-1"
@@ -110,7 +152,14 @@ const PersonalInformation = (props: Props) => {
                   : "text-2xl font-bold mb-10 mt-10"
               }`}
             >
-              Section 1. Personal Information
+              <span>Section 1. Personal Information</span>
+              {saveLoading ? (
+                <span className="text-xs font-extralight text-gray-light">
+                  Saving...
+                </span>
+              ) : (
+                ""
+              )}
             </HeadingPrimarySection>
           </div>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
@@ -144,14 +193,21 @@ const PersonalInformation = (props: Props) => {
                   {clientIdentity(index)}
                 </h3>
                 <div className="flex flex-row items-center justify-between">
-                  <button className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light">
-                    <span className="flex">
-                      <FlashlightLineIcon /> AUTOFILL PROFILE FORM
-                    </span>
-                    <span className="px-4 py-3 text-white rounded-lg bg-green-deep">
-                      Import
-                    </span>
-                  </button>
+                  <div className="flex items-center justify-between w-full px-3 py-3 text-sm border rounded-lg text-gray-light border-gray-soft-light">
+                    <div>
+                      <TextSmall className="flex gap-4">
+                        <FlashlightLineIcon /> AUTOFILL PROFILE FORM BY SINGPASS
+                      </TextSmall>
+                      <TextThin>
+                        Singpass enables you to retrive your personal data from
+                        partcipating Goverment agencies. With your consent, we
+                        can auto-fill profile form.
+                      </TextThin>
+                    </div>
+                    <div className="flex items-start justify-end">
+                      <RetrieveSingpassModal clientType={index} />
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -186,6 +242,12 @@ const PersonalInformation = (props: Props) => {
           <TrustedIndividual />
         </>
       ) : null}
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 1" />
+      ) : (
+        ""
+      )}
+
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );

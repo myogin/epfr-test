@@ -11,6 +11,7 @@ import AddPlanRecommendation from "@/components/Modules/Epfrs/CreateData/Section
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 import { useRouter } from "next/router";
 import Review from "@/components/Modules/Epfrs/CreateData/Sections/Review/Review";
+import { siteConfig } from "@/libs/config";
 
 const ReviewPage: Page = () => {
   const router = useRouter();
@@ -21,7 +22,7 @@ const ReviewPage: Page = () => {
   return (
     <>
       <Head>
-        <title>PFR Review</title>
+        <title>{`PFR Review | ${siteConfig.siteName}`}</title>
       </Head>
       <aside
         className={`fixed top-0 z-10 w-56 min-h-screen px-6 py-16 bg-blue-midnight text-sm overflow-hidden`}

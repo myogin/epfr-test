@@ -27,6 +27,7 @@ export interface Clientformation {
   email: string;
   residentialAddr: string;
   mailingAddr: string;
+  clientPfr: string;
 }
 export interface DependantInformation {
   id?: number;
@@ -39,13 +40,17 @@ export interface DependantInformation {
   age: number;
   gender: string;
   year: string;
+  clientPfr: string;
+  client: number;
 }
 
 export interface Accompaniment {
+  clientType:number;
   age: number;
   english_spoken: string;
   english_written: string;
   education_level: string;
+  clientPfr: string;
 }
 
 export interface TrustedIndividual {
@@ -76,4 +81,5 @@ export interface SectionOne {
   issues?: [];
   reviewDate?: string;
   status?: number;
+  editableStatus?: number;
 }

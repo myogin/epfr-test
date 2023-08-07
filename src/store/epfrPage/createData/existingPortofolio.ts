@@ -1,4 +1,4 @@
-import { SectionTwo } from "@/models/SectionTwo";
+import { SectionTwo, SummaryOfLoans } from "@/models/SectionTwo";
 import { produce } from "immer";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
@@ -26,10 +26,12 @@ type Actions = {
   patchSrs: (params: any) => any;
   removeSrs: (params: any) => any;
   setLoan: (indexData: number, params: any) => any;
+  fetchLoan: (params: any) => any;
   patchLoan: (params: any) => any;
   removeLoan: (params: any) => any;
   setGlobal: (name: string, value: any) => any;
   removeData: (attribut: string, params: any) => any;
+  resetSectionTwo: () => any;
 
   setToggle: (
     object: string,
@@ -57,6 +59,7 @@ const initialState: SectionTwo = {
       monthlyLoanRepaymentCash: 0,
       monthlyLoanRepaymentCPF: 0,
       currentMarketValue: 0,
+      clientPfr: "",
     },
   ],
   summaryOfInvestment: [
@@ -142,6 +145,7 @@ const initialState: SectionTwo = {
       lender: "",
       interestRate: 0,
       monthlyLoanRepayment: 0,
+      clientPfr: "",
     },
   ],
   summaryOfCPF: [
@@ -153,6 +157,7 @@ const initialState: SectionTwo = {
       specialAccount: 0,
       medisaveAccount: 0,
       retirementAccount: 0,
+      clientPfr: "",
     },
   ],
   summaryOfSRS: [
@@ -167,6 +172,7 @@ const initialState: SectionTwo = {
   totalNetWorth: [],
   networthReason: [],
   status: 0,
+  editableStatus: 0,
 };
 
 const existingPortofolio = create(
@@ -182,6 +188,7 @@ const existingPortofolio = create(
                 dataReplace.id = params.id;
                 dataReplace.client = params.client;
                 dataReplace.typeOfProperty = params.typeOfProperty;
+                dataReplace.editting = params.editting;
                 dataReplace.yearPurchased = params.yearPurchased;
                 dataReplace.purchasePrice = params.purchasePrice;
                 dataReplace.loanAmount = params.loanAmount;
@@ -191,6 +198,7 @@ const existingPortofolio = create(
                 dataReplace.monthlyLoanRepaymentCPF =
                   params.monthlyLoanRepaymentCPF;
                 dataReplace.currentMarketValue = params.currentMarketValue;
+                dataReplace.clientPfr = params.clientPfr;
               } else {
                 draft.summaryOfProperty.push(params);
               }
@@ -362,11 +370,13 @@ const existingPortofolio = create(
               if (indexData === 0 && get().summaryOfCPF?.length) {
                 let dataReplace = draft.summaryOfCPF[indexData];
                 dataReplace.id = params.id;
+                dataReplace.editting = params.editting;
                 dataReplace.client = params.client;
                 dataReplace.ordinaryAccount = params.ordinaryAccount;
                 dataReplace.specialAccount = params.specialAccount;
                 dataReplace.medisaveAccount = params.medisaveAccount;
                 dataReplace.retirementAccount = params.retirementAccount;
+                dataReplace.clientPfr = params.clientPfr;
               } else {
                 draft.summaryOfCPF.push(params);
               }
@@ -617,12 +627,46 @@ const existingPortofolio = create(
               }
             })
           ),
+        fetchLoan: (datas: SummaryOfLoans[]) =>
+          set(
+            produce((draft) => {
+              let checkLengthLoan = get().summaryOfLoans?.length;
+
+              if (datas.length > 0) {
+                datas.map((param, index) => {
+                  if (index === 0 && checkLengthLoan === 1) {
+                    let dataReplace = draft.summaryOfLoans[index];
+                    dataReplace.id = param.id;
+                    dataReplace.editting = param.editting;
+                    dataReplace.client = param.client;
+                    dataReplace.typeOfLoan = param.typeOfLoan;
+                    dataReplace.loanTerm = param.loanTerm;
+                    dataReplace.yearOfLoanTaken = param.yearOfLoanTaken;
+                    dataReplace.amountBorrowed = param.amountBorrowed;
+                    dataReplace.loanStatus = param.loanStatus;
+                    dataReplace.typeOfVehicle = param.typeOfVehicle;
+                    dataReplace.currentOutstandingLoan =
+                      param.currentOutstandingLoan;
+                    dataReplace.lender = param.lender;
+                    dataReplace.interestRate = param.interestRate;
+                    dataReplace.monthlyLoanRepayment =
+                      param.monthlyLoanRepayment;
+                    dataReplace.clientPfr = param.clientPfr;
+                  } else {
+                    param["id"] = ++checkLengthLoan;
+                    draft.summaryOfLoans.push(param);
+                  }
+                });
+              }
+            })
+          ),
         setLoan: (indexData: number, params: any) =>
           set(
             produce((draft) => {
               if (indexData === 0 && get().summaryOfLoans?.length) {
                 let dataReplace = draft.summaryOfLoans[indexData];
                 dataReplace.id = params.id;
+                dataReplace.editting = params.editting;
                 dataReplace.client = params.client;
                 dataReplace.typeOfLoan = params.typeOfLoan;
                 dataReplace.loanTerm = params.loanTerm;
@@ -635,6 +679,7 @@ const existingPortofolio = create(
                 dataReplace.lender = params.lender;
                 dataReplace.interestRate = params.interestRate;
                 dataReplace.monthlyLoanRepayment = params.monthlyLoanRepayment;
+                dataReplace.clientPfr = params.clientPfr;
               } else {
                 draft.summaryOfLoans.push(params);
               }
@@ -713,6 +758,9 @@ const existingPortofolio = create(
               data.splice(dataIndex, 1);
             })
           ),
+        resetSectionTwo: () => {
+          set(initialState);
+        },
       }),
       {
         name: "section2",

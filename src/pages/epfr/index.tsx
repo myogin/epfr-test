@@ -15,12 +15,14 @@ import { log } from "console";
 import http from "@/libs/httpSetting";
 import authHeader from "@/libs/authHeader";
 import { signIn, useSession } from "next-auth/react";
+import { siteConfig } from "@/libs/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const {setLogin} = useLoginData();
 
   const getGeneralData = async () => {
     if (router.query.edit) {
@@ -30,16 +32,17 @@ const EpfrPage: Page = () => {
   console.log(status);
   useEffect(() => {
     getGeneralData();
+    setLogin(session?.user?.token, session?.user?.id)
   });
 
   return (
     <>
       <Head>
-        <title>Epfr Lite</title>
+        <title>{`Choose Type | ${siteConfig.siteName}`}</title>
       </Head>
       <GlobalCard className="flex flex-col w-full min-h-screen">
         <div className="fixed pt-14 pl-14">
-          <Link href="/" className="flex text-green-deep">
+          <Link href="/overview" className="flex text-green-deep">
             <ArrowLeftSLineIcon /> Back to EPFR list
           </Link>
         </div>
@@ -48,7 +51,7 @@ const EpfrPage: Page = () => {
             <TitleMedium>Please choose EPFR type</TitleMedium>
           </div>
           <div className="flex justify-between gap-10">
-            <Link href="create/single">
+            <Link href="create/single#section-1">
               <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
                 <button className="mb-3">
                   <File3FillIcon className="text-green-deep" size={50} />
@@ -59,7 +62,7 @@ const EpfrPage: Page = () => {
                 </span>
               </div>
             </Link>
-            <Link href="create/joint">
+            <Link href="create/joint#section-1">
               <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
                 <button className="mb-3">
                   <File3FillIcon className="text-green-deep" size={50} />

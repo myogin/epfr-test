@@ -25,6 +25,13 @@ interface Props {
 }
 
 const SwitchingReplacement = (props: Props) => {
+  const [pfrId, setPfrId] = useState(0);
+
+  useEffect(() => {
+    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    setPfrId(section1?.state?.id);
+  });
+
   let getPfrLength = getLength(props.pfrType);
 
   const fillInformation = [
@@ -90,7 +97,7 @@ const SwitchingReplacement = (props: Props) => {
   const [newProduct, setNewProduct] = useState(productData);
   const [newProductErrors, setNewProductErrors] = useState<Array<any>>([]);
   const [sectionTenData, setSectionTenData] = useState({
-    id: 0,
+    id: pfrId,
     needs: 0,
     data: [sectionData, sectionData],
     issues: [],

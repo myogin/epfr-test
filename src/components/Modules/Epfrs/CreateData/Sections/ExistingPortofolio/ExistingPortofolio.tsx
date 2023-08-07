@@ -25,6 +25,9 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { SectionTwo } from "@/models/SectionTwo";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import { postPfrSections } from "@/services/pfrService";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 interface Props {
   id?: any;
@@ -32,22 +35,24 @@ interface Props {
 }
 
 const ExistingPortofolio = (props: Props) => {
-  let {
-    need,
-    reason,
-    summaryOfProperty,
-    summaryOfInvestment,
-    summaryOfSavings,
-    summaryOfInsurance,
-    summaryOfInsurance2,
-    summaryOfLoans,
-    summaryOfCPF,
-    summaryOfSRS,
-    setToggle,
-    setGlobal,
-  } = useExistingPortofolio();
+  let id = usePersonalInformation((state) => state.id);
 
-  let { showDetailData } = useNavigationSection();
+  let editableStatus = useExistingPortofolio((state) => state.editableStatus);
+  let status = useExistingPortofolio((state) => state.status);
+  let need = useExistingPortofolio((state) => state.need);
+  let reason = useExistingPortofolio((state) => state.reason);
+  let summaryOfProperty = useExistingPortofolio((state) => state.summaryOfProperty);
+  let summaryOfInvestment = useExistingPortofolio((state) => state.summaryOfInvestment);
+  let summaryOfSavings = useExistingPortofolio((state) => state.summaryOfSavings);
+  let summaryOfInsurance = useExistingPortofolio((state) => state.summaryOfInsurance);
+  let summaryOfInsurance2 = useExistingPortofolio((state) => state.summaryOfInsurance2);
+  let summaryOfLoans = useExistingPortofolio((state) => state.summaryOfLoans);
+  let summaryOfCPF = useExistingPortofolio((state) => state.summaryOfCPF);
+  let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);
+  let setToggle = useExistingPortofolio((state) => state.setToggle);
+  let setGlobal = useExistingPortofolio((state) => state.setGlobal);
+
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const handleToggle = (object: string, clientType: number, value: boolean) => {
     setToggle(object, clientType, "editting", value);
@@ -58,8 +63,56 @@ const ExistingPortofolio = (props: Props) => {
   const scrollPosition = useScrollPosition(2);
   const scrollPositionBottom = useScrollPositionBottom(2);
 
-  // useEffect(() => {
-  // }, []);
+   // Store data
+   const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section2")
+        ? localStorage.getItem("section2")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data.state;
+      }
+
+      let storeDataSection = await postPfrSections(
+        2,
+        JSON.stringify(dataFix)
+      );
+
+      // If save success get ID and store to localstorage
+      if (storeDataSection.data.result === "success") {
+        if (id === 0 || id === null || id === undefined) {
+          setGlobal("id", storeDataSection.data.pfrId);
+        } else {
+          setGlobal("id", id);
+        }
+        setGlobal("editableStatus", 1);
+      }
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (scrollPositionBottom === "Process2") {
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("can save now");
+        storeData();
+      }else {
+        console.log("Your data not complete Section 2");
+      }
+    }
+  }, [scrollPositionBottom, editableStatus, status]);
 
   return (
     <div id={props.id}>
@@ -214,13 +267,17 @@ const ExistingPortofolio = (props: Props) => {
             label=" Would you like your assets and liabilities to be taken into consideration for the Needs Analysis and Recommendation(s)?"
             needValidation={true}
             textError="Need portfolio at least"
-            logic={summaryOfProperty[0].editting ||
+            logic={
+              summaryOfProperty[0].editting ||
               summaryOfInvestment[0].editting ||
               summaryOfSavings[0].editting ||
               summaryOfCPF[0].editting ||
               summaryOfInsurance[0].editting ||
               summaryOfSRS[0].editting ||
-              summaryOfLoans[0].editting ? true : false}
+              summaryOfLoans[0].editting
+                ? true
+                : false
+            }
           />
         </RowSingle>
         {!need ? (
@@ -256,6 +313,11 @@ const ExistingPortofolio = (props: Props) => {
           ""
         )}
       </SectionCardSingleGrid>
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 2" />
+      ) : (
+        ""
+      )}
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
       {/* <SectionCardFooter>
         <ButtonGreenMedium onClick={() => saveData(3)}>

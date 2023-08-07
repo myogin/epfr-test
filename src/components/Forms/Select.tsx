@@ -41,7 +41,7 @@ const Select = (props: Props) => {
         disabled={props.disabled}
       >
         <option value="-">
-          {props.intro ? props.intro : "Please select data"}
+          {props.intro ? props.intro : "Select"}
         </option>
         {props.datas?.length &&
           props.datas.map((val, index) => (
@@ -54,7 +54,7 @@ const Select = (props: Props) => {
       {/* Error Validation */}
       {props.needValidation && !props.logic ? (
         <div className="w-full text-xs text-left text-red">
-          {props.textError ? props.textError : "Required field"}
+          {props.textError ? props.textError : "Required"}
         </div>
       ) : null}
     </div>

@@ -3,7 +3,7 @@ import React from "react";
 
 interface Props {
   label?: string;
-  value?: any;
+  value?: any | undefined;
   placeholder?: string;
   type?: string;
   className?: string;
@@ -41,12 +41,15 @@ const Input = (props: Props) => {
         onChange={props.handleChange}
         value={props.value}
         placeholder={props.placeholder}
+        autoComplete="on"
         className={`w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 text-gray-light border-gray-soft-strong ${props.formStyle}`}
       />
 
       {/* Error Validation */}
       {props.needValidation && !props.logic ? (
-        <div className="w-full text-xs text-left text-red">{props.textError ? props.textError : "Required field"}</div>
+        <div className="w-full text-xs text-left text-red">
+          {props.textError ? props.textError : "Required"}
+        </div>
       ) : null}
     </div>
   );

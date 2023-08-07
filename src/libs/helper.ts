@@ -7,6 +7,21 @@ export const dateFormat = (params: string) => {
   return NewDate;
 };
 
+export const checkCountDataDependent = (datas: any) => {
+  let data: number = 0;
+  if (datas?.length) {
+    if (datas[0].name === "" && datas[0].clientPfr === "") {
+      data = datas.length;
+    } else {
+      data = datas.length + 1;
+    }
+  } else {
+    data = datas.length + 1;
+  }
+
+  return data;
+};
+
 export const checkCountData = (datas: any) => {
   let data: number = 0;
   if (datas?.length) {
@@ -118,7 +133,7 @@ export const localOwnerId = () => {
     let data = JSON.parse(checkData);
     let check = data.state.ownerId;
 
-    if (check == null || check == undefined || check == "") {
+    if (check == null || check == undefined || check == "" || check == 0) {
       dataFix = null;
     } else {
       dataFix = check;
@@ -137,7 +152,7 @@ export const localPfrId = () => {
     let data = JSON.parse(checkData);
     let check = data.state.pfrId;
 
-    if (check == null || check == undefined || check == "") {
+    if (check == null || check == undefined || check == "" || check == 0) {
       dataFix = null;
     } else {
       dataFix = check;
@@ -145,4 +160,42 @@ export const localPfrId = () => {
   }
 
   return dataFix;
+};
+
+
+export const localType = () => {
+  let checkData = localStorage.getItem("login")
+    ? localStorage.getItem("login")
+    : null;
+  let dataFix = null;
+  if (checkData) {
+    let data = JSON.parse(checkData);
+    let check = data.state.typeEpfr;
+
+    if (check == null || check == undefined || check == "" || check == 0) {
+      dataFix = null;
+    } else {
+      dataFix = check;
+    }
+  }
+
+  return dataFix;
+};
+
+export const flushLocalData = () => {
+  
+  localStorage.removeItem('section1')
+  localStorage.removeItem('section2')
+  localStorage.removeItem('section3')
+  localStorage.removeItem('section4')
+  localStorage.removeItem('section5')
+  localStorage.removeItem('section6')
+  localStorage.removeItem('section7')
+  localStorage.removeItem('section8')
+  localStorage.removeItem('section9')
+  localStorage.removeItem('section10')
+  localStorage.removeItem('section11')
+  localStorage.removeItem('section12')
+  localStorage.removeItem('section13')
+  return true;
 };

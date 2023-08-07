@@ -5,10 +5,19 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import SingpassIcon from "../../../../../../public/singpasIcon.png";
 import Image from "next/image";
+import { SingpassData } from "@/models/SingpassData";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
   handleParentModal: Function;
 }
+
+const singpassParam = {
+  agent_uuid: "",
+  epfr_uuid: "",
+  client_uuid: "",
+  applicant_type: "",
+};
 
 const RetrieveSingpassChecklist = (props: Props) => {
   const [showModalSecondary, setShowModalSecondary] = useState(false);
@@ -20,6 +29,10 @@ const RetrieveSingpassChecklist = (props: Props) => {
   const openModal = () => {
     setShowModalSecondary(true);
     props.handleParentModal(true);
+  };
+
+  const storeSingpassInfo = () => {
+    
   };
 
   return (
@@ -79,42 +92,46 @@ const RetrieveSingpassChecklist = (props: Props) => {
                         <ul className="space-y-4 text-sm font-normal text-gray-light">
                           <li>NRIC/FIN</li>
                           <li>Name</li>
-                          <li>Race</li>
                           <li>Sex</li>
                           <li>Date of Birth</li>
+                          <li>Race</li>
+                          <li>Country/Place of Birth</li>
+                          <li>Residential Status</li>
                           <li>Nationality/Citizenship</li>
+                          <li>Mobile Number</li>
                           <li>Pass Type</li>
                           <li>Email</li>
-                          <li>Mobile Number</li>
-                          <li>CPF Balances</li>
-                          <li>Employer’s Name</li>
-                          <li>Occupation</li>
-                          <li>CPF Employers</li>
+                          <li>Employment Sector</li>
+                          <li>Registered Address</li>
                         </ul>
                       </div>
                       <div>
                         <ul className="space-y-4 text-sm font-normal text-gray-light">
-                          <li>Residential Status</li>
-                          <li>Country/Place of Birth</li>
-                          <li>Employment Sector</li>
-                          <li>Registered Address</li>
-                          <li>Ownership Private Residency</li>
-                          <li>Vehicles - Vehicle Type</li>
+                          <li>CPF Balances</li>
+                          <li>Employer’s Name</li>
+                          <li>Occupation</li>
+                          <li>CPF Employers</li>
+                          <li>Marital Status</li>
                           <li>Children Birth - Cert Number</li>
                           <li>Children Birth - Name</li>
                           <li>Children Birth - Sex</li>
                           <li>Children Birth - Date of Birth</li>
                           <li>Sponsored Children - NRIC/FIN</li>
                           <li>Sponsored Children - Name</li>
-                          <li>Marital Status</li>
+                          <li>Ownership Private Residency</li>
+                          <li>Vehicles - Vehicle Type</li>
                         </ul>
                       </div>
                     </div>
                   </div>
                   <div className="mt-12">
                     <div className="flex justify-start gap-2">
-                      <ButtonGreenMedium>Proceed</ButtonGreenMedium>
-                      <ButtonRedMedium onClick={closeModal}>Cancel</ButtonRedMedium>
+                      <ButtonGreenMedium onClick={storeSingpassInfo}>
+                        Proceed
+                      </ButtonGreenMedium>
+                      <ButtonRedMedium onClick={closeModal}>
+                        Cancel
+                      </ButtonRedMedium>
                     </div>
                   </div>
                 </Dialog.Panel>

@@ -23,18 +23,36 @@ interface Props {
   pfrType?: number;
 }
 
-const pfrId = 10343;
-
 const RepresentativeDeclaration = (props: Props) => {
+  
+  const [pfrId, setPfrId] = useState(0);
+
+  useEffect(() => {
+    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    setPfrId(section1?.state?.id);
+  });
+
   const { push } = useRouter();
 
-  const scrollPosition = useScrollPosition(12);
+  const [sectionTwelveData, setSectionTwelveData] = useState({
+    id: pfrId,
+    explain: '',
+    jfw: false,
+    spv: "0",
+    spvOther: "",
+    nftf: false,
+    section12AnswerData: [],
+    issues : [],
+    status: 0
+  })
+
+  const scrollPosition = useScrollPosition(11);
 
   const saveData = async() => {
       const groupFourData = {
-        section10: localStorage.getItem('section10'),
-        section12: localStorage.getItem('section11'),
-        section13: localStorage.getItem('section12'),
+        section10: JSON.parse(localStorage.getItem('section10')?? '{}'),
+        section12: JSON.parse(localStorage.getItem('section11')?? '{}'),
+        section13: JSON.parse(localStorage.getItem('section12')?? '{}'),
       }
       await postPfr(4, groupFourData);
   }
@@ -54,28 +72,36 @@ const RepresentativeDeclaration = (props: Props) => {
   const [explain, setExplain] = useState("");
 
   const fetchData = async () => {
-    console.log("Fetching ...");
+    // console.log("Fetching ...");
 
-    const s12Res: any = await getPfrStep(12, pfrId);
+    // const s12Res: any = await getPfrStep(12, pfrId);
+    const s12Res: any = JSON.parse(localStorage.getItem('section11')?? "false");
+    console.log("S12: ", s12Res);
+    if (!s12Res) {
+      return;
+    }
 
-    const checkData = s12Res["answer"] ? s12Res["answer"]["data"] : null;
+    const checkData = s12Res["data"] ?? null;
 
     if (checkData !== null) {
-      const data = JSON.parse(checkData);
+      // const data = JSON.parse(checkData);
+      const data = checkData;
 
-      console.log("Data: ", data[0]);
-
-      if (data[0][8][0]) {
+      if (data[0][8][0] || data[1][8][0]) {
         setRequiredNFTF(true);
+      } else {
+        setRequiredNFTF(false);
       }
     }
   };
 
+
+
   useEffect(() => {
-    if (scrollPosition === "okSec11") {
+    if (scrollPosition === "NotOkSec11") {
       fetchData();
     }
-  }, []);
+  }, [scrollPosition]);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -98,11 +124,8 @@ const RepresentativeDeclaration = (props: Props) => {
   };
 
   useEffect(() => {
-    localStorage.setItem('section13', JSON.stringify({
-      id: 0,
-      explain
-    }));
-  }, [isJointFieldWork, explain]);
+    localStorage.setItem('section12', JSON.stringify(sectionTwelveData));
+  }, [sectionTwelveData]);
 
   return (
     <div id={props.id}>
@@ -128,7 +151,10 @@ const RepresentativeDeclaration = (props: Props) => {
           </TextThin>
         </RowSingleGrid>
         <RowSingleGrid>
-          <TextArea handleChange={(e) => setExplain(e.target.value)} />
+          <TextArea handleChange={(e) => setSectionTwelveData({
+            ...sectionTwelveData,
+            explain: e.target.value
+          })} />
         </RowSingleGrid>
         <RowSingleGrid>
           <TextThin>
@@ -153,7 +179,13 @@ const RepresentativeDeclaration = (props: Props) => {
             <span>5. This is Joint Field Work</span>
             <span>
               <Checkbox
-                onChange={(e) => setIsJointFieldWork(e.target.checked)}
+                onChange={(e) => {
+                  setSectionTwelveData({
+                    ...sectionTwelveData,
+                    jfw: e.target.checked
+                  });
+                  setIsJointFieldWork(true);
+                }}
               />
             </span>
           </div>
@@ -201,10 +233,15 @@ const RepresentativeDeclaration = (props: Props) => {
           </div>
           <div>
             <Checkbox
-              onChange={(e) => setRequiredNFTF(!e.target.checked)}
+              onChange={(e) => {
+                setSectionTwelveData({
+                  ...sectionTwelveData,
+                  nftf: e.target.checked
+                })
+              }}
               label="Required field"
               lableStyle={
-                requiredNFTF ? "text-xs text-red" : "text-xs invisible"
+                (requiredNFTF && !sectionTwelveData.nftf) ? "text-xs text-red" : "text-xs invisible"
               }
               class=" justify-end"
             />

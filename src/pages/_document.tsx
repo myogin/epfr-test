@@ -1,17 +1,26 @@
-import { Html, Head, Main, NextScript } from 'next/document'
+import { siteConfig } from "@/libs/config";
+import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <meta name="description" content="Epfr Apps Legacy Fa" itemProp="description" />
-        <meta name="keywords" content="Epfr Apps" itemProp="keywords" />
-        <meta name="author" content="Epfr Apps" />
-        <meta name="copyright" content="Legacy Fa Asia" itemProp="dateline" />
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
+        <meta
+          name="description"
+          content={siteConfig.description}
+          itemProp="description"
+        />
+        <meta name="keywords" content={siteConfig.keywords} itemProp="keywords" />
+        <meta name="author" content={siteConfig.creator} />
+        <meta name="copyright" content={siteConfig.copyright} itemProp="dateline" />
         <meta name="thumbnailUrl" content="" itemProp="thumbnailUrl" />
         <meta content="" itemProp="url" />
-        <meta property="og:title" content="Epfr Apps" />
-        <meta property="og:site_name" content="Epfr Apps" />
+        <meta property="og:title" content={siteConfig.siteName} />
+        <meta property="og:site_name" content={siteConfig.siteName} />
         <meta property="og:image" content="" />
         <meta property="og:url" content="" />
         <meta property="og:image:type" content="image/jpeg" />
@@ -28,5 +37,5 @@ export default function Document() {
         <NextScript />
       </body>
     </Html>
-  )
+  );
 }

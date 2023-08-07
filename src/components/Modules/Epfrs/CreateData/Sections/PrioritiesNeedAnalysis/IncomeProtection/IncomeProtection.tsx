@@ -42,12 +42,12 @@ const IncomeProtection = (props: Props) => {
   }
 
   // End
-  const handleClient = (value: any, i: any, dataI: any) => {
-    setNeed(value, i, dataI);
+  const handleClient = (i: any, dataI: any, value: any,) => {
+    setNeed(i, dataI, value);
   };
 
   const handleDependant = (value: any, i: any, dataI: any) => {
-    setNeedDependant(value, i, dataI);
+    setNeedDependant(i, dataI, value);
   };
 
   const setDataClient = (event: any, i: any) => {
@@ -155,9 +155,9 @@ const IncomeProtection = (props: Props) => {
                             }
                             onChange={(event) =>
                               handleClient(
-                                !section7.answer.need.client[i][0],
                                 i,
-                                0
+                                0,
+                                !section7.answer.need.client[i][0]
                               )
                             }
                             className="p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:rin, dataI:g-1"

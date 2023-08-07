@@ -15,7 +15,7 @@ export const useScrollPositionBottom = (scrollFactor = 1) => {
         var offsetPosition = elementPosition - headerOffset;
 
         // console.log(checkBounderis);
-        if (offsetPosition < 300 && offsetPosition >=0) {
+        if (offsetPosition < 50 && offsetPosition >=0) {
           // setScrollPosition("ok Sec Bottom " + scrollFactor + " offset " + offsetPosition + " element "+ elementPosition + " inner " +  window.innerHeight + " scroll y " + window.scrollY);
           setScrollPositionBottom("Process" + scrollFactor);
         } else {

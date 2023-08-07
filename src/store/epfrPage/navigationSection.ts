@@ -13,6 +13,7 @@ type Actions = {
 const navigationSection = create(
   devtools<State & Actions>((set, get) => ({
     sectionCreateEpfrId: 0,
+    clientType: null,
     showDetailData: (params: number) =>
       set(() => ({ sectionCreateEpfrId: params })),
     closeDetailData: () => set(() => ({ sectionCreateEpfrId: 0 })),
