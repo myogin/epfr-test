@@ -27,11 +27,11 @@ import { useRouter } from "next/router";
 import { flushLocalData, localOwnerId, localType } from "@/libs/helper";
 import { getAllPfrData } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
-import LoadingPage from "@/components/Attributes/Informations/LoadingPage";
 import RetrieveClientDataNew from "@/components/Modules/Epfrs/CreateData/RetrieveSingpass/RetrieveClientDataNew";
 import { siteConfig } from "@/libs/config";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
