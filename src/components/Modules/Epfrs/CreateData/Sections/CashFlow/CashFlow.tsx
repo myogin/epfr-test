@@ -1,21 +1,14 @@
-import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
-import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
-import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
-import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import React, { useState, useEffect, Fragment } from "react";
-import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import AnnualExpenseCashFlow from "./AnnualExpense/AnnualExpenseCashFlow";
 import AnnualIncomeCashFlow from "./AnnualIncome/AnnualIncomeCashFlow";
 import AnnualNetCashFlow from "./AnnualNetCashFlow/AnnualNetCashFlow";
-import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { postPfr } from "@/services/pfrService";
-import { SectionThree } from "@/models/SectionThree";
+import { postPfrSections } from "@/services/pfrService";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
@@ -40,17 +33,17 @@ const CashFlow = (props: Props) => {
   const scrollPosition = useScrollPosition(3);
   const scrollPositionBottom = useScrollPositionBottom(3);
 
-  let {
-    status,
-    editableStatus,
-    need,
-    data,
-    reason,
-    totalNetSurplus,
-    setNeed,
-    setAnswerData,
-    setReason,
-  } = useCashFlow();
+  let status = useCashFlow((state) => state.status);
+  let editableStatus = useCashFlow((state) => state.editableStatus);
+  let need = useCashFlow((state) => state.need);
+  let data = useCashFlow((state) => state.data);
+  let reason = useCashFlow((state) => state.reason);
+  let totalNetSurplus = useCashFlow((state) => state.totalNetSurplus);
+  let setNeed = useCashFlow((state) => state.setNeed);
+  let setAnswerData = useCashFlow((state) => state.setAnswerData);
+  let setReason = useCashFlow((state) => state.setReason);
+
+  const [saveLoading, setSaveLoading] = useState(false);
 
   let { id, setGlobal } = usePersonalInformation();
 
@@ -74,53 +67,37 @@ const CashFlow = (props: Props) => {
     setAnswerData(indexclient, name, value);
   };
 
+  // Store data
   const storeData = async () => {
-    let localDataOne = localStorage.getItem("section1")
-      ? localStorage.getItem("section1")
-      : "";
+    try {
+      setSaveLoading(true); // Set loading before sending API request
 
-    let dataOneFix = {};
-    if (localDataOne) {
-      let data = JSON.parse(localDataOne);
-      dataOneFix = data.state;
-    }
+      let localData = localStorage.getItem("section3")
+        ? localStorage.getItem("section3")
+        : "";
 
-    let localDataTwo = localStorage.getItem("section2")
-      ? localStorage.getItem("section2")
-      : "";
-
-    let dataTwoFix = {};
-    if (localDataTwo) {
-      let data = JSON.parse(localDataTwo);
-      dataTwoFix = data.state;
-    }
-
-    let localDataThree = localStorage.getItem("section3")
-      ? localStorage.getItem("section3")
-      : "";
-
-    let dataThreeFix = {};
-    if (localDataThree) {
-      let data = JSON.parse(localDataThree);
-      dataThreeFix = data.state;
-    }
-
-    const groupOneData = {
-      section1: dataOneFix,
-      section2: dataTwoFix,
-      section3: dataThreeFix,
-    };
-
-    let storeDataGroupOne = await postPfr(1, JSON.stringify(groupOneData));
-
-    console.log("test response");
-    console.log(storeDataGroupOne.data.pfrId);
-    console.log(storeDataGroupOne);
-
-    if (storeDataGroupOne.data.result === "success") {
-      if (id === 0 || id === null || id === undefined) {
-        setGlobal("id", storeDataGroupOne.data.pfrId);
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data.state;
       }
+
+      let storeDataSection = await postPfrSections(3, JSON.stringify(dataFix));
+
+      // If save success get ID and store to localstorage
+      if (storeDataSection.data.result === "success") {
+        if (id === 0 || id === null || id === undefined) {
+          setGlobal("id", storeDataSection.data.pfrId);
+        } else {
+          setGlobal("id", id);
+        }
+        setGlobal("editableStatus", 1);
+      }
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
     }
   };
 
@@ -131,8 +108,8 @@ const CashFlow = (props: Props) => {
         (editableStatus === 2 && status === 1)
       ) {
         console.log("can save now");
-        // storeData();
-      }else {
+        storeData();
+      } else {
         console.log("Your data not complete Section 3");
       }
     }
@@ -386,7 +363,7 @@ const CashFlow = (props: Props) => {
         </RowDouble>
       </SectionCardSingleGrid>
       {editableStatus === 2 && status === 1 ? (
-        <ButtonFloating title="Save section 2" />
+        <ButtonFloating onClick={storeData} title="Save section 3" />
       ) : (
         ""
       )}

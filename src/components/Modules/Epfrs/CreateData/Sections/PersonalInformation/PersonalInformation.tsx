@@ -15,9 +15,7 @@ import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import {
   clientIdentity,
-  getLength,
-  localOwnerId,
-  localPfrId,
+  getLength
 } from "@/libs/helper";
 import { Accompaniment } from "@/models/SectionOne";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
@@ -67,29 +65,25 @@ const PersonalInformation = (props: Props) => {
     try {
       setSaveLoading(true); // Set loading before sending API request
 
-      let localDataOne = localStorage.getItem("section1")
+      let localData = localStorage.getItem("section1")
         ? localStorage.getItem("section1")
         : "";
 
-      let dataOneFix = {};
-      if (localDataOne) {
-        let data = JSON.parse(localDataOne);
-        dataOneFix = data.state;
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data.state;
       }
 
-      let storeDataSectionpOne = await postPfrSections(
+      let storeDataSection = await postPfrSections(
         1,
-        JSON.stringify(dataOneFix)
+        JSON.stringify(dataFix)
       );
 
-      console.log("test response " + storeDataSectionpOne.data.result);
-      console.log(storeDataSectionpOne.data.pfrId);
-      console.log(storeDataSectionpOne);
-
       // If save success get ID and store to localstorage
-      if (storeDataSectionpOne.data.result === "success") {
+      if (storeDataSection.data.result === "success") {
         if (id === 0 || id === null || id === undefined) {
-          setGlobal("id", storeDataSectionpOne.data.pfrId);
+          setGlobal("id", storeDataSection.data.pfrId);
         } else {
           setGlobal("id", id);
         }
