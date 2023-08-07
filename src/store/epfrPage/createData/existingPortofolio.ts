@@ -31,6 +31,7 @@ type Actions = {
   removeLoan: (params: any) => any;
   setGlobal: (name: string, value: any) => any;
   removeData: (attribut: string, params: any) => any;
+  resetSectionTwo: () => any;
 
   setToggle: (
     object: string,
@@ -58,7 +59,7 @@ const initialState: SectionTwo = {
       monthlyLoanRepaymentCash: 0,
       monthlyLoanRepaymentCPF: 0,
       currentMarketValue: 0,
-      clientPfr: ""
+      clientPfr: "",
     },
   ],
   summaryOfInvestment: [
@@ -144,7 +145,7 @@ const initialState: SectionTwo = {
       lender: "",
       interestRate: 0,
       monthlyLoanRepayment: 0,
-      clientPfr: ""
+      clientPfr: "",
     },
   ],
   summaryOfCPF: [
@@ -156,7 +157,7 @@ const initialState: SectionTwo = {
       specialAccount: 0,
       medisaveAccount: 0,
       retirementAccount: 0,
-      clientPfr: ""
+      clientPfr: "",
     },
   ],
   summaryOfSRS: [
@@ -171,7 +172,7 @@ const initialState: SectionTwo = {
   totalNetWorth: [],
   networthReason: [],
   status: 0,
-  editableStatus: 0
+  editableStatus: 0,
 };
 
 const existingPortofolio = create(
@@ -192,8 +193,10 @@ const existingPortofolio = create(
                 dataReplace.purchasePrice = params.purchasePrice;
                 dataReplace.loanAmount = params.loanAmount;
                 dataReplace.currentOutstanding = params.currentOutstanding;
-                dataReplace.monthlyLoanRepaymentCash = params.monthlyLoanRepaymentCash;
-                dataReplace.monthlyLoanRepaymentCPF = params.monthlyLoanRepaymentCPF;
+                dataReplace.monthlyLoanRepaymentCash =
+                  params.monthlyLoanRepaymentCash;
+                dataReplace.monthlyLoanRepaymentCPF =
+                  params.monthlyLoanRepaymentCPF;
                 dataReplace.currentMarketValue = params.currentMarketValue;
                 dataReplace.clientPfr = params.clientPfr;
               } else {
@@ -624,12 +627,12 @@ const existingPortofolio = create(
               }
             })
           ),
-          fetchLoan: (datas: SummaryOfLoans[]) =>
+        fetchLoan: (datas: SummaryOfLoans[]) =>
           set(
             produce((draft) => {
               let checkLengthLoan = get().summaryOfLoans?.length;
 
-              if(datas.length > 0) {
+              if (datas.length > 0) {
                 datas.map((param, index) => {
                   if (index === 0 && checkLengthLoan === 1) {
                     let dataReplace = draft.summaryOfLoans[index];
@@ -642,17 +645,18 @@ const existingPortofolio = create(
                     dataReplace.amountBorrowed = param.amountBorrowed;
                     dataReplace.loanStatus = param.loanStatus;
                     dataReplace.typeOfVehicle = param.typeOfVehicle;
-                    dataReplace.currentOutstandingLoan = param.currentOutstandingLoan;
+                    dataReplace.currentOutstandingLoan =
+                      param.currentOutstandingLoan;
                     dataReplace.lender = param.lender;
                     dataReplace.interestRate = param.interestRate;
-                    dataReplace.monthlyLoanRepayment = param.monthlyLoanRepayment;
+                    dataReplace.monthlyLoanRepayment =
+                      param.monthlyLoanRepayment;
                     dataReplace.clientPfr = param.clientPfr;
                   } else {
-                    param['id'] = ++checkLengthLoan;
+                    param["id"] = ++checkLengthLoan;
                     draft.summaryOfLoans.push(param);
                   }
-                })
-                
+                });
               }
             })
           ),
@@ -670,7 +674,8 @@ const existingPortofolio = create(
                 dataReplace.amountBorrowed = params.amountBorrowed;
                 dataReplace.loanStatus = params.loanStatus;
                 dataReplace.typeOfVehicle = params.typeOfVehicle;
-                dataReplace.currentOutstandingLoan = params.currentOutstandingLoan;
+                dataReplace.currentOutstandingLoan =
+                  params.currentOutstandingLoan;
                 dataReplace.lender = params.lender;
                 dataReplace.interestRate = params.interestRate;
                 dataReplace.monthlyLoanRepayment = params.monthlyLoanRepayment;
@@ -753,6 +758,9 @@ const existingPortofolio = create(
               data.splice(dataIndex, 1);
             })
           ),
+        resetSectionTwo: () => {
+          set(initialState);
+        },
       }),
       {
         name: "section2",

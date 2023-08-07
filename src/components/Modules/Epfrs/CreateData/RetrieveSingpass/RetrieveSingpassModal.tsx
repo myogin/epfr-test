@@ -1,15 +1,13 @@
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonRedMedium from "@/components/Forms/Buttons/ButtonRedMedium";
-import Input from "@/components/Forms/Input";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import SingpassIcon from "../../../../../../public/singpassSmall.png";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import { useLoginData } from "@/store/login/logindata";
-import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
-import { postSingpass, storeEnv } from "@/services/singpassService";
+import { storeEnv } from "@/services/singpassService";
 
 interface Props {
   clientType: number;
@@ -19,6 +17,7 @@ const RetrieveSingpassModal = (props: Props) => {
   const [showModalSecondary, setShowModalSecondary] = useState(false);
   let ownerId = useLoginData((state) => state.ownerId);
   let pfrType = usePersonalInformation((state) => state.type);
+  let pfrId = usePersonalInformation((state) => state.id);
 
   const closeModal = () => {
     setShowModalSecondary(false);
@@ -35,7 +34,7 @@ const RetrieveSingpassModal = (props: Props) => {
 
     const singpassParam = {
       agent_uuid: ownerId,
-      epfr_uuid: uuidv4(),
+      epfr_uuid: pfrId === null || pfrId === undefined || pfrId === 0 ? uuidv4() : Number(pfrId),
       client_uuid: uuidv4(),
       applicant_type: dataI + "-" + pfrType,
     };

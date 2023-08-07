@@ -24,12 +24,14 @@ import AddPlanRecommendation from "@/components/Modules/Epfrs/CreateData/Section
 import ScrollSpy from "react-ui-scrollspy";
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 import { useRouter } from "next/router";
-import { localOwnerId, localPfrId, localType } from "@/libs/helper";
+import { flushLocalData, localOwnerId, localType } from "@/libs/helper";
 import { getAllPfrData } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import LoadingPage from "@/components/Attributes/Informations/LoadingPage";
 import RetrieveClientDataNew from "@/components/Modules/Epfrs/CreateData/RetrieveSingpass/RetrieveClientDataNew";
 import { siteConfig } from "@/libs/config";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
@@ -38,7 +40,9 @@ const CreatePfrPage: Page = () => {
   let pfrTypeId = pfrType === "single" ? 1 : 2;
 
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
-  let { setGlobal, fetchClient } = usePersonalInformation();
+  let { setGlobal, fetchClient, resetSectionOne } = usePersonalInformation();
+  let { resetSectionTwo } = useExistingPortofolio();
+  let { resetSectionThree } = useCashFlow();
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -102,7 +106,7 @@ const CreatePfrPage: Page = () => {
       // Fetch Client
       if (generalData.clients.length > 0) {
         generalData.clients.map((data: any, index: number) => {
-          storeDataClientToState(index, data);
+          fetchClient(index, data);
         });
       }
 
@@ -113,14 +117,16 @@ const CreatePfrPage: Page = () => {
     }
   };
 
-  const storeDataClientToState = (index: number, data: any) => {
-    fetchClient(index, data);
-  };
-
   const setStartingDoc = (localOwner: any, localT: any) => {
 
     setGlobal("ownerId", localOwner);
     setGlobal("type", localT == null ? pfrTypeId : localT);
+  };
+
+  const resetExistingData = () => {
+    resetSectionOne();
+    resetSectionTwo();
+    resetSectionThree();
   };
 
 
@@ -128,14 +134,24 @@ const CreatePfrPage: Page = () => {
 
     if (!router.isReady) return;
 
+    // Cleare local storage first before get data
+    if (router.query.singpass === null || router.query.singpass === undefined) {
+      resetExistingData();
+    }
+
+    // If edit check the ID
+    if (router.query.id !== null && router.query.id !== undefined) {
+      getGeneralData(router.query.id);
+    }else {
+      console.log("masuk sini jika buat baru")
+      // This is for create pfr
+      
+    }
+
     let localOwner = localOwnerId();
     let localT = localType();
 
     setStartingDoc(localOwner, localT);
-
-    if (router.query.id !== null && router.query.id !== undefined) {
-      getGeneralData(router.query.id);
-    }
     
   }, [router.isReady]);
 

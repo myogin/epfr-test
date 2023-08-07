@@ -14,6 +14,11 @@ const EpfrCreateFinish: Page = () => {
   const { push } = useRouter();
 
   const back = () => {
+    const token = localStorage.getItem('token')?? '';
+    const login = localStorage.getItem('login')?? '{}';
+    localStorage.clear();
+    localStorage.setItem('token', token);
+    localStorage.setItem('login', login);
     push("/");
   };
 

@@ -447,14 +447,15 @@ const Client = (props: Props) => {
               placeholder="Manager"
               handleChange={handleInputChange}
             />
-            <Select
+            <Input
               dataType="clientInfo"
               className="mb-10"
+              label="Company Name"
+              type="text"
               name="companyName"
               indexData={0}
-              label="Company Name"
               value={clientInfo[0].companyName}
-              datas={companyMaster}
+              placeholder="your company here"
               handleChange={handleInputChange}
             />
             <Input
