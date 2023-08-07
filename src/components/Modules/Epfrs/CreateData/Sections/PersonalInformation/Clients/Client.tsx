@@ -342,7 +342,7 @@ const Client = (props: Props) => {
             <Input
               dataType="clientInfo"
               className="mb-10"
-              label="Principal Name"
+              label="Full Name"
               type="text"
               name="clientName"
               indexData={0}
@@ -532,7 +532,7 @@ const Client = (props: Props) => {
             <Input
               dataType="clientInfo"
               className="mb-10"
-              label="Principal Name"
+              label="Full Name"
               type="text"
               name="clientName"
               indexData={index}

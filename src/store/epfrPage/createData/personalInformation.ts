@@ -241,7 +241,6 @@ const personalInformation = create(
                 draft.clientInfo[clientType].clientPfr = params.clientPfr
                   ? params.clientPfr
                   : get().clientInfo[clientType].clientPfr;
-
                 // If different persone so go here
               } else {
                 draft.clientInfo[clientType].clientTitle = params.clientTitle
