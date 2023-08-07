@@ -11,16 +11,19 @@ import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
 import More2LineIcon from "remixicon-react/More2LineIcon";
 import { pfrProgress } from "./overviewUtils";
+import { useLoginData } from "@/store/login/logindata";
 
 interface Props {}
 
 const PfrTable = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pfrList, setPfrList] = useState([]);
+
+  const {ownerId} = useLoginData();
   useEffect(() => {
     async function getALldata() {
       setIsLoading(true);
-      let res = await getPfrList();
+      let res = await getPfrList(Number(ownerId));
       setPfrList(res.data);
       setIsLoading(false);
     }
