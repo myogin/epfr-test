@@ -43,7 +43,7 @@ const Checkbox = (props: Props) => {
       {props.needValidation && !props.logic ? (
         <div className="flex items-start">
           <div className="w-full text-xs text-left text-red">
-            {props.textError ? props.textError : "Required field"}
+            {props.textError ? props.textError : "Required"}
           </div>
         </div>
       ) : null}
