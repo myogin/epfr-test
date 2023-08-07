@@ -28,24 +28,6 @@ const Overview = () => {
   const { setLogin } = useLoginData();
 
   const { deleteEmail } = useUserData();
-  // async function getPfrList() {
-  //   const userToken = session?.user?.token;
-  //   const userID = session?.user?.id;
-
-  //   await axios
-  //     .get(
-  //       `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/getAll/${userID}?page=1&per_page=10`,
-  //       {
-  //         headers: {
-  //           Authorization: `${userToken}`,
-  //         },
-  //       }
-  //     )
-  //     .then((res) => {
-  //       console.log(res);
-  //     });
-  // }
-  // const Data = getPfrList();
 
   useEffect(() => {
     deleteEmail();

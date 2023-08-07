@@ -13,6 +13,7 @@ const initialState: Login = {
 
 type Actions = {
   setLogin: (token: any, ownerId: any) => any;
+  delLogin: () => any;
 };
 
 const loginData = (set: any) => ({
@@ -22,6 +23,13 @@ const loginData = (set: any) => ({
       produce((drafts: any) => {
         drafts.token = token;
         drafts.ownerId = ownerId;
+      })
+    ),
+  delLogin: () =>
+    set(
+      produce((drafts: any) => {
+        drafts.token = "";
+        drafts.ownerId = "";
       })
     ),
 });
