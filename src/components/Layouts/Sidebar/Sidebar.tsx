@@ -24,7 +24,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed top-0 z-10 ${
+      className={`fixed flex flex-col top-0 z-10 ${
         changeSidebar ? "w-24 border-r border-white px-6" : "w-64 px-8"
       } min-h-screen py-16 text-white bg-blue-midnight`}
     >
@@ -32,9 +32,9 @@ const Sidebar = () => {
         <SidebarLogo sidebarIcon={changeSidebar} />
       </div>
 
-      <div className="space-y-20">
+      <div className="flex flex-col flex-1">
         <SidebarTopMenu router={router} sidebarIcon={changeSidebar} />
-        {/* <SidebarBottomMenu router={router} sidebarIcon={changeSidebar} /> */}
+        <SidebarBottomMenu router={router} sidebarIcon={changeSidebar} />
       </div>
     </aside>
   );
