@@ -98,7 +98,7 @@ const CreatePfrPage: Page = () => {
 
       let generalData = await getAllPfrData(params);
 
-      setGlobal("ownerId", params);
+      setGlobal("id", params);
       // Fetch Client
       if (generalData.clients.length > 0) {
         generalData.clients.map((data: any, index: number) => {
