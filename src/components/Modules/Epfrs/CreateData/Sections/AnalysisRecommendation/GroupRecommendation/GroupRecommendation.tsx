@@ -46,6 +46,9 @@ const GroupRecommendation = () => {
   // Code
   const [getPfrData, setPfrData] = useState<any>({});
   const [getRecommendationData, setRecommendationData] = useState<any>({});
+  const [getProduct, setProduct] = useState<any>({});
+  const [getDataTotalPremium, setDataTotalPremium] = useState<any>({});
+
   const [getPfr8, setPfr8] = useState<any>({});
   const [getPfr9, setPfr9] = useState<any>({});
 
@@ -61,36 +64,79 @@ const GroupRecommendation = () => {
 
   const [dataProductAnnualPremium, setProductAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
   const [dataProductSinglePremium, setProductSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+  
+  const [dataSubPremium, setDataSubPremium] = useState<any>(
+    {"Monthly": 0,"Quarterly": 0,"Half-Yearly": 0,"Annually": 0,"SinglePayment": 0}
+  );
+  const [dataResDataTotalPremiumArr, setResDataTotalPremiumArr] = useState<any>(
+    {"Monthly": 0,"Quarterly": 0,"Half-Yearly": 0,"Annually": 0,"SinglePayment": 0}
+  );
 
   useEffect(() => {
     const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
-    // FInd Pfr Section 8
+    
+    // Find Pfr Section 8
     const annualPayorBudget: Array<any> = [[]];
     const singlePayorBudget: Array<any> = [[]];
     const annualRemainBudget: Array<any> = [[]];
     const singleRemainBudget: Array<any> = [[]];
     
     console.log('pfrGroupId', pfrGroupId)
+
+    // Find Group Recommend
+    var resDataTotalPremiumArr: Array<any> = [];
     
+    getRecommendationGroup(10653, pfrGroupId).then((data: any) => {
+      setRecommendationData(data)
+      if(data.products){
+        if(data.products.length > 0){
+          data.products.map((product: any) => {
+              var dataName = getPremiumFrequencyName(product.premiumFrequency);
+              if(dataName != undefined){
+                const dataSubPremium = {
+                  [dataName]: product['premium']
+                }
+
+                if(resDataTotalPremiumArr[dataName]){
+                  resDataTotalPremiumArr[dataName] += product['premium'];
+                }
+              
+                product['riders'].map((rider:any) => {
+                  console.log('rirder',rider['premium'])
+                  if(dataSubPremium[getPremiumFrequencyName(rider.premiumFrequency)]){
+                    dataSubPremium[getPremiumFrequencyName(rider.premiumFrequency)] += rider['premium'];
+                  }else{
+                    dataSubPremium[getPremiumFrequencyName(rider.premiumFrequency)] = rider['premium'];
+                  }
+
+                  if(resDataTotalPremiumArr[getPremiumFrequencyName(rider.premiumFrequency)]){
+                    resDataTotalPremiumArr[getPremiumFrequencyName(rider.premiumFrequency)] += rider['premium'];
+                  }else{
+                    resDataTotalPremiumArr[getPremiumFrequencyName(rider.premiumFrequency)] = rider['premium'];
+                  }
+                });
+
+                if(product.riders.length > 0){
+                  product['subTotal'] = dataSubPremium;
+                }else{
+                  product['subTotal'] = [];
+                }
+              }
+          })
+        }
+      }
+    });
+
     // Find Pfr 
     getPfr(10653).then((data:any) => {
-      console.log('getPfr', data)
       setPfrData(data)
     })    
 
-    // Find Group Recommend
-    getRecommendationGroup(10653, pfrGroupId).then((data: any) => {
-      console.log('getRecommendationGroup', data)
-      setRecommendationData(data)
-    });
-
     pfrSection(8, 10653).then((data: any) => {
-      console.log('pfrSection8', data)
       setPfr8(data)
       let payorBudgets = data['payorBudgets']
       payorBudgets.map((budget: any) => {
-        // console.log('budget', budget)
         if(budget['selection'] != 0) {
           let clientId = budget['clientType']
           let type = budget['type']
@@ -109,31 +155,41 @@ const GroupRecommendation = () => {
 
     // Find Pfr Section 9
     pfrSection(9, 10653).then((data: any) => {
-      console.log('pfrSection9', data)
       setPfr9(data)
       calcReaminingBudgets(data)
+      // getTotalPremium()
     });
 
-    console.log('dataannualRemainBudget', dataAnnualRemainBudget)
-
-    console.log('dataMaxAnnualPremium', dataMaxAnnualPremium)
-
+      console.log('getRecommendationData', getRecommendationData)
   }, [section9RecommendGroup]);
 
 
+  const getPremiumFrequencyName = (premiumFrequency: any) => {
+    switch(Number(premiumFrequency)) {
+      case 0 : return "Monthly";
+      case 1 : return "Quarterly";
+      case 2 : return "Half-Yearly";
+      case 3 : return "Annually";
+      case 4 : return "Single Payment";
+    }
+  }
+
   // Calc
-  const calcReaminingBudgets = (resData: any) => {
+  const calcReaminingBudgets = (resDta: any) => {
+    console.log('resDta', resDta)
     var groupIdParam  = Number(localStorage.getItem("s9_dataGroup"))
-    resData.group.map((group: any) => {
+    resDta.groups.map((group: any) => {
       let groupId = group['id']
       if(groupId == groupIdParam) {
         return
       }
       
-      let products        = getProductsByFilteringGroupId(groupId, resData.recommendProduct)
-      let ILPProducts     = getProductsByFilteringGroupId(groupId, resData.ILPProduct)
-      let CISProducts     = getProductsByFilteringGroupId(groupId, resData.CISProduct)
-      let customProducts  = getProductsByFilteringGroupId(groupId, resData.customProduct)
+      let products: any        = getProductsByFilteringGroupId(groupId, resDta.recommendedProduct)
+      let ILPProducts: any     = getProductsByFilteringGroupId(groupId, resDta.ILPProduct)
+      let CISProducts: any     = getProductsByFilteringGroupId(groupId, resDta.CISProduct)
+      let customProducts: any  = getProductsByFilteringGroupId(groupId, resDta.customProduct)
+
+      // console.log('products', products)
 
       products.map((product: any) => {
           setProductAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
@@ -238,7 +294,7 @@ const GroupRecommendation = () => {
         setTotalAnnualPremium(dataTotalAnnualPremium)
         
         dataProductAnnualPremium[clientId][premiumType] += premium
-        dataProductAnnualPremium(dataProductAnnualPremium)
+        setProductAnnualPremium(dataProductAnnualPremium)
       }
 
       if(isRider == false) {
@@ -290,16 +346,16 @@ const GroupRecommendation = () => {
 
         premium = premium * 2
         dataTotalAnnualPremium[clientId][0] += cash*2
-        dataTotalAnnualPremium(dataTotalAnnualPremium)
+        setTotalAnnualPremium(dataTotalAnnualPremium)
         
         dataTotalAnnualPremium[clientId][3] += medisave*2
-        dataTotalAnnualPremium(dataTotalAnnualPremium)
+        setTotalAnnualPremium(dataTotalAnnualPremium)
 
         dataProductAnnualPremium[clientId][0] += cash*2
-        dataProductAnnualPremium(dataProductAnnualPremium)
+        setProductAnnualPremium(dataProductAnnualPremium)
         
         dataProductAnnualPremium[clientId][3] += medisave*2
-        dataProductAnnualPremium(dataProductAnnualPremium)
+        setProductAnnualPremium(dataProductAnnualPremium)
 
       } else if(frequency == 1) {
 
@@ -326,10 +382,10 @@ const GroupRecommendation = () => {
         setTotalAnnualPremium(dataTotalAnnualPremium)
 
         dataProductAnnualPremium[clientId][0] += cash*12
-        dataProductAnnualPremium(dataProductAnnualPremium)
+        setProductAnnualPremium(dataProductAnnualPremium)
         
         dataProductAnnualPremium[clientId][3] += medisave*12
-        dataProductAnnualPremium(dataProductAnnualPremium)
+        setProductAnnualPremium(dataProductAnnualPremium)
 
       }
 
@@ -357,13 +413,19 @@ const GroupRecommendation = () => {
   }
 
   const getProductsByFilteringGroupId = (groupId: any, products:any) => {
-    let result = products.filter((product:any) => {
-      if(product['groupId'] == groupId) {
-        return true
-      } else {
-        return false
+    console.log('productss', products)
+    var result = [];
+    if(products){
+      if(products.length > 0){
+        result = products.filter((product:any) => {
+          if(product['groupId'] == groupId) {
+            return true
+          } else {
+            return false
+          }
+        })
       }
-    })
+    }
     return result
   }
   
@@ -409,6 +471,40 @@ const GroupRecommendation = () => {
     }
   }
 
+  // getTotalPremium() {
+
+  //   this.products.forEach(product => {
+  //       product['riders'].forEach(rider => {
+  //         rider['categoryId']= -1
+  //         this.calcPremium(rider, true)
+  //       })
+  //       this.calcPremium(product)
+  //   })
+
+  //   this.ILPProducts.forEach(product => {
+
+  //     product['riders'].forEach(rider => {
+  //       rider['categoryId']= -1
+  //       this.calcPremium(rider, true)
+  //     })
+  //     this.calcPremium(product)
+  //   })
+
+  //   this.customProducts.forEach(product => {
+
+  //     product['riders'].forEach(rider => {
+  //       rider['categoryId']= -1
+  //       this.calcPremium(rider, true)
+  //     })
+  //     this.calcPremium(product)
+  //   })
+
+  //   this.CISProducts.forEach(product => {
+  //     this.calcPremiumForCIS(product)
+  //   })
+
+  // }
+
   // sumTotal(){
   //   var res = 0;
   //   if(this.products){
@@ -416,8 +512,8 @@ const GroupRecommendation = () => {
   //       this.products.forEach(function(v, k){
   //         res += v.premium;
   //         if(v.premium_for_hospitalization){
-  //           var resData = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
-  //           res = resData;
+  //           var getPfr9 = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
+  //           res = getPfr9;
   //         }
 
   //         if(v.riders){
@@ -441,8 +537,8 @@ const GroupRecommendation = () => {
   //       this.ILPProducts.forEach(function(v, k){
   //         res += v.premium;
   //         if(v.premium_for_hospitalization){
-  //           var resData = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
-  //           res = resData;
+  //           var getPfr9 = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
+  //           res = getPfr9;
   //         }
 
   //         if(v.riders){
@@ -459,8 +555,8 @@ const GroupRecommendation = () => {
   //         this.customProducts.forEach(function(v, k){
   //           res += v.premium;
   //           if(v.premium_for_hospitalization){
-  //             var resData = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
-  //             res = resData;
+  //             var getPfr9 = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
+  //             res = getPfr9;
   //           }
   
   //           if(v.riders){
@@ -478,8 +574,8 @@ const GroupRecommendation = () => {
   //         this.CISProducts.forEach(function(v, k){
   //           res += v.premium;
   //           if(v.premium_for_hospitalization){
-  //             var resData = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
-  //             res = resData;
+  //             var getPfr9 = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
+  //             res = getPfr9;
   //           }
   
   //           if(v.riders){
@@ -626,19 +722,25 @@ const GroupRecommendation = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-2 py-5">Client 1</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                </tr>
+              {getPfrData?.clients ? 
+                  getPfrData.clients.map((data: any, index:any) => (
+                    <>
+                      <tr>
+                        <td className="px-2 py-5">Client {index + 1}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][0] - dataMaxAnnualPremium[index][0]) ? 0 : dataAnnualRemainBudget[index][0] - dataMaxAnnualPremium[index][0]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][0] - dataMaxSinglePremium[index][0]) ? 0 : dataSingleRemainBudget[index][0] - dataMaxSinglePremium[index][0]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][1] - dataMaxAnnualPremium[index][1]) ? 0 : dataAnnualRemainBudget[index][1] - dataMaxAnnualPremium[index][1]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][1] - dataMaxSinglePremium[index][1]) ? 0 : dataSingleRemainBudget[index][1] - dataMaxSinglePremium[index][1]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][2] - dataMaxAnnualPremium[index][2]) ? 0 : dataAnnualRemainBudget[index][2] - dataMaxAnnualPremium[index][2]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][2] - dataMaxSinglePremium[index][2]) ? 0 : dataSingleRemainBudget[index][2] - dataMaxSinglePremium[index][2]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][3] - dataMaxAnnualPremium[index][3]) ? 0 : dataAnnualRemainBudget[index][3] - dataMaxAnnualPremium[index][3]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][3] - dataMaxSinglePremium[index][3]) ? 0 : dataSingleRemainBudget[index][3] - dataMaxSinglePremium[index][3]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][4] - dataMaxAnnualPremium[index][4]) ? 0 : dataAnnualRemainBudget[index][4] - dataMaxAnnualPremium[index][4]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][4] - dataMaxSinglePremium[index][4]) ? 0 : dataSingleRemainBudget[index][4] - dataMaxSinglePremium[index][4]}</td>
+                      </tr>
+                    </>
+                  ))
+              : ''}
               </tbody>
             </table>
           </div>
