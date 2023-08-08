@@ -9,6 +9,7 @@ import CheckboxCircleFillIcon from "remixicon-react/CheckboxCircleFillIcon";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 import { siteConfig } from "@/libs/config";
+import RowFourthGrid from "@/components/Attributes/Rows/Grids/RowFourthGrid";
 
 const EpfrCreateFinish: Page = () => {
   const { push } = useRouter();
@@ -38,6 +39,58 @@ const EpfrCreateFinish: Page = () => {
             <br />
             Please see your document security status:
           </div>
+
+          <div style={{border: '1px solid #000', marginTop: '1.5rem', padding: '0 1.5rem'}}>
+            <div style={{marginTop: '1.5rem'}}>
+              <TitleMedium>DOCUMENT SECURITY</TitleMedium>{" "}
+            </div>
+
+            <div className="mt-5">
+              <RowFourthGrid className="mt-5">
+                  <div className="font-bold">Recipent 1:</div>
+                  <div className="text-sm">Email</div>
+                  <div></div>
+                  <div></div>
+              </RowFourthGrid>
+              <RowFourthGrid className="mt-5">
+                  <div className="font-bold">Access Code</div>
+                  <div className="text-sm">xxxxx</div>
+                  <div className="text-sm">Eye</div>
+                  <div className="text-sm">Copy</div>
+              </RowFourthGrid> 
+            </div>
+
+            <div style={{marginTop: '3rem'}}>
+              <RowFourthGrid className="mt-5">
+                  <div className="font-bold">Recipent 2:</div>
+                  <div className="text-sm">Email</div>
+                  <div></div>
+                  <div></div>
+              </RowFourthGrid>
+              <RowFourthGrid className="mt-5">
+                  <div className="font-bold">Access Code</div>
+                  <div className="text-sm">NA</div>
+                  <div></div>
+                  <div></div>
+              </RowFourthGrid>
+            </div>
+
+            <div style={{marginTop: '3rem'}}>
+              <RowFourthGrid className="mt-5">
+                  <div className="font-bold">Recipent 3:</div>
+                  <div className="text-sm">Email</div>
+                  <div></div>
+                  <div></div>
+              </RowFourthGrid>
+              <RowFourthGrid className="mt-5">
+                  <div className="font-bold">Access Code</div>
+                  <div className="text-sm">NA</div>
+                  <div></div>
+                  <div></div>
+              </RowFourthGrid>
+            </div>
+          </div>
+
           <div className="flex items-center gap-4 mt-4">
             <ButtonGreenMedium onClick={back}>Complete</ButtonGreenMedium>
             {/* or
