@@ -368,11 +368,6 @@ const CashFlow = (props: Props) => {
         ""
       )}
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
-      {/* <SectionCardFooter>
-        <ButtonGreenMedium onClick={() => saveData(4)}>
-          Continue <ArrowRightLineIcon size={20} />
-        </ButtonGreenMedium>
-      </SectionCardFooter> */}
     </div>
   );
 };

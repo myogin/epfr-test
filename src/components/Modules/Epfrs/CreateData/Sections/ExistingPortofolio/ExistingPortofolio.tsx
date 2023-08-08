@@ -1,18 +1,13 @@
-import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowSingle from "@/components/Attributes/Rows/Flexs/RowSingle";
 import RowDoubleGrid from "@/components/Attributes/Rows/Grids/RowDoubleGrid";
-import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import HeadingSecondarySectionDoubleGrid from "@/components/Attributes/Sections/HeadingSecondarySectionDoubleGrid";
-import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
-import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import Toggle from "@/components/Forms/Toggle";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import React, { useEffect, useState } from "react";
-import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import CpfPortofolio from "./Cpf/CpfPortofolio";
 import InsurancePortofolio from "./Insurance/InsurancePortofolio";
 import InvestmentPortofolio from "./Investment/InvestmentPortofolio";
@@ -20,10 +15,8 @@ import LoanPortofolio from "./Loan/LoanPortofolio";
 import PropertyPortofolio from "./Property/PropertyPortofolio";
 import SavingPortofolio from "./Saving/SavingPortofolio";
 import SrsPortofolio from "./Srs/SrsPortofolio";
-import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { SectionTwo } from "@/models/SectionTwo";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { postPfrSections } from "@/services/pfrService";
@@ -41,11 +34,21 @@ const ExistingPortofolio = (props: Props) => {
   let status = useExistingPortofolio((state) => state.status);
   let need = useExistingPortofolio((state) => state.need);
   let reason = useExistingPortofolio((state) => state.reason);
-  let summaryOfProperty = useExistingPortofolio((state) => state.summaryOfProperty);
-  let summaryOfInvestment = useExistingPortofolio((state) => state.summaryOfInvestment);
-  let summaryOfSavings = useExistingPortofolio((state) => state.summaryOfSavings);
-  let summaryOfInsurance = useExistingPortofolio((state) => state.summaryOfInsurance);
-  let summaryOfInsurance2 = useExistingPortofolio((state) => state.summaryOfInsurance2);
+  let summaryOfProperty = useExistingPortofolio(
+    (state) => state.summaryOfProperty
+  );
+  let summaryOfInvestment = useExistingPortofolio(
+    (state) => state.summaryOfInvestment
+  );
+  let summaryOfSavings = useExistingPortofolio(
+    (state) => state.summaryOfSavings
+  );
+  let summaryOfInsurance = useExistingPortofolio(
+    (state) => state.summaryOfInsurance
+  );
+  let summaryOfInsurance2 = useExistingPortofolio(
+    (state) => state.summaryOfInsurance2
+  );
   let summaryOfLoans = useExistingPortofolio((state) => state.summaryOfLoans);
   let summaryOfCPF = useExistingPortofolio((state) => state.summaryOfCPF);
   let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);
@@ -63,8 +66,14 @@ const ExistingPortofolio = (props: Props) => {
   const scrollPosition = useScrollPosition(2);
   const scrollPositionBottom = useScrollPositionBottom(2);
 
-   // Store data
-   const storeData = async () => {
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    setGlobal(name, value);
+  };
+
+  // Store data
+  const storeData = async () => {
     try {
       setSaveLoading(true); // Set loading before sending API request
 
@@ -78,10 +87,7 @@ const ExistingPortofolio = (props: Props) => {
         dataFix = data.state;
       }
 
-      let storeDataSection = await postPfrSections(
-        2,
-        JSON.stringify(dataFix)
-      );
+      let storeDataSection = await postPfrSections(2, JSON.stringify(dataFix));
 
       // If save success get ID and store to localstorage
       if (storeDataSection.data.result === "success") {
@@ -108,7 +114,7 @@ const ExistingPortofolio = (props: Props) => {
       ) {
         console.log("can save now");
         storeData();
-      }else {
+      } else {
         console.log("Your data not complete Section 2");
       }
     }
@@ -266,15 +272,17 @@ const ExistingPortofolio = (props: Props) => {
             lableStyle="text-sm font-normal text-gray-light"
             label=" Would you like your assets and liabilities to be taken into consideration for the Needs Analysis and Recommendation(s)?"
             needValidation={true}
-            textError="Need portfolio at least"
+            textError={`Need portfolio at least ${need}`}
             logic={
-              summaryOfProperty[0].editting ||
-              summaryOfInvestment[0].editting ||
-              summaryOfSavings[0].editting ||
-              summaryOfCPF[0].editting ||
-              summaryOfInsurance[0].editting ||
-              summaryOfSRS[0].editting ||
-              summaryOfLoans[0].editting
+              (need &&
+                (summaryOfProperty[0].editting ||
+                  summaryOfInvestment[0].editting ||
+                  summaryOfSavings[0].editting ||
+                  summaryOfCPF[0].editting ||
+                  summaryOfInsurance[0].editting ||
+                  summaryOfSRS[0].editting ||
+                  summaryOfLoans[0].editting)) ||
+              !need
                 ? true
                 : false
             }
@@ -283,7 +291,14 @@ const ExistingPortofolio = (props: Props) => {
         {!need ? (
           <>
             <RowSingle className="my-10">
-              <TextArea label="The Reason" defaultValue="test text area" />
+              <TextArea
+                name="reason"
+                handleChange={handleInputChange}
+                label="The Reason"
+                defaultValue={reason}
+                needValidation={true}
+                logic={!need ? false : true}
+              />
             </RowSingle>
             <RowDoubleGrid>
               <div>
@@ -302,6 +317,8 @@ const ExistingPortofolio = (props: Props) => {
                     label="Reason is needed if Net Worth ≤ $0"
                     rows={1}
                     defaultValue="text the reason"
+                    needValidation={true}
+                    logic={!need ? false : true}
                   />
                 </div>
               ) : (
@@ -319,11 +336,6 @@ const ExistingPortofolio = (props: Props) => {
         ""
       )}
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
-      {/* <SectionCardFooter>
-        <ButtonGreenMedium onClick={() => saveData(3)}>
-          Continue <ArrowRightLineIcon size={20} />
-        </ButtonGreenMedium>
-      </SectionCardFooter> */}
     </div>
   );
 };
