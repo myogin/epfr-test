@@ -7,12 +7,12 @@ import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { getSession, signIn, useSession } from "next-auth/react";
 import Image from "next/image";
-import Loading from "@/components/Forms/Loading/Loading";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import "react-toastify/dist/ReactToastify.css";
 import Head from "next/head";
 import { siteConfig } from "@/libs/config";
 import { useLoginData } from "@/store/login/logindata";
+import Loading from "@/components/Attributes/Loader/Loading";
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
   const { push } = useRouter();

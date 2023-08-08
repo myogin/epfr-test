@@ -1,7 +1,6 @@
 import SmallBadges from "@/components/Attributes/Badges/SmallBadges";
 import ButtonBorder from "@/components/Forms/Buttons/ButtonBorder";
-import Loading from "@/components/Forms/Loading/Loading";
-import LoadingInBox from "@/components/Forms/Loading/LoadingInBox";
+
 import { getPfrList } from "@/services/overview/overviewService";
 import { useDetailDataEpfr } from "@/store/epfrPage/detailData";
 import { Menu, Transition } from "@headlessui/react";
@@ -12,6 +11,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import More2LineIcon from "remixicon-react/More2LineIcon";
 import { pfrProgress } from "./overviewUtils";
 import { useLoginData } from "@/store/login/logindata";
+import LoadingList from "@/components/Attributes/Loader/LoadingList";
 
 interface Props {}
 
@@ -34,7 +34,7 @@ const PfrTable = (props: Props) => {
   if (isLoading)
     return (
       <>
-        <LoadingInBox />
+        <LoadingList />
       </>
     );
 
@@ -78,14 +78,14 @@ function RowData({ item }: any) {
             return e;
           } else {
             return (
-              <>
+              <Fragment key={i}>
                 <Image
                   src="/singpassSmall.png"
                   width={50}
                   height={8}
                   alt="singpasMethod"
                 ></Image>
-              </>
+              </Fragment>
             );
           }
         })}
