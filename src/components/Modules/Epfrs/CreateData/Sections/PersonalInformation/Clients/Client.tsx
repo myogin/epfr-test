@@ -229,6 +229,13 @@ const Client = (props: Props) => {
               value={clientInfo[0].nationality}
               datas={country}
               handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[0].nationality === "" ||
+                clientInfo[0].nationality === "-"
+                  ? false
+                  : true
+              }
             />
             <Select
               dataType="clientInfo"
@@ -659,6 +666,15 @@ const Client = (props: Props) => {
               value={clientInfo[index] ? clientInfo[index].nationality : ""}
               datas={country}
               handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                clientInfo[index]
+                  ? clientInfo[index].nationality === "" ||
+                    clientInfo[index].nationality === "-"
+                    ? false
+                    : true
+                  : true
+              }
             />
             <Select
               dataType="clientInfo"

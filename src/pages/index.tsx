@@ -67,12 +67,14 @@ const LoginPage: Page = () => {
                 type="email"
                 label="Email"
                 className="mb-4"
+                value={email}
                 handleChange={(event) => setEmail(event.target.value)}
               />
               <Input
                 type="password"
                 label="Password"
                 className="mb-4"
+                value={password}
                 handleChange={(event) => setPassword(event.target.value)}
               />
               <ButtonGreenMedium

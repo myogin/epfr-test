@@ -79,7 +79,7 @@ const RetrieveSingpassModal = (props: Props) => {
                 <Dialog.Panel className="w-full max-w-2xl p-10 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                   <div>
                     <div className="flex items-center justify-between">
-                      <div className="basis-1/2">
+                      <div>
                         <Dialog.Title
                           as="h3"
                           className="text-base font-bold leading-6 text-gray-light"
@@ -88,11 +88,11 @@ const RetrieveSingpassModal = (props: Props) => {
                           OF THE FOLLOWING DATA FROM SINGPASS.`}
                         </Dialog.Title>
                       </div>
-                      <div className=" basis-1/2">
+                      {/* <div className=" basis-1/2">
                         <div className="flex justify-end w-full">
                           <Image src={SingpassIcon} alt="Singpass" />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
