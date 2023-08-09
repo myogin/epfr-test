@@ -12,7 +12,7 @@ import Checkbox from "@/components/Forms/Checkbox";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { getPfrStep, postPfr } from "@/services/pfrService";
+import { getPfrStep, postPfr, postPfrSections } from "@/services/pfrService";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
@@ -49,12 +49,22 @@ const RepresentativeDeclaration = (props: Props) => {
   const scrollPosition = useScrollPosition(11);
 
   const saveData = async() => {
-      const groupFourData = {
-        section10: JSON.parse(localStorage.getItem('section10')?? '{}'),
-        section12: JSON.parse(localStorage.getItem('section11')?? '{}'),
-        section13: JSON.parse(localStorage.getItem('section12')?? '{}'),
+      // const groupFourData = {
+      //   section10: JSON.parse(localStorage.getItem('section10')?? '{}'),
+      //   section12: JSON.parse(localStorage.getItem('section11')?? '{}'),
+      //   section13: JSON.parse(localStorage.getItem('section12')?? '{}'),
+      // }
+      const localData = localStorage.getItem("section10")
+      ? localStorage.getItem("section10")
+      : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data;
       }
-      await postPfr(4, groupFourData);
+
+      await postPfrSections(12, JSON.stringify(dataFix));
   }
 
   const finish = async () => {
@@ -70,13 +80,32 @@ const RepresentativeDeclaration = (props: Props) => {
   const [requiredNFTF, setRequiredNFTF] = useState(false);
   const [isJointFieldWork, setIsJointFieldWork] = useState(false);
   const [explain, setExplain] = useState("");
+  const [supervisor, setSupervisor] = useState("");
 
   const fetchData = async () => {
     // console.log("Fetching ...");
 
     // const s12Res: any = await getPfrStep(12, pfrId);
     const s12Res: any = JSON.parse(localStorage.getItem('section11')?? "false");
-    console.log("S12: ", s12Res);
+    const s13Res: any = await getPfrStep(13, pfrId);
+
+    if(s13Res['note'] != null) {
+      sectionTwelveData.explain = s13Res['note']['note']
+      sectionTwelveData.jfw = s13Res['note']['jfw']
+      sectionTwelveData.spv = s13Res['note']['spv']
+      sectionTwelveData.spvOther = s13Res['note']['spvOther']
+      var cekData = false;
+      if(s13Res['note']['nftf']){
+        if((s13Res['note']['nftf'] === true) || s13Res['note']['nftf'] === 1){
+          cekData = true;
+        }else{
+          cekData = false;
+        }
+      }
+      sectionTwelveData.nftf = cekData;
+    }
+    setSupervisor(s13Res['spv']);
+    
     if (!s12Res) {
       return;
     }
@@ -184,7 +213,7 @@ const RepresentativeDeclaration = (props: Props) => {
                     ...sectionTwelveData,
                     jfw: e.target.checked
                   });
-                  setIsJointFieldWork(true);
+                  setIsJointFieldWork(e.target.checked);
                 }}
               />
             </span>
@@ -207,12 +236,15 @@ const RepresentativeDeclaration = (props: Props) => {
                   <option selected disabled={true} value="">
                     Please choose supervisor
                   </option>
-                  {["one", "two"]?.length &&
+                  <option value={supervisor}>
+                    {supervisor}
+                  </option>
+                  {/* {["one", "two"]?.length &&
                     ["one", "two"].map((val, index) => (
                       <option key={index} value={val}>
                         {val}
                       </option>
-                    ))}
+                    ))} */}
                 </select>
               </div>
             </RowDoubleGrid>
