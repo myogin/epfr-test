@@ -50,7 +50,7 @@ const initialState: SectionOne = {
       email: "",
       residentialAddr: "",
       mailingAddr: "",
-      clientPfr: "",
+      clientPfr: "Manual",
     },
     {
       clientTitle: "",
@@ -80,7 +80,7 @@ const initialState: SectionOne = {
       email: "",
       residentialAddr: "",
       mailingAddr: "",
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   dependant: [
@@ -95,7 +95,7 @@ const initialState: SectionOne = {
       certNumber: "",
       nric: "",
       sponsored: "",
-      clientPfr: "",
+      clientPfr: "Manual",
       client: 0,
       depId: 0,
     },
@@ -107,7 +107,7 @@ const initialState: SectionOne = {
       english_spoken: "",
       english_written: "",
       education_level: "",
-      clientPfr: "",
+      clientPfr: "Manual",
     },
     {
       clientType: 0,
@@ -115,7 +115,7 @@ const initialState: SectionOne = {
       english_spoken: "",
       english_written: "",
       education_level: "",
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   trustedIndividuals: {
@@ -335,52 +335,57 @@ const personalInformation = create(
                 client[name] = value;
               }
 
-              console.log(
-                "masuk editable status nggak " +
-                  get().editableStatus +
-                  " statsu " +
-                  get().status
-              );
-
               if (get().editableStatus === 1 && get().status === 1) {
-                console.log("masuk nggak");
                 draft.editableStatus = 2;
-              } else {
-                console.log("masuk sini nggak");
               }
 
               if (
                 get().clientInfo?.length &&
                 get().clientInfo[clientType].hasOwnProperty("clientTitle")
               ) {
+
+                let type = get().type ? Number(get().type) : 0 
+                
+                let checkStatus = true;
+
+                for(let z=0;z<type;z++) {
+                  if(draft.clientInfo[z].clientTitle === "" ||
+                  draft.clientInfo[z].clientTitle === "-" ||
+                  draft.clientInfo[z].gender === "" ||
+                  draft.clientInfo[z].gender === "-" ||
+                  draft.clientInfo[z].dateOfBirth === "" ||
+                  draft.clientInfo[z].residency === "" ||
+                  draft.clientInfo[z].residency === "-" ||
+                  draft.clientInfo[z].employmentStatus === "" ||
+                  draft.clientInfo[z].annualIncome === "" ||
+                  draft.clientInfo[z].annualIncome === "-" ||
+                  draft.clientInfo[z].contactMobile === "" ||
+                  draft.clientInfo[z].clientName === "" ||
+                  draft.clientInfo[z].email === "" ||
+                  draft.clientInfo[z].race === "" ||
+                  draft.clientInfo[z].residencyTwo === "" ||
+                  draft.clientInfo[z].residencyTwo === "-" ||
+                  draft.clientInfo[z].marital === "" ||
+                  draft.clientInfo[z].marital === "-" ||
+                  draft.clientInfo[z].residentialAddr === "" ||
+                  draft.clientInfo[z].smoker === "" ||
+                  draft.clientInfo[z].smoker === "-" ||
+                  draft.reviewDate === "") {
+                    checkStatus = false;
+                    // draft.status = 0;
+                  }else {
+                    // draft.status = 1;
+                  }
+                }
+
+                console.log("checkStatus "+ checkStatus + " status " + get().status)
                 // check validation
-                if (
-                  draft.clientInfo[clientType].clientTitle === "" ||
-                  draft.clientInfo[clientType].clientTitle === "-" ||
-                  draft.clientInfo[clientType].gender === "" ||
-                  draft.clientInfo[clientType].gender === "-" ||
-                  draft.clientInfo[clientType].dateOfBirth === "" ||
-                  draft.clientInfo[clientType].residency === "" ||
-                  draft.clientInfo[clientType].residency === "-" ||
-                  draft.clientInfo[clientType].employmentStatus === "" ||
-                  draft.clientInfo[clientType].annualIncome === "" ||
-                  draft.clientInfo[clientType].annualIncome === "-" ||
-                  draft.clientInfo[clientType].contactMobile === "" ||
-                  draft.clientInfo[clientType].clientName === "" ||
-                  draft.clientInfo[clientType].email === "" ||
-                  draft.clientInfo[clientType].race === "" ||
-                  draft.clientInfo[clientType].residencyTwo === "" ||
-                  draft.clientInfo[clientType].residencyTwo === "-" ||
-                  draft.clientInfo[clientType].marital === "" ||
-                  draft.clientInfo[clientType].marital === "-" ||
-                  draft.clientInfo[clientType].residentialAddr === "" ||
-                  draft.clientInfo[clientType].smoker === "" ||
-                  draft.clientInfo[clientType].smoker === "-" ||
-                  draft.reviewDate === ""
-                ) {
-                  draft.status = 0;
-                } else {
+                if (checkStatus) {
+                  console.log("Masuk nggak sini baru aja ya " + checkStatus)
                   draft.status = 1;
+                } else {
+                  console.log("Masuk nggak sini baru aja ya ys " + checkStatus)
+                  draft.status = 0;
                 }
               }
             })
@@ -392,6 +397,7 @@ const personalInformation = create(
 
               if (datas.length > 0) {
                 datas.map((param, index) => {
+                  let depIdFromDb = param.id && param.id > 0 ? param.id : 0;
                   if (index === 0 && checkLengthDependent === 1) {
                     let dependentReplace = draft.dependant[index];
                     dependentReplace.id = 1;
@@ -406,31 +412,13 @@ const personalInformation = create(
                     dependentReplace.nric = param.nric;
                     dependentReplace.clientPfr = param.clientPfr;
                     dependentReplace.client = param.client;
-                    dependentReplace.depId = param.depId ? param.depId : 0;
+                    dependentReplace.depId = param.depId ? param.depId : depIdFromDb;
                   } else {
                     param["id"] = ++checkLengthDependent;
+                    param["depId"] = depIdFromDb;
                     draft.dependant.push(param);
                   }
                 });
-
-                // check validation
-                // let checkDependent = 0;
-                // draft.dependant.map((value: any, index: any) => {
-                //   if (
-                //     value.name === "" ||
-                //     value.relationship === "" ||
-                //     value.dateOfBirth === "" ||
-                //     value.gender === ""
-                //   ) {
-                //     checkDependent++;
-                //   }
-                // });
-
-                // if (checkDependent > 0) {
-                //   draft.status = 0;
-                // } else {
-                //   draft.status = 1;
-                // }
               }
             })
           ),

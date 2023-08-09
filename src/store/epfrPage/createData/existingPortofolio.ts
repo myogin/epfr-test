@@ -735,6 +735,7 @@ const existingPortofolio = create(
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
+              console.log("masuk sini global section 2");
               draft[name] = value;
             })
           ),

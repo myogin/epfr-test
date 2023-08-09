@@ -99,7 +99,7 @@ const CallbackPage: Page = () => {
     setCpf(checkTotalData, data);
   };
 
-  // Reset Data
+  // Reset Data #pending 
   const resetExistingData = () => {
     resetSectionOne();
     resetSectionTwo();
@@ -134,7 +134,7 @@ const CallbackPage: Page = () => {
           : "joint"
         : "single";
 
-    resetExistingData();
+    // resetExistingData();
 
     if (clients !== null) {
       storeDataClientToState(clientType, clients);
@@ -167,13 +167,12 @@ const CallbackPage: Page = () => {
     console.log("test masuk apa ini  " + pfr.uuid);
 
     if(pfr.uuid === "" || pfr.uuid === null || pfr.uuid === 0 || pfr.uuid === undefined) {
-      router.push(`/create/${pfrType}?singpass=ok#section-1`);
+      router.push(`/create/${pfrType}?singpass=ok`);
     }else {
-      router.push(`/create/${pfrType}?id=${pfr.uuid}&singpass=ok#section-1`);
+      router.push(`/create/${pfrType}?id=${pfr.uuid}&singpass=ok`);
       
     }
 
-    // router.push(`/create/${pfrType}#section-1`);
   }, [router.isReady, router.query]);
   return (
     <>
