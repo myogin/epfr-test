@@ -4,6 +4,7 @@ import Select from "@/components/Forms/Select";
 import SelectNationality from "@/components/Forms/SelectNationality";
 import { getLength } from "@/libs/helper";
 import { Clientformation } from "@/models/SectionOne";
+import { getAllCountry } from "@/services/countryService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React, { Fragment, useEffect, useState } from "react";
 
@@ -151,6 +152,32 @@ const Client = (props: Props) => {
     { id: 2, name: "Parent" },
     { id: 3, name: "Others" },
   ];
+
+  let [countries, setCounties] = useState<Array<any>>([]);
+
+  const getCountryOfBirth = async () => {
+    let arrCountry: any[] = [];
+
+    try {
+      let countries = await getAllCountry();
+
+      let countriesData : any[] =  countries.birthCountry;
+
+      if (countriesData.length > 0) {
+        countriesData.map((data, index) => {
+          arrCountry.push({ id: data.id, name: data.title });
+        });
+      }
+
+      setCounties(arrCountry);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getCountryOfBirth();
+  }, []);
 
   return (
     <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
@@ -484,7 +511,7 @@ const Client = (props: Props) => {
                 name="birthCountryId"
                 indexData={0}
                 value={clientInfo[0] ? clientInfo[0].birthCountryId : ""}
-                datas={country}
+                datas={countries}
                 handleChange={handleInputChange}
               />
             )}
@@ -873,7 +900,7 @@ const Client = (props: Props) => {
                 value={
                   clientInfo[index] ? clientInfo[index].birthCountryId : ""
                 }
-                datas={country}
+                datas={countries}
                 handleChange={handleInputChange}
               />
             )}
