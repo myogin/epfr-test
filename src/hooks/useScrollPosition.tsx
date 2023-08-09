@@ -29,7 +29,7 @@ export const useScrollPosition = (scrollFactor = 1) => {
     return () => window.removeEventListener("scroll", updatePosition);
   }, []);
 
-  console.log("Scroll Pos: ", scrollPosition);
+  // console.log("Scroll Pos: ", scrollPosition);
 
   return scrollPosition;
 };
