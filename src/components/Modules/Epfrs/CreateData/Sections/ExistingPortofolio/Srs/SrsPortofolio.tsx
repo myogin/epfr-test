@@ -87,7 +87,12 @@ const SrsPortofolio = () => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <div className="w-full">
+      <div className="flex flex-col w-full">
+        {summaryOfSRS[0].editting && summaryOfSRS[0].client === "" ? (
+          <span className="mb-2 text-sm text-red">Required</span>
+        ) : (
+          ""
+        )}
         <ButtonBox onClick={openModal} className="text-green-deep">
           <AddLineIcon />
         </ButtonBox>
@@ -248,7 +253,7 @@ const SrsPortofolio = () => {
           </Dialog>
         </Transition>
       </div>
-      {summaryOfSRS[0].client !== "" ? (
+      {summaryOfSRS?.length && summaryOfSRS[0].client !== "" ? (
         <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
           <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
             <thead className="text-left bg-white-bone">
