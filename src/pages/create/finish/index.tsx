@@ -39,7 +39,8 @@ const EpfrCreateFinish: Page = () => {
             <br />
             Please see your document security status:
           </div>
-
+          
+          {/* Document Security */}
           <div style={{border: '1px solid #000', marginTop: '1.5rem', padding: '0 1.5rem'}}>
             <div style={{marginTop: '1.5rem'}}>
               <TitleMedium>DOCUMENT SECURITY</TitleMedium>{" "}
@@ -54,9 +55,13 @@ const EpfrCreateFinish: Page = () => {
               </RowFourthGrid>
               <RowFourthGrid className="mt-5">
                   <div className="font-bold">Access Code</div>
-                  <div className="text-sm">xxxxx</div>
-                  <div className="text-sm">Eye</div>
-                  <div className="text-sm">Copy</div>
+                  <div className="text-sm">
+                    <span className="mr-2">xxxxxxx</span>
+                    <span className="mr-2">toggle eye icon</span>
+                    <span>copy icon</span>
+                  </div>
+                  <div className="text-sm"></div>
+                  <div className="text-sm"></div>
               </RowFourthGrid> 
             </div>
 
