@@ -6,7 +6,6 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useUserData } from "@/store/login/data";
-import Loading from "@/components/Forms/Loading/Loading";
 import Image from "next/image";
 import Input from "@/components/Forms/Input";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
@@ -14,6 +13,7 @@ import ChartLogin from "../../public/ChartLogin.png";
 import LogoLfa from "../../public/LegacyFALogo.png";
 import Head from "next/head";
 import { siteConfig } from "@/libs/config";
+import Loading from "@/components/Attributes/Loader/Loading";
 
 const LoginPage: Page = () => {
   const { push } = useRouter();
@@ -67,12 +67,14 @@ const LoginPage: Page = () => {
                 type="email"
                 label="Email"
                 className="mb-4"
+                value={email}
                 handleChange={(event) => setEmail(event.target.value)}
               />
               <Input
                 type="password"
                 label="Password"
                 className="mb-4"
+                value={password}
                 handleChange={(event) => setPassword(event.target.value)}
               />
               <ButtonGreenMedium

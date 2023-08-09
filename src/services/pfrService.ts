@@ -8,10 +8,12 @@ export const getAllPfrData = async (params: any) => {
   return res.data;
 };
 
-export const getPfrSection = async (params: any) => {
-  return await http.get(`pfr/get-general-data/${params}`, {
+
+export const getPfrStep = async (step: number, pfrId: any) => {
+  const res = await http.get(`pfr/get/s${step}/${pfrId}`, {
     headers: authHeader(),
   });
+  return res.data;
 };
 
 export const postPfr = async (group: any, data: any) => {
@@ -111,12 +113,6 @@ export const getPfr = async (id:any) => {
 //   return await http.get(`/category?name=${name}`, { headers: authHeader() });
 // }
 
-export const getPfrStep = async (step: any, pfrId: any) => {
-  const res = await http.get(`pfr/get/s${step}/${pfrId}`, {
-    headers: authHeader(),
-  });
-  return res.data;
-};
 
 export const validateToken = async () => {
   await http

@@ -42,6 +42,7 @@ export interface DependantInformation {
   year: string;
   clientPfr: string;
   client: number;
+  depId?: number;
 }
 
 export interface Accompaniment {

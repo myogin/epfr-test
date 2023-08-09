@@ -97,6 +97,7 @@ const initialState: SectionOne = {
       sponsored: "",
       clientPfr: "",
       client: 0,
+      depId: 0,
     },
   ],
   accompaniment: [
@@ -241,7 +242,6 @@ const personalInformation = create(
                 draft.clientInfo[clientType].clientPfr = params.clientPfr
                   ? params.clientPfr
                   : get().clientInfo[clientType].clientPfr;
-
                 // If different persone so go here
               } else {
                 draft.clientInfo[clientType].clientTitle = params.clientTitle
@@ -406,6 +406,7 @@ const personalInformation = create(
                     dependentReplace.nric = param.nric;
                     dependentReplace.clientPfr = param.clientPfr;
                     dependentReplace.client = param.client;
+                    dependentReplace.depId = param.depId ? param.depId : 0;
                   } else {
                     param["id"] = ++checkLengthDependent;
                     draft.dependant.push(param);
@@ -452,9 +453,17 @@ const personalInformation = create(
                   ? params.clientPfr
                   : "Manual";
                 dependentReplace.client = params.client ? params.client : 0;
+                dependentReplace.depId = params.depId ? params.depId : 0;
               } else {
                 params["clientPfr"] = "Manual";
                 draft.dependant.push(params);
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                console.log("masuk nggak");
+                draft.editableStatus = 2;
+              } else {
+                console.log("masuk sini nggak");
               }
 
               // check validation
@@ -501,6 +510,15 @@ const personalInformation = create(
                 dependentReplace.sponsored = "";
                 dependentReplace.nric = "";
                 dependentReplace.clientPfr = "";
+                dependentReplace.depId = 0;
+                dependentReplace.client = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                console.log("masuk nggak");
+                draft.editableStatus = 2;
+              } else {
+                console.log("masuk sini nggak");
               }
             })
           ),
@@ -520,6 +538,18 @@ const personalInformation = create(
               dependant.certNumber = params.certNumber;
               dependant.sponsored = params.sponsored;
               dependant.nric = params.nric;
+              dependant.clientPfr = params.clientPfr
+                ? params.clientPfr
+                : "Manual";
+              dependant.client = params.client ? params.client : 0;
+              dependant.depId = params.depId ? params.depId : 0;
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                console.log("masuk nggak");
+                draft.editableStatus = 2;
+              } else {
+                console.log("masuk sini nggak");
+              }
             })
           ),
         fetchAccompainment: (clientType: number, params: any) =>
