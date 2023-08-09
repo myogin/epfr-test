@@ -1,10 +1,7 @@
-import SmallBadges from "@/components/Attributes/Badges/SmallBadges";
 import ButtonBorder from "@/components/Forms/Buttons/ButtonBorder";
 
 import { getPfrList } from "@/services/overview/overviewService";
-import { useDetailDataEpfr } from "@/store/epfrPage/detailData";
 import { Menu, Transition } from "@headlessui/react";
-import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
