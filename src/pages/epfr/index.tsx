@@ -51,7 +51,7 @@ const EpfrPage: Page = () => {
             <TitleMedium>Please choose EPFR type</TitleMedium>
           </div>
           <div className="flex justify-between gap-10">
-            <Link href="create/single#section-1">
+            <Link href="create/single">
               <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
                 <button className="mb-3">
                   <File3FillIcon className="text-green-deep" size={50} />
@@ -62,7 +62,7 @@ const EpfrPage: Page = () => {
                 </span>
               </div>
             </Link>
-            <Link href="create/joint#section-1">
+            <Link href="create/joint">
               <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
                 <button className="mb-3">
                   <File3FillIcon className="text-green-deep" size={50} />

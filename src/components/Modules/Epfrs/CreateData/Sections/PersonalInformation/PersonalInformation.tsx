@@ -22,6 +22,7 @@ import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 import { useRouter } from "next/router";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -47,7 +48,14 @@ const PersonalInformation = (props: Props) => {
   );
 
   let fetchClient = usePersonalInformation((state) => state.fetchClient);
+  let fetchDependent = usePersonalInformation((state) => state.fetchDependent);
+  let fetchAccompainment = usePersonalInformation((state) => state.fetchAccompainment);
   let setGlobal = usePersonalInformation((state) => state.setGlobal);
+
+
+  // Action join with section 2
+    let setGlobalSectionTwo = useExistingPortofolio((state) => state.setGlobal)
+    let idSectionTwo = useExistingPortofolio((state) => state.id)
 
   let checkAccompainment = CheckAccompainment(
     accompaniment,
@@ -85,6 +93,12 @@ const PersonalInformation = (props: Props) => {
         } else {
           setGlobal("id", id);
         }
+
+        if (idSectionTwo === 0 || idSectionTwo === null || idSectionTwo === undefined) {
+          setGlobalSectionTwo("id", storeDataSection.data.pfrId)
+        } else {
+          setGlobalSectionTwo("id", id);
+        }
         setGlobal("editableStatus", 1);
       }
 
@@ -111,6 +125,18 @@ const PersonalInformation = (props: Props) => {
         });
       }
 
+      // Fetch Dependent
+      if (getSection1.dependants.length > 0) {
+        fetchDependent(getSection1.dependants);
+      }
+
+      // Fetch accompaintment
+      if (getSection1.accompainments.length > 0) {
+        getSection1.accompainments.map((data: any, index: number) => {
+          fetchAccompainment(index, data);
+        });
+      }
+
       setLoading(false); // Stop loading
     } catch (error) {
       setLoading(false); // Stop loading in case of error
@@ -118,6 +144,7 @@ const PersonalInformation = (props: Props) => {
     }
   };
 
+  // Load data first load
   useEffect(() => {
     if (!router.isReady) return;
     // If edit check the ID
@@ -128,11 +155,17 @@ const PersonalInformation = (props: Props) => {
         // getGeneralData(router.query.id);
       }
     }
+  }, [router.isReady,router.query.id,router.query.singpass]);
 
+  // Trigger the dependent data to showing the depdendent
+  useEffect(() => {
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
+  }, [dependant]);
 
+  // Save data when scrolling
+  useEffect(() => {
     if (scrollPositionBottom === "Process1") {
       if (
         (editableStatus === 0 && status === 1) ||
@@ -145,7 +178,7 @@ const PersonalInformation = (props: Props) => {
         console.log("Your cannot save data");
       }
     }
-  }, [router.isReady, dependant, editableStatus, status, scrollPositionBottom]);
+  }, [scrollPositionBottom, editableStatus, status]);
 
   if (loading) {
     return <LoadingPage />;

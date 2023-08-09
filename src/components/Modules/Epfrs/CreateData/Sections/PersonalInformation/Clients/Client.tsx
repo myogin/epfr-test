@@ -773,14 +773,15 @@ const Client = (props: Props) => {
               datas={employmentSector}
               handleChange={handleInputChange}
             />
-            <Select
+            <Input
               dataType="clientInfo"
               className="mb-10"
+              label="Company Name"
+              type="text"
               name="companyName"
               indexData={index}
-              label="Company Name"
               value={clientInfo[index] ? clientInfo[index].companyName : ""}
-              datas={companyMaster}
+              placeholder="Manager"
               handleChange={handleInputChange}
             />
             <Select

@@ -58,7 +58,7 @@ const PfrButtonModal = () => {
                   </Dialog.Title>
                   <div className="mt-2">
                     <div className="flex justify-between gap-10">
-                      <Link href="/create/single#section-1">
+                      <Link href="/create/single">
                         <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
                           <button>
                             <File3FillIcon
@@ -72,7 +72,7 @@ const PfrButtonModal = () => {
                           </span>
                         </div>
                       </Link>
-                      <Link href="/create/join#section-1">
+                      <Link href="/create/joint">
                         <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
                           <button>
                             <File3FillIcon
