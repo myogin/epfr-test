@@ -21,6 +21,7 @@ import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { useRouter } from "next/router";
 
 interface Props {
   id?: any;
@@ -29,6 +30,7 @@ interface Props {
 
 const ExistingPortofolio = (props: Props) => {
   let id = usePersonalInformation((state) => state.id);
+  const router = useRouter();
 
   let editableStatus = useExistingPortofolio((state) => state.editableStatus);
   let status = useExistingPortofolio((state) => state.status);
@@ -64,6 +66,7 @@ const ExistingPortofolio = (props: Props) => {
   const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
 
   const scrollPosition = useScrollPosition(2);
+  const scrollPositionBottomSection1 = useScrollPositionBottom(1);
   const scrollPositionBottom = useScrollPositionBottom(2);
 
   const handleInputChange = (event: any) => {
@@ -105,6 +108,17 @@ const ExistingPortofolio = (props: Props) => {
       console.error(error);
     }
   };
+
+  // Get data when scroll from section 1
+  useEffect(() => {
+    if (!router.isReady) return;
+    // If edit check the ID
+    if (router.query.id !== null && router.query.id !== undefined) {
+      if (scrollPositionBottomSection1 === "Process1") {
+        console.log("Get data Section 2");
+      }
+    }
+  }, [scrollPositionBottomSection1, router.isReady, router.query.id]);
 
   useEffect(() => {
     if (scrollPositionBottom === "Process2") {

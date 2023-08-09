@@ -48,7 +48,7 @@ const PropertyPortofolio = (props: Props) => {
     monthlyLoanRepaymentCash: 0,
     monthlyLoanRepaymentCPF: 0,
     currentMarketValue: 0,
-    clientPfr: ""
+    clientPfr: "",
   };
 
   // inject initial state to useState
@@ -112,17 +112,22 @@ const PropertyPortofolio = (props: Props) => {
   const typeOfPropertiesName = (params: any) => {
     switch (params) {
       case "0":
-        return "Public"
+        return "Public";
       case "1":
-        return "Private"
+        return "Private";
       default:
-        return "Public"
+        return "Public";
     }
   };
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <div className="w-full">
+      <div className="flex flex-col w-full">
+        {summaryOfProperty[0].editting && summaryOfProperty[0].client === "" ? (
+          <span className="mb-2 text-sm text-red">Required</span>
+        ) : (
+          ""
+        )}
         <ButtonBox onClick={openModal} className="text-green-deep">
           <AddLineIcon />
         </ButtonBox>
@@ -388,7 +393,9 @@ const PropertyPortofolio = (props: Props) => {
                   <tr key={index}>
                     <td className="px-2 py-5">{++index}</td>
                     <td className="px-2 py-5">{clientName(data.client)}</td>
-                    <td className="px-2 py-5">{typeOfPropertiesName(data.typeOfProperty)}</td>
+                    <td className="px-2 py-5">
+                      {typeOfPropertiesName(data.typeOfProperty)}
+                    </td>
                     <td className="px-2 py-5">{data.yearPurchased}</td>
                     <td className="px-2 py-5">{data.purchasePrice}</td>
                     <td className="px-2 py-5">{data.loanAmount}</td>

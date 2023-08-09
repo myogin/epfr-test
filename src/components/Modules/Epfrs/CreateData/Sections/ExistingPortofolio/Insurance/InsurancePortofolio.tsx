@@ -101,7 +101,12 @@ const InsurancePortofolio = () => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <div className="w-full">
+      <div className="flex flex-col w-full">
+        {summaryOfInsurance[0].editting && summaryOfInsurance[0].client === "" ? (
+          <span className="mb-2 text-sm text-red">Required</span>
+        ) : (
+          ""
+        )}
         <ButtonBox onClick={openModal} className="text-green-deep">
           <AddLineIcon />
         </ButtonBox>
@@ -488,7 +493,7 @@ const InsurancePortofolio = () => {
           </Dialog>
         </Transition>
       </div>
-      {summaryOfInsurance[0].client !== "" ? (
+      {summaryOfInsurance?.length && summaryOfInsurance[0].client !== "" ? (
         <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
           <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
             <thead className="text-left bg-white-bone">
@@ -544,7 +549,7 @@ const InsurancePortofolio = () => {
         </div>
       ) : null}
 
-      {summaryOfInsurance2[0].client !== "" ? (
+      {summaryOfInsurance2?.length && summaryOfInsurance2[0].client !== "" ? (
         <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
           <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
             <thead className="text-left bg-white-bone">

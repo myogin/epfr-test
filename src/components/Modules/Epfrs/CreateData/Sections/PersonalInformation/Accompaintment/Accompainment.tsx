@@ -55,6 +55,13 @@ const Accompainment = (props: Props) => {
               datas={englishLevel}
               indexData={0}
               handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                accompaniment[0].english_spoken === "" ||
+                accompaniment[0].english_spoken === "-"
+                  ? false
+                  : true
+              }
             />
           </div>
           <div>
@@ -66,6 +73,13 @@ const Accompainment = (props: Props) => {
               datas={educationLevel}
               indexData={0}
               handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                accompaniment[0].education_level === "" ||
+                accompaniment[0].education_level === "-"
+                  ? false
+                  : true
+              }
             />
             <Select
               className="mb-10"
@@ -75,6 +89,13 @@ const Accompainment = (props: Props) => {
               name="english_written"
               indexData={0}
               handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                accompaniment[0].english_written === "" ||
+                accompaniment[0].english_written === "-"
+                  ? false
+                  : true
+              }
             />
           </div>
         </Fragment>
@@ -110,6 +131,13 @@ const Accompainment = (props: Props) => {
               datas={englishLevel}
               indexData={index}
               handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                accompaniment[index].english_spoken === "" ||
+                accompaniment[index].english_spoken === "-"
+                  ? false
+                  : true
+              }
             />
             <Select
               className="mb-10"
@@ -121,6 +149,13 @@ const Accompainment = (props: Props) => {
               datas={educationLevel}
               indexData={index}
               handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                accompaniment[index].education_level === "" ||
+                accompaniment[index].education_level === "-"
+                  ? false
+                  : true
+              }
             />
             <Select
               className="mb-10"
@@ -132,6 +167,13 @@ const Accompainment = (props: Props) => {
               indexData={index}
               name="english_written"
               handleChange={handleInputChange}
+              needValidation={true}
+              logic={
+                accompaniment[0].english_written === "" ||
+                accompaniment[0].english_written === "-"
+                  ? false
+                  : true
+              }
             />
           </div>
         ))

@@ -44,7 +44,7 @@ type Actions = {
 const initialState: SectionTwo = {
   id: 0,
   need: true,
-  declineToReview: [],
+  declineToReview: [1, 1, 1, 1, 1, 1, 1],
   reason: "",
   summaryOfProperty: [
     {
@@ -169,7 +169,7 @@ const initialState: SectionTwo = {
     },
   ],
   issues: [],
-  totalNetWorth: [0,0],
+  totalNetWorth: [0, 0],
   networthReason: ["", ""],
   status: 0,
   editableStatus: 0,
@@ -749,6 +749,36 @@ const existingPortofolio = create(
             produce((draft) => {
               let getObject = draft[object][clientType];
               getObject[name] = value;
+
+              switch (object) {
+                case "summaryOfProperty":
+                  draft.declineToReview[0] = value == true ? 0 : 1;
+                  break;
+                case "summaryOfInvestment":
+                  draft.declineToReview[1] = value == true ? 0 : 1;
+                  break;
+                case "summaryOfSavings":
+                  draft.declineToReview[2] = value == true ? 0 : 1;
+                  break;
+                case "summaryOfCPF":
+                  draft.declineToReview[3] = value == true ? 0 : 1;
+                  break;
+                case "summaryOfInsurance":
+                  draft.declineToReview[4] = value == true ? 0 : 1;
+                  break;
+                case "summaryOfSRS":
+                  draft.declineToReview[5] = value == true ? 0 : 1;
+                  break;
+                case "summaryOfLoans":
+                  draft.declineToReview[6] = value == true ? 0 : 1;
+                  break;
+                default:
+                  draft.declineToReview[0] = value == true ? 0 : 1;
+                  break;
+              }
+
+              let checkEditing = getObject.editing;
+              let checkClient = getObject.client;
             })
           ),
         removeData: (attribut: string, params: any) =>

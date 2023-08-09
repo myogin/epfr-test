@@ -14,6 +14,7 @@ type Actions = {
   fetchClient: (clientType: number, params: any) => any;
   fetchDependent: (datas: DependantInformation[]) => any;
   fetchAccompainment: (clientType: number, params: any) => any;
+  fetchTrustedIndividuals: (params: any) => any;
   resetSectionOne: () => any;
 };
 
@@ -343,48 +344,43 @@ const personalInformation = create(
                 get().clientInfo?.length &&
                 get().clientInfo[clientType].hasOwnProperty("clientTitle")
               ) {
+                let type = get().type ? Number(get().type) : 0;
 
-                let type = get().type ? Number(get().type) : 0 
-                
                 let checkStatus = true;
 
-                for(let z=0;z<type;z++) {
-                  if(draft.clientInfo[z].clientTitle === "" ||
-                  draft.clientInfo[z].clientTitle === "-" ||
-                  draft.clientInfo[z].gender === "" ||
-                  draft.clientInfo[z].gender === "-" ||
-                  draft.clientInfo[z].dateOfBirth === "" ||
-                  draft.clientInfo[z].residency === "" ||
-                  draft.clientInfo[z].residency === "-" ||
-                  draft.clientInfo[z].employmentStatus === "" ||
-                  draft.clientInfo[z].annualIncome === "" ||
-                  draft.clientInfo[z].annualIncome === "-" ||
-                  draft.clientInfo[z].contactMobile === "" ||
-                  draft.clientInfo[z].clientName === "" ||
-                  draft.clientInfo[z].email === "" ||
-                  draft.clientInfo[z].race === "" ||
-                  draft.clientInfo[z].residencyTwo === "" ||
-                  draft.clientInfo[z].residencyTwo === "-" ||
-                  draft.clientInfo[z].marital === "" ||
-                  draft.clientInfo[z].marital === "-" ||
-                  draft.clientInfo[z].residentialAddr === "" ||
-                  draft.clientInfo[z].smoker === "" ||
-                  draft.clientInfo[z].smoker === "-" ||
-                  draft.reviewDate === "") {
+                for (let z = 0; z < type; z++) {
+                  if (
+                    draft.clientInfo[z].clientTitle === "" ||
+                    draft.clientInfo[z].clientTitle === "-" ||
+                    draft.clientInfo[z].gender === "" ||
+                    draft.clientInfo[z].gender === "-" ||
+                    draft.clientInfo[z].dateOfBirth === "" ||
+                    draft.clientInfo[z].residency === "" ||
+                    draft.clientInfo[z].residency === "-" ||
+                    draft.clientInfo[z].employmentStatus === "" ||
+                    draft.clientInfo[z].annualIncome === "" ||
+                    draft.clientInfo[z].annualIncome === "-" ||
+                    draft.clientInfo[z].contactMobile === "" ||
+                    draft.clientInfo[z].clientName === "" ||
+                    draft.clientInfo[z].email === "" ||
+                    draft.clientInfo[z].race === "" ||
+                    draft.clientInfo[z].residencyTwo === "" ||
+                    draft.clientInfo[z].residencyTwo === "-" ||
+                    draft.clientInfo[z].marital === "" ||
+                    draft.clientInfo[z].marital === "-" ||
+                    draft.clientInfo[z].residentialAddr === "" ||
+                    draft.clientInfo[z].smoker === "" ||
+                    draft.clientInfo[z].smoker === "-" ||
+                    draft.reviewDate === ""
+                  ) {
                     checkStatus = false;
-                    // draft.status = 0;
-                  }else {
-                    // draft.status = 1;
                   }
                 }
 
-                console.log("checkStatus "+ checkStatus + " status " + get().status)
                 // check validation
                 if (checkStatus) {
-                  console.log("Masuk nggak sini baru aja ya " + checkStatus)
                   draft.status = 1;
                 } else {
-                  console.log("Masuk nggak sini baru aja ya ys " + checkStatus)
                   draft.status = 0;
                 }
               }
@@ -412,7 +408,9 @@ const personalInformation = create(
                     dependentReplace.nric = param.nric;
                     dependentReplace.clientPfr = param.clientPfr;
                     dependentReplace.client = param.client;
-                    dependentReplace.depId = param.depId ? param.depId : depIdFromDb;
+                    dependentReplace.depId = param.depId
+                      ? param.depId
+                      : depIdFromDb;
                   } else {
                     param["id"] = ++checkLengthDependent;
                     param["depId"] = depIdFromDb;
@@ -448,10 +446,8 @@ const personalInformation = create(
               }
 
               if (get().editableStatus === 1 && get().status === 1) {
-                console.log("masuk nggak");
                 draft.editableStatus = 2;
               } else {
-                console.log("masuk sini nggak");
               }
 
               // check validation
@@ -481,7 +477,6 @@ const personalInformation = create(
                 const dependentIndex = draft.dependant.findIndex(
                   (el: any) => el.id === params
                 );
-                console.log("masuk disini");
                 draft.dependant.splice(dependentIndex, 1);
 
                 // reset index 0 dependent data
@@ -503,10 +498,8 @@ const personalInformation = create(
               }
 
               if (get().editableStatus === 1 && get().status === 1) {
-                console.log("masuk nggak");
                 draft.editableStatus = 2;
               } else {
-                console.log("masuk sini nggak");
               }
             })
           ),
@@ -533,10 +526,8 @@ const personalInformation = create(
               dependant.depId = params.depId ? params.depId : 0;
 
               if (get().editableStatus === 1 && get().status === 1) {
-                console.log("masuk nggak");
                 draft.editableStatus = 2;
               } else {
-                console.log("masuk sini nggak");
               }
             })
           ),
@@ -559,6 +550,46 @@ const personalInformation = create(
             produce((draft) => {
               let accompaniment = draft.accompaniment[clientType];
               accompaniment[name] = value;
+
+              // Check accompaintment for trusted individual
+              if (draft.accompaniment[0].english_spoken !== "-") {
+                draft.trustedIndividuals.englishLevel1 =
+                  draft.accompaniment[0].english_spoken;
+              }
+
+              if (draft.accompaniment[0].english_written !== "-") {
+                draft.trustedIndividuals.englishLevel2 =
+                  draft.accompaniment[0].english_written;
+              }
+
+              if (draft.accompaniment[0].education_level !== "-") {
+                draft.trustedIndividuals.educationLevel =
+                  draft.accompaniment[0].education_level;
+              }
+
+              // set conditions
+              // If age == 1 && eng1 == 2 || eng2 == 2
+              // If age == 1 && education <= 2
+              // If eng1 == 2 || eng2 == 2 && education <=2
+              if (
+                (Number(draft.trustedIndividuals.ageLevel) === 1 &&
+                  (Number(draft.trustedIndividuals.englishLevel1) === 2 ||
+                    Number(draft.trustedIndividuals.englishLevel2) === 2)) ||
+                (Number(draft.trustedIndividuals.ageLevel) === 1 &&
+                  Number(draft.trustedIndividuals.educationLevel <= 2)) ||
+                ((Number(draft.trustedIndividuals.englishLevel1) === 2 ||
+                  Number(draft.trustedIndividuals.englishLevel2) === 2) &&
+                  Number(draft.trustedIndividuals.educationLevel <= 2))
+              ) {
+                draft.trustedIndividuals.condition1 = true;
+              }
+
+              if (
+                Number(draft.trustedIndividuals.englishLevel1) === 2 ||
+                Number(draft.trustedIndividuals.englishLevel2) === 2
+              ) {
+                draft.trustedIndividuals.condition2 = true;
+              }
             })
           ),
         setTrustedIndividuals: (name: string, value: any) =>
@@ -582,10 +613,31 @@ const personalInformation = create(
               }
             })
           ),
+        fetchTrustedIndividuals: (params: any) =>
+          set(
+            produce((draft) => {
+              draft.trustedIndividuals.condition1 =
+                params.condition1 > 0 ? true : false;
+              draft.trustedIndividuals.condition2 =
+                params.condition2 > 0 ? true : false;
+              draft.trustedIndividuals.trustedEmail = params.trustedEmail;
+              draft.trustedIndividuals.nameOfTrustedIndividual =
+                params.nameOfTrustedIndividual;
+              draft.trustedIndividuals.passportNo = params.passportNo;
+              draft.trustedIndividuals.relationship = params.relationship;
+              draft.trustedIndividuals.languageUsed = params.languageUsed;
+              draft.trustedIndividuals.contactNumber = params.contactNumber;
+              draft.trustedIndividuals.englishLevel1 = params.englishLevel1;
+              draft.trustedIndividuals.englishLevel2 = params.englishLevel2;
+              draft.trustedIndividuals.educationLevel = params.educationLevel;
+              draft.trustedIndividuals.ageLevel = params.ageLevel;
+              draft.trustedIndividuals.declaration =
+                params.declaration > 0 ? true : false;
+            })
+          ),
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
-              console.log("masuk sini nggak global");
               draft[name] = value;
             })
           ),

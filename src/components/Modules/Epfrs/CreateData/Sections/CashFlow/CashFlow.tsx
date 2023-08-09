@@ -16,6 +16,7 @@ import { clientIdentity, getLength } from "@/libs/helper";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import { useRouter } from "next/router";
 
 interface Props {
   id?: any;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const CashFlow = (props: Props) => {
+  const router = useRouter();
   let getPfrLength = getLength(props.pfrType);
 
   let fillInformation = [
@@ -31,6 +33,7 @@ const CashFlow = (props: Props) => {
   ];
 
   const scrollPosition = useScrollPosition(3);
+  const scrollPositionBottomSection2 = useScrollPositionBottom(2);
   const scrollPositionBottom = useScrollPositionBottom(3);
 
   let status = useCashFlow((state) => state.status);
@@ -100,6 +103,17 @@ const CashFlow = (props: Props) => {
       console.error(error);
     }
   };
+
+  // Get data when scroll from section 2
+  useEffect(() => {
+    if (!router.isReady) return;
+    // If edit check the ID
+    if (router.query.id !== null && router.query.id !== undefined) {
+      if (scrollPositionBottomSection2 === "Process2") {
+        console.log("Get data Section 3");
+      }
+    }
+  }, [scrollPositionBottomSection2, router.isReady, router.query.id]);
 
   useEffect(() => {
     if (scrollPositionBottom === "Process3") {

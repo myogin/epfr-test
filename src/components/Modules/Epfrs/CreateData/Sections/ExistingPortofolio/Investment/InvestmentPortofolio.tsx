@@ -17,8 +17,12 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 const InvestmentPortofolio = () => {
   const [showModal, setShowModal] = useState(false);
 
-  let { summaryOfInvestment, setInvestment, patchInvestment, removeInvestment } =
-    useExistingPortofolio();
+  let {
+    summaryOfInvestment,
+    setInvestment,
+    patchInvestment,
+    removeInvestment,
+  } = useExistingPortofolio();
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [actionDatatId, setActionDataId] = useState(0);
   const [saveType, setSaveType] = useState("");
@@ -110,7 +114,13 @@ const InvestmentPortofolio = () => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <div className="w-full">
+      <div className="flex flex-col w-full">
+        {summaryOfInvestment[0].editting && summaryOfInvestment[0].client === "" ? (
+          <span className="mb-2 text-sm text-red">Required</span>
+        ) : (
+          ""
+        )}
+
         <ButtonBox onClick={openModal} className="text-green-deep">
           <AddLineIcon />
         </ButtonBox>
@@ -390,7 +400,12 @@ const InvestmentPortofolio = () => {
                     <td className="px-2 py-5">{data.yearInvested}</td>
                     <td className="px-2 py-5">{data.investmentAmount}</td>
                     <td className="px-2 py-5">{data.currentvalue}</td>
-                    <td className="px-2 py-5">{data.sourceOfInvestment ? sourceOfInvestments[Number(data.sourceOfInvestment)].name : ""}</td>
+                    <td className="px-2 py-5">
+                      {data.sourceOfInvestment
+                        ? sourceOfInvestments[Number(data.sourceOfInvestment)]
+                            .name
+                        : ""}
+                    </td>
                     <td className="w-1/12 px-2 py-5">
                       <div className="flex w-full gap-2">
                         <ButtonBox

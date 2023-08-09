@@ -49,18 +49,17 @@ const PersonalInformation = (props: Props) => {
 
   let fetchClient = usePersonalInformation((state) => state.fetchClient);
   let fetchDependent = usePersonalInformation((state) => state.fetchDependent);
-  let fetchAccompainment = usePersonalInformation((state) => state.fetchAccompainment);
+  let fetchAccompainment = usePersonalInformation(
+    (state) => state.fetchAccompainment
+  );
   let setGlobal = usePersonalInformation((state) => state.setGlobal);
-
+  let fetchTrustedIndividuals = usePersonalInformation(
+    (state) => state.fetchTrustedIndividuals
+  );
 
   // Action join with section 2
-    let setGlobalSectionTwo = useExistingPortofolio((state) => state.setGlobal)
-    let idSectionTwo = useExistingPortofolio((state) => state.id)
-
-  let checkAccompainment = CheckAccompainment(
-    accompaniment,
-    setTrustedIndividuals
-  );
+  let setGlobalSectionTwo = useExistingPortofolio((state) => state.setGlobal);
+  let idSectionTwo = useExistingPortofolio((state) => state.id);
 
   // Get status and editable status for checking active and non active the save function
   let status = usePersonalInformation((state) => state.status);
@@ -94,8 +93,12 @@ const PersonalInformation = (props: Props) => {
           setGlobal("id", id);
         }
 
-        if (idSectionTwo === 0 || idSectionTwo === null || idSectionTwo === undefined) {
-          setGlobalSectionTwo("id", storeDataSection.data.pfrId)
+        if (
+          idSectionTwo === 0 ||
+          idSectionTwo === null ||
+          idSectionTwo === undefined
+        ) {
+          setGlobalSectionTwo("id", storeDataSection.data.pfrId);
         } else {
           setGlobalSectionTwo("id", id);
         }
@@ -137,6 +140,13 @@ const PersonalInformation = (props: Props) => {
         });
       }
 
+      // Fetch trusted individual
+      if (getSection1.trustedIndividuals.length > 0) {
+        getSection1.trustedIndividuals.map((data: any, index: number) => {
+          fetchTrustedIndividuals(data);
+        });
+      }
+
       setLoading(false); // Stop loading
     } catch (error) {
       setLoading(false); // Stop loading in case of error
@@ -155,7 +165,7 @@ const PersonalInformation = (props: Props) => {
         // getGeneralData(router.query.id);
       }
     }
-  }, [router.isReady,router.query.id,router.query.singpass]);
+  }, [router.isReady, router.query.id, router.query.singpass]);
 
   // Trigger the dependent data to showing the depdendent
   useEffect(() => {
@@ -303,14 +313,10 @@ const PersonalInformation = (props: Props) => {
       </HeadingSecondarySection>
       <Accompainment pfrType={props.pfrType} />
       {/* Sec 4 */}
-      {checkAccompainment ? (
-        <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
-            1.4 Trusted Individual
-          </HeadingSecondarySection>
-          <TrustedIndividual />
-        </>
-      ) : null}
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        1.4 Trusted Individual
+      </HeadingSecondarySection>
+      <TrustedIndividual />
       {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 1" />
       ) : (
@@ -321,53 +327,5 @@ const PersonalInformation = (props: Props) => {
     </div>
   );
 };
-
-function CheckAccompainment(
-  accompaniment: Accompaniment[],
-  setTrustedIndividuals: any
-) {
-  let checker = false;
-
-  if (
-    (accompaniment[0].education_level === "-" ||
-      accompaniment[0].education_level === "") &&
-    (accompaniment[0].english_spoken === "-" ||
-      accompaniment[0].english_spoken === "") &&
-    (accompaniment[0].english_written === "-" ||
-      accompaniment[0].english_written === "") &&
-    (accompaniment[1].education_level === "-" ||
-      accompaniment[1].education_level === "") &&
-    (accompaniment[1].english_spoken === "-" ||
-      accompaniment[1].english_spoken === "") &&
-    (accompaniment[1].english_written === "-" ||
-      accompaniment[1].english_written === "")
-  ) {
-    checker = false;
-  } else {
-    if (
-      accompaniment[0].age > 62 ||
-      Number(accompaniment[0].english_spoken) === 2 ||
-      Number(accompaniment[0].education_level) <= 2 ||
-      accompaniment[1].age > 62 ||
-      Number(accompaniment[1].english_spoken) === 2 ||
-      Number(accompaniment[1].education_level) <= 2
-    ) {
-      checker = true;
-      setTrustedIndividuals("condition1", true);
-    }
-
-    if (
-      Number(accompaniment[0].english_spoken) === 2 ||
-      Number(accompaniment[1].english_spoken) === 2
-    ) {
-      setTrustedIndividuals("condition2", true);
-      checker = true;
-    } else {
-      setTrustedIndividuals("condition2", false);
-    }
-  }
-
-  return checker;
-}
 
 export default PersonalInformation;
