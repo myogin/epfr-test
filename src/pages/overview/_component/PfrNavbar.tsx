@@ -1,88 +1,104 @@
 import { useFilterDataEpfr } from "@/store/epfrPage/filterDataEpfr";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { Fragment } from "react";
 import Search2LineIcon from "remixicon-react/Search2LineIcon";
 
-interface Props {
-  val?: any;
-  index?: number;
-  active?: any;
-}
-
 const PfrNavbar = () => {
+  const { query } = useRouter();
+  const router = useRouter();
+
   let menu = [
     {
       id: 1,
-      name: "Draft Process",
+      name: "All",
       icon: "",
-      type: 1,
     },
     {
       id: 2,
-      name: "Sign Process",
+      name: "Draft",
       icon: "",
-      type: 1,
     },
     {
       id: 3,
-      name: "Completed",
+      name: "Signing on Progress",
       icon: "",
-      type: 1,
     },
     {
       id: 4,
-      name: "",
-      icon: <Search2LineIcon />,
-      type: 2,
+      name: "Signing Completed",
+      icon: "",
+    },
+    {
+      id: 5,
+      name: "Signing Cancelled",
+      icon: "",
     },
   ];
 
+  function filterActive(
+    currentMenu: string,
+    query: string | undefined | string[]
+  ) {
+    if (currentMenu == "All" && (query == undefined || query == "All")) {
+      return true;
+    }
+    if (currentMenu == query) {
+      return true;
+    }
+  }
+  function statusFilter(statusLike: string) {
+    if (statusLike == "All") {
+      const { status_like, ...newQuery } = router.query;
+      router.replace({
+        query: { ...newQuery },
+      });
+    } else {
+      router.replace({
+        query: { ...router.query, status_like: statusLike },
+      });
+    }
+  }
   return (
-    <div className="flex flex-row items-center w-full mt-4 text-sm border-b text-gray-light border-gray-soft-light">
-      {menu.map((val, index) => (
-        <RowNavbar item={val} key={index} />
-      ))}
+    <div className="grid grid-cols-1 md:grid-cols-3 mt-4">
+      <div className="flex md:col-span-2">
+        {menu.map((val, index) => (
+          <Fragment key={index}>
+            <div
+              className={`pr-4 pb-4 ${
+                filterActive(val.name, query.status_like)
+                  ? "border-b-4 border-green-deep text-green-deep"
+                  : ""
+              }`}
+            >
+              <button onClick={() => statusFilter(val.name)}>{val.name}</button>
+            </div>
+          </Fragment>
+        ))}
+      </div>
+      <div className="flex-auto pb-4">
+        <div className="flex items-center justify-start float-right gap-4">
+          <input
+            type="text"
+            className="p-0 border-none"
+            placeholder="Search pfr data"
+          />
+          <Search2LineIcon />
+        </div>
+      </div>
     </div>
   );
 };
 
 function RowNavbar({ item }: any) {
-  const { subMenuActive, setSubmenu } = useFilterDataEpfr();
-
-  const showFilter = () => {
-    setSubmenu(item.id);
-  };
-
-  let setSectionActive = false;
-
-  let checkSectionFirstLoad = subMenuActive == 0 ? 1 : subMenuActive;
-
-  if (checkSectionFirstLoad == item.id) {
-    setSectionActive = true;
-  }
-
   return (
     <>
       <div
         className={`pr-4 pb-4 ${
-          setSectionActive ? "border-b-4 border-green-deep text-green-deep" : ""
+          true ? "border-b-4 border-green-deep text-green-deep" : ""
         }`}
       >
-        <button onClick={showFilter}>{item.name}</button>
+        <button>{item.name}</button>
       </div>
-      {item.type > 1 ? (
-        <div className="flex-auto pb-4">
-          <div className="flex items-center justify-start float-right gap-4">
-            <input
-              type="text"
-              className="p-0 border-none"
-              placeholder="Search pfr data"
-            />
-            <Search2LineIcon />
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
     </>
   );
 }

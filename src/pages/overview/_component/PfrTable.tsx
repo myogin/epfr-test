@@ -12,24 +12,25 @@ import More2LineIcon from "remixicon-react/More2LineIcon";
 import { pfrProgress } from "./overviewUtils";
 import { useLoginData } from "@/store/login/logindata";
 import LoadingList from "@/components/Attributes/Loader/LoadingList";
+import { useRouter } from "next/router";
 
 interface Props {}
 
 const PfrTable = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pfrList, setPfrList] = useState([]);
-
+  const { query } = useRouter();
   const { token } = useLoginData();
   const { ownerId } = useLoginData();
   useEffect(() => {
     async function getALldata() {
       setIsLoading(true);
-      let res = await getPfrList(Number(ownerId));
+      let res = await getPfrList(query);
       setPfrList(res.data);
       setIsLoading(false);
     }
     getALldata();
-  }, []);
+  }, [query]);
 
   if (isLoading)
     return (
@@ -127,50 +128,38 @@ function RowData({ item }: any) {
             <Menu.Items className="absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1">
                 <Menu.Item>
-                  {({ active }) => (
+                  <Link
+                    href={`/create/${item.type.toLowerCase()}?id=${
+                      item.pfr.id
+                    }`}
+                    className={
+                      " text-gray-light block px-4 py-2 text-sm cursor-pointer"
+                    }
+                  >
+                    Edit
+                  </Link>
+                </Menu.Item>
+                <Menu.Item>
+                  <a
+                    className={
+                      "text-gray-light block px-4 py-2 text-sm cursor-pointer"
+                    }
+                  >
+                    Duplicate
+                  </a>
+                </Menu.Item>
+                {item.status != "Draft" && (
+                  <Menu.Item>
                     <Link
-                      href={`/create/${item.type.toLowerCase()}?id=${
-                        item.pfr.id
-                      }`}
-                      className={classNames(
-                        active
-                          ? "bg-gray-soft-light text-gray-light"
-                          : "text-gray-light",
-                        "block px-4 py-2 text-sm cursor-pointer"
-                      )}
-                    >
-                      Edit
-                    </Link>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      className={classNames(
-                        active
-                          ? "bg-gray-soft-light text-gray-light"
-                          : "text-gray-light",
-                        "block px-4 py-2 text-sm cursor-pointer"
-                      )}
-                    >
-                      Duplicate
-                    </a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      className={classNames(
-                        active
-                          ? "bg-gray-soft-light text-gray-light"
-                          : "text-gray-light",
-                        "block px-4 py-2 text-sm cursor-pointer"
-                      )}
+                      href={`/signature/${item.pfr.id}`}
+                      className={
+                        "text-gray-light block px-4 py-2 text-sm cursor-pointer"
+                      }
                     >
                       View Status
-                    </a>
-                  )}
-                </Menu.Item>
+                    </Link>
+                  </Menu.Item>
+                )}
               </div>
             </Menu.Items>
           </Transition>
