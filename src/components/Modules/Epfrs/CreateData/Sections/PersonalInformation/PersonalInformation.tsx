@@ -12,23 +12,23 @@ import Client from "./Clients/Client";
 import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
-import {
-  clientIdentity,
-  getLength
-} from "@/libs/helper";
+import { clientIdentity, getLength } from "@/libs/helper";
 import { Accompaniment } from "@/models/SectionOne";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import RetrieveSingpassModal from "../../RetrieveSingpass/RetrieveSingpassModal";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import TextThin from "@/components/Attributes/Typography/TextThin";
-import { postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
+import { useRouter } from "next/router";
 interface Props {
   id?: any;
   pfrType?: number;
 }
 
 const PersonalInformation = (props: Props) => {
+  const router = useRouter();
   const [showAddDependent, setShowAddDependent] = useState(false);
 
   let getPfrLength = getLength(props.pfrType);
@@ -45,6 +45,8 @@ const PersonalInformation = (props: Props) => {
   let setTrustedIndividuals = usePersonalInformation(
     (state) => state.setTrustedIndividuals
   );
+
+  let fetchClient = usePersonalInformation((state) => state.fetchClient);
   let setGlobal = usePersonalInformation((state) => state.setGlobal);
 
   let checkAccompainment = CheckAccompainment(
@@ -74,10 +76,7 @@ const PersonalInformation = (props: Props) => {
         dataFix = data.state;
       }
 
-      let storeDataSection = await postPfrSections(
-        1,
-        JSON.stringify(dataFix)
-      );
+      let storeDataSection = await postPfrSections(1, JSON.stringify(dataFix));
 
       // If save success get ID and store to localstorage
       if (storeDataSection.data.result === "success") {
@@ -96,7 +95,40 @@ const PersonalInformation = (props: Props) => {
     }
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection1 = await getPfrStep(1, params);
+
+      console.log(getSection1);
+
+      // Fetch Client
+      if (getSection1.clients.length > 0) {
+        getSection1.clients.map((data: any, index: number) => {
+          fetchClient(index, data);
+        });
+      }
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    if (!router.isReady) return;
+    // If edit check the ID
+    if (router.query.singpass === null || router.query.singpass === undefined) {
+      if (router.query.id !== null && router.query.id !== undefined) {
+        console.log("masuk sini nggak ID nya" + router.query.id);
+        getSectionData(router.query.id);
+        // getGeneralData(router.query.id);
+      }
+    }
+
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
@@ -113,7 +145,11 @@ const PersonalInformation = (props: Props) => {
         console.log("Your cannot save data");
       }
     }
-  }, [dependant, editableStatus, status, scrollPositionBottom]);
+  }, [router.isReady, dependant, editableStatus, status, scrollPositionBottom]);
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div id={props.id}>

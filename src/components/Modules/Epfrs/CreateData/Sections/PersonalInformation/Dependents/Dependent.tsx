@@ -37,7 +37,8 @@ const Dependent = (props: Props) => {
     sponsored: "",
     nric: "",
     clientPfr: "",
-    client: 0
+    client: 0,
+    depId: 0,
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -308,7 +309,7 @@ const Dependent = (props: Props) => {
                             <Input
                               className="my-4"
                               label="Birth Cert Number"
-                              type="number"
+                              type="text"
                               name="certNumber"
                               value={newData.certNumber}
                               placeholder="Please input cert number"

@@ -169,8 +169,8 @@ const initialState: SectionTwo = {
     },
   ],
   issues: [],
-  totalNetWorth: [],
-  networthReason: [],
+  totalNetWorth: [0,0],
+  networthReason: ["", ""],
   status: 0,
   editableStatus: 0,
 };
