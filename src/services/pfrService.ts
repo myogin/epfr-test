@@ -16,6 +16,13 @@ export const getPfrStep = async (step: number, pfrId: any) => {
   return res.data;
 };
 
+export const getPfrShow = async (pfrId: any) => {
+  const res = await http.get(`pfr/getShow/${pfrId}`, {
+    headers: authHeader(),
+  });
+  return res.data;
+};
+
 export const postPfr = async (group: any, data: any) => {
   return await http.post(`/pfr/create-pfr-lite/${group}`, data, {
     headers: authHeader(),

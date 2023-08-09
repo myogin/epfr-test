@@ -27,11 +27,6 @@ const RepresentativeDeclaration = (props: Props) => {
   
   const [pfrId, setPfrId] = useState(0);
 
-  useEffect(() => {
-    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-    setPfrId(section1?.state?.id);
-  });
-
   const { push } = useRouter();
 
   const [sectionTwelveData, setSectionTwelveData] = useState({
@@ -127,7 +122,13 @@ const RepresentativeDeclaration = (props: Props) => {
 
 
   useEffect(() => {
-    if (scrollPosition === "NotOkSec11") {
+    if (scrollPosition === "NotOkSec11" && sectionTwelveData.id === 0) {
+      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+      setPfrId(section1?.state?.id);
+      setSectionTwelveData({
+        ...sectionTwelveData,
+        id: section1?.state?.id
+      })
       fetchData();
     }
   }, [scrollPosition]);
