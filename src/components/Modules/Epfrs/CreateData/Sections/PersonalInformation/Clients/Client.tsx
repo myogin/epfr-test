@@ -1,6 +1,7 @@
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
+import SelectNationality from "@/components/Forms/SelectNationality";
 import { getLength } from "@/libs/helper";
 import { Clientformation } from "@/models/SectionOne";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
@@ -266,14 +267,13 @@ const Client = (props: Props) => {
                 placeholder="Nationality"
               />
             ) : (
-              <Select
+              <SelectNationality
                 dataType="clientInfo"
                 className="mb-10"
                 label="Nationality"
                 name="nationality"
                 indexData={0}
                 value={clientInfo[0].nationality}
-                datas={country}
                 handleChange={handleInputChange}
                 needValidation={true}
                 logic={

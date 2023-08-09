@@ -2,7 +2,7 @@ import http from "@/libs/httpSetting";
 import authHeader from "@/libs/authHeader";
 
 export const getAllPfrData = async (params: any) => {
-  const res = await http.get(`pfr/get-general-data/${params}`, {
+  const res = await http.get(`/pfr/get-general-data/${params}`, {
     headers: authHeader(),
   });
   return res.data;
@@ -10,7 +10,7 @@ export const getAllPfrData = async (params: any) => {
 
 
 export const getPfrStep = async (step: number, pfrId: any) => {
-  const res = await http.get(`pfr/get/s${step}/${pfrId}`, {
+  const res = await http.get(`/pfr/get/s${step}/${pfrId}`, {
     headers: authHeader(),
   });
   return res.data;
