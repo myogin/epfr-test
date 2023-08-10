@@ -225,7 +225,7 @@ const ExistingPortofolio = (props: Props) => {
   }, [scrollPositionBottom, editableStatus, status]);
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen">
       <div
         id="section-header-2"
         className={`sticky top-0 z-10 ${

@@ -199,7 +199,7 @@ const PersonalInformation = (props: Props) => {
   }
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen">
       {/* Sec 1 */}
       {props.pfrType === 1 ? (
         <>
