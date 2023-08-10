@@ -57,6 +57,13 @@ const ExistingPortofolio = (props: Props) => {
   let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);
   let setToggle = useExistingPortofolio((state) => state.setToggle);
   let setGlobal = useExistingPortofolio((state) => state.setGlobal);
+  let fetchProperty = useExistingPortofolio((state) => state.fetchProperty);
+  let fetchInvestment = useExistingPortofolio((state) => state.fetchInvestment);
+  let fetchSaving = useExistingPortofolio((state) => state.fetchSaving);
+  let fetchCpf = useExistingPortofolio((state) => state.fetchCpf);
+  let fetchInsurance = useExistingPortofolio((state) => state.fetchInsurance);
+  let fetchInsurance2 = useExistingPortofolio((state) => state.fetchInsurance2);
+  let fetchLoan = useExistingPortofolio((state) => state.fetchLoan);
 
   let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
   let idSectionThree = useCashFlow((state) => state.id);
@@ -132,57 +139,48 @@ const ExistingPortofolio = (props: Props) => {
       // Fetch Client
       if (getSection2.summaryOfProperty.length > 0) {
         getSection2.summaryOfProperty.map((data: any, index: number) => {
-          // fetchClient(index, data);
+          fetchProperty(index, data);
         });
       }
 
       // Fetch accompaintment
       if (getSection2.summaryOfInvestment.length > 0) {
         getSection2.summaryOfInvestment.map((data: any, index: number) => {
-          // fetchAccompainment(index, data);
+          fetchInvestment(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfSaving.length > 0) {
         getSection2.summaryOfSaving.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchSaving(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfCPF.length > 0) {
         getSection2.summaryOfCPF.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
-        });
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfSaving.length > 0) {
-        getSection2.summaryOfSaving.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchCpf(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance.length > 0) {
         getSection2.summaryOfInsurance.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchInsurance(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance2.length > 0) {
         getSection2.summaryOfInsurance2.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchInsurance2(index,data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfLoans.length > 0) {
-        getSection2.summaryOfLoans.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
-        });
+        fetchLoan(getSection2.summaryOfLoans);
       }
 
       // Fetch trusted individual
