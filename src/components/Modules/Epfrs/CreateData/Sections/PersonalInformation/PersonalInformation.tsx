@@ -121,6 +121,7 @@ const PersonalInformation = (props: Props) => {
 
       console.log(getSection1);
 
+      setGlobal("reviewDate", getSection1.pfr.reviewDate);
       setGlobal("editableStatus", getSection1.pfr.editableSection1);
       setGlobal("status", getSection1.pfr.section1);
 
