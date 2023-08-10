@@ -21,6 +21,7 @@ type Actions = {
   setReason: (indexData: number, params: any) => any;
   setNeed: (indexData: number, params: any) => any;
   resetSectionThree: () => any;
+  setGlobal: (name: string, value: any) => any;
 };
 
 const initialState: SectionThree = {
@@ -297,6 +298,12 @@ const cashFlow = create(
             produce((draft) => {
               let need = draft.need;
               need[indexData] = params;
+            })
+          ),
+        setGlobal: (name: string, value: any) =>
+          set(
+            produce((draft) => {
+              draft[name] = value;
             })
           ),
         resetSectionThree: () => {

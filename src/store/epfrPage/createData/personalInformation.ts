@@ -149,10 +149,13 @@ const personalInformation = create(
           set(
             produce((draft) => {
               // Check if this is maybe the same person
+
+              console.log("gender ni")
+              console.log(params.gender)
               if (
                 params.passportNo === get().clientInfo[clientType].passportNo
               ) {
-                draft.clientInfo[clientType].clientTitle = params.clientTitle
+                draft.clientInfo[clientType].clientTitle = params.clientTitle >= 0
                   ? params.clientTitle
                   : get().clientInfo[clientType].clientTitle;
                 draft.clientInfo[clientType].clientName = params.clientName
@@ -161,13 +164,13 @@ const personalInformation = create(
                 draft.clientInfo[clientType].otherName = params.otherName
                   ? params.otherName
                   : get().clientInfo[clientType].otherName;
-                draft.clientInfo[clientType].relationship = params.relationship
+                draft.clientInfo[clientType].relationship = params.relationship >=0
                   ? params.relationship
                   : get().clientInfo[clientType].relationship;
                 draft.clientInfo[clientType].race = params.race
                   ? params.race
                   : get().clientInfo[clientType].race;
-                draft.clientInfo[clientType].gender = params.gender
+                draft.clientInfo[clientType].gender = params.gender >=0
                   ? params.gender
                   : get().clientInfo[clientType].gender;
                 draft.clientInfo[clientType].birthCountryId =
@@ -183,7 +186,7 @@ const personalInformation = create(
                 draft.clientInfo[clientType].residency = params.residency
                   ? params.residency
                   : get().clientInfo[clientType].residency;
-                draft.clientInfo[clientType].residencyTwo = params.residencyTwo
+                draft.clientInfo[clientType].residencyTwo = params.residencyTwo >=0
                   ? params.residencyTwo
                   : get().clientInfo[clientType].residencyTwo;
                 draft.clientInfo[clientType].residencyOther =
@@ -193,14 +196,14 @@ const personalInformation = create(
                 draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth
                   ? params.dateOfBirth
                   : get().clientInfo[clientType].dateOfBirth;
-                draft.clientInfo[clientType].marital = params.marital
+                draft.clientInfo[clientType].marital = params.marital >= 0
                   ? params.marital
                   : get().clientInfo[clientType].marital;
-                draft.clientInfo[clientType].smoker = params.smoker
+                draft.clientInfo[clientType].smoker = params.smoker >=0
                   ? params.smoker
                   : get().clientInfo[clientType].smoker;
                 draft.clientInfo[clientType].employmentStatus =
-                  params.employmentStatus
+                  params.employmentStatus >= 0
                     ? params.employmentStatus
                     : get().clientInfo[clientType].employmentStatus;
                 draft.clientInfo[clientType].occupation = params.occupation
@@ -213,7 +216,7 @@ const personalInformation = create(
                   params.businessNature
                     ? params.businessNature
                     : get().clientInfo[clientType].businessNature;
-                draft.clientInfo[clientType].annualIncome = params.annualIncome
+                draft.clientInfo[clientType].annualIncome = params.annualIncome >= 0
                   ? params.annualIncome
                   : get().clientInfo[clientType].annualIncome;
                 draft.clientInfo[clientType].contactHome = params.contactHome
@@ -245,7 +248,7 @@ const personalInformation = create(
                   : get().clientInfo[clientType].clientPfr;
                 // If different persone so go here
               } else {
-                draft.clientInfo[clientType].clientTitle = params.clientTitle
+                draft.clientInfo[clientType].clientTitle = params.clientTitle >= 0
                   ? params.clientTitle
                   : "";
                 draft.clientInfo[clientType].clientName = params.clientName
@@ -254,13 +257,13 @@ const personalInformation = create(
                 draft.clientInfo[clientType].otherName = params.otherName
                   ? params.otherName
                   : "";
-                draft.clientInfo[clientType].relationship = params.relationship
+                draft.clientInfo[clientType].relationship = params.relationship >= 0
                   ? params.relationship
                   : "";
                 draft.clientInfo[clientType].race = params.race
                   ? params.race
                   : "";
-                draft.clientInfo[clientType].gender = params.gender
+                draft.clientInfo[clientType].gender = params.gender >=0
                   ? params.gender
                   : "";
                 draft.clientInfo[clientType].birthCountryId =
@@ -274,7 +277,7 @@ const personalInformation = create(
                 draft.clientInfo[clientType].residency = params.residency
                   ? params.residency
                   : "";
-                draft.clientInfo[clientType].residencyTwo = params.residencyTwo
+                draft.clientInfo[clientType].residencyTwo = params.residencyTwo >=0
                   ? params.residencyTwo
                   : "";
                 draft.clientInfo[clientType].residencyOther =
@@ -282,14 +285,14 @@ const personalInformation = create(
                 draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth
                   ? params.dateOfBirth
                   : "";
-                draft.clientInfo[clientType].marital = params.marital
+                draft.clientInfo[clientType].marital = params.marital >= 0
                   ? params.marital
                   : "";
-                draft.clientInfo[clientType].smoker = params.smoker
+                draft.clientInfo[clientType].smoker = params.smoker >=0
                   ? params.smoker
                   : "";
                 draft.clientInfo[clientType].employmentStatus =
-                  params.employmentStatus ? params.employmentStatus : "";
+                  params.employmentStatus >= 0 ? params.employmentStatus : "";
                 draft.clientInfo[clientType].occupation = params.occupation
                   ? params.occupation
                   : "";
@@ -298,7 +301,7 @@ const personalInformation = create(
                   : "";
                 draft.clientInfo[clientType].businessNature =
                   params.businessNature ? params.businessNature : "";
-                draft.clientInfo[clientType].annualIncome = params.annualIncome
+                draft.clientInfo[clientType].annualIncome = params.annualIncome >= 0
                   ? params.annualIncome
                   : "";
                 draft.clientInfo[clientType].contactHome = params.contactHome
@@ -377,6 +380,7 @@ const personalInformation = create(
                   }
                 }
 
+                console.log("Test aja ini apa "+ checkStatus)
                 // check validation
                 if (checkStatus) {
                   draft.status = 1;
@@ -445,11 +449,6 @@ const personalInformation = create(
                 draft.dependant.push(params);
               }
 
-              if (get().editableStatus === 1 && get().status === 1) {
-                draft.editableStatus = 2;
-              } else {
-              }
-
               // check validation
               let checkDependent = 0;
               draft.dependant.map((value: any, index: any) => {
@@ -467,6 +466,10 @@ const personalInformation = create(
                 draft.status = 0;
               } else {
                 draft.status = 1;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
               }
             })
           ),
@@ -499,7 +502,6 @@ const personalInformation = create(
 
               if (get().editableStatus === 1 && get().status === 1) {
                 draft.editableStatus = 2;
-              } else {
               }
             })
           ),
@@ -527,7 +529,6 @@ const personalInformation = create(
 
               if (get().editableStatus === 1 && get().status === 1) {
                 draft.editableStatus = 2;
-              } else {
               }
             })
           ),
@@ -550,6 +551,37 @@ const personalInformation = create(
             produce((draft) => {
               let accompaniment = draft.accompaniment[clientType];
               accompaniment[name] = value;
+
+              let type = get().type ? Number(get().type) : 0;
+
+                let checkStatus = true;
+
+                for (let z = 0; z < type; z++) {
+                  if (
+                    draft.accompaniment[z].age === "" ||
+                    draft.accompaniment[z].age === null ||
+                    draft.accompaniment[z].english_spoken === "" ||
+                    draft.accompaniment[z].english_spoken === "-" ||
+                    draft.accompaniment[z].english_written === "" ||
+                    draft.accompaniment[z].english_written === "-" ||
+                    draft.accompaniment[z].education_level === "-" ||
+                    draft.accompaniment[z].education_level === ""
+                  ) {
+                    checkStatus = false;
+                  }
+                }
+
+                console.log("Test aja ini apa "+ checkStatus)
+                // check validation
+                if (checkStatus) {
+                  draft.status = 1;
+                } else {
+                  draft.status = 0;
+                }
+
+                if (get().editableStatus === 1 && get().status === 1) {
+                  draft.editableStatus = 2;
+                }
 
               // Check accompaintment for trusted individual
               if (draft.accompaniment[0].english_spoken !== "-") {
@@ -610,6 +642,10 @@ const personalInformation = create(
                 draft.status = 0;
               } else {
                 draft.status = 1;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
               }
             })
           ),

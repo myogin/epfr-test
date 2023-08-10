@@ -3,7 +3,6 @@ import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import SelectNationality from "@/components/Forms/SelectNationality";
 import { getLength } from "@/libs/helper";
-import { Clientformation } from "@/models/SectionOne";
 import { getAllCountry } from "@/services/countryService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React, { Fragment, useEffect, useState } from "react";
@@ -14,8 +13,7 @@ interface Props {
 const Client = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
-  let { id, clientInfo, reviewDate, setClient, setAccompaniment, setTrustedIndividuals, setGlobal } =
-    usePersonalInformation();
+  let { id, clientInfo, reviewDate, setClient, setAccompaniment, setTrustedIndividuals, setGlobal } = usePersonalInformation();
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;

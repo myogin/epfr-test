@@ -17,6 +17,7 @@ import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { useRouter } from "next/router";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 
 interface Props {
   id?: any;
@@ -45,6 +46,11 @@ const CashFlow = (props: Props) => {
   let setNeed = useCashFlow((state) => state.setNeed);
   let setAnswerData = useCashFlow((state) => state.setAnswerData);
   let setReason = useCashFlow((state) => state.setReason);
+
+  // Action join section 4
+  // Action join with section 2
+  let setGlobalSectionFour = useBalanceSheet((state) => state.updateID);
+  let idSectionFour = useBalanceSheet((state) => state.id);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -89,11 +95,16 @@ const CashFlow = (props: Props) => {
 
       // If save success get ID and store to localstorage
       if (storeDataSection.data.result === "success") {
-        if (id === 0 || id === null || id === undefined) {
-          setGlobal("id", storeDataSection.data.pfrId);
+        if (
+          idSectionFour === 0 ||
+          idSectionFour === null ||
+          idSectionFour === undefined
+        ) {
+          setGlobalSectionFour(storeDataSection.data.pfrId);
         } else {
-          setGlobal("id", id);
+          setGlobalSectionFour(id);
         }
+
         setGlobal("editableStatus", 1);
       }
 
@@ -145,6 +156,13 @@ const CashFlow = (props: Props) => {
           }`}
         >
           Section 3. Cash Flow
+          {saveLoading ? (
+            <span className="text-xs font-extralight text-gray-light">
+              Saving...
+            </span>
+          ) : (
+            ""
+          )}
         </HeadingPrimarySection>
       </div>
       <Fragment>
