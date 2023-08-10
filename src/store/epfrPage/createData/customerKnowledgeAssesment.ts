@@ -168,6 +168,7 @@ const initialState: SectionSix = {
   outcomeChanged: true,
   issues: [],
   status: 0,
+  editableStatus: 0,
 };
 
 type Actions = {
@@ -182,6 +183,7 @@ type Actions = {
   updateNeed: (client: number, value: boolean, pfrType: number) => any;
   updateReason: (client: number, reason: string, pfrType: number) => any;
   updateID: (id: any) => any;
+  setGlobal: (name: string, value: any) => any;
 };
 const customerKnowledgeAssesment = (set: any, get: any) => ({
   ...initialState,
@@ -286,6 +288,12 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
       })
     );
   },
+  setGlobal: (name: string, value: any) =>
+    set(
+      produce((draft: any) => {
+        draft[name] = value;
+      })
+    ),
 });
 export const useCustomerKnowledgeAssesment = create(
   devtools(
