@@ -12,6 +12,7 @@ type Actions = {
   setTrustedIndividuals: (name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
   fetchClient: (clientType: number, params: any) => any;
+  fetchClientSingpass: (clientType: number, params: any) => any;
   fetchDependent: (datas: DependantInformation[]) => any;
   fetchAccompainment: (clientType: number, params: any) => any;
   fetchTrustedIndividuals: (params: any) => any;
@@ -84,6 +85,52 @@ const initialState: SectionOne = {
       clientPfr: "Manual",
     },
   ],
+  clientInfoSingpass: [
+    {
+      clientName: false,
+      race: false,
+      gender: false,
+      birthCountryId: false,
+      passportNo: false,
+      nationality: false,
+      residency: false,
+      residencyTwo: false,
+      residencyOther: false,
+      dateOfBirth: false,
+      marital: false,
+      employmentStatus: false,
+      occupation: false,
+      companyName: false,
+      businessNature: false,
+      contactMobile: false,
+      email: false,
+      residentialAddr: false,
+      cpfEmployer: false,
+      clientPfr: "Manual",
+    },
+    {
+      clientName: false,
+      race: false,
+      gender: false,
+      birthCountryId: false,
+      passportNo: false,
+      nationality: false,
+      residency: false,
+      residencyTwo: false,
+      residencyOther: false,
+      dateOfBirth: false,
+      marital: false,
+      employmentStatus: false,
+      occupation: false,
+      companyName: false,
+      businessNature: false,
+      contactMobile: false,
+      email: false,
+      residentialAddr: false,
+      cpfEmployer: false,
+      clientPfr: "Manual",
+    },
+  ],
   dependant: [
     {
       id: 0,
@@ -145,34 +192,145 @@ const personalInformation = create(
     persist<SectionOne & Actions>(
       (set, get) => ({
         ...initialState,
+        fetchClientSingpass: (clientType: number, params: any) =>
+          set(
+            produce((draft) => {
+              // Check if this is maybe the same person
+
+              console.log("gender ni");
+              console.log(params.gender);
+
+              draft.clientInfoSingpass[clientType].clientName =
+                params.clientPfr === "Singpass" &&
+                params.clientName &&
+                params.clientName !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].race =
+                params.clientPfr === "Singpass" &&
+                params.race &&
+                params.race !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].gender =
+                params.clientPfr === "Singpass" &&
+                params.gender &&
+                params.gender >= 0
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].birthCountryId =
+                params.clientPfr === "Singpass" && params.birthCountryId
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].passportNo =
+                params.clientPfr === "Singpass" &&
+                params.passportNo &&
+                params.passportNo !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].nationality =
+                params.clientPfr === "Singpass" &&
+                params.nationality &&
+                params.nationality !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].residency =
+                params.clientPfr === "Singpass" &&
+                params.residency &&
+                params.residency !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].residencyTwo =
+                params.clientPfr === "Singpass" &&
+                params.residencyTwo &&
+                params.residencyTwo >= 0
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].residencyOther =
+                params.clientPfr === "Singpass" &&
+                params.residencyOther &&
+                params.residencyOther !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].dateOfBirth =
+                params.clientPfr === "Singpass" &&
+                params.dateOfBirth &&
+                params.dateOfBirth !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].marital = false;
+
+              draft.clientInfoSingpass[clientType].employmentStatus = false;
+              draft.clientInfoSingpass[clientType].occupation =
+                params.clientPfr === "Singpass" &&
+                params.occupation &&
+                params.occupation !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].companyName =
+                params.clientPfr === "Singpass" &&
+                params.companyName &&
+                params.companyName !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].businessNature =
+                params.businessNature && params.businessNature !== ""
+                  ? true
+                  : false;
+
+              draft.clientInfoSingpass[clientType].contactMobile = false;
+
+              draft.clientInfoSingpass[clientType].cpfEmployer =
+                params.clientPfr === "Singpass" &&
+                params.cpfEmployer &&
+                params.cpfEmployer !== ""
+                  ? true
+                  : false;
+              draft.clientInfoSingpass[clientType].email = false;
+
+              draft.clientInfoSingpass[clientType].residentialAddr =
+                params.clientPfr === "Singpass" &&
+                params.residentialAddr &&
+                params.residentialAddr !== ""
+                  ? true
+                  : false;
+
+              draft.clientInfoSingpass[clientType].clientPfr = params.clientPfr
+                ? params.clientPfr
+                : "";
+            })
+          ),
         fetchClient: (clientType: number, params: any) =>
           set(
             produce((draft) => {
               // Check if this is maybe the same person
 
-              console.log("gender ni")
-              console.log(params.gender)
+              console.log("gender ni");
+              console.log(params.gender);
               if (
                 params.passportNo === get().clientInfo[clientType].passportNo
               ) {
-                draft.clientInfo[clientType].clientTitle = params.clientTitle >= 0
-                  ? params.clientTitle
-                  : get().clientInfo[clientType].clientTitle;
+                draft.clientInfo[clientType].clientTitle =
+                  params.clientTitle >= 0
+                    ? params.clientTitle
+                    : get().clientInfo[clientType].clientTitle;
                 draft.clientInfo[clientType].clientName = params.clientName
                   ? params.clientName
                   : get().clientInfo[clientType].clientName;
                 draft.clientInfo[clientType].otherName = params.otherName
                   ? params.otherName
                   : get().clientInfo[clientType].otherName;
-                draft.clientInfo[clientType].relationship = params.relationship >=0
-                  ? params.relationship
-                  : get().clientInfo[clientType].relationship;
+                draft.clientInfo[clientType].relationship =
+                  params.relationship >= 0
+                    ? params.relationship
+                    : get().clientInfo[clientType].relationship;
                 draft.clientInfo[clientType].race = params.race
                   ? params.race
                   : get().clientInfo[clientType].race;
-                draft.clientInfo[clientType].gender = params.gender >=0
-                  ? params.gender
-                  : get().clientInfo[clientType].gender;
+                draft.clientInfo[clientType].gender =
+                  params.gender >= 0
+                    ? params.gender
+                    : get().clientInfo[clientType].gender;
                 draft.clientInfo[clientType].birthCountryId =
                   params.birthCountryId
                     ? params.birthCountryId
@@ -186,9 +344,10 @@ const personalInformation = create(
                 draft.clientInfo[clientType].residency = params.residency
                   ? params.residency
                   : get().clientInfo[clientType].residency;
-                draft.clientInfo[clientType].residencyTwo = params.residencyTwo >=0
-                  ? params.residencyTwo
-                  : get().clientInfo[clientType].residencyTwo;
+                draft.clientInfo[clientType].residencyTwo =
+                  params.residencyTwo >= 0
+                    ? params.residencyTwo
+                    : get().clientInfo[clientType].residencyTwo;
                 draft.clientInfo[clientType].residencyOther =
                   params.residencyOther
                     ? params.residencyOther
@@ -196,12 +355,14 @@ const personalInformation = create(
                 draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth
                   ? params.dateOfBirth
                   : get().clientInfo[clientType].dateOfBirth;
-                draft.clientInfo[clientType].marital = params.marital >= 0
-                  ? params.marital
-                  : get().clientInfo[clientType].marital;
-                draft.clientInfo[clientType].smoker = params.smoker >=0
-                  ? params.smoker
-                  : get().clientInfo[clientType].smoker;
+                draft.clientInfo[clientType].marital =
+                  params.marital >= 0
+                    ? params.marital
+                    : get().clientInfo[clientType].marital;
+                draft.clientInfo[clientType].smoker =
+                  params.smoker >= 0
+                    ? params.smoker
+                    : get().clientInfo[clientType].smoker;
                 draft.clientInfo[clientType].employmentStatus =
                   params.employmentStatus >= 0
                     ? params.employmentStatus
@@ -216,9 +377,10 @@ const personalInformation = create(
                   params.businessNature
                     ? params.businessNature
                     : get().clientInfo[clientType].businessNature;
-                draft.clientInfo[clientType].annualIncome = params.annualIncome >= 0
-                  ? params.annualIncome
-                  : get().clientInfo[clientType].annualIncome;
+                draft.clientInfo[clientType].annualIncome =
+                  params.annualIncome >= 0
+                    ? params.annualIncome
+                    : get().clientInfo[clientType].annualIncome;
                 draft.clientInfo[clientType].contactHome = params.contactHome
                   ? params.contactHome
                   : get().clientInfo[clientType].contactHome;
@@ -248,24 +410,21 @@ const personalInformation = create(
                   : get().clientInfo[clientType].clientPfr;
                 // If different persone so go here
               } else {
-                draft.clientInfo[clientType].clientTitle = params.clientTitle >= 0
-                  ? params.clientTitle
-                  : "";
+                draft.clientInfo[clientType].clientTitle =
+                  params.clientTitle >= 0 ? params.clientTitle : "";
                 draft.clientInfo[clientType].clientName = params.clientName
                   ? params.clientName
                   : "";
                 draft.clientInfo[clientType].otherName = params.otherName
                   ? params.otherName
                   : "";
-                draft.clientInfo[clientType].relationship = params.relationship >= 0
-                  ? params.relationship
-                  : "";
+                draft.clientInfo[clientType].relationship =
+                  params.relationship >= 0 ? params.relationship : "";
                 draft.clientInfo[clientType].race = params.race
                   ? params.race
                   : "";
-                draft.clientInfo[clientType].gender = params.gender >=0
-                  ? params.gender
-                  : "";
+                draft.clientInfo[clientType].gender =
+                  params.gender >= 0 ? params.gender : "";
                 draft.clientInfo[clientType].birthCountryId =
                   params.birthCountryId ? params.birthCountryId : 0;
                 draft.clientInfo[clientType].passportNo = params.passportNo
@@ -277,20 +436,17 @@ const personalInformation = create(
                 draft.clientInfo[clientType].residency = params.residency
                   ? params.residency
                   : "";
-                draft.clientInfo[clientType].residencyTwo = params.residencyTwo >=0
-                  ? params.residencyTwo
-                  : "";
+                draft.clientInfo[clientType].residencyTwo =
+                  params.residencyTwo >= 0 ? params.residencyTwo : "";
                 draft.clientInfo[clientType].residencyOther =
                   params.residencyOther ? params.residencyOther : "";
                 draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth
                   ? params.dateOfBirth
                   : "";
-                draft.clientInfo[clientType].marital = params.marital >= 0
-                  ? params.marital
-                  : "";
-                draft.clientInfo[clientType].smoker = params.smoker >=0
-                  ? params.smoker
-                  : "";
+                draft.clientInfo[clientType].marital =
+                  params.marital >= 0 ? params.marital : "";
+                draft.clientInfo[clientType].smoker =
+                  params.smoker >= 0 ? params.smoker : "";
                 draft.clientInfo[clientType].employmentStatus =
                   params.employmentStatus >= 0 ? params.employmentStatus : "";
                 draft.clientInfo[clientType].occupation = params.occupation
@@ -301,9 +457,8 @@ const personalInformation = create(
                   : "";
                 draft.clientInfo[clientType].businessNature =
                   params.businessNature ? params.businessNature : "";
-                draft.clientInfo[clientType].annualIncome = params.annualIncome >= 0
-                  ? params.annualIncome
-                  : "";
+                draft.clientInfo[clientType].annualIncome =
+                  params.annualIncome >= 0 ? params.annualIncome : "";
                 draft.clientInfo[clientType].contactHome = params.contactHome
                   ? params.contactHome
                   : "";
@@ -380,7 +535,7 @@ const personalInformation = create(
                   }
                 }
 
-                console.log("Test aja ini apa "+ checkStatus)
+                console.log("Test aja ini apa " + checkStatus);
                 // check validation
                 if (checkStatus) {
                   draft.status = 1;
@@ -554,34 +709,34 @@ const personalInformation = create(
 
               let type = get().type ? Number(get().type) : 0;
 
-                let checkStatus = true;
+              let checkStatus = true;
 
-                for (let z = 0; z < type; z++) {
-                  if (
-                    draft.accompaniment[z].age === "" ||
-                    draft.accompaniment[z].age === null ||
-                    draft.accompaniment[z].english_spoken === "" ||
-                    draft.accompaniment[z].english_spoken === "-" ||
-                    draft.accompaniment[z].english_written === "" ||
-                    draft.accompaniment[z].english_written === "-" ||
-                    draft.accompaniment[z].education_level === "-" ||
-                    draft.accompaniment[z].education_level === ""
-                  ) {
-                    checkStatus = false;
-                  }
+              for (let z = 0; z < type; z++) {
+                if (
+                  draft.accompaniment[z].age === "" ||
+                  draft.accompaniment[z].age === null ||
+                  draft.accompaniment[z].english_spoken === "" ||
+                  draft.accompaniment[z].english_spoken === "-" ||
+                  draft.accompaniment[z].english_written === "" ||
+                  draft.accompaniment[z].english_written === "-" ||
+                  draft.accompaniment[z].education_level === "-" ||
+                  draft.accompaniment[z].education_level === ""
+                ) {
+                  checkStatus = false;
                 }
+              }
 
-                console.log("Test aja ini apa "+ checkStatus)
-                // check validation
-                if (checkStatus) {
-                  draft.status = 1;
-                } else {
-                  draft.status = 0;
-                }
+              console.log("Test aja ini apa " + checkStatus);
+              // check validation
+              if (checkStatus) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
 
-                if (get().editableStatus === 1 && get().status === 1) {
-                  draft.editableStatus = 2;
-                }
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
 
               // Check accompaintment for trusted individual
               if (draft.accompaniment[0].english_spoken !== "-") {

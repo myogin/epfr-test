@@ -41,7 +41,7 @@ const LoanPortofolio = () => {
     lender: "",
     interestRate: 0,
     monthlyLoanRepayment: 0,
-    clientPfr: ""
+    clientPfr: "Manual"
   };
 
   const [newData, setNewData] = useState(initialState);

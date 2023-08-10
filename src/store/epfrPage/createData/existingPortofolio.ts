@@ -66,7 +66,7 @@ const initialState: SectionTwo = {
       monthlyLoanRepaymentCash: 0,
       monthlyLoanRepaymentCPF: 0,
       currentMarketValue: 0,
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   summaryOfInvestment: [
@@ -152,7 +152,7 @@ const initialState: SectionTwo = {
       lender: "",
       interestRate: 0,
       monthlyLoanRepayment: 0,
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   summaryOfCPF: [
@@ -164,7 +164,7 @@ const initialState: SectionTwo = {
       specialAccount: 0,
       medisaveAccount: 0,
       retirementAccount: 0,
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   summaryOfSRS: [
