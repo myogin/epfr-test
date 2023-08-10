@@ -133,11 +133,6 @@ const initialState: SectionThree = {
     },
   ],
   issues: [],
-  totalTemporary: {
-    annualIncome: [0, 0, 0, 0],
-    annualExpense: [0, 0, 0, 0],
-    annualSurplus: [0, 0, 0, 0],
-  },
   totalNetSurplus: [230, 345],
   status: 0,
   editableStatus: 0,
