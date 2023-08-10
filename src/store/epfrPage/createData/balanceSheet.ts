@@ -71,6 +71,7 @@ type Actions = {
   updateNeed: (client: number, value: number, pfrType: number) => any;
   updateReason: (client: number, reason: string, pfrType: number) => any;
   updateID: (id: any) => any;
+  setGlobal: (name: string, value: any) => any;
 };
 
 const balanceSheet = (set: any, get: any) => ({
@@ -161,6 +162,12 @@ const balanceSheet = (set: any, get: any) => ({
       })
     );
   },
+  setGlobal: (name: string, value: any) =>
+    set(
+      produce((draft: any) => {
+        draft[name] = value;
+      })
+    ),
 });
 
 export const useBalanceSheet = create(

@@ -1111,6 +1111,10 @@ const existingPortofolio = create(
                     draft.status = 1;
                   }
 
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
+
                   break;
                 case "summaryOfInvestment":
                   draft.declineToReview[1] = value == true ? 0 : 1;
@@ -1121,6 +1125,10 @@ const existingPortofolio = create(
                     draft.status = 0;
                   } else {
                     draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
                   }
                   break;
                 case "summaryOfSavings":
@@ -1133,6 +1141,10 @@ const existingPortofolio = create(
                   } else {
                     draft.status = 1;
                   }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 case "summaryOfCPF":
                   draft.declineToReview[3] = value == true ? 0 : 1;
@@ -1143,6 +1155,10 @@ const existingPortofolio = create(
                     draft.status = 0;
                   } else {
                     draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
                   }
                   break;
                 case "summaryOfInsurance":
@@ -1155,6 +1171,10 @@ const existingPortofolio = create(
                   } else {
                     draft.status = 1;
                   }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 case "summaryOfSRS":
                   draft.declineToReview[5] = value == true ? 0 : 1;
@@ -1166,6 +1186,10 @@ const existingPortofolio = create(
                   } else {
                     draft.status = 1;
                   }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 case "summaryOfLoans":
                   draft.declineToReview[6] = value == true ? 0 : 1;
@@ -1176,6 +1200,10 @@ const existingPortofolio = create(
                     draft.status = 0;
                   } else {
                     draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
                   }
                   break;
                 default:

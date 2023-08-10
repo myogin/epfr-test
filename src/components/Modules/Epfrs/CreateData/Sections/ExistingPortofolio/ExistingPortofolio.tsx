@@ -22,6 +22,7 @@ import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useRouter } from "next/router";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 
 interface Props {
   id?: any;
@@ -56,6 +57,9 @@ const ExistingPortofolio = (props: Props) => {
   let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);
   let setToggle = useExistingPortofolio((state) => state.setToggle);
   let setGlobal = useExistingPortofolio((state) => state.setGlobal);
+
+  let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
+  let idSectionThree = useCashFlow((state) => state.id);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -94,10 +98,14 @@ const ExistingPortofolio = (props: Props) => {
 
       // If save success get ID and store to localstorage
       if (storeDataSection.data.result === "success") {
-        if (id === 0 || id === null || id === undefined) {
-          setGlobal("id", storeDataSection.data.pfrId);
+        if (
+          idSectionThree === 0 ||
+          idSectionThree === null ||
+          idSectionThree === undefined
+        ) {
+          setGlobalSectionThree("id", storeDataSection.data.pfrId);
         } else {
-          setGlobal("id", id);
+          setGlobalSectionThree("id", id);
         }
         setGlobal("editableStatus", 1);
       }
@@ -150,6 +158,13 @@ const ExistingPortofolio = (props: Props) => {
           }`}
         >
           Section 2. Existing Portfolio
+          {saveLoading ? (
+            <span className="text-xs font-extralight text-gray-light">
+              Saving...
+            </span>
+          ) : (
+            ""
+          )}
         </HeadingPrimarySection>
       </div>
       {need ? (
