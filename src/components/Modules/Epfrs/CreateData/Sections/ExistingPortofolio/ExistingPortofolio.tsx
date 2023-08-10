@@ -446,7 +446,7 @@ const ExistingPortofolio = (props: Props) => {
       ) : (
         ""
       )}
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
+      <div className="bottom-0 mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };

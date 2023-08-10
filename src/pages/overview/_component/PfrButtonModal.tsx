@@ -1,13 +1,12 @@
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { Dialog, Transition } from "@headlessui/react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import File3FillIcon from "remixicon-react/File3FillIcon";
-import File3LineIcon from "remixicon-react/File3LineIcon";
 
 const PfrButtonModal = () => {
   const router = useRouter();
@@ -16,6 +15,7 @@ const PfrButtonModal = () => {
   let { resetSectionOne } = usePersonalInformation();
   let { resetSectionTwo } = useExistingPortofolio();
   let { resetSectionThree } = useCashFlow();
+  let { resetPfr } = usePfrData();
 
   const closeModal = () => {
     setShowModal(false);
@@ -29,6 +29,7 @@ const PfrButtonModal = () => {
     resetSectionOne();
     resetSectionTwo();
     resetSectionThree();
+    resetPfr();
 
     router.push(`create/${params}`);
   };

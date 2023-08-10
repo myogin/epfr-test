@@ -19,6 +19,7 @@ import { siteConfig } from "@/libs/config";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ const EpfrPage: Page = () => {
   let { resetSectionOne } = usePersonalInformation();
   let { resetSectionTwo } = useExistingPortofolio();
   let { resetSectionThree } = useCashFlow();
+  let { resetPfr } = usePfrData();
 
   const getGeneralData = async () => {
     if (router.query.edit) {
@@ -41,6 +43,7 @@ const EpfrPage: Page = () => {
     resetSectionOne();
     resetSectionTwo();
     resetSectionThree();
+    resetPfr();
 
     router.push(`create/${params}`);
   };

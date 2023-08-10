@@ -52,4 +52,11 @@ export interface SectionThree {
   totalNetSurplus?: Array<any>;
   status?: number;
   editableStatus?: number;
+  totalTemporary: totalTemp
+}
+
+export interface totalTemp {
+  annualIncome: Array<any>;
+  annualExpense: Array<any>;
+  annualSurplus: Array<any>;
 }

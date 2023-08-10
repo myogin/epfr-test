@@ -20,18 +20,16 @@ interface Props {
 }
 
 const AnnualIncomeCashFlow = (props: Props) => {
-
   let getPfrLength = getLength(props.pfrType);
 
-  let {
-    need,
-    data,
-    others,
-    setAnnualIncome,
-    setOthers,
-    patchOthers,
-    removeOthers,
-  } = useCashFlow();
+  let setAnnualIncome = useCashFlow((state) => state.setAnnualIncome);
+  let setOthers = useCashFlow((state) => state.setOthers);
+  let patchOthers = useCashFlow((state) => state.patchOthers);
+  let removeOthers = useCashFlow((state) => state.removeOthers);
+
+  let need = useCashFlow((state) => state.need);
+  let data = useCashFlow((state) => state.data);
+  let others = useCashFlow((state) => state.others);
 
   let checkIndex = checkCountDataOther(others?.annualIncome);
 
@@ -39,7 +37,7 @@ const AnnualIncomeCashFlow = (props: Props) => {
     id: checkIndex,
     editting: true,
     key: "",
-    values: [0, 0],
+    values: [0, 0, 0, 0],
   };
 
   const [showModalOther, setShowModalOther] = useState(false);
@@ -317,8 +315,35 @@ const AnnualIncomeCashFlow = (props: Props) => {
     setShowModalOther(false);
   };
 
+  // count total annual income
   useEffect(() => {
-  });
+    if (data.length > 0) {
+      let totalOther = [0, 0];
+      let newArray: any[] = [];
+      getPfrLength.map((dataA, index) => {
+        if (others.annualIncome.length > 0) {
+          others.annualIncome.map((dataB, indexA) => {
+            totalOther[index] += dataB.values[index];
+          });
+        }
+
+        let annualGrossIncome = data[index].annualIncome.annualGrossIncome;
+        let additionalWages = data[index].annualIncome.additionalWages;
+        let less = data[index].annualIncome.less;
+        let totalOtherFix = totalOther[index] > 0 ? totalOther[index] : 0;
+        let result =
+          Number(annualGrossIncome) +
+          Number(additionalWages) +
+          Number(totalOtherFix) -
+          Number(less);
+
+        newArray = [...checkTotal];
+        newArray[index] = result;
+      });
+
+      setCheckTotal(newArray);
+    }
+  }, [data, others.annualIncome]);
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">

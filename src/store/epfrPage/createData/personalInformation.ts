@@ -197,9 +197,6 @@ const personalInformation = create(
             produce((draft) => {
               // Check if this is maybe the same person
 
-              console.log("gender ni");
-              console.log(params.gender);
-
               draft.clientInfoSingpass[clientType].clientName =
                 params.clientPfr === "Singpass" &&
                 params.clientName &&
@@ -792,7 +789,8 @@ const personalInformation = create(
                 draft.trustedIndividuals.relationship === "" ||
                 draft.trustedIndividuals.languageUsed === "" ||
                 draft.trustedIndividuals.languageUsed === "-" ||
-                draft.trustedIndividuals.contactNumber === ""
+                draft.trustedIndividuals.contactNumber === "" ||
+                draft.trustedIndividuals.declaration === false
               ) {
                 draft.status = 0;
               } else {
