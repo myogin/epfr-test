@@ -64,6 +64,7 @@ const ExistingPortofolio = (props: Props) => {
   let fetchInsurance = useExistingPortofolio((state) => state.fetchInsurance);
   let fetchInsurance2 = useExistingPortofolio((state) => state.fetchInsurance2);
   let fetchLoan = useExistingPortofolio((state) => state.fetchLoan);
+  let fetchSrs = useExistingPortofolio((state) => state.fetchSrs);
 
   let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
   let idSectionThree = useCashFlow((state) => state.id);
@@ -174,7 +175,7 @@ const ExistingPortofolio = (props: Props) => {
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance2.length > 0) {
         getSection2.summaryOfInsurance2.map((data: any, index: number) => {
-          fetchInsurance2(index,data);
+          fetchInsurance2(index, data);
         });
       }
 
@@ -186,7 +187,7 @@ const ExistingPortofolio = (props: Props) => {
       // Fetch trusted individual
       if (getSection2.summaryOfSRS.length > 0) {
         getSection2.summaryOfSRS.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchSrs(index, data);
         });
       }
 
@@ -203,7 +204,7 @@ const ExistingPortofolio = (props: Props) => {
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottomSection1 === "Process1") {
-        console.log("Get data Section 2");
+        getSectionData(router.query.id);
       }
     }
   }, [scrollPositionBottomSection1, router.isReady, router.query.id]);
