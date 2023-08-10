@@ -227,8 +227,6 @@ const AnnualIncomeCashFlow = (props: Props) => {
         }
         break;
     }
-
-    getTotal(indexdata);
   };
 
   const addOther = () => {
@@ -273,29 +271,6 @@ const AnnualIncomeCashFlow = (props: Props) => {
   const modalRemoveData = (params: any) => {
     setShowModalRemove(true);
     setActionDataId(params);
-  };
-
-  const getTotal = (index: number) => {
-    if (data.length > 0) {
-      let totalOther = [0, 0];
-
-      if (others.annualIncome.length > 0) {
-        others.annualIncome.map((data, indexA) => {
-          totalOther[index] += data.values[index];
-        });
-      }
-
-      let annualGrossIncome = data[index].annualIncome.annualGrossIncome;
-      let additionalWages = data[index].annualIncome.additionalWages;
-      let less = data[index].annualIncome.less;
-      let result =
-        annualGrossIncome + additionalWages + totalOther[index] - less;
-
-      const newArray = [...checkTotal];
-      newArray[index] = result;
-
-      setCheckTotal(newArray);
-    }
   };
 
   const saveData = () => {

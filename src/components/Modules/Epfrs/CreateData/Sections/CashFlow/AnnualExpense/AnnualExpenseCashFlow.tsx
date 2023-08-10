@@ -18,7 +18,6 @@ interface Props {
   pfrType?: number;
 }
 const AnnualExpenseCashFlow = (props: Props) => {
-
   let getPfrLength = getLength(props.pfrType);
 
   let setAnnualExpanse = useCashFlow((state) => state.setAnnualExpanse);
@@ -77,8 +76,8 @@ const AnnualExpenseCashFlow = (props: Props) => {
     initialState.values[0] = 0;
     initialState.values[1] = 0;
     setNewData(initialState);
-    setAnnualDataOther([0,0])
-    setMonthlyDataOther([0,0])
+    setAnnualDataOther([0, 0]);
+    setMonthlyDataOther([0, 0]);
     setShowModalOther(true);
   };
 
@@ -89,8 +88,8 @@ const AnnualExpenseCashFlow = (props: Props) => {
   const editOther = (params: number) => {
     setSaveType("update");
 
-    setAnnualDataOther([0,0])
-    setMonthlyDataOther([0,0])
+    setAnnualDataOther([0, 0]);
+    setMonthlyDataOther([0, 0]);
 
     const detailData = others?.annualExpense.filter((obj) => obj.id === params);
 
@@ -199,31 +198,31 @@ const AnnualExpenseCashFlow = (props: Props) => {
     }
   };
 
-    // count total annual income
-    useEffect(() => {
-      if (annualExpense.length > 0) {
-        let totalOther = [0, 0];
-        let newArray: any[] = [];
-        getPfrLength.map((dataA, index) => {
-          if (others.annualExpense.length > 0) {
-            others.annualExpense.map((dataB, indexA) => {
-              totalOther[index] += Number(dataB.values[index]);
-            });
-          }
+  // count total annual income
+  useEffect(() => {
+    if (annualExpense.length > 0) {
+      let totalOther = [0, 0];
+      let newArray: any[] = [];
+      getPfrLength.map((dataA, index) => {
+        if (others.annualExpense.length > 0) {
+          others.annualExpense.map((dataB, indexA) => {
+            totalOther[index] += Number(dataB.values[index]);
+          });
+        }
 
-          if (annualExpense.length > 0) {
-            annualExpense.map((dataB, indexA) => {
-              totalOther[index] += Number(dataB.values[index]);
-            });
-          }
-  
-          newArray = [...checkTotal];
-          newArray[index] = totalOther[index];
-        });
-  
-        setCheckTotal(newArray);
-      }
-    }, [annualExpense, others.annualExpense]);
+        if (annualExpense.length > 0) {
+          annualExpense.map((dataB, indexA) => {
+            totalOther[index] += Number(dataB.values[index]);
+          });
+        }
+
+        newArray = [...checkTotal];
+        newArray[index] = totalOther[index];
+      });
+
+      setCheckTotal(newArray);
+    }
+  }, [annualExpense, others.annualExpense]);
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -670,10 +669,14 @@ const AnnualExpenseCashFlow = (props: Props) => {
                 need[index] ? (
                   <>
                     <div className="text-right">
-                      <span className="text-green-deep">{checkTotal[index] / 12}</span>
+                      <span className="text-green-deep">
+                        {checkTotal[index] / 12}
+                      </span>
                     </div>
                     <div className="text-right">
-                      <span className="text-green-deep">{checkTotal[index]}</span>
+                      <span className="text-green-deep">
+                        {checkTotal[index]}
+                      </span>
                     </div>
                   </>
                 ) : (
