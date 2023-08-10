@@ -19,8 +19,9 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState, convertToRaw, ContentState, convertFromHTML } from "draft-js";
 import draftToHtml from "draftjs-to-html";
+import {getWholeContext, pfrSection, getRecommendation} from "@/services/pfrService";
 
 const Editor = dynamic(
   () => import('react-draft-wysiwyg').then(mod => mod.Editor),
@@ -38,6 +39,14 @@ const AnalysisRecommendation = (props: Props) => {
     setParent
   } = useAnalysisRecommendation();
 
+  const currencyFormat = (num:any) => {
+    if(num){
+      return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }else{
+      return 0.00
+    }
+  }
+
   const [editorData, setEditor] = useState({
     overView1: EditorState.createEmpty(),
     overView2: EditorState.createEmpty(),
@@ -49,6 +58,7 @@ const AnalysisRecommendation = (props: Props) => {
   const [dataGroup, setGroup] = useState();
 
   const handleOverView1 = (editorState: any) => {
+    console.log('editorState', editorState)
     setEditor({...editorData,overView1: editorState});
     setParent('overView1', draftToHtml(convertToRaw(editorData.overView1.getCurrentContent())));
   };
@@ -86,12 +96,541 @@ const AnalysisRecommendation = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(9)
+  
+  const [dataAnnualPayorBudget, setAnnualPayorBudget] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+  const [dataSinglePayorBudget, setSinglePayorBudget] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+  const [dataPayorBudgetMap, setPayorBudgetMap] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+
+  const [getPfr8, setPfr8] = useState<any>({});
+  const [getPfr9, setPfr9] = useState<any>({});
+  const [getClients, setClients] = useState<any>([]);
+
+  const [dataTotalAnnualPremium, setTotalAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+  const [dataTotalSinglePremium, setTotalSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+
+  const [dataTotalAnnualPremiumChoice, setTotalAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+  const [dataTotalSinglePremiumChoice, setTotalSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+  
+  const [dataMaxAnnualPremium, setMaxAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+  const [dataMaxSinglePremium, setMaxSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+  const [dataProductAnnualPremium, setProductAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+  const [dataProductSinglePremium, setProductSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+
+  const [dataMaxAnnualPremiumChoice, setMaxAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+  const [dataMaxSinglePremiumChoice, setMaxSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+  const [dataProductAnnualPremiumChoice, setProductAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+  const [dataProductSinglePremiumChoice, setProductSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+
+  const [dataTotalRecomendationSinglePremiumChoice, setTotalRecomendationSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+  const [dataProductRecomendationSinglePremiumChoice, setProductRecomendationSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+
+  const [dataTotalRecomendationAnnualPremiumChoice, setTotalRecomendationAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+  const [dataProductRecomendationAnnualPremiumChoice, setProductRecomendationAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+
+  const [dataTotalCISILPAnnualPremiumChoice, setTotalCISILPAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+  const [dataTotalCISILPSinglePremiumChoice, setTotalCISILPSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+
+  const [dataSubPremium, setDataSubPremium] = useState<any>(
+    {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
+  );
+  const [dataResDataTotalPremiumArr, setResDataTotalPremiumArr] = useState<any>(
+    {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
+  );
 
   useEffect(() => {  
-    console.log('section9', section9);
     localStorage.setItem("section9", JSON.stringify(section9));
+
+    const pfrId = localStorage.getItem("s9_PfrId");
+
+    pfrSection(9, pfrId).then((data: any) => {
+      console.log('data', data)
+      setPfr9(data);
+      var dataType: Array<any> = [];
+      for(var i = 0; i < data.clients.length; i++){
+        dataType[i] = i;
+      }
+      console.log('dataType', dataType)
+      setClients(dataType);
+
+      // Res Answer
+        console.log('data', data)
+        var overView1 = "";
+        if(data.answer.overView1){
+          overView1 = data.answer.overView1
+        }
+        
+        var overView2 = "";
+        if(data.answer.overView2){
+          overView2 = data.answer.overView2
+        }
+        
+        var reasonForBenefit = "";
+        if(data.answer.reasonForBenefit){
+          reasonForBenefit = data.answer.reasonForBenefit
+        }
+        
+        var reasonForRisk = "";
+        if(data.answer.reasonForRisk){
+          reasonForRisk = data.answer.reasonForRisk
+        }
+        
+        var reasonForDeviation = "";
+        if(data.answer.reasonForDeviation){
+          reasonForDeviation = data.answer.reasonForDeviation
+        }
+
+        setEditor({
+          ...editorData, 
+          overView1: EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(overView1).contentBlocks, convertFromHTML(overView1).entityMap
+          )),
+          overView2:EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(overView2).contentBlocks, convertFromHTML(overView2).entityMap
+          )),
+          reasonForBenefit:EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(reasonForBenefit).contentBlocks, convertFromHTML(reasonForBenefit).entityMap
+          )),
+          reasonForRisk:EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(reasonForRisk).contentBlocks, convertFromHTML(reasonForRisk).entityMap
+          )),
+          reasonForDeviation:EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(reasonForDeviation).contentBlocks, convertFromHTML(reasonForDeviation).entityMap
+          ))
+        });
+        
+        setParent('overView1', data.answer.overView1);
+        setParent('overView2', data.answer.overView2);
+        setParent('reasonForBenefit', data.answer.reasonForBenefit);
+        setParent('reasonForRisk', data.answer.reasonForRisk);
+        setParent('reasonForDeviation', data.answer.reasonForDeviation);
+      // End Res Answer
+      
+      // Check Client Choice
+        data.recommendedProduct.map((product: any) => {
+          if(product['checked'] == '0') {
+            product['checked'] = false;
+          } else {
+            product['checked'] = true
+            calcPremiumClientChoice(product, false);
+          }
+          
+          var dataName = getPremiumFrequencyName(product.premiumFrequency);
+          if(dataName != undefined){
+
+            dataSubPremium[dataName] = product['premium'];
+
+            if(product['checked'] == true) {
+
+              if(dataResDataTotalPremiumArr[dataName]){
+                dataResDataTotalPremiumArr[dataName] += product['totPremium'];
+              }else{
+                dataResDataTotalPremiumArr[dataName] = product['totPremium'];
+              }
+            }
+            
+
+            product['riders'].map((rider: any) => {
+              var dataNameRider = getPremiumFrequencyName(rider.premiumFrequency);
+              if(dataNameRider != undefined){
+              
+                if(rider['checked'] == '0') {
+                  rider['checked'] = false;
+                } else {
+                  rider['checked'] = true
+                }
+                
+                // 
+                if(dataSubPremium[dataNameRider]){
+                  dataSubPremium[dataNameRider] += rider['premium'];
+                }else{
+                  dataSubPremium[dataNameRider] = rider['premium'];
+                }
+
+                if(dataResDataTotalPremiumArr[dataNameRider]){
+                  dataResDataTotalPremiumArr[dataNameRider] += rider['premium'];
+                }else{
+                  dataResDataTotalPremiumArr[dataNameRider] = rider['premium'];
+                }
+              }
+            })
+
+            if(product.riders.length > 0){
+              product['subTotal'] = dataSubPremium;
+            }else{
+              product['subTotal'] = [];
+            }
+
+          }
+        })
+    });
+
+    const annualPayorBudget: Array<any> = [[],[]];
+    const singlePayorBudget: Array<any> = [[],[]];
+    const payorBudgetMap: Array<any> = [[],[]];
+    pfrSection(8, pfrId).then((data: any) => {
+      setPfr8(data)
+
+      let payorBudgets = data['payorBudgets']
+      payorBudgets.map((budget: any) => {
+        if(budget['selection'] != 0) {
+          let clientId = budget['clientType']
+          let type = budget['type']
+          annualPayorBudget[clientId][type] = budget['annual']
+          singlePayorBudget[clientId][type] = budget['single']
+          payorBudgetMap[clientId][type] = true
+        }
+      })
+    });
+
+    setAnnualPayorBudget(annualPayorBudget)
+    setSinglePayorBudget(singlePayorBudget)
+    setPayorBudgetMap(payorBudgetMap)
+
+    getWholeContext(pfrId).then((data: any) => {
+        // console.log('wholeContext', data)
+    });
+
+    console.log('section9Res', section9)
   }, [section9]);
 
+  const getPremiumFrequencyName = (premiumFrequency: any) => {
+    switch(Number(premiumFrequency)) {
+      case 0 : return "Monthly";
+      case 1 : return "Quarterly";
+      case 2 : return "HalfYearly";
+      case 3 : return "Annually";
+      case 4 : return "SinglePayment";
+    }
+  }
+
+  const calcPremiumClientChoice = (product: any, isRider: false) => {
+    console.log('product', product)
+    if(product){
+      if(product['checked']) {
+      let frequency = product['premiumFrequency']
+      let clientId = product['nameOfOwner']
+      let premiumType = product['premiumPaymentType']
+      let premium = 0
+      let categoryId = product['categoryId']
+
+      let typeData = product['type']
+      let recommendType = product['recommedType']
+
+      // Recomendation
+      // if(categoryId != 8 && categoryId != 5) {
+        
+        if(frequency == 4) {
+          premium = product['premium']
+          dataTotalSinglePremium[clientId][premiumType] += product['premium'];
+          setTotalSinglePremium(dataTotalSinglePremium);
+          
+          dataProductSinglePremium[clientId][premiumType] += premium;
+          setProductSinglePremium(dataProductSinglePremium);
+
+          // New amount
+          dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product['premium'];
+          setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+          dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += premium;
+          setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+          
+        } else if(frequency == 3) {
+          premium = product['premium']
+
+          dataTotalSinglePremium[clientId][premiumType] += product['premium'] * 1;
+          setTotalSinglePremium(dataTotalSinglePremium);
+          dataProductSinglePremium[clientId][premiumType] += premium;
+          setProductSinglePremium(dataProductSinglePremium);
+
+          // New amount
+          dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product['premium'] * 1;
+          setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+          dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += premium;
+          setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+
+        } else if(frequency == 2) {
+          premium = product['premium'] * 2
+          
+          dataTotalSinglePremium[clientId][premiumType] += product['premium'] * 2;
+          setTotalSinglePremium(dataTotalSinglePremium);
+          dataProductSinglePremium[clientId][premiumType] += premium;
+          setProductSinglePremium(dataProductSinglePremium);
+
+          // New amount
+          dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product['premium'] * 2;
+          setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+          dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += premium;
+          setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+
+        } else if(frequency == 1) {
+          premium = product['premium'] * 4
+          
+          dataTotalSinglePremium[clientId][premiumType] += product['premium'] * 4;
+          setTotalSinglePremium(dataTotalSinglePremium);
+          dataProductSinglePremium[clientId][premiumType] += premium;
+          setProductSinglePremium(dataProductSinglePremium);
+
+          // New amount
+          dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product['premium'] * 4;
+          setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+          dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += premium;
+          setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+
+        } else if(frequency == 0){
+          premium = product['premium'] * 12
+
+
+          dataTotalSinglePremium[clientId][premiumType] += product['premium'] * 12;
+          setTotalSinglePremium(dataTotalSinglePremium);
+          dataProductSinglePremium[clientId][premiumType] += premium;
+          setProductSinglePremium(dataProductSinglePremium);
+
+          // New amount
+          dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product['premium'] * 12;
+          setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+          dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += premium;
+          setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+
+        }
+  
+        if(isRider == false) {
+        
+          if(dataMaxSinglePremium[clientId][premiumType] < dataProductSinglePremium[clientId][premiumType]) {
+            dataMaxSinglePremium[clientId][premiumType] += dataProductSinglePremium[clientId][premiumType]
+          }
+  
+          if(dataMaxAnnualPremium[clientId][premiumType] < dataProductAnnualPremium[clientId][premiumType]) {
+            dataMaxAnnualPremium[clientId][premiumType] += dataProductAnnualPremium[clientId][premiumType]
+          }
+  
+        }
+        // 
+      // HOSTPITAL
+      // } else {
+        if(product['premium_for_hospitalization']){
+          
+          let cash = product['premium_for_hospitalization'] !== null ? product['premium_for_hospitalization']['cash'] : 0
+          let medisave = product['premium_for_hospitalization'] !== null ?  product['premium_for_hospitalization']['cpfMedisave'] : 0
+          let premiumHost = cash + medisave
+          
+          
+          if(frequency == 4) {
+            
+            dataTotalSinglePremium[clientId][0] += cash
+            setTotalSinglePremium(dataTotalSinglePremium)
+            dataTotalSinglePremium[clientId][3] += medisave
+            setTotalSinglePremium(dataTotalSinglePremium)
+    
+            dataProductSinglePremium[clientId][0] += cash
+            setProductSinglePremium(dataProductSinglePremium)
+            dataProductSinglePremium[clientId][3] += medisave
+            setProductSinglePremium(dataProductSinglePremium)
+
+
+            // New amount
+            dataTotalRecomendationSinglePremiumChoice[clientId][0] += cash;
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+            dataTotalRecomendationSinglePremiumChoice[clientId][3] += medisave;
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+
+            dataProductRecomendationSinglePremiumChoice[clientId][0] += cash;
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+            dataProductRecomendationSinglePremiumChoice[clientId][3] += medisave;
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+    
+          } else if(frequency == 3) {
+            
+
+            dataTotalSinglePremium[clientId][0] += cash
+            setTotalSinglePremium(dataTotalSinglePremium)
+            dataTotalSinglePremium[clientId][3] += medisave
+            setTotalSinglePremium(dataTotalSinglePremium)
+    
+            dataProductSinglePremium[clientId][0] += cash
+            setProductSinglePremium(dataProductSinglePremium)
+            dataProductSinglePremium[clientId][3] += medisave
+            setProductSinglePremium(dataProductSinglePremium)
+
+
+            // New amount
+            dataTotalRecomendationSinglePremiumChoice[clientId][0] += cash;
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+            dataTotalRecomendationSinglePremiumChoice[clientId][3] += medisave;
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+
+            dataProductRecomendationSinglePremiumChoice[clientId][0] += cash;
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+            dataProductRecomendationSinglePremiumChoice[clientId][3] += medisave;
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+            
+          } else if(frequency == 2) {
+            premiumHost = premiumHost * 2
+
+            dataTotalSinglePremium[clientId][0] += cash * 2
+            setTotalSinglePremium(dataTotalSinglePremium)
+            dataTotalSinglePremium[clientId][3] += medisave * 2
+            setTotalSinglePremium(dataTotalSinglePremium)
+    
+            dataProductSinglePremium[clientId][0] += cash * 2
+            setProductSinglePremium(dataProductSinglePremium)
+            dataProductSinglePremium[clientId][3] += medisave * 2
+            setProductSinglePremium(dataProductSinglePremium)
+
+
+            // New amount
+            dataTotalRecomendationSinglePremiumChoice[clientId][0] += cash * 2
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+            dataTotalRecomendationSinglePremiumChoice[clientId][3] += medisave * 2
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+
+            dataProductRecomendationSinglePremiumChoice[clientId][0] += cash * 2
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+            dataProductRecomendationSinglePremiumChoice[clientId][3] += medisave * 2
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+    
+          } else if(frequency == 1) {
+    
+            premiumHost = premiumHost * 4
+
+            dataTotalSinglePremium[clientId][0] += cash * 4
+            setTotalSinglePremium(dataTotalSinglePremium)
+            dataTotalSinglePremium[clientId][3] += medisave * 4
+            setTotalSinglePremium(dataTotalSinglePremium)
+    
+            dataProductSinglePremium[clientId][0] += cash * 4
+            setProductSinglePremium(dataProductSinglePremium)
+            dataProductSinglePremium[clientId][3] += medisave * 4
+            setProductSinglePremium(dataProductSinglePremium)
+
+
+            // New amount
+            dataTotalRecomendationSinglePremiumChoice[clientId][0] += cash * 4
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+            dataTotalRecomendationSinglePremiumChoice[clientId][3] += medisave * 4
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+
+            dataProductRecomendationSinglePremiumChoice[clientId][0] += cash * 4
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+            dataProductRecomendationSinglePremiumChoice[clientId][3] += medisave * 4
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+
+          } else if(frequency == 0) {
+    
+            premiumHost = premiumHost * 12
+
+
+            dataTotalSinglePremium[clientId][0] += cash * 12
+            setTotalSinglePremium(dataTotalSinglePremium)
+            dataTotalSinglePremium[clientId][3] += medisave * 12
+            setTotalSinglePremium(dataTotalSinglePremium)
+    
+            dataProductSinglePremium[clientId][0] += cash * 12
+            setProductSinglePremium(dataProductSinglePremium)
+            dataProductSinglePremium[clientId][3] += medisave * 12
+            setProductSinglePremium(dataProductSinglePremium)
+
+
+            // New amount
+            dataTotalRecomendationSinglePremiumChoice[clientId][0] += cash * 12
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+            dataTotalRecomendationSinglePremiumChoice[clientId][3] += medisave * 12
+            setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+
+            dataProductRecomendationSinglePremiumChoice[clientId][0] += cash * 12
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+            dataProductRecomendationSinglePremiumChoice[clientId][3] += medisave * 12
+            setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+
+
+          }
+          
+          if(isRider == false) {
+            if(dataMaxSinglePremiumChoice[clientId][0] < dataProductSinglePremiumChoice[clientId][0]) {
+              dataMaxSinglePremiumChoice[clientId][0] = dataProductSinglePremiumChoice[clientId][0]
+            }
+            if(dataMaxSinglePremiumChoice[clientId][3] < dataProductSinglePremiumChoice[clientId][3]) {
+              dataMaxSinglePremiumChoice[clientId][3] = dataProductSinglePremiumChoice[clientId][3]
+            }
+            if(dataMaxAnnualPremiumChoice[clientId][0] < dataProductAnnualPremiumChoice[clientId][0]) {
+              dataMaxAnnualPremiumChoice[clientId][0] = dataProductAnnualPremiumChoice[clientId][0]
+            }
+            if(dataMaxAnnualPremiumChoice[clientId][3] < dataProductAnnualPremiumChoice[clientId][3]) {
+              dataMaxAnnualPremiumChoice[clientId][3] = dataProductAnnualPremiumChoice[clientId][3]
+            }
+          }
+        }
+    
+        // RIDER RECOMMENDED PRODUCT 
+        if(product.riders.length > 0){
+          
+          for(let iRider = 0; iRider < product.riders.length; iRider++) {
+            if(product.riders[iRider].premiumFrequency == 0){
+              dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 12;
+
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
+              dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
+
+            }else if(product.riders[iRider].premiumFrequency == 1){
+              dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 4;
+
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
+              dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
+            
+            }else if(product.riders[iRider].premiumFrequency == 2){
+              dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 2;
+
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
+              dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
+
+            }else if(product.riders[iRider].premiumFrequency == 3){
+              dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 1;
+
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
+              dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
+            
+            }else if(product.riders[iRider].premiumFrequency == 4){
+              dataTotalSinglePremiumChoice[clientId][0] += product.riders[iRider].premium;
+
+              // New amount
+              dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
+              dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
+            }
+          }
+
+          
+          
+        }
+
+        // ILP
+        if(typeData == 0 && recommendType == 1) {
+          
+          if(product.riders.length > 0){
+            for(let iRider = 0; iRider < product.riders.length; iRider++) {
+              if(product.riders[iRider].premiumFrequency == 0){
+                dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 12;
+              }else if(product.riders[iRider].premiumFrequency == 1){
+                dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 4;
+              }else if(product.riders[iRider].premiumFrequency == 2){
+                dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 2;
+              }else if(product.riders[iRider].premiumFrequency == 3){
+                dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 1;
+              }else if(product.riders[iRider].premiumFrequency == 4){
+                dataTotalCISILPSinglePremiumChoice[clientId][0] += product.riders[iRider].premium;
+              }
+            }
+          }
+        }
+    }
+    }
+  }
   return (
     <div id={props.id}>
       <div id="section-header-9" className={`sticky top-0 z-10 ${scrollPosition === "okSec9" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
@@ -277,19 +816,46 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-2 py-5">Client 1</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                </tr>
+                {getClients.map((resData: any, index: any) => (
+                  <>
+                    <tr key={index}>
+                      <td className="px-2 py-5">
+                        Client {index+1}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataAnnualPayorBudget[index][0]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataSinglePayorBudget[index][0]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataAnnualPayorBudget[index][1]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataSinglePayorBudget[index][1]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataAnnualPayorBudget[index][2]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataSinglePayorBudget[index][2]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataAnnualPayorBudget[index][3]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataSinglePayorBudget[index][3]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataAnnualPayorBudget[index][4]) }
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        { currencyFormat(dataSinglePayorBudget[index][4]) }
+                      </td>
+                    </tr>
+                  </>
+                ))
+                }
               </tbody>
             </table>
           </div>
@@ -333,19 +899,24 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-2 py-5">Client 1</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                  <td className="px-2 py-5 text-center">$0.0</td>
-                </tr>
+              {getClients.map((resData: any, index: any) => (
+                  <>
+                    <tr key={index}>
+                      <td className="px-2 py-5">Client {index + 1}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalAnnualPremiumChoice[index][0]) ? 0 : currencyFormat(dataTotalAnnualPremiumChoice[index][0])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalSinglePremiumChoice[index][0]) ? 0 : currencyFormat(dataTotalSinglePremiumChoice[index][0])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalAnnualPremiumChoice[index][1]) ? 0 : currencyFormat(dataTotalAnnualPremiumChoice[index][1])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalSinglePremiumChoice[index][1]) ? 0 : currencyFormat(dataTotalSinglePremiumChoice[index][1])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalAnnualPremiumChoice[index][2]) ? 0 : currencyFormat(dataTotalAnnualPremiumChoice[index][2])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalSinglePremiumChoice[index][2]) ? 0 : currencyFormat(dataTotalSinglePremiumChoice[index][2])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalAnnualPremiumChoice[index][3]) ? 0 : currencyFormat(dataTotalAnnualPremiumChoice[index][3])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalSinglePremiumChoice[index][3]) ? 0 : currencyFormat(dataTotalSinglePremiumChoice[index][3])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalAnnualPremiumChoice[index][4]) ? 0 : currencyFormat(dataTotalAnnualPremiumChoice[index][4])}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataTotalSinglePremiumChoice[index][4]) ? 0 : currencyFormat(dataTotalSinglePremiumChoice[index][4])}</td>
+                    </tr>
+                  </>
+                ))
+              }
               </tbody>
             </table>
           </div>

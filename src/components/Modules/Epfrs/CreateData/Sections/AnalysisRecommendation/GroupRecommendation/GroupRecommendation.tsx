@@ -103,7 +103,6 @@ const GroupRecommendation = () => {
     const annualRemainBudget: Array<any> = [[],[]];
     const singleRemainBudget: Array<any> = [[],[]];
     
-    console.log('pfrGroupId', pfrGroupId)
 
     // Find Group Recommend
     var resDataTotalPremiumArr: Array<any> = [];
@@ -114,13 +113,11 @@ const GroupRecommendation = () => {
     });
 
     getRecommendationGroup(pfrId, pfrGroupId).then((data: any) => {
-      console.log('data', data)
       if(data.products){
         if(data.products.length > 0){
           data.products.map((product: any) => {
               var dataName = getPremiumFrequencyName(product.premiumFrequency);
               if(dataName != undefined){
-                console.log('product.premium', product['premium'])
                 setDataSubPremium({
                   ...dataSubPremium,
                   [dataName]: product['premium']
@@ -131,10 +128,8 @@ const GroupRecommendation = () => {
                   dataResDataTotalPremiumArr[dataName] += product['premium'];
                 }
 
-                console.log('product.riders', dataResDataTotalPremiumArr)
 
                 product.riders.map((rider:any) => {
-                  console.log('rirder',rider['premium'])
                   if(dataName != undefined){
                     if(dataSubPremium[dataName] >= 0){
                       dataSubPremium[dataName] += rider['premium'];
@@ -155,7 +150,6 @@ const GroupRecommendation = () => {
           })
         }
       }
-      console.log('resData', data)
       setRecommendationData(data)
       getTotalPremium()
     });
@@ -163,18 +157,15 @@ const GroupRecommendation = () => {
     
     // Find Pfr 
     getPfr(pfrId).then((data:any) => {
-      console.log('getPfrData', getPfrData)
       setPfrData(data)
     })    
 
     pfrSection(8, pfrId).then((data: any) => {
-      console.log('section8', data)
       setPfr8(data)
 
       let payorBudgets = data['payorBudgets']
       payorBudgets.map((budget: any) => {
         if(budget['selection'] != 0) {
-          console.log('budget', budget)
           let clientId = budget['clientType']
           let type = budget['type']
           annualPayorBudget[clientId][type]  = budget['annual']
@@ -195,15 +186,11 @@ const GroupRecommendation = () => {
         expense[1] = Number(expense['sum2'])
       })
     });
-    // console.log('annualPayorBudget', annualPayorBudget)
-    // console.log('singlePayorBudget', singlePayorBudget)
-    // console.log('singleRemainBudget', singleRemainBudget)
     setAnnualPayorBudget(annualPayorBudget)
     setSinglePayorBudget(singlePayorBudget)
     setAnnualRemainBudget(annualRemainBudget)
     setSingleRemainBudget(singleRemainBudget)
 
-    console.log('getRecommendationData', getRecommendationData)
   }, [section9RecommendGroup]);
 
 
@@ -211,15 +198,14 @@ const GroupRecommendation = () => {
     switch(Number(premiumFrequency)) {
       case 0 : return "Monthly";
       case 1 : return "Quarterly";
-      case 2 : return "Half-Yearly";
+      case 2 : return "HalfYearly";
       case 3 : return "Annually";
-      case 4 : return "Single Payment";
+      case 4 : return "SinglePayment";
     }
   }
 
   // Calc
   const calcReaminingBudgets = (resDta: any) => {
-    console.log('resDta', resDta)
     var groupIdParam  = Number(localStorage.getItem("s9_dataGroup"))
     resDta.groups.map((group: any) => {
       let groupId = group['id']
@@ -232,7 +218,6 @@ const GroupRecommendation = () => {
       let CISProducts: any     = getProductsByFilteringGroupId(groupId, resDta.CISProduct)
       let customProducts: any  = getProductsByFilteringGroupId(groupId, resDta.customProduct)
 
-      // console.log('products', products)
 
       products.map((product: any) => {
           setProductAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
@@ -347,7 +332,6 @@ const GroupRecommendation = () => {
         }
 
         if(dataMaxAnnualPremium[clientId][premiumType] < dataProductAnnualPremium[clientId][premiumType]) {
-          console.log('if first', dataProductAnnualPremium[clientId][premiumType])
           dataMaxAnnualPremium[clientId][premiumType] += dataProductAnnualPremium[clientId][premiumType]
         }
 
@@ -440,12 +424,10 @@ const GroupRecommendation = () => {
           dataMaxSinglePremium[clientId][3] += dataProductSinglePremium[clientId][3]
         }
         if(dataMaxAnnualPremium[clientId][0] < dataProductAnnualPremium[clientId][0]) {
-          console.log('else first')
 
           dataMaxAnnualPremium[clientId][0] += dataProductAnnualPremium[clientId][0]
         }
         if(dataMaxAnnualPremium[clientId][3] < dataProductAnnualPremium[clientId][3]) {
-          console.log('else second')
 
           dataMaxAnnualPremium[clientId][3] += dataProductAnnualPremium[clientId][3]
         }
@@ -456,7 +438,6 @@ const GroupRecommendation = () => {
   }
 
   const getProductsByFilteringGroupId = (groupId: any, products:any) => {
-    console.log('productss', products)
     var result = [];
     if(products){
       if(products.length > 0){
@@ -517,7 +498,6 @@ const GroupRecommendation = () => {
   const getTotalPremium = () => {
 
     if(getRecommendationData?.products){
-      console.log('asdasd products')
       getRecommendationData.products.map((product: any) => {
         product['riders'].map((rider: any) => {
           rider['categoryId']= -1
@@ -528,7 +508,6 @@ const GroupRecommendation = () => {
     }
 
     if(getRecommendationData?.ILP){
-      console.log('asdasd ILP')
       getRecommendationData.ILP.map((product: any) => {
         product['riders'].map((rider: any) => {
           rider['categoryId']= -1
@@ -539,7 +518,6 @@ const GroupRecommendation = () => {
     }
 
     if(getRecommendationData?.custom){
-      console.log('asdasdcustom')
       getRecommendationData.custom.map((product: any) => {
         product['riders'].map((rider: any) => {
           rider['categoryId']= -1
@@ -551,7 +529,6 @@ const GroupRecommendation = () => {
     
 
     if(getRecommendationData?.CIS){
-      console.log('asdasdCIS')
       getRecommendationData.CIS.map((product: any) => {
         calcPremiumForCIS(product)
       })
@@ -628,7 +605,6 @@ const GroupRecommendation = () => {
 
   //   }
 
-  //   console.log(this.msg)
 
   //   if(this.msg.length == 0) {
   //     return true
@@ -722,7 +698,6 @@ const GroupRecommendation = () => {
   //       }
   //     }
   //   }
-  //   console.log('res',res)
   //   return res;
   // }
 
