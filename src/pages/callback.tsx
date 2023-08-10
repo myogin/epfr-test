@@ -38,6 +38,9 @@ const CallbackPage: Page = () => {
   let fetchDependent = usePersonalInformation((state) => state.fetchDependent);
 
   let fetchClient = usePersonalInformation((state) => state.fetchClient);
+  let fetchClientSingpass = usePersonalInformation(
+    (state) => state.fetchClientSingpass
+  );
 
   let fetchAccompainment = usePersonalInformation(
     (state) => state.fetchAccompainment
@@ -54,6 +57,7 @@ const CallbackPage: Page = () => {
     data: Clientformation
   ) => {
     fetchClient(clientType, data);
+    fetchClientSingpass(clientType, data);
   };
 
   const storeDataDependentToState = (data: DependantInformation[]) => {
@@ -99,7 +103,7 @@ const CallbackPage: Page = () => {
     setCpf(checkTotalData, data);
   };
 
-  // Reset Data #pending 
+  // Reset Data #pending
   const resetExistingData = () => {
     resetSectionOne();
     resetSectionTwo();
@@ -166,13 +170,16 @@ const CallbackPage: Page = () => {
 
     console.log("test masuk apa ini  " + pfr.uuid);
 
-    if(pfr.uuid === "" || pfr.uuid === null || pfr.uuid === 0 || pfr.uuid === undefined) {
+    if (
+      pfr.uuid === "" ||
+      pfr.uuid === null ||
+      pfr.uuid === 0 ||
+      pfr.uuid === undefined
+    ) {
       router.push(`/create/${pfrType}?singpass=ok`);
-    }else {
+    } else {
       router.push(`/create/${pfrType}?id=${pfr.uuid}&singpass=ok`);
-      
     }
-
   }, [router.isReady, router.query]);
   return (
     <>

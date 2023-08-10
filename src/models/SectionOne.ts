@@ -29,6 +29,29 @@ export interface Clientformation {
   mailingAddr: string;
   clientPfr: string;
 }
+
+export interface ClientformationSingpass {
+  passportNo: boolean;
+  clientName: boolean;
+  gender: boolean;
+  dateOfBirth: boolean;
+  race: boolean;
+  birthCountryId: boolean;
+  residencyTwo: boolean;
+  nationality: boolean;
+  contactMobile: boolean;
+  residency: boolean;
+  email: boolean;
+  businessNature: boolean;
+  residentialAddr: boolean;
+  cpfEmployer : boolean;
+  residencyOther: boolean;
+  marital: boolean;
+  employmentStatus: boolean;
+  occupation: boolean;
+  companyName: boolean;
+  clientPfr: string;
+}
 export interface DependantInformation {
   id?: number;
   name: string;
@@ -76,6 +99,7 @@ export interface SectionOne {
   type?: number;
   id?: number;
   clientInfo: Clientformation[];
+  clientInfoSingpass: ClientformationSingpass[];
   dependant: DependantInformation[];
   accompaniment: Accompaniment[];
   trustedIndividuals: TrustedIndividual;
