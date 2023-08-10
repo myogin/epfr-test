@@ -106,7 +106,7 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      console.log("SESSION CALLBACK", session, token);
+      // console.log("SESSION CALLBACK", session, token);
 
       return { ...session, user: token };
     },

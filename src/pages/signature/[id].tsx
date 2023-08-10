@@ -111,14 +111,14 @@ const SignaturePage = () => {
                 DETAIL ENVELOPE
               </div>
               <div className="w-full p-4 bg-white">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-1 ">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 ">
                   <div className="font-bold max-w-[250px]">ID</div>
                   <div className="lg:col-span-3 mb-2 lg:mb-0">
                     {data.pfr.id}
                   </div>
                   <div className="font-bold">Envelope Name</div>
                   <div className="lg:col-span-3 mb-2 lg:mb-0">
-                    {getEnvelopeName(data.pfr.pdf_1)}
+                    {getDocumentName(data.pfr.pdf_1)}
                   </div>
                   <div className="font-bold">Author</div>
                   <div className="lg:col-span-3 mb-2 lg:mb-0">
@@ -136,13 +136,11 @@ const SignaturePage = () => {
                   <div className="lg:col-span-3 mb-2 lg:mb-0">
                     {data.signers.map((e: any, i: any) => (
                       <Fragment key={i}>
-                        <p className="mb-2">{e.name}</p>
+                        <p className="mb-1">
+                          {i + 1}. {e.name}
+                        </p>
                       </Fragment>
                     ))}
-                  </div>
-                  <div className="font-bold">Document</div>
-                  <div className="lg:col-span-3 mb-2 lg:mb-0">
-                    {getDocumentName(data.pfr.pdf_1)}
                   </div>
                 </div>
               </div>
