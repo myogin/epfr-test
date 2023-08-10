@@ -267,6 +267,37 @@ const AnalysisRecommendation = (props: Props) => {
 
           }
         })
+
+        data.ILPProduct.map((product:any, index:any) => {
+          if(product['checked'] == '0') {
+            product['checked'] = false;
+          } else {
+            product['checked'] = true
+          }
+        })
+
+        data.CISProduct.map((product:any, index:any) => {
+          if(product['checked'] == '0') {
+            product['checked'] = false;
+          } else {
+            product['checked'] = true
+          }
+        })
+
+        let checker = 0;
+
+        data.CISILPProducts.map((product: any) => {
+          if(product['checked']) {
+            checker++
+          }
+
+          if((product['type'] ==  1) || (product['type'] ==  0 && product['recommedType'] == 1)) {
+            calcPremiumForCISClientChoice(product);
+          }else if(product['type'] ==  0 && product['recommedType'] ==  0) {
+            calcPremiumClientChoice(product, false);
+          }
+        })
+
     });
 
     const annualPayorBudget: Array<any> = [[],[]];
@@ -294,6 +325,7 @@ const AnalysisRecommendation = (props: Props) => {
     getWholeContext(pfrId).then((data: any) => {
         // console.log('wholeContext', data)
     });
+    // calcPremiumMatrix()
 
     console.log('section9Res', section9)
   }, [section9]);
@@ -305,6 +337,205 @@ const AnalysisRecommendation = (props: Props) => {
       case 2 : return "HalfYearly";
       case 3 : return "Annually";
       case 4 : return "SinglePayment";
+    }
+  }
+
+  const calcPremium = (product: any, isRider = false) => {
+    let frequency = product['premiumFrequency']
+    let clientId = product['nameOfOwner']
+    let premiumType = product['premiumPaymentType']
+    let premium = 0
+    let categoryId = product['categoryId']
+    if(categoryId != 8 && categoryId != 5) {
+      if(frequency == 4) {
+        premium = product['premium']
+        dataTotalSinglePremium[clientId][premiumType] += product['premium']
+        setTotalSinglePremium(dataTotalSinglePremium)
+
+        dataProductSinglePremium[clientId][premiumType] += premium
+        setProductSinglePremium(dataProductSinglePremium)
+
+      } else if(frequency == 3) {
+        premium = product['premium']
+        dataTotalAnnualPremium[clientId][premiumType] += product['premium'] * 1
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+
+        dataProductAnnualPremium[clientId][premiumType] += premium
+        setProductAnnualPremium(dataProductAnnualPremium)
+
+      } else if(frequency == 2) {
+        premium = product['premium']*2
+        dataTotalAnnualPremium[clientId][premiumType] += product['premium'] * 2
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+
+        dataProductAnnualPremium[clientId][premiumType] += premium
+        setProductAnnualPremium(dataProductAnnualPremium)
+
+      } else if(frequency == 1) {
+        premium = product['premium']*4
+        dataTotalAnnualPremium[clientId][premiumType] += product['premium'] * 4
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+
+        dataProductAnnualPremium[clientId][premiumType] += premium
+        setProductAnnualPremium(dataProductAnnualPremium)
+
+      } else {
+        premium = product['premium']*12
+        dataTotalAnnualPremium[clientId][premiumType] += product['premium'] * 12
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+
+        dataProductAnnualPremium[clientId][premiumType] += premium
+        setProductAnnualPremium(dataProductAnnualPremium)
+
+      }
+
+      if(isRider == false) {
+        if(dataMaxSinglePremium[clientId][premiumType] < dataProductSinglePremium[clientId][premiumType]) {
+          dataMaxSinglePremium[clientId][premiumType] = dataProductSinglePremium[clientId][premiumType]
+        }
+        if(dataMaxAnnualPremium[clientId][premiumType] < dataProductAnnualPremium[clientId][premiumType]) {
+          dataMaxAnnualPremium[clientId][premiumType] = dataProductAnnualPremium[clientId][premiumType]
+        }
+      }
+
+    } else {
+      let cash = product['premium_for_hospitalization'] !== null ? product['premium_for_hospitalization']['cash'] : 0
+      let medisave = product['premium_for_hospitalization'] !== null ?  product['premium_for_hospitalization']['cpfMedisave'] : 0
+      let premium = cash + medisave
+      if(frequency == 4) {
+
+        dataTotalSinglePremium[clientId][0] += cash
+        setTotalSinglePremium(dataTotalSinglePremium)
+        dataTotalSinglePremium[clientId][3] += medisave
+        setTotalSinglePremium(dataTotalSinglePremium)
+
+        dataProductSinglePremium[clientId][0] += cash
+        setProductSinglePremium(dataProductSinglePremium)
+        dataProductSinglePremium[clientId][3] += medisave
+        setProductSinglePremium(dataProductSinglePremium)
+
+      } else if(frequency == 3) {
+
+        dataTotalAnnualPremium[clientId][0] += cash
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+        dataTotalAnnualPremium[clientId][3] += medisave
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+
+        dataProductAnnualPremium[clientId][0] += cash
+        setProductAnnualPremium(dataProductAnnualPremium)
+        dataProductAnnualPremium[clientId][3] += medisave
+        setProductAnnualPremium(dataProductAnnualPremium)
+
+      } else if(frequency == 2) {
+
+        premium = premium * 2
+        dataTotalAnnualPremium[clientId][0] += cash*2
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+        dataTotalAnnualPremium[clientId][3] += medisave*2
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+
+        dataProductAnnualPremium[clientId][0] += cash*2
+        setProductAnnualPremium(dataProductAnnualPremium)
+        dataProductAnnualPremium[clientId][3] += medisave*2
+        setProductAnnualPremium(dataProductAnnualPremium)
+
+      } else if(frequency == 1) {
+
+        premium = premium * 4
+        dataTotalAnnualPremium[clientId][0] += cash*4
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+        dataTotalAnnualPremium[clientId][3] += medisave*4
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+
+        dataProductAnnualPremium[clientId][0] += cash*4
+        setProductAnnualPremium(dataProductAnnualPremium)
+        dataProductAnnualPremium[clientId][3] += medisave*4
+        setProductAnnualPremium(dataProductAnnualPremium)
+
+      } else {
+
+        premium = premium * 12
+        dataTotalAnnualPremium[clientId][0] += cash*12
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+        dataTotalAnnualPremium[clientId][3] += medisave*12
+        setTotalAnnualPremium(dataTotalAnnualPremium)
+
+        dataProductAnnualPremium[clientId][0] += cash*12
+        setProductAnnualPremium(dataProductAnnualPremium)
+        dataProductAnnualPremium[clientId][3] += medisave*12
+        setProductAnnualPremium(dataProductAnnualPremium)
+
+      }
+
+      if(isRider == false) {
+        if(dataMaxSinglePremium[clientId][0] < dataProductSinglePremium[clientId][0]) {
+          dataMaxSinglePremium[clientId][0] = dataProductSinglePremium[clientId][0]
+          setMaxSinglePremium(dataMaxSinglePremium)
+        }
+        if(dataMaxSinglePremium[clientId][3] < dataProductSinglePremium[clientId][3]) {
+          dataMaxSinglePremium[clientId][3] = dataProductSinglePremium[clientId][3]
+          setMaxSinglePremium(dataMaxSinglePremium)
+        }
+        if(dataMaxAnnualPremium[clientId][0] < dataProductAnnualPremium[clientId][0]) {
+          dataMaxAnnualPremium[clientId][0] = dataProductAnnualPremium[clientId][0]
+          setMaxAnnualPremium(dataMaxAnnualPremium)
+        }
+        if(dataMaxAnnualPremium[clientId][3] < dataProductAnnualPremium[clientId][3]) {
+          dataMaxAnnualPremium[clientId][3] = dataProductAnnualPremium[clientId][3]
+          setMaxAnnualPremium(dataMaxAnnualPremium)
+        }
+      }
+
+    }
+
+
+  }
+
+  const calcPremiumForCIS = (product: any) => {
+    let frequency = product['premiumFrequency']
+    let clientId = product['nameOfOwner']
+    let premiumType = product['premiumPaymentType']
+    let premium = 0
+    if(frequency == 4) {
+      premium = product['premium']
+      dataTotalSinglePremium[clientId][premiumType] += product['premium']
+      setTotalSinglePremium(dataTotalSinglePremium)
+      if(dataMaxSinglePremium[clientId][premiumType] < premium) {
+        dataMaxSinglePremium[clientId][premiumType] = premium
+        setMaxSinglePremium(dataMaxSinglePremium)
+      }
+    } else if(frequency == 3) {
+      premium = product['premium']
+      dataTotalAnnualPremium[clientId][premiumType] += product['premium'] * 1
+      setTotalAnnualPremium(dataTotalAnnualPremium)
+      if(dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium
+        setMaxAnnualPremium(dataMaxAnnualPremium)
+      }
+    } else if(frequency == 2) {
+      premium = product['premium']*2
+      dataTotalAnnualPremium[clientId][premiumType] += product['premium'] * 2
+      setTotalAnnualPremium(dataTotalAnnualPremium)
+      if(dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium
+        setMaxAnnualPremium(dataMaxAnnualPremium)
+      }
+    } else if(frequency == 1) {
+      premium = product['premium']*4
+      dataTotalAnnualPremium[clientId][premiumType] += product['premium'] * 4
+      setTotalAnnualPremium(dataTotalAnnualPremium)
+      if(dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium
+        setMaxAnnualPremium(dataMaxAnnualPremium)
+      }
+    } else {
+      premium = product['premium']*12
+      dataTotalAnnualPremium[clientId][premiumType] += product['premium'] * 12
+      setTotalAnnualPremium(dataTotalAnnualPremium)
+      if(dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium
+        setMaxAnnualPremium(dataMaxAnnualPremium)
+      }
     }
   }
 
@@ -401,10 +632,12 @@ const AnalysisRecommendation = (props: Props) => {
         
           if(dataMaxSinglePremium[clientId][premiumType] < dataProductSinglePremium[clientId][premiumType]) {
             dataMaxSinglePremium[clientId][premiumType] += dataProductSinglePremium[clientId][premiumType]
+            setMaxSinglePremium(dataMaxSinglePremium)
           }
   
           if(dataMaxAnnualPremium[clientId][premiumType] < dataProductAnnualPremium[clientId][premiumType]) {
             dataMaxAnnualPremium[clientId][premiumType] += dataProductAnnualPremium[clientId][premiumType]
+            setMaxAnnualPremium(dataMaxAnnualPremium)
           }
   
         }
@@ -551,15 +784,19 @@ const AnalysisRecommendation = (props: Props) => {
           if(isRider == false) {
             if(dataMaxSinglePremiumChoice[clientId][0] < dataProductSinglePremiumChoice[clientId][0]) {
               dataMaxSinglePremiumChoice[clientId][0] = dataProductSinglePremiumChoice[clientId][0]
+              setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice)
             }
             if(dataMaxSinglePremiumChoice[clientId][3] < dataProductSinglePremiumChoice[clientId][3]) {
               dataMaxSinglePremiumChoice[clientId][3] = dataProductSinglePremiumChoice[clientId][3]
+              setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice)
             }
             if(dataMaxAnnualPremiumChoice[clientId][0] < dataProductAnnualPremiumChoice[clientId][0]) {
               dataMaxAnnualPremiumChoice[clientId][0] = dataProductAnnualPremiumChoice[clientId][0]
+              setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
             }
             if(dataMaxAnnualPremiumChoice[clientId][3] < dataProductAnnualPremiumChoice[clientId][3]) {
               dataMaxAnnualPremiumChoice[clientId][3] = dataProductAnnualPremiumChoice[clientId][3]
+              setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
             }
           }
         }
@@ -570,38 +807,53 @@ const AnalysisRecommendation = (props: Props) => {
           for(let iRider = 0; iRider < product.riders.length; iRider++) {
             if(product.riders[iRider].premiumFrequency == 0){
               dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 12;
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
 
               // New amount
               dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
               dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
 
             }else if(product.riders[iRider].premiumFrequency == 1){
               dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 4;
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
 
               // New amount
               dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
               dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
             
             }else if(product.riders[iRider].premiumFrequency == 2){
               dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 2;
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
 
               // New amount
               dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
               dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
 
             }else if(product.riders[iRider].premiumFrequency == 3){
               dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 1;
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
 
               // New amount
               dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
               dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
             
             }else if(product.riders[iRider].premiumFrequency == 4){
               dataTotalSinglePremiumChoice[clientId][0] += product.riders[iRider].premium;
+              setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice)
 
               // New amount
               dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
+              setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
               dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
+              setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
             }
           }
 
@@ -616,14 +868,19 @@ const AnalysisRecommendation = (props: Props) => {
             for(let iRider = 0; iRider < product.riders.length; iRider++) {
               if(product.riders[iRider].premiumFrequency == 0){
                 dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 12;
+                setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
               }else if(product.riders[iRider].premiumFrequency == 1){
                 dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 4;
+                setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
               }else if(product.riders[iRider].premiumFrequency == 2){
                 dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 2;
+                setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
               }else if(product.riders[iRider].premiumFrequency == 3){
                 dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 1;
+                setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
               }else if(product.riders[iRider].premiumFrequency == 4){
                 dataTotalCISILPSinglePremiumChoice[clientId][0] += product.riders[iRider].premium;
+                setTotalCISILPSinglePremiumChoice(dataTotalCISILPSinglePremiumChoice)
               }
             }
           }
@@ -631,6 +888,226 @@ const AnalysisRecommendation = (props: Props) => {
     }
     }
   }
+
+  const calcPremiumForCISClientChoice = (product: any) => {
+    if(product){
+      if(product['checked']) {
+        let frequency = product['premiumFrequency']
+        let clientId = product['nameOfOwner']
+        let premiumType = product['premiumPaymentType']
+        let premium = 0
+        if(frequency == 4) {
+          premium = product['premium']
+          dataTotalSinglePremiumChoice[clientId][premiumType] += product['premium']
+          setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice)
+          
+          dataTotalCISILPSinglePremiumChoice[clientId][premiumType] += product['premium']
+          setTotalCISILPSinglePremiumChoice(dataTotalCISILPSinglePremiumChoice)
+
+          if(dataMaxSinglePremiumChoice[clientId][premiumType] < premium) {
+            dataMaxSinglePremiumChoice[clientId][premiumType] = premium
+            setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice)
+          }
+        } else if(frequency == 3) {
+          premium = product['premium']
+          dataTotalAnnualPremiumChoice[clientId][premiumType] += product['premium'] * 1
+          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+          dataTotalCISILPAnnualPremiumChoice[clientId][premiumType] += product['premium'] * 1
+          setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+
+          if(dataMaxAnnualPremiumChoice[clientId][premiumType] < premium) {
+            dataMaxAnnualPremiumChoice[clientId][premiumType] = premium
+            setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
+          }
+        } else if(frequency == 2) {
+          premium = product['premium']*2
+          dataTotalAnnualPremiumChoice[clientId][premiumType] += product['premium'] * 2
+          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+          dataTotalCISILPAnnualPremiumChoice[clientId][premiumType] += product['premium'] * 2
+          setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+  
+          if(dataMaxAnnualPremiumChoice[clientId][premiumType] < premium) {
+            dataMaxAnnualPremiumChoice[clientId][premiumType] = premium
+            setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
+          }
+        } else if(frequency == 1) {
+          premium = product['premium']*4
+          dataTotalAnnualPremiumChoice[clientId][premiumType] += product['premium'] * 4
+          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+          dataTotalCISILPAnnualPremiumChoice[clientId][premiumType] += product['premium'] * 4
+          setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+  
+          if(dataMaxAnnualPremiumChoice[clientId][premiumType] < premium) {
+            dataMaxAnnualPremiumChoice[clientId][premiumType] = premium
+            setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
+          }
+        } else {
+          premium = product['premium']*12
+          dataTotalAnnualPremiumChoice[clientId][premiumType] += product['premium'] * 12
+          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+          dataTotalCISILPAnnualPremiumChoice[clientId][premiumType] += product['premium'] * 12
+          setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+  
+          if(dataMaxAnnualPremiumChoice[clientId][premiumType] < premium) {
+            dataMaxAnnualPremiumChoice[clientId][premiumType] = premium
+            setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
+          }
+        }
+  
+         // Rider
+        if(product.riders.length > 0){
+          for(let iRider = 0; iRider < product.riders.length; iRider++) {
+            if(product.riders[iRider].premiumFrequency == 0){
+              // New amount
+              dataTotalCISILPAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
+              setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+  
+            }else if(product.riders[iRider].premiumFrequency == 1){
+              // New amount
+              dataTotalCISILPAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
+              setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+            
+            }else if(product.riders[iRider].premiumFrequency == 2){
+              // New amount
+              dataTotalCISILPAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
+              setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+  
+            }else if(product.riders[iRider].premiumFrequency == 3){
+              // New amount
+              dataTotalCISILPAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
+              setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+            
+            }else if(product.riders[iRider].premiumFrequency == 4){
+              // New amount
+              dataTotalCISILPSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
+              setTotalCISILPSinglePremiumChoice(dataTotalCISILPSinglePremiumChoice)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  const [dataSumAnnualPremium, setSumAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+  const [dataSumSinglePremium, setSumSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+  
+  // const calcPremiumMatrix = () => {
+
+  //   this.groups.forEach(group => {
+  //     let groupId = group['id']
+  //     this.getTotalPremium(groupId)
+
+  //     for(let i = 0 ; i < this.type ; i ++ ) {
+  //       // let maxValueOfAnnual = this.getMaxValue(this.maxAnnualPremium[i])
+  //       // let maxValueOfSingle = this.getMaxValue(this.maxSinglePremium[i])
+  //       // for(let j = 0 ; j < 5; j ++ ) {
+  //       //   if(this.maxAnnualPremium[i][j] == maxValueOfAnnual) {
+  //       //     this.sumAnnualPremium[i][j] += maxValueOfAnnual
+  //       //   }
+  //       //   if(this.maxSinglePremium[i][j] == maxValueOfSingle) {
+  //       //     this.sumSinglePremium[i][j] += maxValueOfSingle
+  //       //   }
+  //       // }
+  //       for(let j = 0 ; j < 5; j ++ ) {
+  //         this.sumAnnualPremium[i][j] += this.maxAnnualPremium[i][j]
+  //         this.sumSinglePremium[i][j] += this.maxSinglePremium[i][j]
+
+  //         this.sumAnnualPremiumChoice[i][j] += this.maxAnnualPremiumChoice[i][j]
+  //         this.sumSinglePremiumChoice[i][j] += this.maxSinglePremiumChoice[i][j]
+  //       }
+  //     }
+  //   })
+  // }
+
+  // getTotalPremium(groupId) {
+  //   this.maxAnnualPremium = [
+  //     [0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0],
+  //   ]
+  //   this.maxSinglePremium = [
+  //     [0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0],
+  //   ]
+  //   let products        = this.getProductsByFilteringGroupId(groupId, this.recommendProduct)
+  //   let ILPProducts     = this.getProductsByFilteringGroupId(groupId, this.ILPProduct)
+  //   let CISProducts     = this.getProductsByFilteringGroupId(groupId, this.CISProduct)
+  //   let customProducts  = this.getProductsByFilteringGroupId(groupId, this.customProduct)
+
+  //   products.forEach(product => {
+  //     this.productAnnualPremium = [
+  //       [0, 0, 0, 0, 0],
+  //       [0, 0, 0, 0, 0],
+  //     ]
+  //     this.productSinglePremium = [
+  //       [0, 0, 0, 0, 0],
+  //       [0, 0, 0, 0, 0],
+  //     ]
+
+  //     product['riders'].forEach(rider => {
+  //       rider['categoryId'] = -1
+  //       this.calcPremium(rider, true)
+  //     })
+  //     this.calcPremium(product)
+  //   })
+
+  //   ILPProducts.forEach(product => {
+  //     this.productAnnualPremium = [
+  //       [0, 0, 0, 0, 0],
+  //       [0, 0, 0, 0, 0],
+  //     ]
+  //     this.productSinglePremium = [
+  //       [0, 0, 0, 0, 0],
+  //       [0, 0, 0, 0, 0],
+  //     ]
+  //     product['riders'].forEach(rider => {
+  //       rider['categoryId'] = -1
+  //       this.calcPremium(rider, true)
+  //     })
+  //     this.calcPremium(product)
+  //   })
+
+  //   customProducts.forEach(product => {
+  //     this.productAnnualPremium = [
+  //       [0, 0, 0, 0, 0],
+  //       [0, 0, 0, 0, 0],
+  //     ]
+  //     this.productSinglePremium = [
+  //       [0, 0, 0, 0, 0],
+  //       [0, 0, 0, 0, 0],
+  //     ]
+  //     product['riders'].forEach(rider => {
+  //       rider['categoryId'] = -1
+  //       this.calcPremium(rider, true)
+  //     })
+  //     this.calcPremium(product)
+  //   })
+
+  //   CISProducts.forEach(product => {
+  //     this.calcPremiumForCIS(product)
+  //   })
+  // }
+
+  // getProductsByFilteringGroupId(groupId, products:any[]) {
+  //   let result = products.filter(product => {
+  //     if(product['groupId'] == groupId) {
+  //       return true
+  //     } else {
+  //       return false
+  //     }
+  //   })
+  //   return result
+  // }
+
+  // getMaxValue(data : Array<number>) {
+  //   let max : number = 0
+  //   for(let i = 0 ; i < data.length ; i ++ ) {
+  //     if(data[i] > max) {
+  //       max = data[i]
+  //     }
+  //   }
+  //   return max
+  // }
+
   return (
     <div id={props.id}>
       <div id="section-header-9" className={`sticky top-0 z-10 ${scrollPosition === "okSec9" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
