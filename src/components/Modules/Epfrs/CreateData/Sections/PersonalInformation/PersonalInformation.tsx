@@ -121,6 +121,9 @@ const PersonalInformation = (props: Props) => {
 
       console.log(getSection1);
 
+      setGlobal("editableStatus", getSection1.pfr.editableSection1);
+      setGlobal("status", getSection1.pfr.section1);
+
       // Fetch Client
       if (getSection1.clients.length > 0) {
         getSection1.clients.map((data: any, index: number) => {

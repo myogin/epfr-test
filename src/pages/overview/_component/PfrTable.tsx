@@ -9,6 +9,9 @@ import More2LineIcon from "remixicon-react/More2LineIcon";
 import { pfrProgress } from "./overviewUtils";
 import { useLoginData } from "@/store/login/logindata";
 import LoadingList from "@/components/Attributes/Loader/LoadingList";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { useRouter } from "next/router";
 
 interface Props {}
@@ -64,6 +67,20 @@ const PfrTable = (props: Props) => {
 };
 
 function RowData({ item }: any) {
+  const router = useRouter();
+
+  let { resetSectionOne } = usePersonalInformation();
+  let { resetSectionTwo } = useExistingPortofolio();
+  let { resetSectionThree } = useCashFlow();
+
+  const goToCreatePfr = (params: string) => {
+    resetSectionOne();
+    resetSectionTwo();
+    resetSectionThree();
+
+    router.push(`create/${params}`);
+  };
+
   return (
     <div className="flex flex-row justify-between py-6 mx-8 text-sm border-b hover:px-8 hover:mx-0 hover:border-green-deep hover:bg-green-soft text-gray-light border-gray-soft-light">
       <div className="basis-1/12">{item.type}</div>
@@ -125,16 +142,23 @@ function RowData({ item }: any) {
             <Menu.Items className="absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1">
                 <Menu.Item>
-                  <Link
-                    href={`/create/${item.type.toLowerCase()}?id=${
-                      item.pfr.id
-                    }`}
-                    className={
-                      " text-gray-light block px-4 py-2 text-sm cursor-pointer"
-                    }
-                  >
-                    Edit
-                  </Link>
+                  {({ active }) => (
+                    <button
+                      onClick={() =>
+                        goToCreatePfr(
+                          `${item.type.toLowerCase()}?id=${item.pfr.id}`
+                        )
+                      }
+                      className={classNames(
+                        active
+                          ? "bg-gray-soft-light text-gray-light"
+                          : "text-gray-light",
+                        "block w-full px-4 py-2 text-sm cursor-pointer text-left"
+                      )}
+                    >
+                      Edit
+                    </button>
+                  )}
                 </Menu.Item>
                 <Menu.Item>
                   <a
