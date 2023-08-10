@@ -49,7 +49,7 @@ const CashFlow = (props: Props) => {
 
   // Action join section 4
   // Action join with section 2
-  let setGlobalSectionFour = useBalanceSheet((state) => state.setGlobal);
+  let setGlobalSectionFour = useBalanceSheet((state) => state.updateID);
   let idSectionFour = useBalanceSheet((state) => state.id);
 
   const [saveLoading, setSaveLoading] = useState(false);
@@ -100,9 +100,9 @@ const CashFlow = (props: Props) => {
           idSectionFour === null ||
           idSectionFour === undefined
         ) {
-          setGlobalSectionFour("id", storeDataSection.data.pfrId);
+          setGlobalSectionFour(storeDataSection.data.pfrId);
         } else {
-          setGlobalSectionFour("id", id);
+          setGlobalSectionFour(id);
         }
 
         setGlobal("editableStatus", 1);

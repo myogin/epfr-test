@@ -4,24 +4,31 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
+  // fetchProperty: (params: any) => any;
   setProperty: (indexData: number, params: any) => any;
   patchProperty: (params: any) => any;
   removeProperty: (params: any) => any;
+  // fetchInvestment: (params: any) => any;
   setInvestment: (indexData: number, params: any) => any;
   patchInvestment: (params: any) => any;
   removeInvestment: (params: any) => any;
+  // fetchSaving: (params: any) => any;
   setSaving: (indexData: number, params: any) => any;
   patchSaving: (params: any) => any;
   removeSaving: (params: any) => any;
+  // fetchCpf: (params: any) => any;
   setCpf: (indexData: number, params: any) => any;
   patchCpf: (params: any) => any;
   removeCpf: (params: any) => any;
+  // fetchInsurance: (params: any) => any;
   setInsurance: (indexData: number, params: any) => any;
   patchInsurance: (params: any) => any;
   removeInsurance: (params: any) => any;
+  // fetchInsurance2: (params: any) => any;
   setInsurance2: (indexData: number, params: any) => any;
   patchInsurance2: (params: any) => any;
   removeInsurance2: (params: any) => any;
+  // fetchsrs: (params: any) => any;
   setSrs: (indexData: number, params: any) => any;
   patchSrs: (params: any) => any;
   removeSrs: (params: any) => any;
@@ -950,18 +957,18 @@ const existingPortofolio = create(
                   }
 
                   // check when edit data
-                  if (
-                    draft.summaryOfLoans[0].editting === true &&
-                    draft.summaryOfLoans[0].client !== ""
-                  ) {
-                    draft.status = 1;
-                  } else {
-                    draft.status = 0;
-                  }
+                  // if (
+                  //   draft.summaryOfLoans[0].editting === true &&
+                  //   draft.summaryOfLoans[0].client !== ""
+                  // ) {
+                  //   draft.status = 1;
+                  // } else {
+                  //   draft.status = 0;
+                  // }
 
-                  if (get().editableStatus === 1 && get().status === 1) {
-                    draft.editableStatus = 2;
-                  }
+                  // if (get().editableStatus === 1 && get().status === 1) {
+                  //   draft.editableStatus = 2;
+                  // }
                 });
               }
             })

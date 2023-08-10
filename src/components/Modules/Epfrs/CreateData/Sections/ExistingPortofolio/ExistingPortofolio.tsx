@@ -19,7 +19,7 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
-import { postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useRouter } from "next/router";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
@@ -113,6 +113,88 @@ const ExistingPortofolio = (props: Props) => {
       setSaveLoading(false); // Stop loading
     } catch (error) {
       setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection2 = await getPfrStep(2, params);
+
+      console.log(getSection2);
+
+      setGlobal("editableStatus", getSection2.pfr.editableSection1);
+      setGlobal("status", getSection2.pfr.section1);
+
+      // Fetch Client
+      if (getSection2.summaryOfProperty.length > 0) {
+        getSection2.summaryOfProperty.map((data: any, index: number) => {
+          // fetchClient(index, data);
+        });
+      }
+
+      // Fetch accompaintment
+      if (getSection2.summaryOfInvestment.length > 0) {
+        getSection2.summaryOfInvestment.map((data: any, index: number) => {
+          // fetchAccompainment(index, data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfSaving.length > 0) {
+        getSection2.summaryOfSaving.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfCPF.length > 0) {
+        getSection2.summaryOfCPF.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfSaving.length > 0) {
+        getSection2.summaryOfSaving.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfInsurance.length > 0) {
+        getSection2.summaryOfInsurance.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfInsurance2.length > 0) {
+        getSection2.summaryOfInsurance2.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfLoans.length > 0) {
+        getSection2.summaryOfLoans.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfSRS.length > 0) {
+        getSection2.summaryOfSRS.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
       console.error(error);
     }
   };
