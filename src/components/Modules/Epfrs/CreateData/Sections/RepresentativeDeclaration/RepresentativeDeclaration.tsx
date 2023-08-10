@@ -12,6 +12,7 @@ import Checkbox from "@/components/Forms/Checkbox";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getPfrStep, postPfr, postPfrSections } from "@/services/pfrService";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
@@ -42,6 +43,7 @@ const RepresentativeDeclaration = (props: Props) => {
   })
 
   const scrollPosition = useScrollPosition(11);
+  const scrollPositionBottomSection11 = useScrollPositionBottom(11);
 
   const saveData = async() => {
       // const groupFourData = {
@@ -122,7 +124,7 @@ const RepresentativeDeclaration = (props: Props) => {
 
 
   useEffect(() => {
-    if (scrollPosition === "NotOkSec11" && sectionTwelveData.id === 0) {
+    if (scrollPositionBottomSection11 === "Process11" && sectionTwelveData.id === 0) {
       const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
       setPfrId(section1?.state?.id);
       setSectionTwelveData({
@@ -131,7 +133,7 @@ const RepresentativeDeclaration = (props: Props) => {
       })
       fetchData();
     }
-  }, [scrollPosition]);
+  }, [scrollPositionBottomSection11]);
 
   const [showModal, setShowModal] = useState(false);
 
