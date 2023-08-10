@@ -48,7 +48,7 @@ const PropertyPortofolio = (props: Props) => {
     monthlyLoanRepaymentCash: 0,
     monthlyLoanRepaymentCPF: 0,
     currentMarketValue: 0,
-    clientPfr: "",
+    clientPfr: "Manual",
   };
 
   // inject initial state to useState

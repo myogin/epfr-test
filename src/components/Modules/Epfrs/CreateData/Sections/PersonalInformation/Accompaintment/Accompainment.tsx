@@ -58,7 +58,8 @@ const Accompainment = (props: Props) => {
               needValidation={true}
               logic={
                 accompaniment[0].english_spoken === "" ||
-                accompaniment[0].english_spoken === "-"
+                accompaniment[0].english_spoken === "-" ||
+                String(accompaniment[0].english_spoken) === "-1"
                   ? false
                   : true
               }
@@ -76,7 +77,8 @@ const Accompainment = (props: Props) => {
               needValidation={true}
               logic={
                 accompaniment[0].education_level === "" ||
-                accompaniment[0].education_level === "-"
+                accompaniment[0].education_level === "-" ||
+                String(accompaniment[0].education_level) === "-1"
                   ? false
                   : true
               }
@@ -92,7 +94,8 @@ const Accompainment = (props: Props) => {
               needValidation={true}
               logic={
                 accompaniment[0].english_written === "" ||
-                accompaniment[0].english_written === "-"
+                accompaniment[0].english_written === "-" ||
+                String(accompaniment[0].english_written) === "-1"
                   ? false
                   : true
               }
@@ -134,7 +137,8 @@ const Accompainment = (props: Props) => {
               needValidation={true}
               logic={
                 accompaniment[index].english_spoken === "" ||
-                accompaniment[index].english_spoken === "-"
+                accompaniment[index].english_spoken === "-" ||
+                String(accompaniment[index].english_spoken) === "-1"
                   ? false
                   : true
               }
@@ -152,7 +156,8 @@ const Accompainment = (props: Props) => {
               needValidation={true}
               logic={
                 accompaniment[index].education_level === "" ||
-                accompaniment[index].education_level === "-"
+                accompaniment[index].education_level === "-" ||
+                String(accompaniment[index].education_level) === "-1"
                   ? false
                   : true
               }
@@ -170,7 +175,8 @@ const Accompainment = (props: Props) => {
               needValidation={true}
               logic={
                 accompaniment[0].english_written === "" ||
-                accompaniment[0].english_written === "-"
+                accompaniment[0].english_written === "-" ||
+                String(accompaniment[0].english_written) === "-1"
                   ? false
                   : true
               }
