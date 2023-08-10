@@ -1,8 +1,9 @@
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
+import SelectNationality from "@/components/Forms/SelectNationality";
 import { getLength } from "@/libs/helper";
-import { Clientformation } from "@/models/SectionOne";
+import { getAllCountry } from "@/services/countryService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React, { Fragment, useEffect, useState } from "react";
 
@@ -12,23 +13,26 @@ interface Props {
 const Client = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
-  let { id, clientInfo, reviewDate, setClient, setAccompaniment, setGlobal } =
-    usePersonalInformation();
+  let { id, clientInfo, reviewDate, setClient, setAccompaniment, setTrustedIndividuals, setGlobal } = usePersonalInformation();
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
-    const { groupdata, indexdata } = event.target.dataset;
+    const { groupdata, indexclient } = event.target.dataset;
 
     switch (groupdata) {
       case "clientInfo":
-        setClient(indexdata, name, value);
+        setClient(indexclient, name, value);
 
         if (name === "dateOfBirth") {
-          countAgeClient(indexdata, value);
+          countAgeClient(indexclient, value);
         }
 
         if (name === "clientTitle") {
-          updateGender(indexdata, value);
+          updateGender(indexclient, value);
+        }
+
+        if (name === "nationality") {
+          updateResidentialStatus(indexclient, value);
         }
         break;
       case "generalInfo":
@@ -66,6 +70,7 @@ const Client = (props: Props) => {
       }
 
       setAccompaniment(index, "age", groupAge);
+      setTrustedIndividuals('ageLevel', groupAge);
     }
   };
 
@@ -74,6 +79,14 @@ const Client = (props: Props) => {
       setClient(index, "gender", 1);
     } else if (value == 2) {
       setClient(index, "gender", 0);
+    }
+  };
+
+  const updateResidentialStatus = (index: number, value: string) => {
+    if (value === "Singaporean") {
+      setClient(index, "residencyTwo", 0);
+    } else {
+      setClient(index, "residencyTwo", "-");
     }
   };
 
@@ -123,16 +136,13 @@ const Client = (props: Props) => {
     { id: 5, name: "Others" },
   ];
 
-  let employmentSector: Array<any> = [
-    { id: 1, name: "Education" },
-    { id: 2, name: "Banking" },
-    { id: 3, name: "Financial" },
-  ];
-
-  let companyMaster: Array<any> = [
-    { id: 1, name: "Abc Company" },
-    { id: 2, name: "Cde Company" },
-    { id: 3, name: "Fgh Company" },
+  let passTypes: Array<any> = [
+    { id: 1, name: "Employment Pass" },
+    { id: 2, name: "S-Pass" },
+    { id: 3, name: "Work Permit" },
+    { id: 4, name: "Dependant's Pass" },
+    { id: 5, name: "Student Pass" },
+    { id: 6, name: "Others" },
   ];
 
   let annualIncome: Array<any> = [
@@ -151,6 +161,32 @@ const Client = (props: Props) => {
     { id: 3, name: "Others" },
   ];
 
+  let [countries, setCounties] = useState<Array<any>>([]);
+
+  const getCountryOfBirth = async () => {
+    let arrCountry: any[] = [];
+
+    try {
+      let countries = await getAllCountry();
+
+      let countriesData: any[] = countries.birthCountry;
+
+      if (countriesData.length > 0) {
+        countriesData.map((data, index) => {
+          arrCountry.push({ id: data.id, name: data.title });
+        });
+      }
+
+      setCounties(arrCountry);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getCountryOfBirth();
+  }, []);
+
   return (
     <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
       {props.pfrType === 1 ? (
@@ -161,7 +197,7 @@ const Client = (props: Props) => {
               className="mb-10"
               label="Title"
               name="clientTitle"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].clientTitle}
               datas={clientTitles}
               handleChange={handleInputChange}
@@ -174,40 +210,72 @@ const Client = (props: Props) => {
               }
             />
             <Input
+              readonly={
+                clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].passportNo === ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="NRIC / FIN"
               type="text"
               name="passportNo"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].passportNo}
               placeholder="12981289129"
               handleChange={handleInputChange}
             />
             {/* Selected Form */}
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Sex"
-              name="gender"
-              indexData={0}
-              value={clientInfo[0].gender}
-              datas={clientSex}
-              handleChange={handleInputChange}
-              needValidation={true}
-              logic={
-                clientInfo[0].gender === "" || clientInfo[0].gender === "-"
-                  ? false
-                  : true
-              }
-            />
+            {clientInfo[0].clientPfr === "Singpass" &&
+            Number(clientInfo[0].gender) >= 0 ? (
+              <Input
+                readonly={true}
+                dataType="clientInfo"
+                className="mb-10"
+                label="Sex"
+                type="text"
+                name="gender"
+                indexClient={0}
+                value={
+                  clientInfo[0] && Number(clientInfo[0].gender) >= 0
+                    ? clientSex[Number(clientInfo[0].gender)].name
+                    : ""
+                }
+                placeholder="Male"
+              />
+            ) : (
+              <Select
+                dataType="clientInfo"
+                className="mb-10"
+                label="Sex"
+                name="gender"
+                indexClient={0}
+                value={clientInfo[0].gender}
+                datas={clientSex}
+                handleChange={handleInputChange}
+                needValidation={true}
+                logic={
+                  clientInfo[0].gender === "" || clientInfo[0].gender === "-"
+                    ? false
+                    : true
+                }
+              />
+            )}
+
             <Input
+              readonly={
+                clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].dateOfBirth !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Date of Birth"
               type="date"
               name="dateOfBirth"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].dateOfBirth}
               placeholder="01 January 1998"
               handleChange={handleInputChange}
@@ -220,46 +288,43 @@ const Client = (props: Props) => {
               }
             />
             {/* Selected Form */}
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Nationality"
-              name="nationality"
-              indexData={0}
-              value={clientInfo[0].nationality}
-              datas={country}
-              handleChange={handleInputChange}
-              needValidation={true}
-              logic={
-                clientInfo[0].nationality === "" ||
-                clientInfo[0].nationality === "-"
-                  ? false
-                  : true
-              }
-            />
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Pass Type"
-              name="residency"
-              indexData={0}
-              value={clientInfo[0].residency}
-              datas={recidence}
-              handleChange={handleInputChange}
-              needValidation={true}
-              logic={
-                clientInfo[0].residency === "" ||
-                clientInfo[0].residency === "-"
-                  ? false
-                  : true
-              }
-            />
+            {clientInfo[0].clientPfr === "Singpass" &&
+            clientInfo[0].nationality !== "" ? (
+              <Input
+                readonly={true}
+                dataType="clientInfo"
+                className="mb-10"
+                label="Nationality"
+                type="text"
+                name="nationality"
+                indexClient={0}
+                value={clientInfo[0].nationality}
+                placeholder="Nationality"
+              />
+            ) : (
+              <SelectNationality
+                dataType="clientInfo"
+                className="mb-10"
+                label="Nationality"
+                name="nationality"
+                indexClient={0}
+                value={clientInfo[0].nationality}
+                handleChange={handleInputChange}
+                needValidation={true}
+                logic={
+                  clientInfo[0].nationality === "" ||
+                  clientInfo[0].nationality === "-"
+                    ? false
+                    : true
+                }
+              />
+            )}
             {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
               name="employmentStatus"
-              indexData={0}
+              indexClient={0}
               label="Employment Status"
               value={clientInfo[0].employmentStatus}
               datas={employment}
@@ -272,24 +337,32 @@ const Client = (props: Props) => {
                   : true
               }
             />
-            {/* Selected Form */}
-            <Select
+
+            <Input
+              readonly={
+                clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].businessNature !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
-              label="Employment Sector"
+              label="Business Nature"
+              type="text"
               name="businessNature"
-              indexData={0}
-              value={clientInfo[0].businessNature}
-              datas={employmentSector}
+              indexClient={0}
+              value={clientInfo[0] ? clientInfo[0].businessNature : ""}
+              placeholder="Financial"
               handleChange={handleInputChange}
             />
+
             {/* Selected Form */}
             <Select
               dataType="clientInfo"
               className="mb-10"
               label="Annual Income"
               name="annualIncome"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].annualIncome}
               datas={annualIncome}
               handleChange={handleInputChange}
@@ -308,7 +381,7 @@ const Client = (props: Props) => {
               label="Mobile Number"
               type="text"
               name="contactMobile"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].contactMobile}
               placeholder="2121921298"
               handleChange={handleInputChange}
@@ -326,7 +399,7 @@ const Client = (props: Props) => {
               label="Mailing Address"
               type="text"
               name="mailingAddr"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].mailingAddr}
               placeholder="Set as same like registered address"
               handleChange={handleInputChange}
@@ -337,7 +410,7 @@ const Client = (props: Props) => {
               label="Review Date"
               type="date"
               name="reviewDate"
-              indexData={0}
+              indexClient={0}
               value={reviewDate}
               placeholder="01 January 1998"
               handleChange={handleInputChange}
@@ -347,12 +420,18 @@ const Client = (props: Props) => {
           </div>
           <div>
             <Input
+              readonly={
+                clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].clientName !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Full Name"
               type="text"
               name="clientName"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].clientName}
               placeholder="Margo Madison"
               handleChange={handleInputChange}
@@ -370,7 +449,7 @@ const Client = (props: Props) => {
               label="Email Address"
               type="text"
               name="email"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].email}
               placeholder="margomadison@gmail.com"
               handleChange={handleInputChange}
@@ -382,12 +461,18 @@ const Client = (props: Props) => {
               }
             />
             <Input
+              readonly={
+                clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].race !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Race"
               name="race"
               type="text"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0] ? clientInfo[0].race : ""}
               placeholder="Chinesse"
               handleChange={handleInputChange}
@@ -400,39 +485,156 @@ const Client = (props: Props) => {
                   : true
               }
             />
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Country of Birth"
-              name="birthCountryId"
-              indexData={0}
-              value={clientInfo[0] ? clientInfo[0].birthCountryId : ""}
-              datas={country}
-              handleChange={handleInputChange}
-            />
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Residency Status"
-              name="residencyTwo"
-              indexData={0}
-              value={clientInfo[0].residencyTwo}
-              datas={recidence}
-              handleChange={handleInputChange}
-              needValidation={true}
-              logic={
-                clientInfo[0].residencyTwo === "" ||
-                clientInfo[0].residencyTwo === "-"
-                  ? false
-                  : true
-              }
-            />
+
+            {clientInfo[0].clientPfr === "Singpass" &&
+            Number(clientInfo[0].birthCountryId) >= 0 ? (
+              <Input
+                readonly={true}
+                dataType="clientInfo"
+                className="mb-10"
+                label="Country of Birth"
+                type="text"
+                name="birthCountryId"
+                indexClient={0}
+                value={
+                  clientInfo[0] && Number(clientInfo[0].birthCountryId) >= 0
+                    ? clientInfo[0].birthCountryId
+                    : ""
+                }
+                placeholder="Male"
+              />
+            ) : (
+              <Select
+                dataType="clientInfo"
+                className="mb-10"
+                label="Country of Birth"
+                name="birthCountryId"
+                indexClient={0}
+                value={clientInfo[0] ? clientInfo[0].birthCountryId : ""}
+                datas={countries}
+                handleChange={handleInputChange}
+              />
+            )}
+
+            {clientInfo[0].clientPfr === "Singpass" &&
+            clientInfo[0].residencyTwo !== "" ? (
+              <Input
+                readonly={true}
+                dataType="clientInfo"
+                className="mb-10"
+                label="Residential Status"
+                type="text"
+                name="residencyTwo"
+                indexClient={0}
+                value={clientInfo[0].residencyTwo}
+                placeholder="recidency status"
+              />
+            ) : (
+              <>
+                {clientInfo[0].nationality === "Singaporean" ? (
+                  <Input
+                    readonly={true}
+                    dataType="clientInfo"
+                    className="mb-10"
+                    label="Residential Status"
+                    type="text"
+                    name="residencyTwo"
+                    indexClient={0}
+                    value={Number(clientInfo[0].residencyTwo) === 0 ? "Singapore Citizen" : ""}
+                    placeholder="recidency status"
+                  />
+                ) : (
+                  <Select
+                    dataType="clientInfo"
+                    className="mb-10"
+                    label="Residential Status"
+                    name="residencyTwo"
+                    indexClient={0}
+                    value={clientInfo[0] ? clientInfo[0].residencyTwo : ""}
+                    datas={recidence}
+                    handleChange={handleInputChange}
+                    needValidation={true}
+                    logic={
+                      clientInfo[0]
+                        ? clientInfo[0].residencyTwo === "" ||
+                          clientInfo[0].residencyTwo === "-"
+                          ? false
+                          : true
+                        : true
+                    }
+                  />
+                )}
+              </>
+            )}
+            {Number(clientInfo[0].residencyTwo) === 2 ? (
+              <>
+                {clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].residency !== "" ? (
+                  <Input
+                    readonly={true}
+                    dataType="clientInfo"
+                    className="mb-10"
+                    label="Pass Type"
+                    type="text"
+                    name="residency"
+                    indexClient={0}
+                    value={clientInfo[0].residency}
+                    placeholder="pass type"
+                  />
+                ) : (
+                  <>
+                    <Select
+                      dataType="clientInfo"
+                      className="mb-10"
+                      label="Pass Type"
+                      name="residency"
+                      indexClient={0}
+                      value={clientInfo[0].residency}
+                      datas={passTypes}
+                      handleChange={handleInputChange}
+                      needValidation={true}
+                      logic={
+                        clientInfo[0].residency === "" ||
+                        clientInfo[0].residency === "-"
+                          ? false
+                          : true
+                      }
+                    />
+                    {Number(clientInfo[0].residency) === 6 ? (
+                      <Input
+                        dataType="clientInfo"
+                        className="mb-10"
+                        label="Other Pass Type"
+                        type="text"
+                        name="residencyOther"
+                        indexClient={0}
+                        value={clientInfo[0].residencyOther}
+                        placeholder="pass type"
+                        needValidation={true}
+                        handleChange={handleInputChange}
+                        logic={
+                          clientInfo[0].residencyOther === "" ||
+                          clientInfo[0].residencyOther === "-"
+                            ? false
+                            : true
+                        }
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+
             <Select
               dataType="clientInfo"
               className="mb-10"
               label="Marital Status"
               name="marital"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].marital}
               datas={marital}
               handleChange={handleInputChange}
@@ -444,23 +646,35 @@ const Client = (props: Props) => {
               }
             />
             <Input
+              readonly={
+                clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].occupation !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Occupation"
               type="text"
               name="occupation"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].occupation}
               placeholder="Manager"
               handleChange={handleInputChange}
             />
             <Input
+              readonly={
+                clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].companyName !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Company Name"
               type="text"
               name="companyName"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].companyName}
               placeholder="your company here"
               handleChange={handleInputChange}
@@ -471,18 +685,24 @@ const Client = (props: Props) => {
               label="Contact Detail [Home]"
               type="text"
               name="contactHome"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].contactHome}
               placeholder="981271291"
               handleChange={handleInputChange}
             />
             <Input
+              readonly={
+                clientInfo[0].clientPfr === "Singpass" &&
+                clientInfo[0].residentialAddr !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
-              label="Registered Address"
+              label="Residential Address"
               type="text"
               name="residentialAddr"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].residentialAddr}
               placeholder="Singapore"
               handleChange={handleInputChange}
@@ -500,7 +720,7 @@ const Client = (props: Props) => {
               className="mb-10"
               label="Smoker"
               name="smoker"
-              indexData={0}
+              indexClient={0}
               value={clientInfo[0].smoker}
               datas={clientSmoker}
               handleChange={handleInputChange}
@@ -516,13 +736,13 @@ const Client = (props: Props) => {
       ) : (
         getPfrLength?.length &&
         getPfrLength.map((data, index) => (
-          <div key={"asasa"+index}>
+          <div key={"asasa" + index}>
             <Select
               dataType="clientInfo"
               className="mb-10"
               label="Title"
               name="clientTitle"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].clientTitle : ""}
               datas={clientTitles}
               handleChange={handleInputChange}
@@ -537,12 +757,18 @@ const Client = (props: Props) => {
               }
             />
             <Input
+              readonly={
+                clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].clientName !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Full Name"
               type="text"
               name="clientName"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].clientName : ""}
               placeholder="Margo Madison"
               handleChange={handleInputChange}
@@ -558,12 +784,18 @@ const Client = (props: Props) => {
             />
 
             <Input
+              readonly={
+                clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].passportNo === ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="NRIC / FIN"
               type="text"
               name="passportNo"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].passportNo : ""}
               placeholder="12981289129"
               handleChange={handleInputChange}
@@ -574,7 +806,7 @@ const Client = (props: Props) => {
               label="Email Address"
               type="text"
               name="email"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].email : ""}
               placeholder="margomadison@gmail.com"
               handleChange={handleInputChange}
@@ -588,32 +820,58 @@ const Client = (props: Props) => {
                   : true
               }
             />
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Sex"
-              name="gender"
-              indexData={index}
-              value={clientInfo[index] ? clientInfo[index].gender : ""}
-              datas={clientSex}
-              handleChange={handleInputChange}
-              needValidation={true}
-              logic={
-                clientInfo[index]
-                  ? clientInfo[index].gender === "" ||
-                    clientInfo[index].gender === "-"
-                    ? false
+            {clientInfo[index].clientPfr === "Singpass" &&
+            Number(clientInfo[index].gender) >= 0 ? (
+              <Input
+                readonly={true}
+                dataType="clientInfo"
+                className="mb-10"
+                label="Sex"
+                type="text"
+                name="gender"
+                indexClient={index}
+                value={
+                  clientInfo[index] && Number(clientInfo[index].gender) >= 0
+                    ? clientSex[Number(clientInfo[index].gender)].name
+                    : ""
+                }
+                placeholder="Male"
+              />
+            ) : (
+              <Select
+                dataType="clientInfo"
+                className="mb-10"
+                label="Sex"
+                name="gender"
+                indexClient={index}
+                value={clientInfo[index] ? clientInfo[index].gender : ""}
+                datas={clientSex}
+                handleChange={handleInputChange}
+                needValidation={true}
+                logic={
+                  clientInfo[index]
+                    ? clientInfo[index].gender === "" ||
+                      clientInfo[index].gender === "-"
+                      ? false
+                      : true
                     : true
-                  : true
-              }
-            />
+                }
+              />
+            )}
+
             <Input
+              readonly={
+                clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].race !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Race"
               name="race"
               type="text"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].race : ""}
               placeholder="Chinesse"
               handleChange={handleInputChange}
@@ -628,12 +886,18 @@ const Client = (props: Props) => {
               }
             />
             <Input
+              readonly={
+                clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].dateOfBirth !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Date of Birth"
               type="date"
               name="dateOfBirth"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].dateOfBirth : ""}
               placeholder="01 January 1998"
               handleChange={handleInputChange}
@@ -647,77 +911,178 @@ const Client = (props: Props) => {
                   : true
               }
             />
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Country of Birth"
-              name="birthCountryId"
-              indexData={index}
-              value={clientInfo[index] ? clientInfo[index].birthCountryId : ""}
-              datas={country}
-              handleChange={handleInputChange}
-            />
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Nationality"
-              name="nationality"
-              indexData={index}
-              value={clientInfo[index] ? clientInfo[index].nationality : ""}
-              datas={country}
-              handleChange={handleInputChange}
-              needValidation={true}
-              logic={
-                clientInfo[index]
-                  ? clientInfo[index].nationality === "" ||
-                    clientInfo[index].nationality === "-"
+
+            {clientInfo[index].clientPfr === "Singpass" &&
+            Number(clientInfo[index].birthCountryId) >= 0 ? (
+              <Input
+                readonly={true}
+                dataType="clientInfo"
+                className="mb-10"
+                label="Country of Birth"
+                type="text"
+                name="birthCountryId"
+                indexClient={index}
+                value={
+                  clientInfo[index] &&
+                  Number(clientInfo[index].birthCountryId) >= 0
+                    ? clientInfo[index].birthCountryId
+                    : ""
+                }
+                placeholder="Male"
+              />
+            ) : (
+              <Select
+                dataType="clientInfo"
+                className="mb-10"
+                label="Country of Birth"
+                name="birthCountryId"
+                indexClient={index}
+                value={
+                  clientInfo[index] ? clientInfo[index].birthCountryId : ""
+                }
+                datas={countries}
+                handleChange={handleInputChange}
+              />
+            )}
+
+            {clientInfo[index].clientPfr === "Singpass" &&
+            clientInfo[index].nationality !== "" ? (
+              <Input
+                readonly={true}
+                dataType="clientInfo"
+                className="mb-10"
+                label="Nationality"
+                type="text"
+                name="nationality"
+                indexClient={index}
+                value={clientInfo[index].nationality}
+                placeholder="Nationality"
+              />
+            ) : (
+              <Select
+                dataType="clientInfo"
+                className="mb-10"
+                label="Nationality"
+                name="nationality"
+                indexClient={index}
+                value={clientInfo[index].nationality}
+                datas={country}
+                handleChange={handleInputChange}
+                needValidation={true}
+                logic={
+                  clientInfo[index].nationality === "" ||
+                  clientInfo[index].nationality === "-"
                     ? false
                     : true
-                  : true
-              }
-            />
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Residency Status"
-              name="residencyTwo"
-              indexData={index}
-              value={clientInfo[index] ? clientInfo[index].residencyTwo : ""}
-              datas={recidence}
-              handleChange={handleInputChange}
-              needValidation={true}
-              logic={
-                clientInfo[index]
-                  ? clientInfo[index].residencyTwo === "" ||
-                    clientInfo[index].residencyTwo === "-"
-                    ? false
+                }
+              />
+            )}
+
+            {clientInfo[index].clientPfr === "Singpass" &&
+            clientInfo[0].residencyTwo !== "" ? (
+              <Input
+                readonly={true}
+                dataType="clientInfo"
+                className="mb-10"
+                label="Residential Status"
+                type="text"
+                name="residencyTwo"
+                indexClient={index}
+                value={clientInfo[index].residencyTwo}
+                placeholder="recidency status"
+              />
+            ) : (
+              <Select
+                dataType="clientInfo"
+                className="mb-10"
+                label="Residential Status"
+                name="residencyTwo"
+                indexClient={index}
+                value={clientInfo[index] ? clientInfo[index].residencyTwo : ""}
+                datas={recidence}
+                handleChange={handleInputChange}
+                needValidation={true}
+                logic={
+                  clientInfo[index]
+                    ? clientInfo[index].residencyTwo === "" ||
+                      clientInfo[index].residencyTwo === "-"
+                      ? false
+                      : true
                     : true
-                  : true
-              }
-            />
-            <Select
-              dataType="clientInfo"
-              className="mb-10"
-              label="Pass Type"
-              name="residency"
-              indexData={index}
-              value={clientInfo[index].residency}
-              datas={recidence}
-              handleChange={handleInputChange}
-              needValidation={true}
-              logic={
-                clientInfo[index].residency === "" ||
-                clientInfo[index].residency === "-"
-                  ? false
-                  : true
-              }
-            />
+                }
+              />
+            )}
+
+            {Number(clientInfo[index].residencyTwo) === 2 ? (
+              <>
+                {clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].residency !== "" ? (
+                  <Input
+                    readonly={true}
+                    dataType="clientInfo"
+                    className="mb-10"
+                    label="Pass Type"
+                    type="text"
+                    name="residency"
+                    indexClient={index}
+                    value={clientInfo[index].residency}
+                    placeholder="pass type"
+                  />
+                ) : (
+                  <>
+                    <Select
+                      dataType="clientInfo"
+                      className="mb-10"
+                      label="Pass Type"
+                      name="residency"
+                      indexClient={index}
+                      value={clientInfo[index].residency}
+                      datas={passTypes}
+                      handleChange={handleInputChange}
+                      needValidation={true}
+                      logic={
+                        clientInfo[index].residency === "" ||
+                        clientInfo[index].residency === "-"
+                          ? false
+                          : true
+                      }
+                    />
+
+                    {Number(clientInfo[index].residency) === 6 ? (
+                      <Input
+                        dataType="clientInfo"
+                        className="mb-10"
+                        label="Other Pass Type"
+                        type="text"
+                        name="residencyOther"
+                        indexClient={index}
+                        value={clientInfo[index].residencyOther}
+                        placeholder="pass type"
+                        needValidation={true}
+                        handleChange={handleInputChange}
+                        logic={
+                          clientInfo[index].residencyOther === "" ||
+                          clientInfo[index].residencyOther === "-"
+                            ? false
+                            : true
+                        }
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+
             <Select
               dataType="clientInfo"
               className="mb-10"
               label="Marital Status"
               name="marital"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].marital : ""}
               datas={marital}
               handleChange={handleInputChange}
@@ -735,7 +1100,7 @@ const Client = (props: Props) => {
               dataType="clientInfo"
               className="mb-10"
               name="employmentStatus"
-              indexData={index}
+              indexClient={index}
               label="Employment Status"
               value={
                 clientInfo[index] ? clientInfo[index].employmentStatus : ""
@@ -753,34 +1118,56 @@ const Client = (props: Props) => {
               }
             />
             <Input
+              readonly={
+                clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].occupation !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
               label="Occupation"
               type="text"
               name="occupation"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].occupation : ""}
               placeholder="Manager"
               handleChange={handleInputChange}
             />
-            <Select
+
+            <Input
+              readonly={
+                clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].businessNature !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
-              label="Employment Sector"
+              label="Business Nature"
+              type="text"
               name="businessNature"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].businessNature : ""}
-              datas={employmentSector}
+              placeholder="Financial"
               handleChange={handleInputChange}
             />
-            <Select
+
+            <Input
+              readonly={
+                clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].companyName !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
-              name="companyName"
-              indexData={index}
               label="Company Name"
+              type="text"
+              name="companyName"
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].companyName : ""}
-              datas={companyMaster}
+              placeholder="Manager"
               handleChange={handleInputChange}
             />
             <Select
@@ -788,7 +1175,7 @@ const Client = (props: Props) => {
               className="mb-10"
               label="Annual Income"
               name="annualIncome"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].annualIncome : ""}
               datas={annualIncome}
               handleChange={handleInputChange}
@@ -808,7 +1195,7 @@ const Client = (props: Props) => {
               label="Contact Detail [Home]"
               type="text"
               name="contactHome"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].contactHome : ""}
               placeholder="981271291"
               handleChange={handleInputChange}
@@ -819,7 +1206,7 @@ const Client = (props: Props) => {
               label="Mobile Number"
               type="text"
               name="contactMobile"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].contactMobile : ""}
               placeholder="2121921298"
               handleChange={handleInputChange}
@@ -834,12 +1221,18 @@ const Client = (props: Props) => {
               }
             />
             <Input
+              readonly={
+                clientInfo[index].clientPfr === "Singpass" &&
+                clientInfo[index].residentialAddr !== ""
+                  ? true
+                  : false
+              }
               dataType="clientInfo"
               className="mb-10"
-              label="Registered Address"
+              label="Residential Address"
               type="text"
               name="residentialAddr"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].residentialAddr : ""}
               placeholder="Singapore"
               handleChange={handleInputChange}
@@ -859,7 +1252,7 @@ const Client = (props: Props) => {
               label="Mailing Address"
               type="text"
               name="mailingAddr"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].mailingAddr : ""}
               placeholder="Set as same like registered address"
               handleChange={handleInputChange}
@@ -870,7 +1263,7 @@ const Client = (props: Props) => {
               className="mb-10"
               label="Smoker"
               name="smoker"
-              indexData={index}
+              indexClient={index}
               value={clientInfo[index] ? clientInfo[index].smoker : ""}
               datas={clientSmoker}
               handleChange={handleInputChange}
@@ -906,7 +1299,7 @@ const Client = (props: Props) => {
                 className="mb-10"
                 label="Relationship To Client 1"
                 name="relationship"
-                indexData={index}
+                indexClient={index}
                 value={clientInfo[index] ? clientInfo[index].relationship : ""}
                 datas={relationships}
                 handleChange={handleInputChange}

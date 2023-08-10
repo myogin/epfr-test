@@ -19,8 +19,10 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
-import { postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { useRouter } from "next/router";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 
 interface Props {
   id?: any;
@@ -29,6 +31,7 @@ interface Props {
 
 const ExistingPortofolio = (props: Props) => {
   let id = usePersonalInformation((state) => state.id);
+  const router = useRouter();
 
   let editableStatus = useExistingPortofolio((state) => state.editableStatus);
   let status = useExistingPortofolio((state) => state.status);
@@ -55,6 +58,9 @@ const ExistingPortofolio = (props: Props) => {
   let setToggle = useExistingPortofolio((state) => state.setToggle);
   let setGlobal = useExistingPortofolio((state) => state.setGlobal);
 
+  let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
+  let idSectionThree = useCashFlow((state) => state.id);
+
   const [saveLoading, setSaveLoading] = useState(false);
 
   const handleToggle = (object: string, clientType: number, value: boolean) => {
@@ -64,6 +70,7 @@ const ExistingPortofolio = (props: Props) => {
   const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
 
   const scrollPosition = useScrollPosition(2);
+  const scrollPositionBottomSection1 = useScrollPositionBottom(1);
   const scrollPositionBottom = useScrollPositionBottom(2);
 
   const handleInputChange = (event: any) => {
@@ -91,10 +98,14 @@ const ExistingPortofolio = (props: Props) => {
 
       // If save success get ID and store to localstorage
       if (storeDataSection.data.result === "success") {
-        if (id === 0 || id === null || id === undefined) {
-          setGlobal("id", storeDataSection.data.pfrId);
+        if (
+          idSectionThree === 0 ||
+          idSectionThree === null ||
+          idSectionThree === undefined
+        ) {
+          setGlobalSectionThree("id", storeDataSection.data.pfrId);
         } else {
-          setGlobal("id", id);
+          setGlobalSectionThree("id", id);
         }
         setGlobal("editableStatus", 1);
       }
@@ -105,6 +116,99 @@ const ExistingPortofolio = (props: Props) => {
       console.error(error);
     }
   };
+
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection2 = await getPfrStep(2, params);
+
+      console.log(getSection2);
+
+      setGlobal("editableStatus", getSection2.pfr.editableSection1);
+      setGlobal("status", getSection2.pfr.section1);
+
+      // Fetch Client
+      if (getSection2.summaryOfProperty.length > 0) {
+        getSection2.summaryOfProperty.map((data: any, index: number) => {
+          // fetchClient(index, data);
+        });
+      }
+
+      // Fetch accompaintment
+      if (getSection2.summaryOfInvestment.length > 0) {
+        getSection2.summaryOfInvestment.map((data: any, index: number) => {
+          // fetchAccompainment(index, data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfSaving.length > 0) {
+        getSection2.summaryOfSaving.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfCPF.length > 0) {
+        getSection2.summaryOfCPF.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfSaving.length > 0) {
+        getSection2.summaryOfSaving.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfInsurance.length > 0) {
+        getSection2.summaryOfInsurance.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfInsurance2.length > 0) {
+        getSection2.summaryOfInsurance2.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfLoans.length > 0) {
+        getSection2.summaryOfLoans.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfSRS.length > 0) {
+        getSection2.summaryOfSRS.map((data: any, index: number) => {
+          // fetchTrustedIndividuals(data);
+        });
+      }
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
+  // Get data when scroll from section 1
+  useEffect(() => {
+    if (!router.isReady) return;
+    // If edit check the ID
+    if (router.query.id !== null && router.query.id !== undefined) {
+      if (scrollPositionBottomSection1 === "Process1") {
+        console.log("Get data Section 2");
+      }
+    }
+  }, [scrollPositionBottomSection1, router.isReady, router.query.id]);
 
   useEffect(() => {
     if (scrollPositionBottom === "Process2") {
@@ -136,6 +240,13 @@ const ExistingPortofolio = (props: Props) => {
           }`}
         >
           Section 2. Existing Portfolio
+          {saveLoading ? (
+            <span className="text-xs font-extralight text-gray-light">
+              Saving...
+            </span>
+          ) : (
+            ""
+          )}
         </HeadingPrimarySection>
       </div>
       {need ? (

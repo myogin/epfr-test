@@ -5,13 +5,16 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getLength } from "@/libs/helper";
+import { postPfrSections } from "@/services/pfrService";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
@@ -25,12 +28,11 @@ interface Props {
 }
 
 const SwitchingReplacement = (props: Props) => {
+  const scrollPosition = useScrollPosition(10);
+  const scrollPositionBottom = useScrollPositionBottom(10);
+  const scrollPositionBottomSection9 = useScrollPositionBottom(9);
   const [pfrId, setPfrId] = useState(0);
-
-  useEffect(() => {
-    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-    setPfrId(section1?.state?.id);
-  });
+  const [editable, setEditable] = useState(0);
 
   let getPfrLength = getLength(props.pfrType);
 
@@ -98,7 +100,7 @@ const SwitchingReplacement = (props: Props) => {
   const [newProductErrors, setNewProductErrors] = useState<Array<any>>([]);
   const [sectionTenData, setSectionTenData] = useState({
     id: pfrId,
-    needs: 0,
+    need: 0,
     data: [sectionData, sectionData],
     issues: [],
     originalProduct: products,
@@ -249,6 +251,43 @@ const SwitchingReplacement = (props: Props) => {
     return errors;
   };
 
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section10")
+        ? localStorage.getItem("section10")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data;
+      }
+
+      await postPfrSections(10, JSON.stringify(dataFix));
+
+      setSaveLoading(false); // Stop loading
+      setEditable(1);
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (scrollPositionBottomSection9 === "Process9" && sectionTenData.id === 0) {
+      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+      setPfrId(section1?.state?.id);
+      setSectionTenData({
+        ...sectionTenData,
+        id: section1?.state?.id
+      });
+    }
+  }, [scrollPositionBottomSection9]);
+
   useEffect(() => {
     getPfrLength.map((data, index) => {
       if (showReasonTwo[index] == 0) {
@@ -264,10 +303,37 @@ const SwitchingReplacement = (props: Props) => {
   }, [showReasonTwo]);
 
   useEffect(() => {
-    localStorage.setItem("section10", JSON.stringify(sectionTenData));
+    if (editable === 1 && sectionTenData.status === 1) {
+      setEditable(2);
+    }
+    localStorage.setItem("section10", JSON.stringify({
+      ...sectionTenData,
+      editableStatus: editable
+    }));
   }, [sectionTenData]);
 
-  const scrollPosition = useScrollPosition(10);
+  useEffect(() => {
+    localStorage.setItem('section10', JSON.stringify({
+      ...sectionTenData,
+      editableStatus: editable
+    }));
+  }, [editable]);
+
+  useEffect(() => {
+    if (scrollPositionBottom === "Process10") {
+      if (
+        (editable === 0 && sectionTenData.status === 1) ||
+        (editable === 2 && sectionTenData.status === 1)
+      ) {
+        console.log("can save now");
+        // setSaveLoading(true);
+        storeData();
+      } else {
+        console.log("Your cannot save data");
+      }
+    }
+  }, [scrollPositionBottom]);
+
   return (
     <div id={props.id}>
       <div
@@ -284,6 +350,13 @@ const SwitchingReplacement = (props: Props) => {
           }`}
         >
           Section 10. Switching / Replacement
+          {saveLoading ? (
+            <span className="text-xs font-extralight text-gray-light">
+              Saving...
+            </span>
+          ) : (
+            ""
+          )}
         </HeadingPrimarySection>
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -436,6 +509,21 @@ const SwitchingReplacement = (props: Props) => {
                         showReasonTwo[index] == 1 &&
                         sectionTenData.data[index]?.answer3.trim() == ""
                       }
+                      handleChange={function (event) {
+                        setSectionTenData({
+                          ...sectionTenData,
+                          data: sectionTenData.data?.map((item, i) => {
+                            if (i == index) {
+                              return {
+                                ...item,
+                                answer3: event.target.value
+                              };
+                            } else {
+                              return item;
+                            }
+                          }),
+                        });
+                      }}
                     />
                   </div>
                 ))}
@@ -956,6 +1044,13 @@ const SwitchingReplacement = (props: Props) => {
           </>
         ) : null}
       </SectionCardSingleGrid>
+
+      {editable === 2 && sectionTenData.status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 10" />
+      ) : (
+        ""
+      )}
+
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );

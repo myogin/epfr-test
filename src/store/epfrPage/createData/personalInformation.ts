@@ -14,6 +14,7 @@ type Actions = {
   fetchClient: (clientType: number, params: any) => any;
   fetchDependent: (datas: DependantInformation[]) => any;
   fetchAccompainment: (clientType: number, params: any) => any;
+  fetchTrustedIndividuals: (params: any) => any;
   resetSectionOne: () => any;
 };
 
@@ -50,7 +51,7 @@ const initialState: SectionOne = {
       email: "",
       residentialAddr: "",
       mailingAddr: "",
-      clientPfr: "",
+      clientPfr: "Manual",
     },
     {
       clientTitle: "",
@@ -80,7 +81,7 @@ const initialState: SectionOne = {
       email: "",
       residentialAddr: "",
       mailingAddr: "",
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   dependant: [
@@ -95,7 +96,7 @@ const initialState: SectionOne = {
       certNumber: "",
       nric: "",
       sponsored: "",
-      clientPfr: "",
+      clientPfr: "Manual",
       client: 0,
       depId: 0,
     },
@@ -107,7 +108,7 @@ const initialState: SectionOne = {
       english_spoken: "",
       english_written: "",
       education_level: "",
-      clientPfr: "",
+      clientPfr: "Manual",
     },
     {
       clientType: 0,
@@ -115,7 +116,7 @@ const initialState: SectionOne = {
       english_spoken: "",
       english_written: "",
       education_level: "",
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   trustedIndividuals: {
@@ -148,10 +149,13 @@ const personalInformation = create(
           set(
             produce((draft) => {
               // Check if this is maybe the same person
+
+              console.log("gender ni")
+              console.log(params.gender)
               if (
                 params.passportNo === get().clientInfo[clientType].passportNo
               ) {
-                draft.clientInfo[clientType].clientTitle = params.clientTitle
+                draft.clientInfo[clientType].clientTitle = params.clientTitle >= 0
                   ? params.clientTitle
                   : get().clientInfo[clientType].clientTitle;
                 draft.clientInfo[clientType].clientName = params.clientName
@@ -160,13 +164,13 @@ const personalInformation = create(
                 draft.clientInfo[clientType].otherName = params.otherName
                   ? params.otherName
                   : get().clientInfo[clientType].otherName;
-                draft.clientInfo[clientType].relationship = params.relationship
+                draft.clientInfo[clientType].relationship = params.relationship >=0
                   ? params.relationship
                   : get().clientInfo[clientType].relationship;
                 draft.clientInfo[clientType].race = params.race
                   ? params.race
                   : get().clientInfo[clientType].race;
-                draft.clientInfo[clientType].gender = params.gender
+                draft.clientInfo[clientType].gender = params.gender >=0
                   ? params.gender
                   : get().clientInfo[clientType].gender;
                 draft.clientInfo[clientType].birthCountryId =
@@ -182,7 +186,7 @@ const personalInformation = create(
                 draft.clientInfo[clientType].residency = params.residency
                   ? params.residency
                   : get().clientInfo[clientType].residency;
-                draft.clientInfo[clientType].residencyTwo = params.residencyTwo
+                draft.clientInfo[clientType].residencyTwo = params.residencyTwo >=0
                   ? params.residencyTwo
                   : get().clientInfo[clientType].residencyTwo;
                 draft.clientInfo[clientType].residencyOther =
@@ -192,14 +196,14 @@ const personalInformation = create(
                 draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth
                   ? params.dateOfBirth
                   : get().clientInfo[clientType].dateOfBirth;
-                draft.clientInfo[clientType].marital = params.marital
+                draft.clientInfo[clientType].marital = params.marital >= 0
                   ? params.marital
                   : get().clientInfo[clientType].marital;
-                draft.clientInfo[clientType].smoker = params.smoker
+                draft.clientInfo[clientType].smoker = params.smoker >=0
                   ? params.smoker
                   : get().clientInfo[clientType].smoker;
                 draft.clientInfo[clientType].employmentStatus =
-                  params.employmentStatus
+                  params.employmentStatus >= 0
                     ? params.employmentStatus
                     : get().clientInfo[clientType].employmentStatus;
                 draft.clientInfo[clientType].occupation = params.occupation
@@ -212,7 +216,7 @@ const personalInformation = create(
                   params.businessNature
                     ? params.businessNature
                     : get().clientInfo[clientType].businessNature;
-                draft.clientInfo[clientType].annualIncome = params.annualIncome
+                draft.clientInfo[clientType].annualIncome = params.annualIncome >= 0
                   ? params.annualIncome
                   : get().clientInfo[clientType].annualIncome;
                 draft.clientInfo[clientType].contactHome = params.contactHome
@@ -244,7 +248,7 @@ const personalInformation = create(
                   : get().clientInfo[clientType].clientPfr;
                 // If different persone so go here
               } else {
-                draft.clientInfo[clientType].clientTitle = params.clientTitle
+                draft.clientInfo[clientType].clientTitle = params.clientTitle >= 0
                   ? params.clientTitle
                   : "";
                 draft.clientInfo[clientType].clientName = params.clientName
@@ -253,13 +257,13 @@ const personalInformation = create(
                 draft.clientInfo[clientType].otherName = params.otherName
                   ? params.otherName
                   : "";
-                draft.clientInfo[clientType].relationship = params.relationship
+                draft.clientInfo[clientType].relationship = params.relationship >= 0
                   ? params.relationship
                   : "";
                 draft.clientInfo[clientType].race = params.race
                   ? params.race
                   : "";
-                draft.clientInfo[clientType].gender = params.gender
+                draft.clientInfo[clientType].gender = params.gender >=0
                   ? params.gender
                   : "";
                 draft.clientInfo[clientType].birthCountryId =
@@ -273,7 +277,7 @@ const personalInformation = create(
                 draft.clientInfo[clientType].residency = params.residency
                   ? params.residency
                   : "";
-                draft.clientInfo[clientType].residencyTwo = params.residencyTwo
+                draft.clientInfo[clientType].residencyTwo = params.residencyTwo >=0
                   ? params.residencyTwo
                   : "";
                 draft.clientInfo[clientType].residencyOther =
@@ -281,14 +285,14 @@ const personalInformation = create(
                 draft.clientInfo[clientType].dateOfBirth = params.dateOfBirth
                   ? params.dateOfBirth
                   : "";
-                draft.clientInfo[clientType].marital = params.marital
+                draft.clientInfo[clientType].marital = params.marital >= 0
                   ? params.marital
                   : "";
-                draft.clientInfo[clientType].smoker = params.smoker
+                draft.clientInfo[clientType].smoker = params.smoker >=0
                   ? params.smoker
                   : "";
                 draft.clientInfo[clientType].employmentStatus =
-                  params.employmentStatus ? params.employmentStatus : "";
+                  params.employmentStatus >= 0 ? params.employmentStatus : "";
                 draft.clientInfo[clientType].occupation = params.occupation
                   ? params.occupation
                   : "";
@@ -297,7 +301,7 @@ const personalInformation = create(
                   : "";
                 draft.clientInfo[clientType].businessNature =
                   params.businessNature ? params.businessNature : "";
-                draft.clientInfo[clientType].annualIncome = params.annualIncome
+                draft.clientInfo[clientType].annualIncome = params.annualIncome >= 0
                   ? params.annualIncome
                   : "";
                 draft.clientInfo[clientType].contactHome = params.contactHome
@@ -335,52 +339,53 @@ const personalInformation = create(
                 client[name] = value;
               }
 
-              console.log(
-                "masuk editable status nggak " +
-                  get().editableStatus +
-                  " statsu " +
-                  get().status
-              );
-
               if (get().editableStatus === 1 && get().status === 1) {
-                console.log("masuk nggak");
                 draft.editableStatus = 2;
-              } else {
-                console.log("masuk sini nggak");
               }
 
               if (
                 get().clientInfo?.length &&
                 get().clientInfo[clientType].hasOwnProperty("clientTitle")
               ) {
+                let type = get().type ? Number(get().type) : 0;
+
+                let checkStatus = true;
+
+                for (let z = 0; z < type; z++) {
+                  if (
+                    draft.clientInfo[z].clientTitle === "" ||
+                    draft.clientInfo[z].clientTitle === "-" ||
+                    draft.clientInfo[z].gender === "" ||
+                    draft.clientInfo[z].gender === "-" ||
+                    draft.clientInfo[z].dateOfBirth === "" ||
+                    draft.clientInfo[z].residency === "" ||
+                    draft.clientInfo[z].residency === "-" ||
+                    draft.clientInfo[z].employmentStatus === "" ||
+                    draft.clientInfo[z].annualIncome === "" ||
+                    draft.clientInfo[z].annualIncome === "-" ||
+                    draft.clientInfo[z].contactMobile === "" ||
+                    draft.clientInfo[z].clientName === "" ||
+                    draft.clientInfo[z].email === "" ||
+                    draft.clientInfo[z].race === "" ||
+                    draft.clientInfo[z].residencyTwo === "" ||
+                    draft.clientInfo[z].residencyTwo === "-" ||
+                    draft.clientInfo[z].marital === "" ||
+                    draft.clientInfo[z].marital === "-" ||
+                    draft.clientInfo[z].residentialAddr === "" ||
+                    draft.clientInfo[z].smoker === "" ||
+                    draft.clientInfo[z].smoker === "-" ||
+                    draft.reviewDate === ""
+                  ) {
+                    checkStatus = false;
+                  }
+                }
+
+                console.log("Test aja ini apa "+ checkStatus)
                 // check validation
-                if (
-                  draft.clientInfo[clientType].clientTitle === "" ||
-                  draft.clientInfo[clientType].clientTitle === "-" ||
-                  draft.clientInfo[clientType].gender === "" ||
-                  draft.clientInfo[clientType].gender === "-" ||
-                  draft.clientInfo[clientType].dateOfBirth === "" ||
-                  draft.clientInfo[clientType].residency === "" ||
-                  draft.clientInfo[clientType].residency === "-" ||
-                  draft.clientInfo[clientType].employmentStatus === "" ||
-                  draft.clientInfo[clientType].annualIncome === "" ||
-                  draft.clientInfo[clientType].annualIncome === "-" ||
-                  draft.clientInfo[clientType].contactMobile === "" ||
-                  draft.clientInfo[clientType].clientName === "" ||
-                  draft.clientInfo[clientType].email === "" ||
-                  draft.clientInfo[clientType].race === "" ||
-                  draft.clientInfo[clientType].residencyTwo === "" ||
-                  draft.clientInfo[clientType].residencyTwo === "-" ||
-                  draft.clientInfo[clientType].marital === "" ||
-                  draft.clientInfo[clientType].marital === "-" ||
-                  draft.clientInfo[clientType].residentialAddr === "" ||
-                  draft.clientInfo[clientType].smoker === "" ||
-                  draft.clientInfo[clientType].smoker === "-" ||
-                  draft.reviewDate === ""
-                ) {
-                  draft.status = 0;
-                } else {
+                if (checkStatus) {
                   draft.status = 1;
+                } else {
+                  draft.status = 0;
                 }
               }
             })
@@ -392,6 +397,7 @@ const personalInformation = create(
 
               if (datas.length > 0) {
                 datas.map((param, index) => {
+                  let depIdFromDb = param.id && param.id > 0 ? param.id : 0;
                   if (index === 0 && checkLengthDependent === 1) {
                     let dependentReplace = draft.dependant[index];
                     dependentReplace.id = 1;
@@ -406,31 +412,15 @@ const personalInformation = create(
                     dependentReplace.nric = param.nric;
                     dependentReplace.clientPfr = param.clientPfr;
                     dependentReplace.client = param.client;
-                    dependentReplace.depId = param.depId ? param.depId : 0;
+                    dependentReplace.depId = param.depId
+                      ? param.depId
+                      : depIdFromDb;
                   } else {
                     param["id"] = ++checkLengthDependent;
+                    param["depId"] = depIdFromDb;
                     draft.dependant.push(param);
                   }
                 });
-
-                // check validation
-                // let checkDependent = 0;
-                // draft.dependant.map((value: any, index: any) => {
-                //   if (
-                //     value.name === "" ||
-                //     value.relationship === "" ||
-                //     value.dateOfBirth === "" ||
-                //     value.gender === ""
-                //   ) {
-                //     checkDependent++;
-                //   }
-                // });
-
-                // if (checkDependent > 0) {
-                //   draft.status = 0;
-                // } else {
-                //   draft.status = 1;
-                // }
               }
             })
           ),
@@ -459,13 +449,6 @@ const personalInformation = create(
                 draft.dependant.push(params);
               }
 
-              if (get().editableStatus === 1 && get().status === 1) {
-                console.log("masuk nggak");
-                draft.editableStatus = 2;
-              } else {
-                console.log("masuk sini nggak");
-              }
-
               // check validation
               let checkDependent = 0;
               draft.dependant.map((value: any, index: any) => {
@@ -484,6 +467,10 @@ const personalInformation = create(
               } else {
                 draft.status = 1;
               }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeDependent: (params: any) =>
@@ -493,7 +480,6 @@ const personalInformation = create(
                 const dependentIndex = draft.dependant.findIndex(
                   (el: any) => el.id === params
                 );
-                console.log("masuk disini");
                 draft.dependant.splice(dependentIndex, 1);
 
                 // reset index 0 dependent data
@@ -515,10 +501,7 @@ const personalInformation = create(
               }
 
               if (get().editableStatus === 1 && get().status === 1) {
-                console.log("masuk nggak");
                 draft.editableStatus = 2;
-              } else {
-                console.log("masuk sini nggak");
               }
             })
           ),
@@ -545,10 +528,7 @@ const personalInformation = create(
               dependant.depId = params.depId ? params.depId : 0;
 
               if (get().editableStatus === 1 && get().status === 1) {
-                console.log("masuk nggak");
                 draft.editableStatus = 2;
-              } else {
-                console.log("masuk sini nggak");
               }
             })
           ),
@@ -571,6 +551,77 @@ const personalInformation = create(
             produce((draft) => {
               let accompaniment = draft.accompaniment[clientType];
               accompaniment[name] = value;
+
+              let type = get().type ? Number(get().type) : 0;
+
+                let checkStatus = true;
+
+                for (let z = 0; z < type; z++) {
+                  if (
+                    draft.accompaniment[z].age === "" ||
+                    draft.accompaniment[z].age === null ||
+                    draft.accompaniment[z].english_spoken === "" ||
+                    draft.accompaniment[z].english_spoken === "-" ||
+                    draft.accompaniment[z].english_written === "" ||
+                    draft.accompaniment[z].english_written === "-" ||
+                    draft.accompaniment[z].education_level === "-" ||
+                    draft.accompaniment[z].education_level === ""
+                  ) {
+                    checkStatus = false;
+                  }
+                }
+
+                console.log("Test aja ini apa "+ checkStatus)
+                // check validation
+                if (checkStatus) {
+                  draft.status = 1;
+                } else {
+                  draft.status = 0;
+                }
+
+                if (get().editableStatus === 1 && get().status === 1) {
+                  draft.editableStatus = 2;
+                }
+
+              // Check accompaintment for trusted individual
+              if (draft.accompaniment[0].english_spoken !== "-") {
+                draft.trustedIndividuals.englishLevel1 =
+                  draft.accompaniment[0].english_spoken;
+              }
+
+              if (draft.accompaniment[0].english_written !== "-") {
+                draft.trustedIndividuals.englishLevel2 =
+                  draft.accompaniment[0].english_written;
+              }
+
+              if (draft.accompaniment[0].education_level !== "-") {
+                draft.trustedIndividuals.educationLevel =
+                  draft.accompaniment[0].education_level;
+              }
+
+              // set conditions
+              // If age == 1 && eng1 == 2 || eng2 == 2
+              // If age == 1 && education <= 2
+              // If eng1 == 2 || eng2 == 2 && education <=2
+              if (
+                (Number(draft.trustedIndividuals.ageLevel) === 1 &&
+                  (Number(draft.trustedIndividuals.englishLevel1) === 2 ||
+                    Number(draft.trustedIndividuals.englishLevel2) === 2)) ||
+                (Number(draft.trustedIndividuals.ageLevel) === 1 &&
+                  Number(draft.trustedIndividuals.educationLevel <= 2)) ||
+                ((Number(draft.trustedIndividuals.englishLevel1) === 2 ||
+                  Number(draft.trustedIndividuals.englishLevel2) === 2) &&
+                  Number(draft.trustedIndividuals.educationLevel <= 2))
+              ) {
+                draft.trustedIndividuals.condition1 = true;
+              }
+
+              if (
+                Number(draft.trustedIndividuals.englishLevel1) === 2 ||
+                Number(draft.trustedIndividuals.englishLevel2) === 2
+              ) {
+                draft.trustedIndividuals.condition2 = true;
+              }
             })
           ),
         setTrustedIndividuals: (name: string, value: any) =>
@@ -592,12 +643,37 @@ const personalInformation = create(
               } else {
                 draft.status = 1;
               }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          ),
+        fetchTrustedIndividuals: (params: any) =>
+          set(
+            produce((draft) => {
+              draft.trustedIndividuals.condition1 =
+                params.condition1 > 0 ? true : false;
+              draft.trustedIndividuals.condition2 =
+                params.condition2 > 0 ? true : false;
+              draft.trustedIndividuals.trustedEmail = params.trustedEmail;
+              draft.trustedIndividuals.nameOfTrustedIndividual =
+                params.nameOfTrustedIndividual;
+              draft.trustedIndividuals.passportNo = params.passportNo;
+              draft.trustedIndividuals.relationship = params.relationship;
+              draft.trustedIndividuals.languageUsed = params.languageUsed;
+              draft.trustedIndividuals.contactNumber = params.contactNumber;
+              draft.trustedIndividuals.englishLevel1 = params.englishLevel1;
+              draft.trustedIndividuals.englishLevel2 = params.englishLevel2;
+              draft.trustedIndividuals.educationLevel = params.educationLevel;
+              draft.trustedIndividuals.ageLevel = params.ageLevel;
+              draft.trustedIndividuals.declaration =
+                params.declaration > 0 ? true : false;
             })
           ),
         setGlobal: (name: string, value: any) =>
           set(
             produce((draft) => {
-              console.log("masuk sini nggak global");
               draft[name] = value;
             })
           ),

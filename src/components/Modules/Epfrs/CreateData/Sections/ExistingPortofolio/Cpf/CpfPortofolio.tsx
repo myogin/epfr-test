@@ -91,7 +91,12 @@ const CpfPortofolio = () => {
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-      <div className="w-full">
+      <div className="flex flex-col w-full">
+        {summaryOfCPF[0].editting && summaryOfCPF[0].client === "" ? (
+          <span className="mb-2 text-sm text-red">Required</span>
+        ) : (
+          ""
+        )}
         <ButtonBox onClick={openModal} className="text-green-deep">
           <AddLineIcon />
         </ButtonBox>
@@ -292,7 +297,7 @@ const CpfPortofolio = () => {
           </Dialog>
         </Transition>
       </div>
-      {summaryOfCPF[0].client !== "" ? (
+      {summaryOfCPF?.length && summaryOfCPF[0].client !== "" ? (
         <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
           <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
             <thead className="text-left bg-white-bone">

@@ -1,7 +1,6 @@
 import React from "react";
 import DashboardLayout from "@/components/Layouts/DashboardLayout";
 import GlobalCard from "@/components/Attributes/Cards/GlobalCard";
-import SubNavbar from "@/components/Attributes/Navs/SubNavbar";
 import TitleMedium from "@/components/Attributes/Typography/TitleMedium";
 import SelectFilter from "@/components/Forms/Filters/SelectFilter";
 import Head from "next/head";
@@ -9,22 +8,13 @@ import PfrSummaryDetail from "./_component/PfrSummaryDetail";
 import { useDetailDataEpfr } from "@/store/epfrPage/detailData";
 import PfrTable from "./_component/PfrTable";
 import PfrButtonModal from "./_component/PfrButtonModal";
-import Search2LineIcon from "remixicon-react/Search2LineIcon";
-import { useFilterDataSubMenu } from "@/store/shared/filterDataSubMenu";
-import { useLoginData } from "@/store/login/logindata";
-import axios from "axios";
 import { siteConfig } from "@/libs/config";
+import PfrNavbar from "./_component/PfrNavbar";
 
-type Repo = {
-  name: string;
-  stargazers_count: number;
-};
 const Overview = () => {
   let showElement = useDetailDataEpfr(
     (state: { dataId: number }) => state.dataId
   );
-
-  const { epfrSubMenu } = useFilterDataSubMenu();
 
   const setData = (params: any) => {};
 
@@ -55,33 +45,6 @@ const Overview = () => {
     years.push({ id: i, name: i });
   }
 
-  let menu = [
-    {
-      id: 1,
-      name: "Draft Process",
-      icon: "",
-      type: 1,
-    },
-    {
-      id: 2,
-      name: "Sign Process",
-      icon: "",
-      type: 1,
-    },
-    {
-      id: 3,
-      name: "Completed",
-      icon: "",
-      type: 1,
-    },
-    {
-      id: 4,
-      name: "",
-      icon: <Search2LineIcon />,
-      type: 2,
-    },
-  ];
-
   return (
     <>
       <Head>
@@ -95,7 +58,7 @@ const Overview = () => {
               <PfrButtonModal />
             </div>
             <div id="subNavbar" className="mx-8">
-              <SubNavbar typeMenu="epfrSubMenu" menu={menu} />
+              <PfrNavbar />
             </div>
             <div id="filter" className="flex gap-3 mx-8 my-5">
               <SelectFilter

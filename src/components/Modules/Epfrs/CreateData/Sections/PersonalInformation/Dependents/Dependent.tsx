@@ -36,7 +36,7 @@ const Dependent = (props: Props) => {
     certNumber: "",
     sponsored: "",
     nric: "",
-    clientPfr: "",
+    clientPfr: "Manual",
     client: 0,
     depId: 0,
   };

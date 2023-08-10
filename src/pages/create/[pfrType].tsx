@@ -24,14 +24,10 @@ import AddPlanRecommendation from "@/components/Modules/Epfrs/CreateData/Section
 import ScrollSpy from "react-ui-scrollspy";
 import SidebarLogo from "@/components/Layouts/Sidebar/SidebarLogo";
 import { useRouter } from "next/router";
-import { flushLocalData, localOwnerId, localType } from "@/libs/helper";
-import { getAllPfrData } from "@/services/pfrService";
+import { localOwnerId, localType } from "@/libs/helper";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import RetrieveClientDataNew from "@/components/Modules/Epfrs/CreateData/RetrieveSingpass/RetrieveClientDataNew";
 import { siteConfig } from "@/libs/config";
-import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
-import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
-import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
@@ -40,11 +36,7 @@ const CreatePfrPage: Page = () => {
   let pfrTypeId = pfrType === "single" ? 1 : 2;
 
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
-  let { setGlobal, fetchClient, resetSectionOne } = usePersonalInformation();
-  let { resetSectionTwo } = useExistingPortofolio();
-  let { resetSectionThree } = useCashFlow();
-
-  const [pfrId, setPfrId] = useState(0);
+  let { setGlobal } = usePersonalInformation();
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -101,19 +93,8 @@ const CreatePfrPage: Page = () => {
     setGlobal("type", localT == null ? pfrTypeId : localT);
   };
 
-  const resetExistingData = () => {
-    resetSectionOne();
-    resetSectionTwo();
-    resetSectionThree();
-  };
-
   useEffect(() => {
     if (!router.isReady) return;
-
-    // Cleare local storage first before get data
-    if (router.query.singpass === null || router.query.singpass === undefined) {
-      resetExistingData();
-    }
 
     if (router.query.id !== null && router.query.id !== undefined) {
       setGlobal("id", router.query.id);

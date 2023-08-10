@@ -5,13 +5,15 @@ import RowFourthGrid from "@/components/Attributes/Rows/Grids/RowFourthGrid";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import TextThin from "@/components/Attributes/Typography/TextThin";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getLength } from "@/libs/helper";
-import { getAllPfrData } from "@/services/pfrService";
+import { getAllPfrData, postPfrSections } from "@/services/pfrService";
 import { getPfrStep } from "@/services/pfrService";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import React, { useEffect, useState } from "react";
@@ -23,12 +25,11 @@ interface Props {
 }
 
 const ClientsAcknowledgment = (props: Props) => {
+  const scrollPosition = useScrollPosition(11);
+  const scrollPositionBottom = useScrollPositionBottom(11);
+  const scrollPositionBottomSection10 = useScrollPositionBottom(10);
   const [pfrId, setPfrId] = useState(0);
-
-  useEffect(() => {
-    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-    setPfrId(section1?.state?.id);
-  });
+  const [editable, setEditable] = useState(0);
   
   let getPfrLength = getLength(props.pfrType);
   let { showDetailData } = useNavigationSection();
@@ -501,24 +502,74 @@ const ClientsAcknowledgment = (props: Props) => {
   };
 
   useEffect(() => {
-    localStorage.setItem('section11', JSON.stringify(sectionElevenData));
+    if (editable === 1 && sectionElevenData.status === 1) {
+      setEditable(2);
+    }
+    localStorage.setItem('section11', JSON.stringify({
+      ...sectionElevenData,
+      editableStatus: editable
+    }));
   }, [sectionElevenData]);
 
-  const scrollPosition = useScrollPosition(11);
+  useEffect(() => {
+    localStorage.setItem('section11', JSON.stringify({
+      ...sectionElevenData,
+      editableStatus: editable
+    }));
+  }, [editable]);
 
   useEffect(() => {
-    if (scrollPosition === "okSec11") {
+    if (scrollPositionBottomSection10 === "Process10" && sectionElevenData.id === 0) {
+      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+      setPfrId(section1?.state?.id);
+      setSectionElevenData({
+        ...sectionElevenData,
+        id: section1?.state?.id
+      });
       fetchData();
     }
+  }, [scrollPositionBottomSection10]);
 
-    localStorage.setItem("section12", JSON.stringify(sectionElevenData));
-  }, [scrollPosition, sectionElevenData]);
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section11")
+        ? localStorage.getItem("section11")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data;
+      }
+
+      await postPfrSections(11, JSON.stringify(dataFix));
+
+      setSaveLoading(false); // Stop loading
+      setEditable(1);
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    if (scrollPosition === "okSec11") {
-      fetchData();
+    if (scrollPositionBottom === "Process11") {
+      if (
+        (editable === 0 && sectionElevenData.status === 1) ||
+        (editable === 2 && sectionElevenData.status === 1)
+      ) {
+        console.log("can save now");
+        // setSaveLoading(true);
+        storeData();
+      } else {
+        console.log("Your cannot save data");
+      }
     }
-  }, [scrollPosition]);
+  }, [scrollPositionBottom]);
 
   return (
     <div id={props.id}>
@@ -536,6 +587,13 @@ const ClientsAcknowledgment = (props: Props) => {
           }`}
         >
           Section 11. Client’s Acknowledgment
+          {saveLoading ? (
+            <span className="text-xs font-extralight text-gray-light">
+              Saving...
+            </span>
+          ) : (
+            ""
+          )}
         </HeadingPrimarySection>
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -1075,6 +1133,13 @@ const ClientsAcknowledgment = (props: Props) => {
           </div>
         </RowFourthGrid>
       </HeadingSecondarySection>
+
+      {editable === 2 && sectionElevenData.status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 10" />
+      ) : (
+        ""
+      )}
+
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
       {/* <SectionCardFooter>
         <ButtonGreenMedium>

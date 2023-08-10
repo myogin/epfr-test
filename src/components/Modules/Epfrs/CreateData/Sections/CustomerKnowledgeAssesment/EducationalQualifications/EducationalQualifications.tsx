@@ -61,7 +61,7 @@ const EducationalQualifications = (props: Props) => {
 
   // zustand
   const { answer, updateEducation, need } = useCustomerKnowledgeAssesment();
-  console.log(answer);
+  // console.log(answer);
 
   const checkValidate = (e: any) => e == false;
   return (

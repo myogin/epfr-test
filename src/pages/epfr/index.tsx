@@ -16,23 +16,39 @@ import http from "@/libs/httpSetting";
 import authHeader from "@/libs/authHeader";
 import { signIn, useSession } from "next-auth/react";
 import { siteConfig } from "@/libs/config";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const EpfrPage: Page = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const {setLogin} = useLoginData();
+  const { setLogin } = useLoginData();
+
+  let { resetSectionOne } = usePersonalInformation();
+  let { resetSectionTwo } = useExistingPortofolio();
+  let { resetSectionThree } = useCashFlow();
 
   const getGeneralData = async () => {
     if (router.query.edit) {
       const pfr: any = await getAllPfrData(router.query.pfrId);
     }
   };
+
+  const goToCreatePfr = (params: string) => {
+    resetSectionOne();
+    resetSectionTwo();
+    resetSectionThree();
+
+    router.push(`create/${params}`);
+  };
+
   console.log(status);
   useEffect(() => {
     getGeneralData();
-    setLogin(session?.user?.token, session?.user?.id)
+    setLogin(session?.user?.token, session?.user?.id);
   });
 
   return (
@@ -51,28 +67,30 @@ const EpfrPage: Page = () => {
             <TitleMedium>Please choose EPFR type</TitleMedium>
           </div>
           <div className="flex justify-between gap-10">
-            <Link href="create/single#section-1">
-              <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
-                <button className="mb-3">
-                  <File3FillIcon className="text-green-deep" size={50} />
-                </button>
-                <h2 className="text-md">Single EPFR Document</h2>
-                <span className="text-sm text-gray-light">
-                  This EPFR for one person
-                </span>
-              </div>
-            </Link>
-            <Link href="create/joint#section-1">
-              <div className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
-                <button className="mb-3">
-                  <File3FillIcon className="text-green-deep" size={50} />
-                </button>
-                <h2 className="text-md">Joint EPFR Document</h2>
-                <span className="text-sm text-gray-light">
-                  This EPFR for two persons
-                </span>
-              </div>
-            </Link>
+            <div
+              onClick={() => goToCreatePfr("single")}
+              className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light"
+            >
+              <button className="mb-3">
+                <File3FillIcon className="text-green-deep" size={50} />
+              </button>
+              <h2 className="text-md">Single EPFR Document</h2>
+              <span className="text-sm text-gray-light">
+                This EPFR for one person
+              </span>
+            </div>
+            <div
+              onClick={() => goToCreatePfr("joint")}
+              className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light"
+            >
+              <button className="mb-3">
+                <File3FillIcon className="text-green-deep" size={50} />
+              </button>
+              <h2 className="text-md">Joint EPFR Document</h2>
+              <span className="text-sm text-gray-light">
+                This EPFR for two persons
+              </span>
+            </div>
           </div>
         </div>
       </GlobalCard>

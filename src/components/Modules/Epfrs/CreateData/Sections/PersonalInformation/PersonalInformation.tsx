@@ -22,6 +22,7 @@ import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 import { useRouter } from "next/router";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -47,12 +48,18 @@ const PersonalInformation = (props: Props) => {
   );
 
   let fetchClient = usePersonalInformation((state) => state.fetchClient);
-  let setGlobal = usePersonalInformation((state) => state.setGlobal);
-
-  let checkAccompainment = CheckAccompainment(
-    accompaniment,
-    setTrustedIndividuals
+  let fetchDependent = usePersonalInformation((state) => state.fetchDependent);
+  let fetchAccompainment = usePersonalInformation(
+    (state) => state.fetchAccompainment
   );
+  let setGlobal = usePersonalInformation((state) => state.setGlobal);
+  let fetchTrustedIndividuals = usePersonalInformation(
+    (state) => state.fetchTrustedIndividuals
+  );
+
+  // Action join with section 2
+  let setGlobalSectionTwo = useExistingPortofolio((state) => state.setGlobal);
+  let idSectionTwo = useExistingPortofolio((state) => state.id);
 
   // Get status and editable status for checking active and non active the save function
   let status = usePersonalInformation((state) => state.status);
@@ -85,6 +92,16 @@ const PersonalInformation = (props: Props) => {
         } else {
           setGlobal("id", id);
         }
+
+        if (
+          idSectionTwo === 0 ||
+          idSectionTwo === null ||
+          idSectionTwo === undefined
+        ) {
+          setGlobalSectionTwo("id", storeDataSection.data.pfrId);
+        } else {
+          setGlobalSectionTwo("id", id);
+        }
         setGlobal("editableStatus", 1);
       }
 
@@ -104,10 +121,33 @@ const PersonalInformation = (props: Props) => {
 
       console.log(getSection1);
 
+      setGlobal("reviewDate", getSection1.pfr.reviewDate);
+      setGlobal("editableStatus", getSection1.pfr.editableSection1);
+      setGlobal("status", getSection1.pfr.section1);
+
       // Fetch Client
       if (getSection1.clients.length > 0) {
         getSection1.clients.map((data: any, index: number) => {
           fetchClient(index, data);
+        });
+      }
+
+      // Fetch Dependent
+      if (getSection1.dependants.length > 0) {
+        fetchDependent(getSection1.dependants);
+      }
+
+      // Fetch accompaintment
+      if (getSection1.accompainments.length > 0) {
+        getSection1.accompainments.map((data: any, index: number) => {
+          fetchAccompainment(index, data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection1.trustedIndividuals.length > 0) {
+        getSection1.trustedIndividuals.map((data: any, index: number) => {
+          fetchTrustedIndividuals(data);
         });
       }
 
@@ -118,6 +158,7 @@ const PersonalInformation = (props: Props) => {
     }
   };
 
+  // Load data first load
   useEffect(() => {
     if (!router.isReady) return;
     // If edit check the ID
@@ -128,11 +169,17 @@ const PersonalInformation = (props: Props) => {
         // getGeneralData(router.query.id);
       }
     }
+  }, [router.isReady, router.query.id, router.query.singpass]);
 
+  // Trigger the dependent data to showing the depdendent
+  useEffect(() => {
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
+  }, [dependant]);
 
+  // Save data when scrolling
+  useEffect(() => {
     if (scrollPositionBottom === "Process1") {
       if (
         (editableStatus === 0 && status === 1) ||
@@ -145,7 +192,7 @@ const PersonalInformation = (props: Props) => {
         console.log("Your cannot save data");
       }
     }
-  }, [router.isReady, dependant, editableStatus, status, scrollPositionBottom]);
+  }, [scrollPositionBottom, editableStatus, status]);
 
   if (loading) {
     return <LoadingPage />;
@@ -270,14 +317,10 @@ const PersonalInformation = (props: Props) => {
       </HeadingSecondarySection>
       <Accompainment pfrType={props.pfrType} />
       {/* Sec 4 */}
-      {checkAccompainment ? (
-        <>
-          <HeadingSecondarySection className="mx-8 2xl:mx-60">
-            1.4 Trusted Individual
-          </HeadingSecondarySection>
-          <TrustedIndividual />
-        </>
-      ) : null}
+      <HeadingSecondarySection className="mx-8 2xl:mx-60">
+        1.4 Trusted Individual
+      </HeadingSecondarySection>
+      <TrustedIndividual />
       {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 1" />
       ) : (
@@ -288,53 +331,5 @@ const PersonalInformation = (props: Props) => {
     </div>
   );
 };
-
-function CheckAccompainment(
-  accompaniment: Accompaniment[],
-  setTrustedIndividuals: any
-) {
-  let checker = false;
-
-  if (
-    (accompaniment[0].education_level === "-" ||
-      accompaniment[0].education_level === "") &&
-    (accompaniment[0].english_spoken === "-" ||
-      accompaniment[0].english_spoken === "") &&
-    (accompaniment[0].english_written === "-" ||
-      accompaniment[0].english_written === "") &&
-    (accompaniment[1].education_level === "-" ||
-      accompaniment[1].education_level === "") &&
-    (accompaniment[1].english_spoken === "-" ||
-      accompaniment[1].english_spoken === "") &&
-    (accompaniment[1].english_written === "-" ||
-      accompaniment[1].english_written === "")
-  ) {
-    checker = false;
-  } else {
-    if (
-      accompaniment[0].age > 62 ||
-      Number(accompaniment[0].english_spoken) === 2 ||
-      Number(accompaniment[0].education_level) <= 2 ||
-      accompaniment[1].age > 62 ||
-      Number(accompaniment[1].english_spoken) === 2 ||
-      Number(accompaniment[1].education_level) <= 2
-    ) {
-      checker = true;
-      setTrustedIndividuals("condition1", true);
-    }
-
-    if (
-      Number(accompaniment[0].english_spoken) === 2 ||
-      Number(accompaniment[1].english_spoken) === 2
-    ) {
-      setTrustedIndividuals("condition2", true);
-      checker = true;
-    } else {
-      setTrustedIndividuals("condition2", false);
-    }
-  }
-
-  return checker;
-}
 
 export default PersonalInformation;
