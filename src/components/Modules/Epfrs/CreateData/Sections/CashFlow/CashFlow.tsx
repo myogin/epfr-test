@@ -8,7 +8,7 @@ import AnnualIncomeCashFlow from "./AnnualIncome/AnnualIncomeCashFlow";
 import AnnualNetCashFlow from "./AnnualNetCashFlow/AnnualNetCashFlow";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
@@ -54,7 +54,8 @@ const CashFlow = (props: Props) => {
 
   const [saveLoading, setSaveLoading] = useState(false);
 
-  let { id, setGlobal } = usePersonalInformation();
+  let { id } = usePersonalInformation();
+  let { setGlobal } = useCashFlow();
 
   let checkNeedData = checkAllNeed(need);
 
@@ -115,12 +116,32 @@ const CashFlow = (props: Props) => {
     }
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection3 = await getPfrStep(3, params);
+
+      console.log(getSection3);
+
+      // setGlobal("editableStatus", getSection2.pfr.editableSection1);
+      // setGlobal("status", getSection2.pfr.section1);
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
   // Get data when scroll from section 2
   useEffect(() => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottomSection2 === "Process2") {
+        getSectionData(router.query.id);
         console.log("Get data Section 3");
       }
     }

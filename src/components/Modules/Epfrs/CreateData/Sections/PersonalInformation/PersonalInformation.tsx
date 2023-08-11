@@ -64,6 +64,7 @@ const PersonalInformation = (props: Props) => {
   let status = usePersonalInformation((state) => state.status);
   let editableStatus = usePersonalInformation((state) => state.editableStatus);
   let id = usePersonalInformation((state) => state.id);
+  let trustedActive = usePersonalInformation((state) => state.trustedActive);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -102,8 +103,8 @@ const PersonalInformation = (props: Props) => {
           setGlobalSectionTwo("id", id);
         }
         setGlobal("editableStatus", 1);
-        setPfr("section1", 1)
-        setPfr("editableSection1", 1)
+        setPfr("section1", 1);
+        setPfr("editableSection1", 1);
       }
 
       setSaveLoading(false); // Stop loading
@@ -180,6 +181,13 @@ const PersonalInformation = (props: Props) => {
       setShowAddDependent(true);
     }
   }, [dependant]);
+
+  const [checkTi, setCheckTi] = useState(false);
+
+  // Trigger the trusted individual data to showing the depdendent
+  useEffect(() => {
+    setCheckTi(trustedActive);
+  }, [trustedActive]);
 
   // Save data when scrolling
   useEffect(() => {
@@ -320,10 +328,15 @@ const PersonalInformation = (props: Props) => {
       </HeadingSecondarySection>
       <Accompainment pfrType={props.pfrType} />
       {/* Sec 4 */}
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">
-        1.4 Trusted Individual
-      </HeadingSecondarySection>
-      <TrustedIndividual />
+      {checkTi ? (
+        <>
+          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+            1.4 Trusted Individual
+          </HeadingSecondarySection>
+          <TrustedIndividual />
+        </>
+      ) : null}
+
       {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 1" />
       ) : (

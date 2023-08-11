@@ -205,62 +205,32 @@ const CreatePfrPage: Page = () => {
                     useBoxMethod
                   >
                     <PersonalInformation pfrType={pfrTypeId} id="section-1" />
-                    {status1 === 1 && editableStatus1 === 1 ? (
-                      <ExistingPortofolio pfrType={pfrTypeId} id="section-2" />
-                    ) : null}
-                    {status2 === 1 && editableStatus2 === 1 ? (
-                      <CashFlow pfrType={pfrTypeId} id="section-3" />
-                    ) : null}
-                    {status3 === 1 && editableStatus3 === 1 ? (
-                      <BalanceSheet pfrType={pfrTypeId} id="section-4" />
-                    ) : null}
-                    {status4 === 1 && editableStatus4 === 1 ? (
-                      <RiskProfile pfrType={pfrTypeId} id="section-5" />
-                    ) : null}
-                    {status5 === 1 && editableStatus5 === 1 ? (
-                      <CustomerKnowledgeAssesment
-                        pfrType={pfrTypeId}
-                        id="section-6"
-                      />
-                    ) : null}
-                    {status6 === 1 && editableStatus6 === 1 ? (
-                      <PrioritiesNeedAnalysis
-                        pfrType={pfrTypeId}
-                        id="section-7"
-                      />
-                    ) : null}
-                    {pfrData.section7 === 1 &&
-                    pfrData.editableSection7 === 1 ? (
-                      <Affordability pfrType={pfrTypeId} id="section-8" />
-                    ) : null}
-                    {pfrData.section8 === 1 &&
-                    pfrData.editableSection8 === 1 ? (
-                      <AnalysisRecommendation
-                        pfrType={pfrTypeId}
-                        id="section-9"
-                      />
-                    ) : null}
-                    {pfrData.section9 === 1 &&
-                    pfrData.editableSection9 === 1 ? (
-                      <SwitchingReplacement
-                        pfrType={pfrTypeId}
-                        id="section-10"
-                      />
-                    ) : null}
-                    {pfrData.section10 === 1 &&
-                    pfrData.editableSection10 === 1 ? (
-                      <ClientsAcknowledgment
-                        pfrType={pfrTypeId}
-                        id="section-11"
-                      />
-                    ) : null}
-                    {pfrData.section11 === 1 &&
-                    pfrData.editableSection11 === 1 ? (
-                      <RepresentativeDeclaration
-                        pfrType={pfrTypeId}
-                        id="section-12"
-                      />
-                    ) : null}
+                    <ExistingPortofolio pfrType={pfrTypeId} id="section-2" />
+                    <CashFlow pfrType={pfrTypeId} id="section-3" />
+                    <BalanceSheet pfrType={pfrTypeId} id="section-4" />
+                    <RiskProfile pfrType={pfrTypeId} id="section-5" />
+                    <CustomerKnowledgeAssesment
+                      pfrType={pfrTypeId}
+                      id="section-6"
+                    />
+                    <PrioritiesNeedAnalysis
+                      pfrType={pfrTypeId}
+                      id="section-7"
+                    />
+                    <Affordability pfrType={pfrTypeId} id="section-8" />
+                    <AnalysisRecommendation
+                      pfrType={pfrTypeId}
+                      id="section-9"
+                    />
+                    <SwitchingReplacement pfrType={pfrTypeId} id="section-10" />
+                    <ClientsAcknowledgment
+                      pfrType={pfrTypeId}
+                      id="section-11"
+                    />
+                    <RepresentativeDeclaration
+                      pfrType={pfrTypeId}
+                      id="section-12"
+                    />
                   </ScrollSpy>
                 </div>
               )}

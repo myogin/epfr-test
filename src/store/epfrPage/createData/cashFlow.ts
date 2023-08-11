@@ -170,6 +170,16 @@ const cashFlow = create(
             produce((draft) => {
               let data = draft.data[clientType].annualIncome;
               data[name] = value;
+
+              if (value > 0) {
+                draft.status = 1;
+              }else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setAnnualExpanse: (
@@ -180,9 +190,19 @@ const cashFlow = create(
         ) =>
           set(
             produce((draft) => {
-              let household = draft.annualExpense[indexData];
-              household.values[indexClient] = value;
-              household.selected = true;
+              let dataNew = draft.annualExpense[indexData];
+              dataNew.values[indexClient] = value;
+              dataNew.selected = true;
+
+              if (value > 0) {
+                draft.status = 1;
+              }else {
+                draft.status = 1;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setOthers: (annualType: string, indexData: number, params: any) =>
