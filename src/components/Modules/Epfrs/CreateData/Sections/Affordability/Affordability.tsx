@@ -169,9 +169,6 @@ const Affordability = (props: Props) => {
   useEffect(() => {
     if (!router.isReady) return;
     // If edit check the ID
-
-    console.log("check type section 8 " + props.pfrType)
-    setGlobal("typeClient", props.pfrType);
     setInit(props.pfrType);
 
     if (router.query.id !== null && router.query.id !== undefined) {
@@ -191,7 +188,7 @@ const Affordability = (props: Props) => {
         (editableStatus === 2 && status === 1)
       ) {
         console.log("section8", section8);
-        storeData();
+        // storeData();
       } else {
         console.log("Your data not complete Section 2");
       }

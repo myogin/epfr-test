@@ -5,7 +5,7 @@ import { SectionEight } from "@/models/SectionEight";
 
 const initialState: SectionEight = {
   section8: {
-    typeClient: 1,
+    typeClient: 0,
     totalDependant: 0,
     pfrId: 0,
     need: [],
@@ -301,40 +301,44 @@ const Affordability = create(
     setInit: (params: any) =>
       set(
         produce((draft) => {
-          draft.section8.payorDetail = new Array(params).fill({
-            isSelf: 0,
-            relationShip: null,
-            payorName: null,
-            passportNo: null,
-            occupation: null,
-            payorIncome: 0,
-          });
-
-          draft.section8.payorBudget = new Array(params).fill(false).map(() => {
-            return new Array(5).fill({
-              selection: false,
-              annual: 0,
-              single: 0,
-              sourceOfFund: "",
+          if(get().section8.typeClient === 0) {
+            draft.section8.payorDetail = new Array(params).fill({
+              isSelf: 0,
+              relationShip: null,
+              payorName: null,
+              passportNo: null,
+              occupation: null,
+              payorIncome: 0,
             });
-          });
+  
+            draft.section8.payorBudget = new Array(params).fill(false).map(() => {
+              return new Array(5).fill({
+                selection: false,
+                annual: 0,
+                single: 0,
+                sourceOfFund: "",
+              });
+            });
+  
+            draft.section8.sourceOfWealth = new Array(
+              params
+            ).fill({
+              employment: false,
+              investment: false,
+              inheritance: false,
+              other: false,
+              otherExplain: null,
+            });
+  
+            draft.section8.assetOrSurplus = new Array(
+              params
+            ).fill({
+              answer: 0,
+              reason: "",
+            });
+          }
 
-          draft.section8.sourceOfWealth = new Array(
-            params
-          ).fill({
-            employment: false,
-            investment: false,
-            inheritance: false,
-            other: false,
-            otherExplain: null,
-          });
-
-          draft.section8.assetOrSurplus = new Array(
-            params
-          ).fill({
-            answer: 0,
-            reason: "",
-          });
+          draft.section8.typeClient = params
         })
       ),
     resetSectionEight: () => {
