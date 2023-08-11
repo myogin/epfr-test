@@ -1,12 +1,29 @@
+import { useAffordability } from "@/store/epfrPage/createData/affordability";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
+import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
+import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import { Dialog, Transition } from "@headlessui/react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import File3FillIcon from "remixicon-react/File3FillIcon";
-import File3LineIcon from "remixicon-react/File3LineIcon";
 
 const PfrButtonModal = () => {
+  const router = useRouter();
+
   const [showModal, setShowModal] = useState(false);
+  let { resetSectionOne } = usePersonalInformation();
+  let { resetSectionTwo } = useExistingPortofolio();
+  let { resetSectionThree } = useCashFlow();
+  let { resetPfr } = usePfrData();
+  let { resetSectionFour } = useBalanceSheet();
+  let { resetSectionSix } = useCustomerKnowledgeAssesment();
+  let { resetSectionSeven } = usePrioritiesNeedAnalysis();
+  let { resetSectionEight } = useAffordability();
 
   const closeModal = () => {
     setShowModal(false);
@@ -16,6 +33,18 @@ const PfrButtonModal = () => {
     setShowModal(true);
   };
 
+  const goToCreatePfr = (params: string) => {
+    resetSectionOne();
+    resetSectionTwo();
+    resetSectionThree();
+    resetPfr();
+    resetSectionFour();
+    resetSectionSix();
+    resetSectionSeven();
+    resetSectionEight();
+
+    router.push(`create/${params}`);
+  };
   return (
     <div>
       <button
@@ -58,34 +87,36 @@ const PfrButtonModal = () => {
                   </Dialog.Title>
                   <div className="mt-2">
                     <div className="flex justify-between gap-10">
-                      <Link href="/create/single">
-                        <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
-                          <button>
-                            <File3FillIcon
-                              className="text-green-deep"
-                              size={30}
-                            />
-                          </button>
-                          <h2>Single EPFR Document</h2>
-                          <span className="text-sm text-gray-light">
-                            This EPFR for one person
-                          </span>
-                        </div>
-                      </Link>
-                      <Link href="/create/joint">
-                        <div className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light">
-                          <button>
-                            <File3FillIcon
-                              className="text-green-deep"
-                              size={30}
-                            />
-                          </button>
-                          <h2>Joint EPFR Document</h2>
-                          <span className="text-sm text-gray-light">
-                            This EPFR for two persons
-                          </span>
-                        </div>
-                      </Link>
+                      <div
+                        onClick={() => goToCreatePfr("single")}
+                        className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light"
+                      >
+                        <button>
+                          <File3FillIcon
+                            className="text-green-deep"
+                            size={30}
+                          />
+                        </button>
+                        <h2>Single EPFR Document</h2>
+                        <span className="text-sm text-gray-light">
+                          This EPFR for one person
+                        </span>
+                      </div>
+                      <div
+                        onClick={() => goToCreatePfr("joint")}
+                        className="p-10 text-center border rounded-lg cursor-pointer border-gray-light hover:border-green-deep hover:bg-green-light"
+                      >
+                        <button>
+                          <File3FillIcon
+                            className="text-green-deep"
+                            size={30}
+                          />
+                        </button>
+                        <h2>Joint EPFR Document</h2>
+                        <span className="text-sm text-gray-light">
+                          This EPFR for two persons
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </Dialog.Panel>

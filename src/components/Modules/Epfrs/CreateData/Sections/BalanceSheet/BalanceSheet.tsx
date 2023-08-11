@@ -16,6 +16,10 @@ import { getLength } from "@/libs/helper";
 import axios from "axios";
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import { useRouter } from "next/router";
 
 interface Props {
   id?: any;
@@ -33,11 +37,47 @@ const BalanceSheet = (props: Props) => {
     reason,
     updateReason,
     updateID,
+    setGlobal,
+    editableStatus,
+    status,
+    fetchLiability,
+    fetchAsset,
   } = useBalanceSheet();
-
+  const router = useRouter();
   const [dataS4, setDataS4] = useState(null);
-
+  const [saveLoading, setSaveLoading] = useState(false);
   const scrollPosition = useScrollPosition(4);
+  const scrollPositionBottom = useScrollPositionBottom(4);
+  const scrollPosition3 = useScrollPosition(3);
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection4 = await getPfrStep(4, params);
+
+      setGlobal("need", [getSection4.needs[0].need, getSection4.needs[1].need]);
+      setGlobal("reason", [
+        getSection4.reasons[0].reason,
+        getSection4.reasons[1].reason,
+      ]);
+
+      fetchAsset(getSection4.assetOther);
+      fetchLiability(getSection4.liabilityOther);
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+  // load data for section 4 when position at 3
+  useEffect(() => {
+    if (router.query.id !== null && router.query.id !== undefined) {
+      getSectionData(router.query.id);
+      // getGeneralData(router.query.id);
+    }
+  }, []);
 
   useEffect(() => {
     // const headers = {
@@ -58,19 +98,62 @@ const BalanceSheet = (props: Props) => {
     // }
     // getDataS4();
 
-    if (scrollPosition === "okSec4") {
-      console.log("Masuk Section 4");
-    }
-
     calcTotal();
-  }, [scrollPosition]);
+  }, [others]);
   // get id from group 1 and paste to grou 2
   let { id } = usePersonalInformation();
 
   useEffect(() => {
     updateID(id);
   }, [id, updateID]);
+  // Store data
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
 
+      let localData = localStorage.getItem("section4")
+        ? localStorage.getItem("section4")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data.state;
+      }
+
+      let storeDataSection = await postPfrSections(4, JSON.stringify(dataFix));
+
+      // If save success get ID and store to localstorage
+      if (storeDataSection.data.result === "success") {
+        setGlobal("editableStatus", 1);
+      }
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    if (scrollPositionBottom === "Process4") {
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("can save now section4");
+        storeData();
+      } else {
+        console.log("Your data not complete Section 4");
+      }
+    }
+  }, [scrollPositionBottom, editableStatus, status]);
+
+  // check if user update some value then can triger save again
+  useEffect(() => {
+    if (status == 1 && editableStatus == 1) {
+      setGlobal("editableStatus", 2);
+    }
+  }, [others, reason, need]);
   return (
     <div id={props.id}>
       <div
@@ -87,6 +170,13 @@ const BalanceSheet = (props: Props) => {
           }`}
         >
           Section 4. Balance Sheet
+          {saveLoading ? (
+            <span className="text-xs font-extralight text-gray-light">
+              Saving...
+            </span>
+          ) : (
+            ""
+          )}
         </HeadingPrimarySection>
       </div>
 
@@ -220,6 +310,11 @@ const BalanceSheet = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 4" />
+      ) : (
+        ""
+      )}
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );

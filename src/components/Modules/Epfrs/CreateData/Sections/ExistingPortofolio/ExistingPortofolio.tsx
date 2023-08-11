@@ -19,9 +19,10 @@ import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrima
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
-import { postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useRouter } from "next/router";
+import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 
 interface Props {
   id?: any;
@@ -56,6 +57,17 @@ const ExistingPortofolio = (props: Props) => {
   let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);
   let setToggle = useExistingPortofolio((state) => state.setToggle);
   let setGlobal = useExistingPortofolio((state) => state.setGlobal);
+  let fetchProperty = useExistingPortofolio((state) => state.fetchProperty);
+  let fetchInvestment = useExistingPortofolio((state) => state.fetchInvestment);
+  let fetchSaving = useExistingPortofolio((state) => state.fetchSaving);
+  let fetchCpf = useExistingPortofolio((state) => state.fetchCpf);
+  let fetchInsurance = useExistingPortofolio((state) => state.fetchInsurance);
+  let fetchInsurance2 = useExistingPortofolio((state) => state.fetchInsurance2);
+  let fetchLoan = useExistingPortofolio((state) => state.fetchLoan);
+  let fetchSrs = useExistingPortofolio((state) => state.fetchSrs);
+
+  let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
+  let idSectionThree = useCashFlow((state) => state.id);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -94,10 +106,14 @@ const ExistingPortofolio = (props: Props) => {
 
       // If save success get ID and store to localstorage
       if (storeDataSection.data.result === "success") {
-        if (id === 0 || id === null || id === undefined) {
-          setGlobal("id", storeDataSection.data.pfrId);
+        if (
+          idSectionThree === 0 ||
+          idSectionThree === null ||
+          idSectionThree === undefined
+        ) {
+          setGlobalSectionThree("id", storeDataSection.data.pfrId);
         } else {
-          setGlobal("id", id);
+          setGlobalSectionThree("id", id);
         }
         setGlobal("editableStatus", 1);
       }
@@ -109,13 +125,86 @@ const ExistingPortofolio = (props: Props) => {
     }
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection2 = await getPfrStep(2, params);
+
+      console.log(getSection2);
+
+      setGlobal("editableStatus", getSection2.pfr.editableSection1);
+      setGlobal("status", getSection2.pfr.section1);
+
+      // Fetch Client
+      if (getSection2.summaryOfProperty.length > 0) {
+        getSection2.summaryOfProperty.map((data: any, index: number) => {
+          fetchProperty(index, data);
+        });
+      }
+
+      // Fetch accompaintment
+      if (getSection2.summaryOfInvestment.length > 0) {
+        getSection2.summaryOfInvestment.map((data: any, index: number) => {
+          fetchInvestment(index, data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfSaving.length > 0) {
+        getSection2.summaryOfSaving.map((data: any, index: number) => {
+          fetchSaving(index, data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfCPF.length > 0) {
+        getSection2.summaryOfCPF.map((data: any, index: number) => {
+          fetchCpf(index, data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfInsurance.length > 0) {
+        getSection2.summaryOfInsurance.map((data: any, index: number) => {
+          fetchInsurance(index, data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfInsurance2.length > 0) {
+        getSection2.summaryOfInsurance2.map((data: any, index: number) => {
+          fetchInsurance2(index, data);
+        });
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfLoans.length > 0) {
+        fetchLoan(getSection2.summaryOfLoans);
+      }
+
+      // Fetch trusted individual
+      if (getSection2.summaryOfSRS.length > 0) {
+        getSection2.summaryOfSRS.map((data: any, index: number) => {
+          fetchSrs(index, data);
+        });
+      }
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
   // Get data when scroll from section 1
   useEffect(() => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottomSection1 === "Process1") {
-        console.log("Get data Section 2");
+        getSectionData(router.query.id);
       }
     }
   }, [scrollPositionBottomSection1, router.isReady, router.query.id]);
@@ -135,7 +224,7 @@ const ExistingPortofolio = (props: Props) => {
   }, [scrollPositionBottom, editableStatus, status]);
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen">
       <div
         id="section-header-2"
         className={`sticky top-0 z-10 ${
@@ -150,6 +239,13 @@ const ExistingPortofolio = (props: Props) => {
           }`}
         >
           Section 2. Existing Portfolio
+          {saveLoading ? (
+            <span className="text-xs font-extralight text-gray-light">
+              Saving...
+            </span>
+          ) : (
+            ""
+          )}
         </HeadingPrimarySection>
       </div>
       {need ? (
@@ -349,7 +445,7 @@ const ExistingPortofolio = (props: Props) => {
       ) : (
         ""
       )}
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
+      <div className="bottom-0 mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };

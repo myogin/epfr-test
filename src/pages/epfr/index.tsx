@@ -19,6 +19,11 @@ import { siteConfig } from "@/libs/config";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
+import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
+import { useAffordability } from "@/store/epfrPage/createData/affordability";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +35,11 @@ const EpfrPage: Page = () => {
   let { resetSectionOne } = usePersonalInformation();
   let { resetSectionTwo } = useExistingPortofolio();
   let { resetSectionThree } = useCashFlow();
+  let { resetPfr } = usePfrData();
+  let { resetSectionFour } = useBalanceSheet();
+  let { resetSectionSix } = useCustomerKnowledgeAssesment();
+  let { resetSectionSeven } = usePrioritiesNeedAnalysis();
+  let { resetSectionEight } = useAffordability();
 
   const getGeneralData = async () => {
     if (router.query.edit) {
@@ -41,6 +51,11 @@ const EpfrPage: Page = () => {
     resetSectionOne();
     resetSectionTwo();
     resetSectionThree();
+    resetPfr();
+    resetSectionFour();
+    resetSectionSix();
+    resetSectionSeven();
+    resetSectionEight();
 
     router.push(`create/${params}`);
   };
@@ -67,7 +82,10 @@ const EpfrPage: Page = () => {
             <TitleMedium>Please choose EPFR type</TitleMedium>
           </div>
           <div className="flex justify-between gap-10">
-            <div onClick={() => goToCreatePfr('single')} className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
+            <div
+              onClick={() => goToCreatePfr("single")}
+              className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light"
+            >
               <button className="mb-3">
                 <File3FillIcon className="text-green-deep" size={50} />
               </button>
@@ -76,7 +94,10 @@ const EpfrPage: Page = () => {
                 This EPFR for one person
               </span>
             </div>
-            <div onClick={() => goToCreatePfr('joint')} className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light">
+            <div
+              onClick={() => goToCreatePfr("joint")}
+              className="py-12 text-center border rounded-lg cursor-pointer px-11 border-gray-light hover:border-green-deep hover:bg-green-light"
+            >
               <button className="mb-3">
                 <File3FillIcon className="text-green-deep" size={50} />
               </button>

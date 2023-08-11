@@ -30,6 +30,7 @@ interface Props {
 const SwitchingReplacement = (props: Props) => {
   const scrollPosition = useScrollPosition(10);
   const scrollPositionBottom = useScrollPositionBottom(10);
+  const scrollPositionBottomSection9 = useScrollPositionBottom(9);
   const [pfrId, setPfrId] = useState(0);
   const [editable, setEditable] = useState(0);
 
@@ -103,7 +104,7 @@ const SwitchingReplacement = (props: Props) => {
     data: [sectionData, sectionData],
     issues: [],
     originalProduct: products,
-    status: 1,
+    status: 0,
   });
 
   const setData = (params: any, index: number) => {
@@ -277,7 +278,7 @@ const SwitchingReplacement = (props: Props) => {
   };
 
   useEffect(() => {
-    if (scrollPosition === "NotOkSec10" && sectionTenData.id === 0) {
+    if (scrollPositionBottomSection9 === "Process9" && sectionTenData.id === 0) {
       const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
       setPfrId(section1?.state?.id);
       setSectionTenData({
@@ -285,7 +286,7 @@ const SwitchingReplacement = (props: Props) => {
         id: section1?.state?.id
       });
     }
-  }, [scrollPosition]);
+  }, [scrollPositionBottomSection9]);
 
   useEffect(() => {
     getPfrLength.map((data, index) => {

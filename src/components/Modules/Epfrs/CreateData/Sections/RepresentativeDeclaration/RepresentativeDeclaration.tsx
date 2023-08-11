@@ -43,6 +43,7 @@ const RepresentativeDeclaration = (props: Props) => {
   })
 
   const scrollPosition = useScrollPosition(11);
+  const scrollPositionBottomSection11 = useScrollPositionBottom(11);
 
   const saveData = async() => {
       // const groupFourData = {
@@ -123,7 +124,7 @@ const RepresentativeDeclaration = (props: Props) => {
   const scrollPositionBottom = useScrollPositionBottom(11);
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process11") {
+    if (scrollPositionBottomSection11 === "Process11" && sectionTwelveData.id === 0) {
       const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
       setPfrId(section1?.state?.id);
       setSectionTwelveData({
@@ -132,19 +133,7 @@ const RepresentativeDeclaration = (props: Props) => {
       })
       fetchData();
     }
-  }, [scrollPositionBottom]);
-
-  // useEffect(() => {
-  //   if (scrollPosition === "OkSec11" && sectionTwelveData.id === 0) {
-  //     const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-  //     setPfrId(section1?.state?.id);
-  //     setSectionTwelveData({
-  //       ...sectionTwelveData,
-  //       id: section1?.state?.id
-  //     })
-  //     fetchData();
-  //   }
-  // }, [scrollPosition]);
+  }, [scrollPositionBottomSection11]);
 
   const [showModal, setShowModal] = useState(false);
 

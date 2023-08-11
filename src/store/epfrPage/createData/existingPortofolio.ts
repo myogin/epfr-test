@@ -4,24 +4,31 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 type Actions = {
+  fetchProperty: (indexData: number, params: any) => any;
   setProperty: (indexData: number, params: any) => any;
   patchProperty: (params: any) => any;
   removeProperty: (params: any) => any;
+  fetchInvestment: (indexData: number, params: any) => any;
   setInvestment: (indexData: number, params: any) => any;
   patchInvestment: (params: any) => any;
   removeInvestment: (params: any) => any;
+  fetchSaving: (indexData: number, params: any) => any;
   setSaving: (indexData: number, params: any) => any;
   patchSaving: (params: any) => any;
   removeSaving: (params: any) => any;
+  fetchCpf: (indexData: number, params: any) => any;
   setCpf: (indexData: number, params: any) => any;
   patchCpf: (params: any) => any;
   removeCpf: (params: any) => any;
+  fetchInsurance: (indexData: number, params: any) => any;
   setInsurance: (indexData: number, params: any) => any;
   patchInsurance: (params: any) => any;
   removeInsurance: (params: any) => any;
+  fetchInsurance2: (indexData: number, params: any) => any;
   setInsurance2: (indexData: number, params: any) => any;
   patchInsurance2: (params: any) => any;
   removeInsurance2: (params: any) => any;
+  fetchSrs: (indexData: number, params: any) => any;
   setSrs: (indexData: number, params: any) => any;
   patchSrs: (params: any) => any;
   removeSrs: (params: any) => any;
@@ -59,7 +66,7 @@ const initialState: SectionTwo = {
       monthlyLoanRepaymentCash: 0,
       monthlyLoanRepaymentCPF: 0,
       currentMarketValue: 0,
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   summaryOfInvestment: [
@@ -145,7 +152,7 @@ const initialState: SectionTwo = {
       lender: "",
       interestRate: 0,
       monthlyLoanRepayment: 0,
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   summaryOfCPF: [
@@ -157,7 +164,7 @@ const initialState: SectionTwo = {
       specialAccount: 0,
       medisaveAccount: 0,
       retirementAccount: 0,
-      clientPfr: "",
+      clientPfr: "Manual",
     },
   ],
   summaryOfSRS: [
@@ -180,6 +187,42 @@ const existingPortofolio = create(
     persist<SectionTwo & Actions>(
       (set, get) => ({
         ...initialState,
+        fetchProperty: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              let countData = get().summaryOfProperty?.length;
+
+              if (indexData === 0 && get().summaryOfProperty?.length) {
+                let dataReplace = draft.summaryOfProperty[indexData];
+                dataReplace.id = 1;
+                dataReplace.client = params.client;
+                dataReplace.typeOfProperty = params.typeOfProperty;
+                dataReplace.editting = params.client !== "" ? true : false;
+                dataReplace.yearPurchased = params.yearPurchased;
+                dataReplace.purchasePrice = params.purchasePrice;
+                dataReplace.loanAmount = params.loanAmount;
+                dataReplace.currentOutstanding = params.currentOutstanding;
+                dataReplace.monthlyLoanRepaymentCash =
+                  params.monthlyLoanRepaymentCash;
+                dataReplace.monthlyLoanRepaymentCPF =
+                  params.monthlyLoanRepaymentCPF;
+                dataReplace.currentMarketValue = params.currentMarketValue;
+                dataReplace.clientPfr = params.clientPfr;
+              } else {
+                params["id"] = ++countData;
+                draft.summaryOfProperty.push(params);
+              }
+
+              if (
+                draft.summaryOfProperty[0].editting === true &&
+                draft.summaryOfProperty[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+            })
+          ),
         setProperty: (indexData: number, params: any) =>
           set(
             produce((draft) => {
@@ -202,6 +245,19 @@ const existingPortofolio = create(
               } else {
                 draft.summaryOfProperty.push(params);
               }
+
+              if (
+                draft.summaryOfProperty[0].editting === true &&
+                draft.summaryOfProperty[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchProperty: (params: any) =>
@@ -222,6 +278,20 @@ const existingPortofolio = create(
               dataPatch.monthlyLoanRepaymentCPF =
                 params.monthlyLoanRepaymentCPF;
               dataPatch.currentMarketValue = params.currentMarketValue;
+
+              // check when edit data
+              if (
+                draft.summaryOfProperty[0].editting === true &&
+                draft.summaryOfProperty[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeProperty: (params: any) =>
@@ -248,6 +318,54 @@ const existingPortofolio = create(
                 dataReplace.monthlyLoanRepaymentCPF = 0;
                 dataReplace.currentMarketValue = 0;
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfProperty[0].editting === true &&
+                draft.summaryOfProperty[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          ),
+        fetchInvestment: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              let countData = get().summaryOfInvestment?.length;
+
+              if (indexData === 0 && get().summaryOfInvestment?.length) {
+                let dataReplace = draft.summaryOfInvestment[indexData];
+                dataReplace.id = 1;
+                dataReplace.client = params.client;
+                dataReplace.editting = params.client !== "" ? true : false;
+                dataReplace.typeOfInvestment = params.typeOfInvestment;
+                dataReplace.typeOfInvestmentOther =
+                  params.typeOfInvestmentOther;
+                dataReplace.company = params.company;
+                dataReplace.yearInvested = params.yearInvested;
+                dataReplace.investmentAmount = params.investmentAmount;
+                dataReplace.currentvalue = params.currentvalue;
+                dataReplace.sourceOfInvestment = params.sourceOfInvestment;
+              } else {
+                params["id"] = ++countData;
+                draft.summaryOfInvestment.push(params);
+              }
+
+              // check when edit data
+              if (
+                draft.summaryOfInvestment[0].editting === true &&
+                draft.summaryOfInvestment[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
             })
           ),
         setInvestment: (indexData: number, params: any) =>
@@ -268,6 +386,20 @@ const existingPortofolio = create(
               } else {
                 draft.summaryOfInvestment.push(params);
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfInvestment[0].editting === true &&
+                draft.summaryOfInvestment[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchInvestment: (params: any) =>
@@ -285,6 +417,20 @@ const existingPortofolio = create(
               dataPatch.investmentAmount = params.investmentAmount;
               dataPatch.currentvalue = params.currentvalue;
               dataPatch.sourceOfInvestment = params.sourceOfInvestment;
+
+              // check when edit data
+              if (
+                draft.summaryOfInvestment[0].editting === true &&
+                draft.summaryOfInvestment[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeInvestment: (params: any) =>
@@ -310,6 +456,50 @@ const existingPortofolio = create(
                 dataReplace.currentvalue = 0;
                 dataReplace.sourceOfInvestment = 0;
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfInvestment[0].editting === true &&
+                draft.summaryOfInvestment[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          ),
+        fetchSaving: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              let countData = get().summaryOfSavings?.length;
+
+              if (indexData === 0 && get().summaryOfSavings?.length) {
+                let dataReplace = draft.summaryOfSavings[indexData];
+                dataReplace.id = 1;
+                dataReplace.client = params.client;
+                dataReplace.editting = params.client !== "" ? true : false;
+                dataReplace.typeOfDeposit = params.typeOfDeposit;
+                dataReplace.bank = params.bank;
+                dataReplace.yearDeposit = params.yearDeposit;
+                dataReplace.savingAmount = params.savingAmount;
+              } else {
+                params["id"] = ++countData;
+                draft.summaryOfSavings.push(params);
+              }
+
+              // check when edit data
+              if (
+                draft.summaryOfSavings[0].editting === true &&
+                draft.summaryOfSavings[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
             })
           ),
         setSaving: (indexData: number, params: any) =>
@@ -326,6 +516,20 @@ const existingPortofolio = create(
               } else {
                 draft.summaryOfSavings.push(params);
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfSavings[0].editting === true &&
+                draft.summaryOfSavings[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchSaving: (params: any) =>
@@ -340,6 +544,20 @@ const existingPortofolio = create(
               dataPatch.bank = params.bank;
               dataPatch.yearDeposit = params.yearDeposit;
               dataPatch.savingAmount = params.savingAmount;
+
+              // check when edit data
+              if (
+                draft.summaryOfSavings[0].editting === true &&
+                draft.summaryOfSavings[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeSaving: (params: any) =>
@@ -362,6 +580,51 @@ const existingPortofolio = create(
                 dataReplace.yearDeposit = 0;
                 dataReplace.savingAmount = 0;
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfSavings[0].editting === true &&
+                draft.summaryOfSavings[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          ),
+        fetchCpf: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              let countData = get().summaryOfCPF?.length;
+
+              if (indexData === 0 && get().summaryOfCPF?.length) {
+                let dataReplace = draft.summaryOfCPF[indexData];
+                dataReplace.id = 1;
+                dataReplace.editting = params.client !== "" ? true : false;
+                dataReplace.client = params.client;
+                dataReplace.ordinaryAccount = params.ordinaryAccount;
+                dataReplace.specialAccount = params.specialAccount;
+                dataReplace.medisaveAccount = params.medisaveAccount;
+                dataReplace.retirementAccount = params.retirementAccount;
+                dataReplace.clientPfr = params.clientPfr;
+              } else {
+                params["id"] = ++countData;
+                draft.summaryOfCPF.push(params);
+              }
+
+              // check when edit data
+              if (
+                draft.summaryOfCPF[0].editting === true &&
+                draft.summaryOfCPF[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
             })
           ),
         setCpf: (indexData: number, params: any) =>
@@ -380,6 +643,20 @@ const existingPortofolio = create(
               } else {
                 draft.summaryOfCPF.push(params);
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfCPF[0].editting === true &&
+                draft.summaryOfCPF[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchCpf: (params: any) =>
@@ -394,6 +671,20 @@ const existingPortofolio = create(
               dataPatch.specialAccount = params.specialAccount;
               dataPatch.medisaveAccount = params.medisaveAccount;
               dataPatch.retirementAccount = params.retirementAccount;
+
+              // check when edit data
+              if (
+                draft.summaryOfCPF[0].editting === true &&
+                draft.summaryOfCPF[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeCpf: (params: any) =>
@@ -415,6 +706,63 @@ const existingPortofolio = create(
                 dataReplace.specialAccount = 0;
                 dataReplace.medisaveAccount = 0;
                 dataReplace.retirementAccount = 0;
+              }
+
+              // check when edit data
+              if (
+                draft.summaryOfCPF[0].editting === true &&
+                draft.summaryOfCPF[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          ),
+        fetchInsurance: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              let countData = get().summaryOfInsurance?.length;
+
+              if (indexData === 0 && get().summaryOfInsurance?.length) {
+                let dataReplace = draft.summaryOfInsurance[indexData];
+                dataReplace.id = 1;
+                dataReplace.client = params.client;
+                dataReplace.editting = params.client !== "" ? true : false;
+                dataReplace.insured = params.insured;
+                dataReplace.status = params.status;
+                dataReplace.insurer = params.insurer;
+                dataReplace.policyType = params.policyType;
+                dataReplace.policyTypeOther = params.policyTypeOther;
+                dataReplace.policyTerm = params.policyTerm;
+                dataReplace.death = params.death;
+                dataReplace.tpd = params.tpd;
+                dataReplace.ci = params.ci;
+                dataReplace.earlyCI = params.earlyCI;
+                dataReplace.acc = params.acc;
+                dataReplace.purchaseYear = params.purchaseYear;
+                dataReplace.premiumFrequency = params.premiumFrequency;
+                dataReplace.premium = params.premium;
+                dataReplace.cash = params.cash;
+                dataReplace.medisave = params.medisave;
+                dataReplace.sourceOfFund = params.sourceOfFund;
+              } else {
+                params["id"] = ++countData;
+                draft.summaryOfInsurance.push(params);
+              }
+
+              // check when edit data
+              if (
+                draft.summaryOfInsurance[0].editting === true &&
+                draft.summaryOfInsurance[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
               }
             })
           ),
@@ -445,6 +793,20 @@ const existingPortofolio = create(
               } else {
                 draft.summaryOfInsurance.push(params);
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfInsurance[0].editting === true &&
+                draft.summaryOfInsurance[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchInsurance: (params: any) =>
@@ -472,6 +834,20 @@ const existingPortofolio = create(
               dataPatch.cash = params.cash;
               dataPatch.medisave = params.medisave;
               dataPatch.sourceOfFund = params.sourceOfFund;
+
+              // check when edit data
+              if (
+                draft.summaryOfInsurance[0].editting === true &&
+                draft.summaryOfInsurance[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeInsurance: (params: any) =>
@@ -507,6 +883,58 @@ const existingPortofolio = create(
                 dataReplace.medisave = 0;
                 dataReplace.sourceOfFund = 0;
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfInsurance[0].editting === true &&
+                draft.summaryOfInsurance[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          ),
+        fetchInsurance2: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              let countData = get().summaryOfInsurance2?.length;
+
+              if (indexData === 0 && get().summaryOfInsurance2?.length) {
+                let dataReplace = draft.summaryOfInsurance2[indexData];
+                dataReplace.id = params.id;
+                dataReplace.client = params.client;
+                dataReplace.editting = params.client !== "" ? true : false;
+                dataReplace.insured = params.insured;
+                dataReplace.insurer = params.insurer;
+                dataReplace.policyType = params.policyType;
+                dataReplace.policyTerm = params.policyTerm;
+                dataReplace.existingHosPlan = params.existingHosPlan;
+                dataReplace.typeOfHosCovered = params.typeOfHosCovered;
+                dataReplace.classOfWardCovered = params.classOfWardCovered;
+                dataReplace.purchaseYear = params.purchaseYear;
+                dataReplace.premium = params.premium;
+                dataReplace.medisave = params.medisave;
+                dataReplace.frequency = params.frequency;
+                dataReplace.sourceOfFund = params.sourceOfFund;
+              } else {
+                params["id"] = ++countData;
+                draft.summaryOfInsurance2.push(params);
+              }
+
+              // check when edit data
+              if (
+                draft.summaryOfInsurance2[0].editting === true &&
+                draft.summaryOfInsurance2[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
             })
           ),
         setInsurance2: (indexData: number, params: any) =>
@@ -531,6 +959,20 @@ const existingPortofolio = create(
               } else {
                 draft.summaryOfInsurance2.push(params);
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfInsurance2[0].editting === true &&
+                draft.summaryOfInsurance2[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchInsurance2: (params: any) =>
@@ -552,6 +994,20 @@ const existingPortofolio = create(
               dataPatch.medisave = params.medisave;
               dataPatch.frequency = params.frequency;
               dataPatch.sourceOfFund = params.sourceOfFund;
+
+              // check when edit data
+              if (
+                draft.summaryOfInsurance2[0].editting === true &&
+                draft.summaryOfInsurance2[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeInsurance2: (params: any) =>
@@ -582,6 +1038,46 @@ const existingPortofolio = create(
                 dataReplace.frequency = "";
                 dataReplace.sourceOfFund = 0;
               }
+              // check when edit data
+              if (
+                draft.summaryOfInsurance2[0].editting === true &&
+                draft.summaryOfInsurance2[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          ),
+        fetchSrs: (indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              let countData = get().summaryOfSRS?.length;
+
+              if (indexData === 0 && get().summaryOfSRS?.length) {
+                let dataReplace = draft.summaryOfSRS[indexData];
+                dataReplace.id = 1;
+                dataReplace.client = params.client;
+                dataReplace.editting = params.client !== "" ? true : false;
+                dataReplace.amount = params.amount;
+              } else {
+                params["id"] = ++countData;
+                draft.summaryOfSRS.push(params);
+              }
+
+              // check when edit data
+              if (
+                draft.summaryOfSRS[0].editting === true &&
+                draft.summaryOfSRS[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
             })
           ),
         setSrs: (indexData: number, params: any) =>
@@ -595,6 +1091,20 @@ const existingPortofolio = create(
               } else {
                 draft.summaryOfSRS.push(params);
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfSRS[0].editting === true &&
+                draft.summaryOfSRS[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchSrs: (params: any) =>
@@ -606,6 +1116,20 @@ const existingPortofolio = create(
 
               dataPatch.client = params.client;
               dataPatch.amount = params.amount;
+
+              // check when edit data
+              if (
+                draft.summaryOfSRS[0].editting === true &&
+                draft.summaryOfSRS[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeSrs: (params: any) =>
@@ -625,6 +1149,20 @@ const existingPortofolio = create(
                 dataReplace.client = "";
                 dataReplace.amount = 0;
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfSRS[0].editting === true &&
+                draft.summaryOfSRS[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         fetchLoan: (datas: SummaryOfLoans[]) =>
@@ -636,7 +1174,7 @@ const existingPortofolio = create(
                 datas.map((param, index) => {
                   if (index === 0 && checkLengthLoan === 1) {
                     let dataReplace = draft.summaryOfLoans[index];
-                    dataReplace.id = param.id;
+                    dataReplace.id = 1;
                     dataReplace.editting = param.editting;
                     dataReplace.client = param.client;
                     dataReplace.typeOfLoan = param.typeOfLoan;
@@ -656,6 +1194,20 @@ const existingPortofolio = create(
                     param["id"] = ++checkLengthLoan;
                     draft.summaryOfLoans.push(param);
                   }
+
+                  // check when edit data
+                  // if (
+                  //   draft.summaryOfLoans[0].editting === true &&
+                  //   draft.summaryOfLoans[0].client !== ""
+                  // ) {
+                  //   draft.status = 1;
+                  // } else {
+                  //   draft.status = 0;
+                  // }
+
+                  // if (get().editableStatus === 1 && get().status === 1) {
+                  //   draft.editableStatus = 2;
+                  // }
                 });
               }
             })
@@ -683,6 +1235,20 @@ const existingPortofolio = create(
               } else {
                 draft.summaryOfLoans.push(params);
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfLoans[0].editting === true &&
+                draft.summaryOfLoans[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchLoan: (params: any) =>
@@ -702,6 +1268,20 @@ const existingPortofolio = create(
               dataPatch.lender = params.lender;
               dataPatch.interestRate = params.interestRate;
               dataPatch.monthlyLoanRepayment = params.monthlyLoanRepayment;
+
+              // check when edit data
+              if (
+                draft.summaryOfLoans[0].editting === true &&
+                draft.summaryOfLoans[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeLoan: (params: any) =>
@@ -730,6 +1310,20 @@ const existingPortofolio = create(
                 dataReplace.interestRate = 0;
                 dataReplace.monthlyLoanRepayment = 0;
               }
+
+              // check when edit data
+              if (
+                draft.summaryOfLoans[0].editting === true &&
+                draft.summaryOfLoans[0].client !== ""
+              ) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setGlobal: (name: string, value: any) =>
@@ -753,32 +1347,115 @@ const existingPortofolio = create(
               switch (object) {
                 case "summaryOfProperty":
                   draft.declineToReview[0] = value == true ? 0 : 1;
+
+                  if (
+                    (getObject.editting =
+                      true && get().summaryOfProperty[0].client === "")
+                  ) {
+                    draft.status = 0;
+                  } else {
+                    draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
+
                   break;
                 case "summaryOfInvestment":
                   draft.declineToReview[1] = value == true ? 0 : 1;
+                  if (
+                    (getObject.editting =
+                      true && get().summaryOfInvestment[0].client === "")
+                  ) {
+                    draft.status = 0;
+                  } else {
+                    draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 case "summaryOfSavings":
                   draft.declineToReview[2] = value == true ? 0 : 1;
+                  if (
+                    (getObject.editting =
+                      true && get().summaryOfSavings[0].client === "")
+                  ) {
+                    draft.status = 0;
+                  } else {
+                    draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 case "summaryOfCPF":
                   draft.declineToReview[3] = value == true ? 0 : 1;
+                  if (
+                    (getObject.editting =
+                      true && get().summaryOfCPF[0].client === "")
+                  ) {
+                    draft.status = 0;
+                  } else {
+                    draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 case "summaryOfInsurance":
                   draft.declineToReview[4] = value == true ? 0 : 1;
+                  if (
+                    (getObject.editting =
+                      true && get().summaryOfInsurance[0].client === "")
+                  ) {
+                    draft.status = 0;
+                  } else {
+                    draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 case "summaryOfSRS":
                   draft.declineToReview[5] = value == true ? 0 : 1;
+                  if (
+                    (getObject.editting =
+                      true && get().summaryOfSRS[0].client === "")
+                  ) {
+                    draft.status = 0;
+                  } else {
+                    draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 case "summaryOfLoans":
                   draft.declineToReview[6] = value == true ? 0 : 1;
+                  if (
+                    (getObject.editting =
+                      true && get().summaryOfLoans[0].client === "")
+                  ) {
+                    draft.status = 0;
+                  } else {
+                    draft.status = 1;
+                  }
+
+                  if (get().editableStatus === 1 && get().status === 1) {
+                    draft.editableStatus = 2;
+                  }
                   break;
                 default:
                   draft.declineToReview[0] = value == true ? 0 : 1;
                   break;
               }
-
-              let checkEditing = getObject.editing;
-              let checkClient = getObject.client;
             })
           ),
         removeData: (attribut: string, params: any) =>

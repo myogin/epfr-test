@@ -13,7 +13,6 @@ import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import { clientIdentity, getLength } from "@/libs/helper";
-import { Accompaniment } from "@/models/SectionOne";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import RetrieveSingpassModal from "../../RetrieveSingpass/RetrieveSingpassModal";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
@@ -23,6 +22,7 @@ import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 import { useRouter } from "next/router";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -42,13 +42,12 @@ const PersonalInformation = (props: Props) => {
   const scrollPositionBottom = useScrollPositionBottom(1);
 
   let dependant = usePersonalInformation((state) => state.dependant);
-  let accompaniment = usePersonalInformation((state) => state.accompaniment);
-  let setTrustedIndividuals = usePersonalInformation(
-    (state) => state.setTrustedIndividuals
-  );
+
+  let setPfr = usePfrData((state) => state.setPfr);
 
   let fetchClient = usePersonalInformation((state) => state.fetchClient);
   let fetchDependent = usePersonalInformation((state) => state.fetchDependent);
+  let fetchPfr = usePfrData((state) => state.fetchPfr);
   let fetchAccompainment = usePersonalInformation(
     (state) => state.fetchAccompainment
   );
@@ -103,6 +102,8 @@ const PersonalInformation = (props: Props) => {
           setGlobalSectionTwo("id", id);
         }
         setGlobal("editableStatus", 1);
+        setPfr("section1", 1)
+        setPfr("editableSection1", 1)
       }
 
       setSaveLoading(false); // Stop loading
@@ -120,6 +121,12 @@ const PersonalInformation = (props: Props) => {
       let getSection1 = await getPfrStep(1, params);
 
       console.log(getSection1);
+
+      setGlobal("reviewDate", getSection1.pfr.reviewDate);
+      setGlobal("editableStatus", getSection1.pfr.editableSection1);
+      setGlobal("status", getSection1.pfr.section1);
+
+      fetchPfr(getSection1.pfr);
 
       // Fetch Client
       if (getSection1.clients.length > 0) {
@@ -195,7 +202,7 @@ const PersonalInformation = (props: Props) => {
   }
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen">
       {/* Sec 1 */}
       {props.pfrType === 1 ? (
         <>
@@ -323,7 +330,7 @@ const PersonalInformation = (props: Props) => {
         ""
       )}
 
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
+      <div className="mb-20 border-b mt-36 border-gray-soft-strong"></div>
     </div>
   );
 };

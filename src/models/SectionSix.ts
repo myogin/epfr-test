@@ -7,6 +7,7 @@ export interface SectionSix {
   issues: any[];
   outcomeChanged: boolean;
   status: number;
+  editableStatus?: number;
 }
 
 export interface Answer {

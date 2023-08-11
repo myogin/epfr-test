@@ -69,6 +69,8 @@ const LoginPage: Page = () => {
                 className="mb-4"
                 value={email}
                 handleChange={(event) => setEmail(event.target.value)}
+                needValidation={true}
+                logic={email == "" ? false : true}
               />
               <Input
                 type="password"
@@ -76,6 +78,8 @@ const LoginPage: Page = () => {
                 className="mb-4"
                 value={password}
                 handleChange={(event) => setPassword(event.target.value)}
+                needValidation={true}
+                logic={password == "" ? false : true}
               />
               <ButtonGreenMedium
                 onClick={login}

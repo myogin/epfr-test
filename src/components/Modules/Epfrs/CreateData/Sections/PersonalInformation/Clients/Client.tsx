@@ -3,7 +3,6 @@ import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import SelectNationality from "@/components/Forms/SelectNationality";
 import { getLength } from "@/libs/helper";
-import { Clientformation } from "@/models/SectionOne";
 import { getAllCountry } from "@/services/countryService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React, { Fragment, useEffect, useState } from "react";
@@ -14,8 +13,16 @@ interface Props {
 const Client = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
 
-  let { id, clientInfo, reviewDate, setClient, setAccompaniment, setTrustedIndividuals, setGlobal } =
-    usePersonalInformation();
+  let {
+    id,
+    clientInfo,
+    clientInfoSingpass,
+    reviewDate,
+    setClient,
+    setAccompaniment,
+    setTrustedIndividuals,
+    setGlobal,
+  } = usePersonalInformation();
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -72,7 +79,7 @@ const Client = (props: Props) => {
       }
 
       setAccompaniment(index, "age", groupAge);
-      setTrustedIndividuals('ageLevel', groupAge);
+      setTrustedIndividuals("ageLevel", groupAge);
     }
   };
 
@@ -212,12 +219,7 @@ const Client = (props: Props) => {
               }
             />
             <Input
-              readonly={
-                clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].passportNo === ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[0].passportNo}
               dataType="clientInfo"
               className="mb-10"
               label="NRIC / FIN"
@@ -228,9 +230,9 @@ const Client = (props: Props) => {
               placeholder="12981289129"
               handleChange={handleInputChange}
             />
+
             {/* Selected Form */}
-            {clientInfo[0].clientPfr === "Singpass" &&
-            Number(clientInfo[0].gender) >= 0 ? (
+            {clientInfoSingpass[0].gender ? (
               <Input
                 readonly={true}
                 dataType="clientInfo"
@@ -266,12 +268,7 @@ const Client = (props: Props) => {
             )}
 
             <Input
-              readonly={
-                clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].dateOfBirth !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[0].dateOfBirth}
               dataType="clientInfo"
               className="mb-10"
               label="Date of Birth"
@@ -290,8 +287,7 @@ const Client = (props: Props) => {
               }
             />
             {/* Selected Form */}
-            {clientInfo[0].clientPfr === "Singpass" &&
-            clientInfo[0].nationality !== "" ? (
+            {clientInfoSingpass[0].nationality ? (
               <Input
                 readonly={true}
                 dataType="clientInfo"
@@ -341,12 +337,7 @@ const Client = (props: Props) => {
             />
 
             <Input
-              readonly={
-                clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].businessNature !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[0].businessNature}
               dataType="clientInfo"
               className="mb-10"
               label="Business Nature"
@@ -422,12 +413,7 @@ const Client = (props: Props) => {
           </div>
           <div>
             <Input
-              readonly={
-                clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].clientName !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[0].clientName}
               dataType="clientInfo"
               className="mb-10"
               label="Full Name"
@@ -463,12 +449,7 @@ const Client = (props: Props) => {
               }
             />
             <Input
-              readonly={
-                clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].race !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[0].race}
               dataType="clientInfo"
               className="mb-10"
               label="Race"
@@ -488,8 +469,7 @@ const Client = (props: Props) => {
               }
             />
 
-            {clientInfo[0].clientPfr === "Singpass" &&
-            Number(clientInfo[0].birthCountryId) >= 0 ? (
+            {clientInfoSingpass[0].birthCountryId ? (
               <Input
                 readonly={true}
                 dataType="clientInfo"
@@ -518,8 +498,7 @@ const Client = (props: Props) => {
               />
             )}
 
-            {clientInfo[0].clientPfr === "Singpass" &&
-            clientInfo[0].residencyTwo !== "" ? (
+            {clientInfoSingpass[0].residencyTwo ? (
               <Input
                 readonly={true}
                 dataType="clientInfo"
@@ -528,7 +507,7 @@ const Client = (props: Props) => {
                 type="text"
                 name="residencyTwo"
                 indexClient={0}
-                value={clientInfo[0].residencyTwo}
+                value={clientInfo[0].residencyTwo ? recidence[Number(clientInfo[0].residencyTwo)].name : ""}
                 placeholder="recidency status"
               />
             ) : (
@@ -542,7 +521,11 @@ const Client = (props: Props) => {
                     type="text"
                     name="residencyTwo"
                     indexClient={0}
-                    value={Number(clientInfo[0].residencyTwo) === 0 ? "Singapore Citizen" : ""}
+                    value={
+                      Number(clientInfo[0].residencyTwo) === 0
+                        ? "Singapore Citizen"
+                        : ""
+                    }
                     placeholder="recidency status"
                   />
                 ) : (
@@ -568,10 +551,10 @@ const Client = (props: Props) => {
                 )}
               </>
             )}
+
             {Number(clientInfo[0].residencyTwo) === 2 ? (
               <>
-                {clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].residency !== "" ? (
+                {clientInfoSingpass[0].residency ? (
                   <Input
                     readonly={true}
                     dataType="clientInfo"
@@ -648,12 +631,7 @@ const Client = (props: Props) => {
               }
             />
             <Input
-              readonly={
-                clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].occupation !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[0].occupation}
               dataType="clientInfo"
               className="mb-10"
               label="Occupation"
@@ -665,12 +643,7 @@ const Client = (props: Props) => {
               handleChange={handleInputChange}
             />
             <Input
-              readonly={
-                clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].companyName !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[0].companyName}
               dataType="clientInfo"
               className="mb-10"
               label="Company Name"
@@ -693,12 +666,7 @@ const Client = (props: Props) => {
               handleChange={handleInputChange}
             />
             <Input
-              readonly={
-                clientInfo[0].clientPfr === "Singpass" &&
-                clientInfo[0].residentialAddr !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[0].residentialAddr}
               dataType="clientInfo"
               className="mb-10"
               label="Residential Address"
@@ -759,12 +727,7 @@ const Client = (props: Props) => {
               }
             />
             <Input
-              readonly={
-                clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].clientName !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[index].clientName}
               dataType="clientInfo"
               className="mb-10"
               label="Full Name"
@@ -786,12 +749,7 @@ const Client = (props: Props) => {
             />
 
             <Input
-              readonly={
-                clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].passportNo === ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[index].passportNo}
               dataType="clientInfo"
               className="mb-10"
               label="NRIC / FIN"
@@ -822,8 +780,7 @@ const Client = (props: Props) => {
                   : true
               }
             />
-            {clientInfo[index].clientPfr === "Singpass" &&
-            Number(clientInfo[index].gender) >= 0 ? (
+            {clientInfoSingpass[index].gender ? (
               <Input
                 readonly={true}
                 dataType="clientInfo"
@@ -862,12 +819,7 @@ const Client = (props: Props) => {
             )}
 
             <Input
-              readonly={
-                clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].race !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[index].race}
               dataType="clientInfo"
               className="mb-10"
               label="Race"
@@ -888,12 +840,7 @@ const Client = (props: Props) => {
               }
             />
             <Input
-              readonly={
-                clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].dateOfBirth !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[index].dateOfBirth}
               dataType="clientInfo"
               className="mb-10"
               label="Date of Birth"
@@ -914,8 +861,7 @@ const Client = (props: Props) => {
               }
             />
 
-            {clientInfo[index].clientPfr === "Singpass" &&
-            Number(clientInfo[index].birthCountryId) >= 0 ? (
+            {clientInfoSingpass[index].birthCountryId ? (
               <Input
                 readonly={true}
                 dataType="clientInfo"
@@ -947,8 +893,7 @@ const Client = (props: Props) => {
               />
             )}
 
-            {clientInfo[index].clientPfr === "Singpass" &&
-            clientInfo[index].nationality !== "" ? (
+            {clientInfoSingpass[index].nationality ? (
               <Input
                 readonly={true}
                 dataType="clientInfo"
@@ -980,8 +925,7 @@ const Client = (props: Props) => {
               />
             )}
 
-            {clientInfo[index].clientPfr === "Singpass" &&
-            clientInfo[0].residencyTwo !== "" ? (
+            {clientInfoSingpass[0].residencyTwo ? (
               <Input
                 readonly={true}
                 dataType="clientInfo"
@@ -1017,8 +961,7 @@ const Client = (props: Props) => {
 
             {Number(clientInfo[index].residencyTwo) === 2 ? (
               <>
-                {clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].residency !== "" ? (
+                {clientInfoSingpass[index].residency ? (
                   <Input
                     readonly={true}
                     dataType="clientInfo"
@@ -1120,12 +1063,7 @@ const Client = (props: Props) => {
               }
             />
             <Input
-              readonly={
-                clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].occupation !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[index].occupation}
               dataType="clientInfo"
               className="mb-10"
               label="Occupation"
@@ -1138,12 +1076,7 @@ const Client = (props: Props) => {
             />
 
             <Input
-              readonly={
-                clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].businessNature !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[index].businessNature}
               dataType="clientInfo"
               className="mb-10"
               label="Business Nature"
@@ -1156,12 +1089,7 @@ const Client = (props: Props) => {
             />
 
             <Input
-              readonly={
-                clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].companyName !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[index].companyName}
               dataType="clientInfo"
               className="mb-10"
               label="Company Name"
@@ -1223,12 +1151,7 @@ const Client = (props: Props) => {
               }
             />
             <Input
-              readonly={
-                clientInfo[index].clientPfr === "Singpass" &&
-                clientInfo[index].residentialAddr !== ""
-                  ? true
-                  : false
-              }
+              readonly={clientInfoSingpass[index].residentialAddr}
               dataType="clientInfo"
               className="mb-10"
               label="Residential Address"

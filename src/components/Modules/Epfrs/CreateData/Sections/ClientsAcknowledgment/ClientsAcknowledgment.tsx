@@ -27,6 +27,7 @@ interface Props {
 const ClientsAcknowledgment = (props: Props) => {
   const scrollPosition = useScrollPosition(11);
   const scrollPositionBottom = useScrollPositionBottom(11);
+  const scrollPositionBottomSection10 = useScrollPositionBottom(10);
   const [pfrId, setPfrId] = useState(0);
   const [editable, setEditable] = useState(0);
   
@@ -114,7 +115,7 @@ const ClientsAcknowledgment = (props: Props) => {
     remark: null,
     remark1: null,
     introducer: null,
-    status: 1,
+    status: 0,
     issues: [],
   });
 
@@ -518,7 +519,7 @@ const ClientsAcknowledgment = (props: Props) => {
   }, [editable]);
 
   useEffect(() => {
-    if (scrollPosition === "okSec11" && sectionElevenData.id === 0) {
+    if (scrollPositionBottomSection10 === "Process10" && sectionElevenData.id === 0) {
       const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
       setPfrId(section1?.state?.id);
       setSectionElevenData({
@@ -527,7 +528,7 @@ const ClientsAcknowledgment = (props: Props) => {
       });
       fetchData();
     }
-  }, [scrollPosition]);
+  }, [scrollPositionBottomSection10]);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
