@@ -30,7 +30,6 @@ interface Props {
 }
 
 const Affordability = (props: Props) => {
-
   const router = useRouter();
   let id = usePersonalInformation((state) => state.id);
 
@@ -40,11 +39,19 @@ const Affordability = (props: Props) => {
   let setSourceOfWealth = useAffordability((state) => state.setSourceOfWealth);
   let setAssetOrSurplus = useAffordability((state) => state.setAssetOrSurplus);
   let setGlobal = useAffordability((state) => state.setGlobal);
-  let editableStatus = useAffordability((state) => state.section8.editableStatus);
+  let setInit = useAffordability((state) => state.setInit);
+  
+  let editableStatus = useAffordability(
+    (state) => state.section8.editableStatus
+  );
   let status = useAffordability((state) => state.section8.status);
 
-  let idSectionNine = useAnalysisRecommendation((state) => state.section9.pfrId);
-  let setGlobalSectionNine = useAnalysisRecommendation((state) => state.setParent);
+  let idSectionNine = useAnalysisRecommendation(
+    (state) => state.section9.pfrId
+  );
+  let setGlobalSectionNine = useAnalysisRecommendation(
+    (state) => state.setParent
+  );
 
   const scrollPositionBottom = useScrollPositionBottom(7);
   const scrollPositionNext = useScrollPosition(9);
@@ -52,7 +59,7 @@ const Affordability = (props: Props) => {
 
   let pfrLocal = usePfrData((state) => state.pfr);
 
-  let getPfrLength = getLength(props.pfrType);
+  // let getPfrLength = getLength(props.pfrType);
 
   let fillInformation: Array<any> = [
     { id: 0, name: "No" },
@@ -158,35 +165,38 @@ const Affordability = (props: Props) => {
     }
   };
 
- // Get data when scroll from section 1
- useEffect(() => {
-  if (!router.isReady) return;
-  // If edit check the ID
-  if (router.query.id !== null && router.query.id !== undefined) {
-    if (scrollPositionBottom === "Process7") {
-      setGlobal("editableStatus", pfrLocal.editableSection8);
-      setGlobal("id", router.query.id);
-      setGlobal("status", pfrLocal.section8);
-      getSectionData(router.query.id);
+  // Get data when scroll from section 1
+  useEffect(() => {
+    if (!router.isReady) return;
+    // If edit check the ID
+
+    console.log("check type section 8 " + props.pfrType)
+    setGlobal("typeClient", props.pfrType);
+    setInit(props.pfrType);
+
+    if (router.query.id !== null && router.query.id !== undefined) {
+      if (scrollPositionBottom === "Process7") {
+        setGlobal("editableStatus", pfrLocal.editableSection8);
+        setGlobal("id", router.query.id);
+        setGlobal("status", pfrLocal.section8);
+        // getSectionData(router.query.id);
+      }
     }
-  }
-}, [scrollPositionBottom, router.isReady, router.query.id]);
+  }, [scrollPositionBottom, router.isReady, router.query.id]);
 
-useEffect(() => {
-  if (scrollPositionNext === "okSec9") {
-    if (
-      (editableStatus === 0 && status === 1) ||
-      (editableStatus === 2 && status === 1)
-    ) {
-      console.log("section8", section8);
-      storeData();
-    } else {
-      console.log("Your data not complete Section 2");
+  useEffect(() => {
+    if (scrollPositionNext === "okSec9") {
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("section8", section8);
+        storeData();
+      } else {
+        console.log("Your data not complete Section 2");
+      }
     }
-  }
-}, [scrollPositionNext, editableStatus, status]);
-
-
+  }, [scrollPositionNext, editableStatus, status]);
 
   return (
     <div id={props.id}>
@@ -208,29 +218,27 @@ useEffect(() => {
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowDoubleGrid>
-          {section8.payorDetail.map(function (value: any, key: any) {
-            return (
-              <div
-                className="text-left space-y-11"
-                key={"payor-detail-top-" + key}
-              >
-                <Select
-                  className="my-4"
-                  name="isSelf"
-                  dataType="payorDetail"
-                  datas={payorForClient}
-                  value={value.isSelf}
-                  handleChange={(event) => handlePayorDetail(event, key)}
-                  label={`Payor For Client ${key + 1}`}
-                />
-              </div>
-            );
-          })}
+          {section8.payorDetail.map((data, key) => (
+            <div
+              className="text-left space-y-11"
+              key={"payor-detail-top-" + key}
+            >
+              <Select
+                className="my-4"
+                name="isSelf"
+                dataType="payorDetail"
+                datas={payorForClient}
+                value={data.isSelf}
+                handleChange={(event) => handlePayorDetail(event, key)}
+                label={`Payor For Client ${key + 1}`}
+              />
+            </div>
+          ))}
         </RowDoubleGrid>
 
         <RowDoubleGrid>
-          {section8.payorDetail.map(function (value: any, key: any) {
-            return value.isSelf == 1 ? (
+          {section8.payorDetail.map((data, key) => {
+            return data.isSelf == 1 ? (
               <div className="text-left space-y-11" key={"payor-detail-" + key}>
                 <Input
                   className="mb-10"
@@ -242,11 +250,11 @@ useEffect(() => {
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
-                    value.relationShip == "" || value.relationShip == null
+                    data.relationShip == "" || data.relationShip == null
                       ? false
                       : true
                   }
-                  value={value.relationShip}
+                  value={data.relationShip}
                 />
                 <Input
                   className="mb-10"
@@ -258,11 +266,11 @@ useEffect(() => {
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
-                    value.payorName == "" || value.payorName == null
+                    data.payorName == "" || data.payorName == null
                       ? false
                       : true
                   }
-                  value={value.payorName}
+                  value={data.payorName}
                 />
                 <Input
                   className="mb-10"
@@ -274,11 +282,11 @@ useEffect(() => {
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
-                    value.passportNo == "" || value.passportNo == null
+                    data.passportNo == "" || data.passportNo == null
                       ? false
                       : true
                   }
-                  value={value.passportNo}
+                  value={data.passportNo}
                 />
                 <Input
                   className="mb-10"
@@ -290,11 +298,11 @@ useEffect(() => {
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
-                    value.occupation == "" || value.occupation == null
+                    data.occupation == "" || data.occupation == null
                       ? false
                       : true
                   }
-                  value={value.occupation}
+                  value={data.occupation}
                 />
                 <Input
                   className="mb-10"
@@ -306,11 +314,11 @@ useEffect(() => {
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
-                    value.payorIncome == "" || value.payorIncome == null
+                    data.payorIncome == 0 || data.payorIncome == null
                       ? false
                       : true
                   }
-                  value={value.payorIncome}
+                  value={data.payorIncome}
                 />
               </div>
             ) : (
@@ -338,32 +346,28 @@ useEffect(() => {
               </div>
             ))}
         </RowSixGrid>
-        {section8.payorBudget.map(function (value: any, key: any) {
-          return (
-            <RowSixGrid key={"payor-budget-top-data" + key}>
-              <label className="text-sm font-bold" key={"client" + key}>
-                Client {key + 1}
-              </label>
-              {value?.length &&
-                value.map((val: any, index: any) => (
-                  <div
-                    key={"payor-budget-checkbox" + index}
-                    className="flex items-center justify-center"
-                  >
-                    <Checkbox
-                      name="selection"
-                      onChange={(event) =>
-                        checkboxPayorBudget(event, key, index)
-                      }
-                    />
-                  </div>
-                ))}
-            </RowSixGrid>
-          );
-        })}
+        {section8.payorBudget.map((data, key) => (
+          <RowSixGrid key={"payor-budget-top-data" + key}>
+            <label className="text-sm font-bold" key={"client" + key}>
+              Client {key + 1}
+            </label>
+            {data?.length &&
+              data.map((val, index) => (
+                <div
+                  key={"payor-budget-checkbox" + index}
+                  className="flex items-center justify-center"
+                >
+                  <Checkbox
+                    name="selection"
+                    onChange={(event) => checkboxPayorBudget(event, key, index)}
+                  />
+                </div>
+              ))}
+          </RowSixGrid>
+        ))}
       </SectionCardSingleGrid>
 
-      {section8.payorBudget.map(function (value: any, key: any) {
+      {section8.payorBudget.map((data, key) => {
         return (
           <SectionCardSingleGrid
             className="mx-8 border-b 2xl:mx-60 border-gray-soft-strong"
@@ -416,8 +420,7 @@ useEffect(() => {
             </RowTripleGrid>
 
             {/* Payor Details */}
-            {`check ${value.length}`}
-            {value.length > 0 ? (
+            {data.length > 0 ? (
               <>
                 <RowSingleGrid>
                   <RowSingleGrid>
@@ -437,8 +440,8 @@ useEffect(() => {
               </>
             ) : null}
 
-            {value?.length &&
-              value.map((val: any, index: any) =>
+            {data?.length &&
+              data.map((val, index) =>
                 val.selection === true ? (
                   <RowFourthGrid
                     key={"payor-detail-" + key + "-" + index}
@@ -533,7 +536,7 @@ useEffect(() => {
               : `grid grid-cols-1 gap-8 mb-5`
           }
         >
-          {section8.sourceOfWealth.map(function (value: any, key: any) {
+          {section8.sourceOfWealth.map((data, key) => {
             return (
               <div key={`sourceOfWealth` + key}>
                 <TextSmall>Client {key + 1}</TextSmall>
@@ -547,8 +550,8 @@ useEffect(() => {
                       label="Past / Current Employment"
                       name="employment"
                       onChange={(e) => handleSourceOfWealth(e, key)}
-                      isChecked={value.employment}
-                      value={value.employment}
+                      isChecked={data.employment}
+                      value={data.employment}
                     />
                   </div>
                   <div
@@ -559,8 +562,8 @@ useEffect(() => {
                       label="Investment"
                       name="investment"
                       onChange={(e) => handleSourceOfWealth(e, key)}
-                      isChecked={value.investment}
-                      value={value.investment}
+                      isChecked={data.investment}
+                      value={data.investment}
                     />
                   </div>
                   <div
@@ -571,8 +574,8 @@ useEffect(() => {
                       label="Inheritance"
                       name="inheritance"
                       onChange={(e) => handleSourceOfWealth(e, key)}
-                      isChecked={value.inheritance}
-                      value={value.inheritance}
+                      isChecked={data.inheritance}
+                      value={data.inheritance}
                     />
                   </div>
                   <div
@@ -583,8 +586,8 @@ useEffect(() => {
                       label="Saving"
                       name="other"
                       onChange={(e) => handleSourceOfWealth(e, key)}
-                      isChecked={value.other}
-                      value={value.other}
+                      isChecked={data.other}
+                      value={data.other}
                     />
                   </div>
                 </div>
@@ -594,7 +597,7 @@ useEffect(() => {
                   <TextArea
                     className="my-4"
                     name="otherExplain"
-                    defaultValue={value.otherExplain}
+                    defaultValue={data.otherExplain}
                     handleChange={(e) => handleSourceOfWealth(e, key)}
                   />
                   <small>
@@ -617,7 +620,7 @@ useEffect(() => {
               : "grid grid-cols-1 gap-8 mb-5"
           }
         >
-          {section8.sourceOfWealth.map(function (value: any, key: any) {
+          {section8.assetOrSurplus.map((data, key) => {
             return (
               <div className="" key={`SOW-1-` + key}>
                 <TextThin>
@@ -628,10 +631,19 @@ useEffect(() => {
                   className="my-4"
                   datas={fillInformation}
                   dataType="assetOrSurplus"
-                  value={value.answer}
+                  value={data.answer}
                   name="answer"
                   handleChange={(event) => handleAssetOrSurplus(event, key)}
                 />
+
+                {data.answer == 1 ? (
+                  <TextArea
+                    label="Reason"
+                    placeholder="Please provide reason for setting aside a substantial budget"
+                    defaultValue={data.reason}
+                  />
+                ) : null}
+
                 <small className="text-sm italic font-normal">
                   {`If the answer is "Yes", a potential risk of not being able to
                 continue paying premiums in the future may occur. Budget is

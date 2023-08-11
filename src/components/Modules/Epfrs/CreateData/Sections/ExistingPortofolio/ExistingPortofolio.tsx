@@ -51,9 +51,7 @@ const ExistingPortofolio = (props: Props) => {
   let summaryOfInsurance = useExistingPortofolio(
     (state) => state.summaryOfInsurance
   );
-  let summaryOfInsurance2 = useExistingPortofolio(
-    (state) => state.summaryOfInsurance2
-  );
+
   let summaryOfLoans = useExistingPortofolio((state) => state.summaryOfLoans);
   let summaryOfCPF = useExistingPortofolio((state) => state.summaryOfCPF);
   let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);

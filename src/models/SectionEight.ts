@@ -1,5 +1,5 @@
 interface AssetOrSurplus {
-  answer: string;
+  answer: number;
   reason: null | string;
 }
 
@@ -18,7 +18,7 @@ interface PayorBudget {
 }
 
 interface PayorDetail {
-  isSelf: string;
+  isSelf: number;
   relationShip: null;
   payorName: null;
   passportNo: null;

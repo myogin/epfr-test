@@ -5,7 +5,7 @@ import { SectionEight } from "@/models/SectionEight";
 
 const initialState: SectionEight = {
   section8: {
-    typeClient: 2,
+    typeClient: 1,
     totalDependant: 0,
     pfrId: 0,
     need: [],
@@ -13,8 +13,8 @@ const initialState: SectionEight = {
     payorDetail: [],
     assetOrSurplus: [
       {
-        answer: "0",
-        reason: null,
+        answer: 0,
+        reason: "",
       },
     ],
     sourceOfWealth: [
@@ -41,45 +41,6 @@ const initialState: SectionEight = {
     editableStatus: 0,
   },
 };
-
-initialState.section8.payorDetail = new Array(
-  initialState.section8.typeClient
-).fill({
-  isSelf: "0",
-  relationShip: null,
-  payorName: null,
-  passportNo: null,
-  occupation: null,
-  payorIncome: 0,
-});
-
-initialState.section8.payorBudget = new Array(initialState.section8.typeClient)
-  .fill(false)
-  .map(() => {
-    return new Array(5).fill({
-      selection: false,
-      annual: 0,
-      single: 0,
-      sourceOfFund: "",
-    });
-  });
-
-initialState.section8.sourceOfWealth = new Array(
-  initialState.section8.typeClient
-).fill({
-  employment: false,
-  investment: false,
-  inheritance: false,
-  other: false,
-  otherExplain: null,
-});
-
-initialState.section8.assetOrSurplus = new Array(
-  initialState.section8.typeClient
-).fill({
-  answer: false,
-  reason: false,
-});
 
 // initialState.section8.answer.clientData =  new Array(initialState.section8.typeClient).fill(
 //     {
@@ -331,12 +292,53 @@ type Actions = {
   setAssetOrSurplus: (key: number, name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
   resetSectionEight: () => any;
+  setInit: (params: any) => any;
 };
 
 const Affordability = create(
   devtools<SectionEight & Actions>((set, get) => ({
     ...initialState,
+    setInit: (params: any) =>
+      set(
+        produce((draft) => {
+          draft.section8.payorDetail = new Array(params).fill({
+            isSelf: 0,
+            relationShip: null,
+            payorName: null,
+            passportNo: null,
+            occupation: null,
+            payorIncome: 0,
+          });
+
+          draft.section8.payorBudget = new Array(params).fill(false).map(() => {
+            return new Array(5).fill({
+              selection: false,
+              annual: 0,
+              single: 0,
+              sourceOfFund: "",
+            });
+          });
+
+          draft.section8.sourceOfWealth = new Array(
+            params
+          ).fill({
+            employment: false,
+            investment: false,
+            inheritance: false,
+            other: false,
+            otherExplain: null,
+          });
+
+          draft.section8.assetOrSurplus = new Array(
+            params
+          ).fill({
+            answer: 0,
+            reason: "",
+          });
+        })
+      ),
     resetSectionEight: () => {
+      console.log("masuk sini nggak ni");
       set(initialState);
     },
     setPayorDetail: (key: number, name: string, dataType: string, value: any) =>
@@ -386,6 +388,7 @@ const Affordability = create(
     setGlobal: (name: string, value: any) =>
       set(
         produce((draft) => {
+          console.log("global section 8 " + value + " " + name);
           draft.section8[name] = value;
         })
       ),
