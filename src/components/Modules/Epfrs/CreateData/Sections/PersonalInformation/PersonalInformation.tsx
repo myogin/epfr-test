@@ -163,7 +163,7 @@ const PersonalInformation = (props: Props) => {
 
   // Load data first load
   useEffect(() => {
-    if (!router.isReady) return;
+    if (!router.isReady) setLoading(true);
     // If edit check the ID
     if (router.query.singpass === null || router.query.singpass === undefined) {
       if (router.query.id !== null && router.query.id !== undefined) {
@@ -174,10 +174,12 @@ const PersonalInformation = (props: Props) => {
 
   // Trigger the dependent data to showing the depdendent
   useEffect(() => {
+    if (!router.isReady) return;
+
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
-  }, [dependant]);
+  }, [dependant,router.isReady]);
 
   const [checkTi, setCheckTi] = useState(false);
 
@@ -202,11 +204,9 @@ const PersonalInformation = (props: Props) => {
     }
   }, [scrollPositionNext, editableStatus, status]);
 
-  if (loading) {
-    return <LoadingPage />;
-  }
-
-  return (
+  return loading ? (
+    <LoadingPage />
+  ) : (
     <div id={props.id} className="min-h-screen">
       {/* Sec 1 */}
       {props.pfrType === 1 ? (

@@ -16,11 +16,15 @@ const initialState: SectionNineRecommendationGroup = {
 
 type Actions = {
     setParent: (value: string, name: string, groupData: any) => any;
+    resetGroupRecommendation: () => any;
 };
 
 const AnalysisRecommendationGroup = create(
   devtools<SectionNineRecommendationGroup & Actions>((set, get) => ({
     ...initialState,
+    resetGroupRecommendation: () => {
+        set(initialState);
+      },
     setParent: (value: string, name: string, groupData: any) => set(
         produce((draft) => {
             draft.section9RecommendGroup[name] = value;

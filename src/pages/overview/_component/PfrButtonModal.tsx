@@ -1,4 +1,7 @@
 import { useAffordability } from "@/store/epfrPage/createData/affordability";
+import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
+import { useAnalysisRecommendationGroup } from "@/store/epfrPage/createData/analysisRecommendationGroup";
+import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/analysisRecommendationProduct";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
@@ -24,6 +27,9 @@ const PfrButtonModal = () => {
   let { resetSectionSix } = useCustomerKnowledgeAssesment();
   let { resetSectionSeven } = usePrioritiesNeedAnalysis();
   let { resetSectionEight } = useAffordability();
+  let { resetSectionNine } = useAnalysisRecommendation();
+  let { resetGroupRecommendation } = useAnalysisRecommendationGroup();
+  let { resetRecommendationProduct } = useAnalysisRecommendationProduct();
 
   const closeModal = () => {
     setShowModal(false);
@@ -34,6 +40,7 @@ const PfrButtonModal = () => {
   };
 
   const goToCreatePfr = (params: string) => {
+    console.log("masuk sini nggak ni button")
     resetSectionOne();
     resetSectionTwo();
     resetSectionThree();
@@ -42,6 +49,9 @@ const PfrButtonModal = () => {
     resetSectionSix();
     resetSectionSeven();
     resetSectionEight();
+    resetSectionNine();
+    resetGroupRecommendation();
+    resetRecommendationProduct();
 
     router.push(`create/${params}`);
   };
