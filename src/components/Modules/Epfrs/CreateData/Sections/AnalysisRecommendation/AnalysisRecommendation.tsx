@@ -1452,7 +1452,7 @@ const AnalysisRecommendation = (props: Props) => {
               </thead>
               <tbody>
                 {getClients.map((resData: any, index: any) => (
-                    <tr>
+                    <tr key={"ssd"+index}>
                       <td className="px-2 py-5">Client{ index + 1 }</td>
                       <td className="px-2 py-5 text-center">{dataAnnualPayorBudget[index][0] - dataTotalAnnualPremiumChoice[index][0]}</td>
                       <td className="px-2 py-5 text-center">$0.0</td>
