@@ -75,7 +75,7 @@ const Affordability = (props: Props) => {
   let { showDetailData } = useNavigationSection();
 
   const dataPayorDetail = (data: any) => {
-    var resData = ["Cash", "CPF OA", "CPF SA", "CPF Medisave", "SRS"];
+    let resData = ["Cash", "CPF OA", "CPF SA", "CPF Medisave", "SRS"];
 
     return resData[data];
   };

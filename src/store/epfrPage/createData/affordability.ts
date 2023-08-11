@@ -348,7 +348,7 @@ const Affordability = create(
     setPayorBudget: (key: number, index: any, name: string, value: number) =>
       set(
         produce((draft) => {
-          var dataResSelection = draft.section8.payorBudget[key][index][name];
+          let dataResSelection = draft.section8.payorBudget[key][index][name];
           if (name == "selection") {
             if (dataResSelection == true) {
               dataResSelection = false;
@@ -365,10 +365,11 @@ const Affordability = create(
       set(
         produce((draft) => {
           if (name != "otherExplain") {
+            let resVal = false;
             if (value == "true") {
-              var resVal = false;
+              resVal = false;
             } else {
-              var resVal = true;
+              resVal = true;
             }
             draft.section8.sourceOfWealth[key][name] = resVal;
           } else {

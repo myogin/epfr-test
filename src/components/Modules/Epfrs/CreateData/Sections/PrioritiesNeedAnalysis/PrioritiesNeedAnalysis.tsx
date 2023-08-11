@@ -116,8 +116,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   const scrollPosition = useScrollPosition(7);
   
   const getPV = (fv:any, rate:any, n: any) =>{
-    var sum = 0;
-    for (var i = 0; i < n; i++) {
+    let sum = 0;
+    for (let i = 0; i < n; i++) {
       sum += fv / Math.pow(1 + rate, i);
     }
     return sum.toFixed(2);
@@ -125,7 +125,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   // Rumus Income Protection
     const capitalSumRequired = (res: any) => {
-      var result = getPV(
+      let result = getPV(
         res.annualAmountNeeded,
         res.netRateOfReture / 100,
         res.numberOfYearsNeed
@@ -135,24 +135,24 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     }
 
     const totalCashOutflow = (res:any) => {
-      var result = parseFloat(res.finalExpense) + parseFloat(res.emergencyFund) + parseFloat(res.mortgage) + parseFloat(res.personalDebts) + parseFloat(res.others);
+      let result = parseFloat(res.finalExpense) + parseFloat(res.emergencyFund) + parseFloat(res.mortgage) + parseFloat(res.personalDebts) + parseFloat(res.others);
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const totalAB = (res: any) => {
-      var result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashFlow);
+      let result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashFlow);
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const totalNetAmmount = (res: any) => {
-      var result = res.total - res.existingResources - res.existingInsuranceCoverageOnDeath;
+      let result = res.total - res.existingResources - res.existingInsuranceCoverageOnDeath;
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
   // End Rumus Income Protection
 
   // Rumus Fund Disabilities
     const FundDisabCapitalSumRequired = (res: any) => {
-      var result = getPV(
+      let result = getPV(
         res.annualAmountNeeded,
         res.netRateOfReture / 100,
         res.numberOfYearsNeed
@@ -162,24 +162,24 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     }
 
     const FundDisabTotalCashOutflow = (res:any) => {
-      var result = parseFloat(res.medicalExpense) + parseFloat(res.mortgage) + parseFloat(res.loans);
+      let result = parseFloat(res.medicalExpense) + parseFloat(res.mortgage) + parseFloat(res.loans);
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundDisabTotalAB = (res: any) => {
-      var result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashOutflow);
+      let result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashOutflow);
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundDisabTotalNetAmmount = (res: any) => {
-      var result = res.total - res.existingResources - res.existingInsuranceCoverageOnDisability;
+      let result = res.total - res.existingResources - res.existingInsuranceCoverageOnDisability;
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
   // End Rumus Fund Disabilities
   
   // Rumus Fund Critical Illness
     const FundCritCapitalSumRequired = (res: any) => {
-      var result = getPV(
+      let result = getPV(
         res.annualAmountNeeded,
         res.netRateOfReture / 100,
         res.numberOfYearsNeed
@@ -189,17 +189,17 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     }
 
     const FundCritTotalCashOutflow = (res:any) => {
-      var result = parseFloat(res.medicalExpense) + parseFloat(res.mortgage) + parseFloat(res.loans);
+      let result = parseFloat(res.medicalExpense) + parseFloat(res.mortgage) + parseFloat(res.loans);
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundCritTotalAB = (res: any) => {
-      var result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashOutflow);
+      let result = parseFloat(res.capitalSumRequired) + parseFloat(res.totalCashOutflow);
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundCritTotalNetAmmount = (res: any) => {
-      var result = res.total - res.existingResources - res.existingInsuranceCoverageOnCI;
+      let result = res.total - res.existingResources - res.existingInsuranceCoverageOnCI;
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
@@ -207,32 +207,32 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   // Rumus Fund Children Education 
     const FundChildFutureValueOfAnnualTuitionFee = (res:any) => {
-      var result = res.annaulTuitionFees * Math.pow(1 + res.educationInflationRate / 100, res.yearsToTertiaryEducation);
+      let result = res.annaulTuitionFees * Math.pow(1 + res.educationInflationRate / 100, res.yearsToTertiaryEducation);
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundChildTotalTuitionFee = (res:any) => {
-      var result = res.futureValueOfAnnualTuitionFee * res.noOfYearsOfStudy;
+      let result = res.futureValueOfAnnualTuitionFee * res.noOfYearsOfStudy;
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundChildFutureValueOfAnnualLivingCosts = (res:any) => {
-      var result = res.annualLivingCosts * Math.pow(1 + res.inflationRate / 100, res.yearsToTertiaryEducation);
+      let result = res.annualLivingCosts * Math.pow(1 + res.inflationRate / 100, res.yearsToTertiaryEducation);
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundChildTotalLivinCost = (res:any) => {
-      var result = res.futureValueOfAnnualLivingCosts * res.noOfYearsOfStudy;
+      let result = res.futureValueOfAnnualLivingCosts * res.noOfYearsOfStudy;
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundChildTotalEducationFunding = (res:any) => {
-      var result = res.totalTuitionFee + res.totalLivingCost;
+      let result = res.totalTuitionFee + res.totalLivingCost;
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
 
     const FundChildNetAmountRequired = (res:any) => {
-      var result = res.totalEducationFunding - res.futureValueOfExistingResourceForEducation;
+      let result = res.totalEducationFunding - res.futureValueOfExistingResourceForEducation;
       return isNaN(result) ? 0 : parseFloat(result.toFixed(2));
     }
   // End Rumus Fund Children Education
@@ -318,7 +318,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           const resultIncomeAtRetirementAge = isNaN(incomeAtRetirementAge) ? 0 : parseFloat(incomeAtRetirementAge.toFixed(2));
           setClient(resultIncomeAtRetirementAge, k, 'incomeAtRetirementAge', 'fundRetirementLifeStyle')
           
-          var incomeRequiredAtRetirement = (resultIncomeAtRetirementAge * FundRetirement.percentOfIncomeRequiredAtRetirement) / 100;
+          let incomeRequiredAtRetirement = (resultIncomeAtRetirementAge * FundRetirement.percentOfIncomeRequiredAtRetirement) / 100;
           const resultIncomeRequiredAtRetirement = isNaN(incomeRequiredAtRetirement) ? 0 : parseFloat(incomeRequiredAtRetirement.toFixed(2));
           setClient(resultIncomeRequiredAtRetirement, k, 'incomeRequiredAtRetirement', 'fundRetirementLifeStyle')
 
@@ -326,14 +326,16 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           const resultExpenseATRetirement = isNaN(expenseATRetirement) ? 0 : parseFloat(expenseATRetirement.toFixed(2));
           setClient(resultExpenseATRetirement, k, 'expenseATRetirement', 'fundRetirementLifeStyle')
           
+          let aliasAmountNeededAtRetirementAge = "";
+
           if (FundRetirement.selectedMethod == 0) {
-            var aliasAmountNeededAtRetirementAge = getPV(
+            aliasAmountNeededAtRetirementAge = getPV(
               resultIncomeRequiredAtRetirement,
               FundRetirement.netRateOfReture / 100,
               FundRetirement.yearsToReceiveRetirementIncome
             );
           } else {
-            var aliasAmountNeededAtRetirementAge = getPV(
+            aliasAmountNeededAtRetirementAge = getPV(
               resultExpenseATRetirement,
               FundRetirement.netRateOfReture / 100,
               FundRetirement.yearsToReceiveRetirementIncome
@@ -434,7 +436,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           const resultIncomeAtRetirementAge = isNaN(incomeAtRetirementAge) ? 0 : parseFloat(incomeAtRetirementAge.toFixed(2));
           setDependant(resultIncomeAtRetirementAge, k, 'incomeAtRetirementAge', 'fundRetirementLifeStyle')
           
-          var incomeRequiredAtRetirement = (resultIncomeAtRetirementAge * FundRetirement.percentOfIncomeRequiredAtRetirement) / 100;
+          let incomeRequiredAtRetirement = (resultIncomeAtRetirementAge * FundRetirement.percentOfIncomeRequiredAtRetirement) / 100;
           const resultIncomeRequiredAtRetirement = isNaN(incomeRequiredAtRetirement) ? 0 : parseFloat(incomeRequiredAtRetirement.toFixed(2));
           setDependant(resultIncomeRequiredAtRetirement, k, 'incomeRequiredAtRetirement', 'fundRetirementLifeStyle')
 
@@ -442,14 +444,15 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           const resultExpenseATRetirement = isNaN(expenseATRetirement) ? 0 : parseFloat(expenseATRetirement.toFixed(2));
           setDependant(resultExpenseATRetirement, k, 'expenseATRetirement', 'fundRetirementLifeStyle')
           
+          let aliasAmountNeededAtRetirementAge = ""
           if (FundRetirement.selectedMethod == 0) {
-            var aliasAmountNeededAtRetirementAge = getPV(
+             aliasAmountNeededAtRetirementAge = getPV(
               resultIncomeRequiredAtRetirement,
               FundRetirement.netRateOfReture / 100,
               FundRetirement.yearsToReceiveRetirementIncome
             );
           } else {
-            var aliasAmountNeededAtRetirementAge = getPV(
+             aliasAmountNeededAtRetirementAge = getPV(
               resultExpenseATRetirement,
               FundRetirement.netRateOfReture / 100,
               FundRetirement.yearsToReceiveRetirementIncome
