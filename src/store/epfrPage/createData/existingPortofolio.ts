@@ -1344,13 +1344,14 @@ const existingPortofolio = create(
               let getObject = draft[object][clientType];
               getObject[name] = value;
 
+              let newValue = 1;
               switch (object) {
                 case "summaryOfProperty":
-                  draft.declineToReview[0] = value == true ? 0 : 1;
-
+                  newValue = value ? 0 : 1;
+                  draft.declineToReview[0] = newValue;
                   if (
-                    (getObject.editting =
-                      true && get().summaryOfProperty[0].client === "")
+                    get().summaryOfProperty[0].editting === true &&
+                    get().summaryOfProperty[0].client === ""
                   ) {
                     draft.status = 0;
                   } else {
@@ -1363,10 +1364,11 @@ const existingPortofolio = create(
 
                   break;
                 case "summaryOfInvestment":
-                  draft.declineToReview[1] = value == true ? 0 : 1;
+                  newValue = value ? 0 : 1;
+                  draft.declineToReview[1] = newValue;
                   if (
-                    (getObject.editting =
-                      true && get().summaryOfInvestment[0].client === "")
+                    get().summaryOfInvestment[0].editting === true &&
+                    get().summaryOfInvestment[0].client === ""
                   ) {
                     draft.status = 0;
                   } else {
@@ -1378,10 +1380,11 @@ const existingPortofolio = create(
                   }
                   break;
                 case "summaryOfSavings":
-                  draft.declineToReview[2] = value == true ? 0 : 1;
+                  newValue = value ? 0 : 1;
+                  draft.declineToReview[2] = newValue;
                   if (
-                    (getObject.editting =
-                      true && get().summaryOfSavings[0].client === "")
+                    get().summaryOfSavings[0].editting === true &&
+                    get().summaryOfSavings[0].client === ""
                   ) {
                     draft.status = 0;
                   } else {
@@ -1393,10 +1396,11 @@ const existingPortofolio = create(
                   }
                   break;
                 case "summaryOfCPF":
-                  draft.declineToReview[3] = value == true ? 0 : 1;
+                  newValue = value ? 0 : 1;
+                  draft.declineToReview[3] = newValue;
                   if (
-                    (getObject.editting =
-                      true && get().summaryOfCPF[0].client === "")
+                    get().summaryOfCPF[0].editting === true &&
+                    get().summaryOfCPF[0].client === ""
                   ) {
                     draft.status = 0;
                   } else {
@@ -1408,10 +1412,11 @@ const existingPortofolio = create(
                   }
                   break;
                 case "summaryOfInsurance":
-                  draft.declineToReview[4] = value == true ? 0 : 1;
+                  newValue = value ? 0 : 1;
+                  draft.declineToReview[4] = newValue;
                   if (
-                    (getObject.editting =
-                      true && get().summaryOfInsurance[0].client === "")
+                    get().summaryOfInsurance[0].editting === true &&
+                    get().summaryOfInsurance[0].client === ""
                   ) {
                     draft.status = 0;
                   } else {
@@ -1423,10 +1428,11 @@ const existingPortofolio = create(
                   }
                   break;
                 case "summaryOfSRS":
-                  draft.declineToReview[5] = value == true ? 0 : 1;
+                  newValue = value ? 0 : 1;
+                  draft.declineToReview[5] = newValue;
                   if (
-                    (getObject.editting =
-                      true && get().summaryOfSRS[0].client === "")
+                    get().summaryOfSRS[0].editting === true &&
+                    get().summaryOfSRS[0].client === ""
                   ) {
                     draft.status = 0;
                   } else {
@@ -1438,10 +1444,11 @@ const existingPortofolio = create(
                   }
                   break;
                 case "summaryOfLoans":
-                  draft.declineToReview[6] = value == true ? 0 : 1;
+                  newValue = value ? 0 : 1;
+                  draft.declineToReview[6] = newValue;
                   if (
-                    (getObject.editting =
-                      true && get().summaryOfLoans[0].client === "")
+                    get().summaryOfLoans[0].editting === true &&
+                    get().summaryOfLoans[0].client === ""
                   ) {
                     draft.status = 0;
                   } else {
@@ -1453,7 +1460,8 @@ const existingPortofolio = create(
                   }
                   break;
                 default:
-                  draft.declineToReview[0] = value == true ? 0 : 1;
+                  newValue = value ? 0 : 1;
+                  draft.declineToReview[0] = newValue;
                   break;
               }
             })
