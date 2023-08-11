@@ -604,8 +604,8 @@ const existingPortofolio = create(
               if (indexData === 0 && get().summaryOfCPF?.length) {
                 let dataReplace = draft.summaryOfCPF[indexData];
                 dataReplace.id = 1;
-                dataReplace.editting = params.client !== "" ? true : false;
                 dataReplace.client = params.client;
+                dataReplace.editting = params.client !== "" ? true : false;
                 dataReplace.ordinaryAccount = params.ordinaryAccount;
                 dataReplace.specialAccount = params.specialAccount;
                 dataReplace.medisaveAccount = params.medisaveAccount;
@@ -1175,7 +1175,7 @@ const existingPortofolio = create(
                   if (index === 0 && checkLengthLoan === 1) {
                     let dataReplace = draft.summaryOfLoans[index];
                     dataReplace.id = 1;
-                    dataReplace.editting = param.editting;
+                    dataReplace.editting = param.client !== "" ? true : false;
                     dataReplace.client = param.client;
                     dataReplace.typeOfLoan = param.typeOfLoan;
                     dataReplace.loanTerm = param.loanTerm;

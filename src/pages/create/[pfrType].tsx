@@ -10,7 +10,7 @@ import { Page } from "@/pages/_app";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
 import CustomerKnowledgeAssesment from "@/components/Modules/Epfrs/CreateData/Sections/CustomerKnowledgeAssesment/CustomerKnowledgeAssesment";
 import Affordability from "@/components/Modules/Epfrs/CreateData/Sections/Affordability/Affordability";
@@ -28,11 +28,6 @@ import { localOwnerId, localType } from "@/libs/helper";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import RetrieveClientDataNew from "@/components/Modules/Epfrs/CreateData/RetrieveSingpass/RetrieveClientDataNew";
 import { siteConfig } from "@/libs/config";
-import { usePfrData } from "@/store/epfrPage/createData/pfrData";
-import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
-import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
-import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
-import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
@@ -42,27 +37,6 @@ const CreatePfrPage: Page = () => {
 
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
   let { setGlobal } = usePersonalInformation();
-  let status1 = usePersonalInformation((state) => state.status);
-  let editableStatus1 = usePersonalInformation((state) => state.editableStatus);
-
-  let status2 = useExistingPortofolio((state) => state.status);
-  let editableStatus2 = useExistingPortofolio((state) => state.editableStatus);
-
-  let status3 = useCashFlow((state) => state.status);
-  let editableStatus3 = useCashFlow((state) => state.editableStatus);
-
-  let status4 = useBalanceSheet((state) => state.status);
-  let editableStatus4 = useBalanceSheet((state) => state.editableStatus);
-
-  let [status5, setStatus5] = useState(0);
-  let [editableStatus5, setEditableStatus5] = useState(0);
-
-  let status6 = useCustomerKnowledgeAssesment((state) => state.status);
-  let editableStatus6 = useCustomerKnowledgeAssesment(
-    (state) => state.editableStatus
-  );
-
-  let pfrData = usePfrData((state) => state.pfr);
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -126,24 +100,11 @@ const CreatePfrPage: Page = () => {
       setGlobal("id", router.query.id);
     }
 
-    let getSection5 = localStorage.getItem("section5")
-      ? localStorage.getItem("section5")
-      : "";
-
-    if (getSection5) {
-      let data = JSON.parse(getSection5);
-      let getStatus = data.status ? data.status : 0;
-      let getEditableStatus = data.editableStatus ? data.editableStatus : 0;
-
-      setStatus5(getStatus);
-      setEditableStatus5(getEditableStatus);
-    }
-
     let localOwner = localOwnerId();
     let localT = localType();
 
     setStartingDoc(localOwner, localT);
-  }, [router.isReady, router.query.id, status5, editableStatus5]);
+  }, [router.isReady, router.query.id]);
 
   return (
     <>

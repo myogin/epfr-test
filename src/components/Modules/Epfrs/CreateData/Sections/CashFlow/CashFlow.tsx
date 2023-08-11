@@ -18,6 +18,7 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { useRouter } from "next/router";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 
 interface Props {
   id?: any;
@@ -36,6 +37,7 @@ const CashFlow = (props: Props) => {
   const scrollPosition = useScrollPosition(3);
   const scrollPositionNext = useScrollPosition(4);
   const scrollPositionBottom = useScrollPositionBottom(2);
+  let pfrLocal = usePfrData((state) => state.pfr);
 
   let status = useCashFlow((state) => state.status);
   let editableStatus = useCashFlow((state) => state.editableStatus);
@@ -56,6 +58,8 @@ const CashFlow = (props: Props) => {
 
   let { id } = usePersonalInformation();
   let { setGlobal } = useCashFlow();
+  let fetchAnnual = useCashFlow((state) => state.fetchAnnual)
+  let fetchExpense = useCashFlow((state) => state.fetchExpense)
 
   let checkNeedData = checkAllNeed(need);
 
@@ -124,9 +128,25 @@ const CashFlow = (props: Props) => {
       let getSection3 = await getPfrStep(3, params);
 
       console.log(getSection3);
+      console.log(getSection3.annualIncome);
+      console.log(getSection3.annualExpenses);
 
       // setGlobal("editableStatus", getSection2.pfr.editableSection1);
       // setGlobal("status", getSection2.pfr.section1);
+
+      // Fetch annual
+      if (getSection3.annualExpenses.length > 0) {
+        getSection3.annualExpenses.map((data: any, index: number) => {
+          fetchExpense(index, data);
+        });
+      }
+
+      // Fetch annual expense
+      if (getSection3.annualIncome.length > 0) {
+        getSection3.annualIncome.map((data: any, index: number) => {
+          fetchAnnual(index, data);
+        });
+      }
 
       setLoading(false); // Stop loading
     } catch (error) {
@@ -141,6 +161,9 @@ const CashFlow = (props: Props) => {
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottom === "Process2") {
+        setGlobal("editableStatus", pfrLocal.editableSection3);
+        setGlobal("id", router.query.id);
+        setGlobal("status", pfrLocal.section3);
         getSectionData(router.query.id);
         console.log("Get data Section 3");
       }

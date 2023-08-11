@@ -23,6 +23,7 @@ import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useRouter } from "next/router";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 
 interface Props {
   id?: any;
@@ -31,6 +32,7 @@ interface Props {
 
 const ExistingPortofolio = (props: Props) => {
   let id = usePersonalInformation((state) => state.id);
+  let pfrLocal = usePfrData((state) => state.pfr);
   const router = useRouter();
 
   let editableStatus = useExistingPortofolio((state) => state.editableStatus);
@@ -134,9 +136,6 @@ const ExistingPortofolio = (props: Props) => {
 
       console.log(getSection2);
 
-      setGlobal("editableStatus", getSection2.pfr.editableSection1);
-      setGlobal("status", getSection2.pfr.section1);
-
       // Fetch Client
       if (getSection2.summaryOfProperty.length > 0) {
         getSection2.summaryOfProperty.map((data: any, index: number) => {
@@ -204,6 +203,9 @@ const ExistingPortofolio = (props: Props) => {
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottom === "Process1") {
+        setGlobal("editableStatus", pfrLocal.editableSection2);
+        setGlobal("id", router.query.id);
+        setGlobal("status", pfrLocal.section2);
         getSectionData(router.query.id);
       }
     }

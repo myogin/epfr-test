@@ -1213,7 +1213,7 @@ const Client = (props: Props) => {
                 placeholder="01 January 1998"
                 handleChange={handleInputChange}
                 needValidation={true}
-                logic={reviewDate === "" || reviewDate === "-" ? false : true}
+                logic={reviewDate === "" || reviewDate === null ? false : true}
               />
             ) : (
               ""

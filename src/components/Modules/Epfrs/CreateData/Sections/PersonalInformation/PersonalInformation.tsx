@@ -340,7 +340,7 @@ const PersonalInformation = (props: Props) => {
         ""
       )}
 
-      <div className="mb-20 border-b mt-36 border-gray-soft-strong"></div>
+      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };
