@@ -277,7 +277,6 @@ const SwitchingReplacement = (props: Props) => {
   };
 
   useEffect(() => {
-    console.log('fetch pfr id: ', scrollPosition);
     if (scrollPosition === "NotOkSec10" && sectionTenData.id === 0) {
       const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
       setPfrId(section1?.state?.id);
