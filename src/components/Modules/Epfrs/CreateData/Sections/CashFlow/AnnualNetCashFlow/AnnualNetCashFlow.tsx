@@ -200,10 +200,10 @@ const AnnualNetCashFlow = (props: Props) => {
               ) : (
                 <>
                   <div className="text-right">
-                    <span className="text-green-deep">-</span>
+                    <span className="text-green-deep">0</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-green-deep">-</span>
+                    <span className="text-green-deep">0</span>
                   </div>
                 </>
               )}
@@ -231,6 +231,8 @@ const AnnualNetCashFlow = (props: Props) => {
                     defaultValue={data[index].reasonForSurplus}
                     indexClient={index}
                     handleChange={handleReason}
+                    needValidation={true}
+                    logic={data[index].annualSurplus.annualSurplus === 0 && data[index].reasonForSurplus === "" ? false : true}
                   />
                 </div>
               </Fragment>
