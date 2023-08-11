@@ -31,6 +31,8 @@ import { siteConfig } from "@/libs/config";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
@@ -48,6 +50,17 @@ const CreatePfrPage: Page = () => {
 
   let status3 = useCashFlow((state) => state.status);
   let editableStatus3 = useCashFlow((state) => state.editableStatus);
+
+  let status4 = useBalanceSheet((state) => state.status);
+  let editableStatus4 = useBalanceSheet((state) => state.editableStatus);
+
+  let [status5, setStatus5] = useState(0);
+  let [editableStatus5, setEditableStatus5] = useState(0);
+
+  let status6 = useCustomerKnowledgeAssesment((state) => state.status);
+  let editableStatus6 = useCustomerKnowledgeAssesment(
+    (state) => state.editableStatus
+  );
 
   let pfrData = usePfrData((state) => state.pfr);
 
@@ -113,11 +126,24 @@ const CreatePfrPage: Page = () => {
       setGlobal("id", router.query.id);
     }
 
+    let getSection5 = localStorage.getItem("section5")
+      ? localStorage.getItem("section5")
+      : "";
+
+    if (getSection5) {
+      let data = JSON.parse(getSection5);
+      let getStatus = data.status ? data.status : 0;
+      let getEditableStatus = data.editableStatus ? data.editableStatus : 0;
+
+      setStatus5(getStatus);
+      setEditableStatus5(getEditableStatus);
+    }
+
     let localOwner = localOwnerId();
     let localT = localType();
 
     setStartingDoc(localOwner, localT);
-  }, [router.isReady, router.query.id]);
+  }, [router.isReady, router.query.id, status5, editableStatus5]);
 
   return (
     <>
@@ -132,7 +158,7 @@ const CreatePfrPage: Page = () => {
         </div>
         <div className="mb-7">
           {" "}
-          <Link href="/epfr" className="flex text-white">
+          <Link href="/overview" className="flex text-white">
             <ArrowLeftSLineIcon /> Back to EPFR list
           </Link>
         </div>
@@ -161,7 +187,7 @@ const CreatePfrPage: Page = () => {
         <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
           <GlobalCard className="min-h-screen pt-16">
             <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60 mb-14">
-              <Link href="/epfr" className="flex text-green-deep">
+              <Link href="/overview" className="flex text-green-deep">
                 <ArrowLeftSLineIcon /> Back
               </Link>
               <TitleMedium>New EPFR Documents</TitleMedium>
@@ -179,17 +205,62 @@ const CreatePfrPage: Page = () => {
                     useBoxMethod
                   >
                     <PersonalInformation pfrType={pfrTypeId} id="section-1" />
-                    {status1 === 1 && editableStatus1 === 1 ? <ExistingPortofolio pfrType={pfrTypeId} id="section-2" /> : null}
-                    {status2 === 1 && editableStatus2 === 1 ? <CashFlow pfrType={pfrTypeId} id="section-3" /> : null}
-                    {status3 === 1 && editableStatus3 === 1 ? <BalanceSheet pfrType={pfrTypeId} id="section-4" /> : null}
-                    {pfrData.section4 === 1 && pfrData.editableSection4 === 1 ? <RiskProfile pfrType={pfrTypeId} id="section-5" /> : null}
-                    {pfrData.section5 === 1 && pfrData.editableSection5 === 1 ? <CustomerKnowledgeAssesment pfrType={pfrTypeId} id="section-6" /> : null}
-                    {pfrData.section6 === 1 && pfrData.editableSection6 === 1 ? <PrioritiesNeedAnalysis  pfrType={pfrTypeId} id="section-7" /> : null}
-                    {pfrData.section7 === 1 && pfrData.editableSection7 === 1 ? <Affordability pfrType={pfrTypeId} id="section-8" /> : null}
-                    {pfrData.section8 === 1 && pfrData.editableSection8 === 1 ? <AnalysisRecommendation  pfrType={pfrTypeId} id="section-9" /> : null}
-                    {pfrData.section9 === 1 && pfrData.editableSection9 === 1 ? <SwitchingReplacement pfrType={pfrTypeId} id="section-10" /> : null}
-                    {pfrData.section10 === 1 && pfrData.editableSection10 === 1 ? <ClientsAcknowledgment  pfrType={pfrTypeId}  id="section-11" /> : null}
-                    {pfrData.section11 === 1 && pfrData.editableSection11 === 1 ? <RepresentativeDeclaration  pfrType={pfrTypeId}  id="section-12" /> : null}
+                    {status1 === 1 && editableStatus1 === 1 ? (
+                      <ExistingPortofolio pfrType={pfrTypeId} id="section-2" />
+                    ) : null}
+                    {status2 === 1 && editableStatus2 === 1 ? (
+                      <CashFlow pfrType={pfrTypeId} id="section-3" />
+                    ) : null}
+                    {status3 === 1 && editableStatus3 === 1 ? (
+                      <BalanceSheet pfrType={pfrTypeId} id="section-4" />
+                    ) : null}
+                    {status4 === 1 && editableStatus4 === 1 ? (
+                      <RiskProfile pfrType={pfrTypeId} id="section-5" />
+                    ) : null}
+                    {status5 === 1 && editableStatus5 === 1 ? (
+                      <CustomerKnowledgeAssesment
+                        pfrType={pfrTypeId}
+                        id="section-6"
+                      />
+                    ) : null}
+                    {status6 === 1 && editableStatus6 === 1 ? (
+                      <PrioritiesNeedAnalysis
+                        pfrType={pfrTypeId}
+                        id="section-7"
+                      />
+                    ) : null}
+                    {pfrData.section7 === 1 &&
+                    pfrData.editableSection7 === 1 ? (
+                      <Affordability pfrType={pfrTypeId} id="section-8" />
+                    ) : null}
+                    {pfrData.section8 === 1 &&
+                    pfrData.editableSection8 === 1 ? (
+                      <AnalysisRecommendation
+                        pfrType={pfrTypeId}
+                        id="section-9"
+                      />
+                    ) : null}
+                    {pfrData.section9 === 1 &&
+                    pfrData.editableSection9 === 1 ? (
+                      <SwitchingReplacement
+                        pfrType={pfrTypeId}
+                        id="section-10"
+                      />
+                    ) : null}
+                    {pfrData.section10 === 1 &&
+                    pfrData.editableSection10 === 1 ? (
+                      <ClientsAcknowledgment
+                        pfrType={pfrTypeId}
+                        id="section-11"
+                      />
+                    ) : null}
+                    {pfrData.section11 === 1 &&
+                    pfrData.editableSection11 === 1 ? (
+                      <RepresentativeDeclaration
+                        pfrType={pfrTypeId}
+                        id="section-12"
+                      />
+                    ) : null}
                   </ScrollSpy>
                 </div>
               )}

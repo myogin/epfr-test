@@ -184,6 +184,7 @@ type Actions = {
   updateReason: (client: number, reason: string, pfrType: number) => any;
   updateID: (id: any) => any;
   setGlobal: (name: string, value: any) => any;
+  resetSectionSix: () => any;
 };
 const customerKnowledgeAssesment = (set: any, get: any) => ({
   ...initialState,
@@ -294,6 +295,9 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
         draft[name] = value;
       })
     ),
+  resetSectionSix: () => {
+    set(initialState);
+  },
 });
 export const useCustomerKnowledgeAssesment = create(
   devtools(

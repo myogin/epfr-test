@@ -20,6 +20,10 @@ import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPorto
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
+import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
+import { useAffordability } from "@/store/epfrPage/createData/affordability";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +36,10 @@ const EpfrPage: Page = () => {
   let { resetSectionTwo } = useExistingPortofolio();
   let { resetSectionThree } = useCashFlow();
   let { resetPfr } = usePfrData();
+  let { resetSectionFour } = useBalanceSheet();
+  let { resetSectionSix } = useCustomerKnowledgeAssesment();
+  let { resetSectionSeven } = usePrioritiesNeedAnalysis();
+  let { resetSectionEight } = useAffordability();
 
   const getGeneralData = async () => {
     if (router.query.edit) {
@@ -44,6 +52,10 @@ const EpfrPage: Page = () => {
     resetSectionTwo();
     resetSectionThree();
     resetPfr();
+    resetSectionFour();
+    resetSectionSix();
+    resetSectionSeven();
+    resetSectionEight();
 
     router.push(`create/${params}`);
   };

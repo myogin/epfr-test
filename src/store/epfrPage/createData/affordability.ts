@@ -3,73 +3,82 @@ import { devtools } from "zustand/middleware";
 import { produce } from "immer";
 import { SectionEight } from "@/models/SectionEight";
 
-
-
 const initialState: SectionEight = {
-    section8: {
-        typeClient: 2,
-        totalDependant:0,
-        pfrId: 0,
-        need: [],
-        payorBudget: [],
-        payorDetail: [],
-        assetOrSurplus: [
-            {
-                answer: "0",
-                reason: null
-            }
-        ],
-        sourceOfWealth: [
-            {
-                employment: false,
-                investment: false,
-                inheritance: false,
-                other: false,
-                otherExplain: null
-            }
-        ],
-        issues: [],
-        fromExistingResources: [],
-        reasonForResources: [],
-        fromExistingResourcesForSingle: [],
-        reasonForResourcesForSingle: [],
-        medisaveResource: {
-            fromExistingResources: [],
-            reasonForResources: [],
-            fromExistingResourcesForSingle: [],
-            reasonForResourcesForSingle: []
-        },
-        status: 0
-    }
+  section8: {
+    typeClient: 2,
+    totalDependant: 0,
+    pfrId: 0,
+    need: [],
+    payorBudget: [],
+    payorDetail: [],
+    assetOrSurplus: [
+      {
+        answer: "0",
+        reason: null,
+      },
+    ],
+    sourceOfWealth: [
+      {
+        employment: false,
+        investment: false,
+        inheritance: false,
+        other: false,
+        otherExplain: null,
+      },
+    ],
+    issues: [],
+    fromExistingResources: [],
+    reasonForResources: [],
+    fromExistingResourcesForSingle: [],
+    reasonForResourcesForSingle: [],
+    medisaveResource: {
+      fromExistingResources: [],
+      reasonForResources: [],
+      fromExistingResourcesForSingle: [],
+      reasonForResourcesForSingle: [],
+    },
+    status: 0,
+    editableStatus: 0
+  },
 };
 
-initialState.section8.payorDetail = new Array(initialState.section8.typeClient).fill({
-    isSelf: "0",
-    relationShip: null,
-    payorName: null,
-    passportNo: null,
-    occupation: null,
-    payorIncome: 0
+initialState.section8.payorDetail = new Array(
+  initialState.section8.typeClient
+).fill({
+  isSelf: "0",
+  relationShip: null,
+  payorName: null,
+  passportNo: null,
+  occupation: null,
+  payorIncome: 0,
 });
 
-initialState.section8.payorBudget = new Array(initialState.section8.typeClient).fill(false).map(() => {return new Array(5).fill({
-    selection: false,
-    annual: 0,
-    single: 0,
-    sourceOfFund: ""
-})})
+initialState.section8.payorBudget = new Array(initialState.section8.typeClient)
+  .fill(false)
+  .map(() => {
+    return new Array(5).fill({
+      selection: false,
+      annual: 0,
+      single: 0,
+      sourceOfFund: "",
+    });
+  });
 
-initialState.section8.sourceOfWealth = new Array(initialState.section8.typeClient).fill({
-    employment: false,
-    investment: false,
-    inheritance: false,
-    other: false,
-    otherExplain: null
+initialState.section8.sourceOfWealth = new Array(
+  initialState.section8.typeClient
+).fill({
+  employment: false,
+  investment: false,
+  inheritance: false,
+  other: false,
+  otherExplain: null,
 });
 
-initialState.section8.assetOrSurplus = new Array(initialState.section8.typeClient).fill({
-    answer: false,
-    reason: false
+initialState.section8.assetOrSurplus = new Array(
+  initialState.section8.typeClient
+).fill({
+  answer: false,
+  reason: false,
 });
 
 // initialState.section8.answer.clientData =  new Array(initialState.section8.typeClient).fill(
@@ -311,57 +320,68 @@ initialState.section8.assetOrSurplus = new Array(initialState.section8.typeClien
 // initialState.section8.answer.need.dependant =  new Array(initialState.section8.totalDependant).fill(false).map(() => {return new Array(14).fill(false);})
 
 type Actions = {
-    setPayorDetail: (key: number, name: string, dataType: string, value: any) => any;
-    setPayorBudget: (key: number, index:any, name: string, value: number) => any;
-    setSourceOfWealth: (key: number, name: string, value: any) => any;
-    setAssetOrSurplus: (key: number, name: string, value: any) => any;
+  setPayorDetail: (
+    key: number,
+    name: string,
+    dataType: string,
+    value: any
+  ) => any;
+  setPayorBudget: (key: number, index: any, name: string, value: number) => any;
+  setSourceOfWealth: (key: number, name: string, value: any) => any;
+  setAssetOrSurplus: (key: number, name: string, value: any) => any;
+  resetSectionEight: () => any;
 };
 
 const Affordability = create(
   devtools<SectionEight & Actions>((set, get) => ({
     ...initialState,
-    setPayorDetail: (key: number, name: string, dataType: string, value: any) => set(
-      produce((draft) => {
-          draft.section8[dataType][key][name] = value;
-      })
-    ),
-    setPayorBudget: (key: number, index:any, name: string, value: number) => set(
+    resetSectionEight: () => {
+      set(initialState);
+    },
+    setPayorDetail: (key: number, name: string, dataType: string, value: any) =>
+      set(
         produce((draft) => {
-            var dataResSelection = draft.section8.payorBudget[key][index][name];
-            if(name == 'selection'){
-                if(dataResSelection == true){
-                    dataResSelection = false;
-                }else{
-                    dataResSelection = true;
-                }
-            }else{
-                dataResSelection = value;
-            }
-            draft.section8.payorBudget[key][index][name] = dataResSelection;
+          draft.section8[dataType][key][name] = value;
         })
       ),
-    setSourceOfWealth: (key: number, name: string, value: any) => set(
+    setPayorBudget: (key: number, index: any, name: string, value: number) =>
+      set(
         produce((draft) => {
-            if(name != 'otherExplain'){
-                if(value == 'true'){
-                    var resVal = false;
-                }else{
-                    var resVal = true;
-                }
-                draft.section8.sourceOfWealth[key][name] = resVal;
-            }else{
-                draft.section8.sourceOfWealth[key][name] = value;
+          var dataResSelection = draft.section8.payorBudget[key][index][name];
+          if (name == "selection") {
+            if (dataResSelection == true) {
+              dataResSelection = false;
+            } else {
+              dataResSelection = true;
             }
+          } else {
+            dataResSelection = value;
+          }
+          draft.section8.payorBudget[key][index][name] = dataResSelection;
         })
-    ),
-    setAssetOrSurplus: (key: number, name: string, value: any) => set(
+      ),
+    setSourceOfWealth: (key: number, name: string, value: any) =>
+      set(
         produce((draft) => {
-            draft.section8.assetOrSurplus[key][name] = value;
+          if (name != "otherExplain") {
+            if (value == "true") {
+              var resVal = false;
+            } else {
+              var resVal = true;
+            }
+            draft.section8.sourceOfWealth[key][name] = resVal;
+          } else {
+            draft.section8.sourceOfWealth[key][name] = value;
+          }
         })
-    ),
-
+      ),
+    setAssetOrSurplus: (key: number, name: string, value: any) =>
+      set(
+        produce((draft) => {
+          draft.section8.assetOrSurplus[key][name] = value;
+        })
+      ),
   }))
-
 );
 
 export const useAffordability = Affordability;

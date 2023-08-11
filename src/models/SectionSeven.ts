@@ -189,5 +189,6 @@ export interface SectionSeven {
     totalDependant: number;
     additionalNote: AdditionalNote[];
     status: number;
-  }
+    editableStatus: number;
+  };
 }

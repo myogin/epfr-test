@@ -75,6 +75,7 @@ type Actions = {
   setGlobal: (name: string, value: any) => any;
   fetchAsset: (fetchData: any) => any;
   fetchLiability: (fetchData: any) => any;
+  resetSectionFour: () => any;
 };
 
 const balanceSheet = (set: any, get: any) => ({
@@ -197,6 +198,9 @@ const balanceSheet = (set: any, get: any) => ({
         drafts.others.liability = getLiability;
       })
     ),
+  resetSectionFour: () => {
+    set(initialState);
+  },
 });
 
 export const useBalanceSheet = create(
