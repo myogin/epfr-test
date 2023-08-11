@@ -38,7 +38,7 @@ const initialState: SectionEight = {
       reasonForResourcesForSingle: [],
     },
     status: 0,
-    editableStatus: 0
+    editableStatus: 0,
   },
 };
 
@@ -329,6 +329,7 @@ type Actions = {
   setPayorBudget: (key: number, index: any, name: string, value: number) => any;
   setSourceOfWealth: (key: number, name: string, value: any) => any;
   setAssetOrSurplus: (key: number, name: string, value: any) => any;
+  setGlobal: (name: string, value: any) => any;
   resetSectionEight: () => any;
 };
 
@@ -379,6 +380,12 @@ const Affordability = create(
       set(
         produce((draft) => {
           draft.section8.assetOrSurplus[key][name] = value;
+        })
+      ),
+    setGlobal: (name: string, value: any) =>
+      set(
+        produce((draft) => {
+          draft.section8[name] = value;
         })
       ),
   }))

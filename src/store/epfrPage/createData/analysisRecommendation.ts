@@ -37,7 +37,7 @@ const AnalysisRecommendation = create(
         produce((draft) => {
             draft.section9[name] = value;
         })
-    )
+    ),
   }))
 
 );
