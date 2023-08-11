@@ -13,7 +13,6 @@ import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import { clientIdentity, getLength } from "@/libs/helper";
-import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import RetrieveSingpassModal from "../../RetrieveSingpass/RetrieveSingpassModal";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import TextThin from "@/components/Attributes/Typography/TextThin";
@@ -39,7 +38,7 @@ const PersonalInformation = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(1);
-  const scrollPositionBottom = useScrollPositionBottom(1);
+  const scrollPositionNext = useScrollPosition(2);
 
   let dependant = usePersonalInformation((state) => state.dependant);
 
@@ -168,9 +167,7 @@ const PersonalInformation = (props: Props) => {
     // If edit check the ID
     if (router.query.singpass === null || router.query.singpass === undefined) {
       if (router.query.id !== null && router.query.id !== undefined) {
-        console.log("masuk sini nggak ID nya" + router.query.id);
         getSectionData(router.query.id);
-        // getGeneralData(router.query.id);
       }
     }
   }, [router.isReady, router.query.id, router.query.singpass]);
@@ -191,7 +188,7 @@ const PersonalInformation = (props: Props) => {
 
   // Save data when scrolling
   useEffect(() => {
-    if (scrollPositionBottom === "Process1") {
+    if (scrollPositionNext === "okSec2") {
       if (
         (editableStatus === 0 && status === 1) ||
         (editableStatus === 2 && status === 1)
@@ -203,7 +200,7 @@ const PersonalInformation = (props: Props) => {
         console.log("Your cannot save data");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext, editableStatus, status]);
 
   if (loading) {
     return <LoadingPage />;

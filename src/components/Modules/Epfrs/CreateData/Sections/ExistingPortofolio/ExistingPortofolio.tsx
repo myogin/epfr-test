@@ -78,8 +78,8 @@ const ExistingPortofolio = (props: Props) => {
   const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
 
   const scrollPosition = useScrollPosition(2);
-  const scrollPositionBottomSection1 = useScrollPositionBottom(1);
-  const scrollPositionBottom = useScrollPositionBottom(2);
+  const scrollPositionNext = useScrollPosition(3);
+  const scrollPositionBottom = useScrollPositionBottom(1);
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -203,14 +203,14 @@ const ExistingPortofolio = (props: Props) => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
-      if (scrollPositionBottomSection1 === "Process1") {
+      if (scrollPositionBottom === "Process1") {
         getSectionData(router.query.id);
       }
     }
-  }, [scrollPositionBottomSection1, router.isReady, router.query.id]);
+  }, [scrollPositionBottom, router.isReady, router.query.id]);
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process2") {
+    if (scrollPositionNext === "okSec3") {
       if (
         (editableStatus === 0 && status === 1) ||
         (editableStatus === 2 && status === 1)
@@ -221,7 +221,7 @@ const ExistingPortofolio = (props: Props) => {
         console.log("Your data not complete Section 2");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext, editableStatus, status]);
 
   return (
     <div id={props.id} className="min-h-screen">

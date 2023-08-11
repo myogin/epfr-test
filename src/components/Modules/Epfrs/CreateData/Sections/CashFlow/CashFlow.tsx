@@ -34,8 +34,8 @@ const CashFlow = (props: Props) => {
   ];
 
   const scrollPosition = useScrollPosition(3);
-  const scrollPositionBottomSection2 = useScrollPositionBottom(2);
-  const scrollPositionBottom = useScrollPositionBottom(3);
+  const scrollPositionNext = useScrollPosition(4);
+  const scrollPositionBottom = useScrollPositionBottom(2);
 
   let status = useCashFlow((state) => state.status);
   let editableStatus = useCashFlow((state) => state.editableStatus);
@@ -140,15 +140,15 @@ const CashFlow = (props: Props) => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
-      if (scrollPositionBottomSection2 === "Process2") {
+      if (scrollPositionBottom === "Process2") {
         getSectionData(router.query.id);
         console.log("Get data Section 3");
       }
     }
-  }, [scrollPositionBottomSection2, router.isReady, router.query.id]);
+  }, [scrollPositionBottom, router.isReady, router.query.id]);
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process3") {
+    if (scrollPositionNext === "okSec4") {
       if (
         (editableStatus === 0 && status === 1) ||
         (editableStatus === 2 && status === 1)
@@ -159,7 +159,7 @@ const CashFlow = (props: Props) => {
         console.log("Your data not complete Section 3");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext, editableStatus, status]);
 
   return (
     <div id={props.id} className="min-h-screen">
