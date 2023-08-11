@@ -58,6 +58,7 @@ const initialState: SectionFour = {
     liability: [0, 0],
     network: [0, 0],
   },
+  editableStatus: 0,
 };
 
 type Actions = {
@@ -71,6 +72,10 @@ type Actions = {
   updateNeed: (client: number, value: number, pfrType: number) => any;
   updateReason: (client: number, reason: string, pfrType: number) => any;
   updateID: (id: any) => any;
+  setGlobal: (name: string, value: any) => any;
+  fetchAsset: (fetchData: any) => any;
+  fetchLiability: (fetchData: any) => any;
+  resetSectionFour: () => any;
 };
 
 const balanceSheet = (set: any, get: any) => ({
@@ -160,6 +165,41 @@ const balanceSheet = (set: any, get: any) => ({
         drafts.id = parseInt(id);
       })
     );
+  },
+  setGlobal: (name: string, value: any) =>
+    set(
+      produce((draft: any) => {
+        draft[name] = value;
+      })
+    ),
+  fetchAsset: (fetchData: any) =>
+    set(
+      produce((drafts: any) => {
+        let getAsset: any = [];
+        fetchData.map((el: any) => {
+          getAsset.push({
+            key: el.key,
+            otherValue: [el.value1, el.value2],
+          });
+        });
+        drafts.others.asset = getAsset;
+      })
+    ),
+  fetchLiability: (fetchData: any) =>
+    set(
+      produce((drafts: any) => {
+        let getLiability: any = [];
+        fetchData.map((el: any) => {
+          getLiability.push({
+            key: el.key,
+            otherValue: [el.value1, el.value2],
+          });
+        });
+        drafts.others.liability = getLiability;
+      })
+    ),
+  resetSectionFour: () => {
+    set(initialState);
   },
 });
 

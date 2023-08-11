@@ -17,9 +17,10 @@ import { getLength } from "@/libs/helper";
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import { postPfr } from "@/services/pfrService";
+import { postPfr, postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 
 interface Props {
   id?: any;
@@ -30,8 +31,17 @@ const CustomerKnowledgeAssesment = (props: Props) => {
   let getPfrLength = getLength(props.pfrType);
   const scrollPosition = useScrollPosition(6);
   // zustand
-  const { answer, need, updateNeed, reason, updateReason, updateID } =
-    useCustomerKnowledgeAssesment();
+  const {
+    answer,
+    need,
+    updateNeed,
+    reason,
+    updateReason,
+    updateID,
+    status,
+    editableStatus,
+    setGlobal,
+  } = useCustomerKnowledgeAssesment();
   const [showSection, setShowSection] = useState(false);
   const [outcome, setOutcome] = useState([-1, -1]);
 
@@ -76,52 +86,6 @@ const CustomerKnowledgeAssesment = (props: Props) => {
   }, [need, props.pfrType]);
 
   const scrollPositionBottom = useScrollPositionBottom(6);
-  const storeData = async () => {
-    let localDataFour = localStorage.getItem("section4")
-      ? localStorage.getItem("section4")
-      : "";
-
-    let dataFourFix = {};
-    if (localDataFour) {
-      let data = JSON.parse(localDataFour);
-      dataFourFix = data.state;
-    }
-
-    let localDataFive = localStorage.getItem("section5")
-      ? localStorage.getItem("section5")
-      : "";
-
-    let dataFiveFix = {};
-    if (localDataFive) {
-      let data = JSON.parse(localDataFive);
-      dataFiveFix = data;
-    }
-
-    let localDataSix = localStorage.getItem("section6")
-      ? localStorage.getItem("section6")
-      : "";
-
-    let dataSixFix = {};
-    if (localDataSix) {
-      let data = JSON.parse(localDataSix);
-      dataSixFix = data.state;
-    }
-
-    const groupTwoData = {
-      section4: dataFourFix,
-      section5: dataFiveFix,
-      section6: dataSixFix,
-    };
-
-    await postPfr(2, JSON.stringify(groupTwoData));
-  };
-
-  useEffect(() => {
-    if (scrollPositionBottom === "Process6") {
-      // console.log("oke")
-      storeData();
-    }
-  }, [scrollPositionBottom]);
 
   // get id from group 1 and paste to grou 2
   let { id } = usePersonalInformation();
@@ -129,6 +93,48 @@ const CustomerKnowledgeAssesment = (props: Props) => {
   useEffect(() => {
     updateID(id);
   }, [id, updateID]);
+  const [saveLoading, setSaveLoading] = useState(false);
+  // Store data
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section6")
+        ? localStorage.getItem("section6")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data.state;
+      }
+
+      let storeDataSection = await postPfrSections(6, JSON.stringify(dataFix));
+
+      // If save success get ID and store to localstorage
+      if (storeDataSection.data.result === "success") {
+        setGlobal("editableStatus", 1);
+      }
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    if (scrollPositionBottom === "Process6") {
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("can save now section4");
+        storeData();
+      } else {
+        console.log("Your data not complete Section 6");
+      }
+    }
+  }, [scrollPositionBottom, editableStatus, status]);
   return (
     <div id={props.id}>
       <div
@@ -259,6 +265,11 @@ const CustomerKnowledgeAssesment = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 6" />
+      ) : (
+        ""
+      )}
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );

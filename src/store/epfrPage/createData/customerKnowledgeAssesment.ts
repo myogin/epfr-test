@@ -168,6 +168,7 @@ const initialState: SectionSix = {
   outcomeChanged: true,
   issues: [],
   status: 0,
+  editableStatus: 0,
 };
 
 type Actions = {
@@ -182,6 +183,8 @@ type Actions = {
   updateNeed: (client: number, value: boolean, pfrType: number) => any;
   updateReason: (client: number, reason: string, pfrType: number) => any;
   updateID: (id: any) => any;
+  setGlobal: (name: string, value: any) => any;
+  resetSectionSix: () => any;
 };
 const customerKnowledgeAssesment = (set: any, get: any) => ({
   ...initialState,
@@ -285,6 +288,15 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
         drafts.id = parseInt(id);
       })
     );
+  },
+  setGlobal: (name: string, value: any) =>
+    set(
+      produce((draft: any) => {
+        draft[name] = value;
+      })
+    ),
+  resetSectionSix: () => {
+    set(initialState);
   },
 });
 export const useCustomerKnowledgeAssesment = create(

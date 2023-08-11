@@ -121,7 +121,7 @@ const RepresentativeDeclaration = (props: Props) => {
     }
   };
 
-
+  const scrollPositionBottom = useScrollPositionBottom(11);
 
   useEffect(() => {
     if (scrollPositionBottomSection11 === "Process11" && sectionTwelveData.id === 0) {

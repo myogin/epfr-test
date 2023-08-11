@@ -115,7 +115,7 @@ const ClientsAcknowledgment = (props: Props) => {
     remark: null,
     remark1: null,
     introducer: null,
-    status: 1,
+    status: 0,
     issues: [],
   });
 

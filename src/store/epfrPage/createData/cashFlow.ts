@@ -22,6 +22,8 @@ type Actions = {
   setNeed: (indexData: number, params: any) => any;
   resetSectionThree: () => any;
   setGlobal: (name: string, value: any) => any;
+  fetchAnnual: (clientType: number, params: any) => any;
+  fetchExpense: (indexData: number,value: any) => any;
 };
 
 const initialState: SectionThree = {
@@ -143,6 +145,28 @@ const cashFlow = create(
     persist<SectionThree & Actions>(
       (set, get) => ({
         ...initialState,
+        fetchExpense: (indexData: number,
+          data: any) =>
+          set(
+            produce((draft) => {
+              let dataNew = draft.annualExpense[indexData];
+              dataNew.values[0] = data.value1 ? data.value1 : 0;
+              dataNew.values[1] = data.value2 ? data.value2 : 0;
+              dataNew.values[2] = data.value3 ? data.value3 : 0;
+              dataNew.values[3] = data.value4 ? data.value4 : 0;
+              dataNew.selected = true;
+            })
+          ),
+        fetchAnnual: (clientType: number, params: any) =>
+          set(
+            produce((draft) => {
+              console.log(params);
+              let data = draft.data[clientType].annualIncome;
+              data.annualGrossIncome = params.annualGrossIncome ? params.annualGrossIncome : 0;
+              data.additionalWages = params.additionalWages ? params.additionalWages : 0;
+              data.less = params.less ? params.less : 0;
+            })
+          ),
         setData: (indexData: number, params: any) =>
           set(
             produce((draft) => {
@@ -170,6 +194,16 @@ const cashFlow = create(
             produce((draft) => {
               let data = draft.data[clientType].annualIncome;
               data[name] = value;
+
+              if (value > 0) {
+                draft.status = 1;
+              } else {
+                draft.status = 0;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setAnnualExpanse: (
@@ -180,9 +214,19 @@ const cashFlow = create(
         ) =>
           set(
             produce((draft) => {
-              let household = draft.annualExpense[indexData];
-              household.values[indexClient] = value;
-              household.selected = true;
+              let dataNew = draft.annualExpense[indexData];
+              dataNew.values[indexClient] = value;
+              dataNew.selected = true;
+
+              if (value > 0) {
+                draft.status = 1;
+              } else {
+                draft.status = 1;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setOthers: (annualType: string, indexData: number, params: any) =>

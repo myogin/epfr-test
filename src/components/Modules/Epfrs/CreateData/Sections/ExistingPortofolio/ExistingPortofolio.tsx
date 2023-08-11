@@ -23,6 +23,7 @@ import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useRouter } from "next/router";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 
 interface Props {
   id?: any;
@@ -31,6 +32,7 @@ interface Props {
 
 const ExistingPortofolio = (props: Props) => {
   let id = usePersonalInformation((state) => state.id);
+  let pfrLocal = usePfrData((state) => state.pfr);
   const router = useRouter();
 
   let editableStatus = useExistingPortofolio((state) => state.editableStatus);
@@ -57,6 +59,14 @@ const ExistingPortofolio = (props: Props) => {
   let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);
   let setToggle = useExistingPortofolio((state) => state.setToggle);
   let setGlobal = useExistingPortofolio((state) => state.setGlobal);
+  let fetchProperty = useExistingPortofolio((state) => state.fetchProperty);
+  let fetchInvestment = useExistingPortofolio((state) => state.fetchInvestment);
+  let fetchSaving = useExistingPortofolio((state) => state.fetchSaving);
+  let fetchCpf = useExistingPortofolio((state) => state.fetchCpf);
+  let fetchInsurance = useExistingPortofolio((state) => state.fetchInsurance);
+  let fetchInsurance2 = useExistingPortofolio((state) => state.fetchInsurance2);
+  let fetchLoan = useExistingPortofolio((state) => state.fetchLoan);
+  let fetchSrs = useExistingPortofolio((state) => state.fetchSrs);
 
   let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
   let idSectionThree = useCashFlow((state) => state.id);
@@ -70,8 +80,8 @@ const ExistingPortofolio = (props: Props) => {
   const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
 
   const scrollPosition = useScrollPosition(2);
-  const scrollPositionBottomSection1 = useScrollPositionBottom(1);
-  const scrollPositionBottom = useScrollPositionBottom(2);
+  const scrollPositionNext = useScrollPosition(3);
+  const scrollPositionBottom = useScrollPositionBottom(1);
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -126,69 +136,57 @@ const ExistingPortofolio = (props: Props) => {
 
       console.log(getSection2);
 
-      setGlobal("editableStatus", getSection2.pfr.editableSection1);
-      setGlobal("status", getSection2.pfr.section1);
-
       // Fetch Client
       if (getSection2.summaryOfProperty.length > 0) {
         getSection2.summaryOfProperty.map((data: any, index: number) => {
-          // fetchClient(index, data);
+          fetchProperty(index, data);
         });
       }
 
       // Fetch accompaintment
       if (getSection2.summaryOfInvestment.length > 0) {
         getSection2.summaryOfInvestment.map((data: any, index: number) => {
-          // fetchAccompainment(index, data);
+          fetchInvestment(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfSaving.length > 0) {
         getSection2.summaryOfSaving.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchSaving(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfCPF.length > 0) {
         getSection2.summaryOfCPF.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
-        });
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfSaving.length > 0) {
-        getSection2.summaryOfSaving.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchCpf(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance.length > 0) {
         getSection2.summaryOfInsurance.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchInsurance(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance2.length > 0) {
         getSection2.summaryOfInsurance2.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchInsurance2(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfLoans.length > 0) {
-        getSection2.summaryOfLoans.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
-        });
+        fetchLoan(getSection2.summaryOfLoans);
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfSRS.length > 0) {
         getSection2.summaryOfSRS.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchSrs(index, data);
         });
       }
 
@@ -204,14 +202,17 @@ const ExistingPortofolio = (props: Props) => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
-      if (scrollPositionBottomSection1 === "Process1") {
-        console.log("Get data Section 2");
+      if (scrollPositionBottom === "Process1") {
+        setGlobal("editableStatus", pfrLocal.editableSection2);
+        setGlobal("id", router.query.id);
+        setGlobal("status", pfrLocal.section2);
+        getSectionData(router.query.id);
       }
     }
-  }, [scrollPositionBottomSection1, router.isReady, router.query.id]);
+  }, [scrollPositionBottom, router.isReady, router.query.id]);
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process2") {
+    if (scrollPositionNext === "okSec3") {
       if (
         (editableStatus === 0 && status === 1) ||
         (editableStatus === 2 && status === 1)
@@ -222,10 +223,10 @@ const ExistingPortofolio = (props: Props) => {
         console.log("Your data not complete Section 2");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext, editableStatus, status]);
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen">
       <div
         id="section-header-2"
         className={`sticky top-0 z-10 ${
@@ -446,7 +447,7 @@ const ExistingPortofolio = (props: Props) => {
       ) : (
         ""
       )}
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
+      <div className="bottom-0 mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };

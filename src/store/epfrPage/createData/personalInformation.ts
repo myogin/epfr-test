@@ -181,6 +181,7 @@ const initialState: SectionOne = {
     ageLevel: 0,
     declaration: false,
   },
+  trustedActive: false,
   issues: [],
   reviewDate: "",
   status: 0,
@@ -196,9 +197,6 @@ const personalInformation = create(
           set(
             produce((draft) => {
               // Check if this is maybe the same person
-
-              console.log("gender ni");
-              console.log(params.gender);
 
               draft.clientInfoSingpass[clientType].clientName =
                 params.clientPfr === "Singpass" &&
@@ -768,14 +766,20 @@ const personalInformation = create(
                   Number(draft.trustedIndividuals.englishLevel2) === 2) &&
                   Number(draft.trustedIndividuals.educationLevel <= 2))
               ) {
+                draft.trustedActive = true;
                 draft.trustedIndividuals.condition1 = true;
+              } else {
+                draft.trustedActive = false;
               }
 
               if (
                 Number(draft.trustedIndividuals.englishLevel1) === 2 ||
                 Number(draft.trustedIndividuals.englishLevel2) === 2
               ) {
+                draft.trustedActive = true;
                 draft.trustedIndividuals.condition2 = true;
+              } else {
+                draft.trustedActive = false;
               }
             })
           ),
@@ -785,14 +789,17 @@ const personalInformation = create(
               let trustedIndividual = draft.trustedIndividuals;
               trustedIndividual[name] = value;
 
+              console.log("ini isinya apa "+ get().trustedActive)
               if (
-                draft.trustedIndividuals.trustedEmail === "" ||
-                draft.trustedIndividuals.nameOfTrustedIndividual === "" ||
-                draft.trustedIndividuals.passportNo === "" ||
-                draft.trustedIndividuals.relationship === "" ||
-                draft.trustedIndividuals.languageUsed === "" ||
-                draft.trustedIndividuals.languageUsed === "-" ||
-                draft.trustedIndividuals.contactNumber === ""
+                get().trustedActive &&
+                (draft.trustedIndividuals.trustedEmail === "" ||
+                  draft.trustedIndividuals.nameOfTrustedIndividual === "" ||
+                  draft.trustedIndividuals.passportNo === "" ||
+                  draft.trustedIndividuals.relationship === "" ||
+                  draft.trustedIndividuals.languageUsed === "" ||
+                  draft.trustedIndividuals.languageUsed === "-" ||
+                  draft.trustedIndividuals.contactNumber === "" ||
+                  draft.trustedIndividuals.declaration === false)
               ) {
                 draft.status = 0;
               } else {

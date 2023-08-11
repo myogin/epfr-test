@@ -31,11 +31,32 @@ import { getLength } from "@/libs/helper";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import { postPfrSections } from "@/services/pfrService";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 interface Props {
   id?: any;
   pfrType: number;
 }
+function checkValidate(data: any, user: any) {
+  let required = true;
 
+  if (user == 0) {
+    data.map((el: any) => {
+      if (el.u1 == true) {
+        required = false;
+      }
+    });
+  } else if (user == 1) {
+    data.map((el: any) => {
+      if (el.u2 == true) {
+        required = false;
+      }
+    });
+  }
+
+  return required;
+}
 const RiskProfile = (props: Props) => {
   const [notReviewAll, setNotReviewAll] = useState(false);
 
@@ -43,8 +64,8 @@ const RiskProfile = (props: Props) => {
 
   const [sectionFive, setSectionFive] = useState<SectionFive>({
     id: 0,
-    need: [],
-    reason: [],
+    need: [1, 1],
+    reason: [null, null],
     answers: [
       [-100, -100, -100, -100, -100, -100, -100, -100, -100],
       [-100, -100, -100, -100, -100, -100, -100, -100, -100],
@@ -54,9 +75,66 @@ const RiskProfile = (props: Props) => {
     riskCapacity: [0, 0, 0, 0],
     riskAttitude: [0, 0, 0, 0],
     issues: [],
-    status: 1,
+    status: 0,
+    editableStatus: 0,
   });
+  // update status
+  useEffect(() => {
+    let newStatus = 0;
+    let user1 = false;
+    let user2 = false;
+    if (sectionFive.need[0] == 1) {
+      const isBelowThreshold = (currentValue: any) => currentValue > -100;
 
+      user1 = sectionFive.answers[0].every(isBelowThreshold);
+    } else if (
+      (sectionFive.need[0] == 0 && sectionFive.reason[0] != "") ||
+      sectionFive.reason[0] != null ||
+      sectionFive.reason[0] != undefined
+    ) {
+      user1 = true;
+    } else {
+      user1 = false;
+    }
+
+    if (sectionFive.need[1] == 1) {
+      const isBelowThreshold = (currentValue: any) => currentValue > -100;
+
+      user2 = sectionFive.answers[1].every(isBelowThreshold);
+    } else if (
+      sectionFive.need[1] == 0 &&
+      sectionFive.reason[1] != "" &&
+      sectionFive.reason[1] != null &&
+      sectionFive.reason[1] != undefined
+    ) {
+      user2 = true;
+    } else {
+      user2 = false;
+    }
+    // check if single or join
+
+    if (props.pfrType > 1) {
+      if (user1 && user2) {
+        newStatus = 1;
+      } else {
+        newStatus = 0;
+      }
+    } else {
+      if (user1) {
+        newStatus = 1;
+      } else {
+        newStatus = 0;
+      }
+    }
+    setSectionFive((el) => {
+      return { ...el, status: newStatus };
+    });
+  }, [
+    sectionFive.answers,
+    sectionFive.need,
+    sectionFive.reason,
+    props.pfrType,
+  ]);
   if (typeof window !== "undefined") {
     localStorage.setItem("section5", JSON.stringify(sectionFive));
   }
@@ -70,10 +148,22 @@ const RiskProfile = (props: Props) => {
     });
   };
 
-  const checkboxChange = (event: any) => {
-    setNotReviewAll(!notReviewAll);
+  const updateNeed = (value: number, user: number) => {
+    let prevNeed = sectionFive.need;
+    let newValue = 0;
+    value == 1 ? (newValue = 0) : (newValue = 1);
+    prevNeed[user] = newValue;
     setSectionFive((prevState) => {
-      return { ...prevState, ["need"]: [!notReviewAll] };
+      return { ...prevState, ["need"]: prevNeed };
+    });
+  };
+
+  const updateReason = (value: any, user: number) => {
+    let prevReason = sectionFive.reason;
+
+    prevReason[user] = value;
+    setSectionFive((prevState) => {
+      return { ...prevState, ["reason"]: prevReason };
     });
   };
 
@@ -211,6 +301,8 @@ const RiskProfile = (props: Props) => {
       }
     );
     setQ1State(updatedCheckedState);
+    checkValidate(q1State, 0);
+
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 1);
@@ -423,11 +515,64 @@ const RiskProfile = (props: Props) => {
   // get id from group 1 and paste to grou 2
   let { id } = usePersonalInformation();
   useEffect(() => {
-    setSectionFive((e: any) => {
-      return { id: id, ...e };
+    setSectionFive((el: any) => {
+      return { ...el, id: id };
     });
   }, [id]);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const scrollPositionBottom = useScrollPositionBottom(5);
 
+  // Store data
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section5")
+        ? localStorage.getItem("section5")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data;
+      }
+
+      let storeDataSection = await postPfrSections(5, JSON.stringify(dataFix));
+
+      // If save success get ID and store to localstorage
+      if (storeDataSection.data.result === "success") {
+        setSectionFive((el) => {
+          return { ...el, editableStatus: 1 };
+        });
+      }
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    if (scrollPositionBottom === "Process5") {
+      if (
+        (sectionFive.editableStatus === 0 && sectionFive.status === 1) ||
+        (sectionFive.editableStatus === 2 && sectionFive.status === 1)
+      ) {
+        console.log("can save now section5");
+        storeData();
+      } else {
+        console.log("Your data not complete Section 5");
+      }
+    }
+  }, [scrollPositionBottom, sectionFive.editableStatus, sectionFive.status]);
+  // check if user update some value then can triger save again
+  useEffect(() => {
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
+  }, [sectionFive.answers, sectionFive.need, sectionFive.reason]);
   return (
     <div id={props.id}>
       <div
@@ -444,9 +589,16 @@ const RiskProfile = (props: Props) => {
           }`}
         >
           Section 5. Risk Profile
+          {saveLoading ? (
+            <span className="text-xs font-extralight text-gray-light">
+              Saving...
+            </span>
+          ) : (
+            ""
+          )}
         </HeadingPrimarySection>
       </div>
-      {!notReviewAll ? (
+      {sectionFive.need[0] || sectionFive.need[1] ? (
         <>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             5.1 Risk Profile Questionarie
@@ -458,14 +610,23 @@ const RiskProfile = (props: Props) => {
                 {qa[0].question}
               </TitleSmall>
             </RowSingle>
-            {props.pfrType > 1 ? (
+            {props.pfrType > 1 && (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
                 <div>Client 2</div>
               </RowSingleORDouble>
-            ) : (
-              ""
             )}
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q0State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {qa[0].answers.map((e: any, index: number) => (
               <RowSingleORDouble pfrType={props.pfrType} key={index}>
                 {getPfrLength.map((e2, userIndex) => (
@@ -493,7 +654,17 @@ const RiskProfile = (props: Props) => {
                 {qa[1].question}
               </TitleSmall>
             </RowSingle>
-
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q1State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {props.pfrType > 1 ? (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
@@ -529,7 +700,17 @@ const RiskProfile = (props: Props) => {
                 {qa[2].question}
               </TitleSmall>
             </RowSingle>
-
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q2State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {props.pfrType > 1 ? (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
@@ -565,7 +746,17 @@ const RiskProfile = (props: Props) => {
                 {qa[3].question}
               </TitleSmall>
             </RowSingle>
-
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q3State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {props.pfrType > 1 ? (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
@@ -601,6 +792,17 @@ const RiskProfile = (props: Props) => {
                 {qa[4].question}
               </TitleSmall>
             </RowSingle>
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q4State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {props.pfrType > 1 ? (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
@@ -637,7 +839,17 @@ const RiskProfile = (props: Props) => {
                 {qa[5].question}
               </TitleSmall>
             </RowSingle>
-
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q5State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {props.pfrType > 1 ? (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
@@ -673,6 +885,17 @@ const RiskProfile = (props: Props) => {
                 {qa[6].question}
               </TitleSmall>
             </RowSingle>
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q6State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {props.pfrType > 1 ? (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
@@ -708,6 +931,17 @@ const RiskProfile = (props: Props) => {
                 {qa[7].question}
               </TitleSmall>
             </RowSingle>
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q7State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {props.pfrType > 1 ? (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
@@ -743,6 +977,17 @@ const RiskProfile = (props: Props) => {
                 {qa[8].question}
               </TitleSmall>
             </RowSingle>
+            <RowSingleORDouble pfrType={props.pfrType}>
+              {getPfrLength.map((e2, userIndex) => (
+                <Fragment key={"sa" + userIndex}>
+                  {checkValidate(q8State, userIndex) ? (
+                    <div className="text-xs font-normal text-red">Required</div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Fragment>
+              ))}
+            </RowSingleORDouble>
             {props.pfrType > 1 ? (
               <RowSingleORDouble pfrType={props.pfrType}>
                 <div>Client 1</div>
@@ -810,27 +1055,66 @@ const RiskProfile = (props: Props) => {
       )}
 
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <div className="mb-4">
-          <Checkbox
-            isChecked={notReviewAll}
-            onChange={checkboxChange}
-            lableStyle="text-sm font-normal text-gray-light"
-            label="Not applicable"
-          />
-        </div>
-        {notReviewAll ? (
-          <div>
-            <TextArea
-              handleChange={handleInputChange}
-              className="my-4"
-              label="The Reason"
-              name="reason"
-            />
-          </div>
-        ) : (
-          ""
-        )}
+        <RowSingleORDouble pfrType={props.pfrType}>
+          {getPfrLength.map((e, index) => (
+            <div className="flex-1" key={index}>
+              {props.pfrType > 1 ? (
+                <>
+                  <h3
+                    key={"heading-secondary-" + index}
+                    className="w-full mb-10 text-base font-bold"
+                  >
+                    Client {index + 1}
+                  </h3>
+                </>
+              ) : (
+                ""
+              )}
+              <Checkbox
+                isChecked={sectionFive.need[index] == 1 ? false : true}
+                onChange={() => {
+                  updateNeed(sectionFive.need[index], index);
+                }}
+                lableStyle="text-sm font-normal text-gray-light"
+                label="Not applicable"
+              />
+            </div>
+          ))}
+        </RowSingleORDouble>
+
+        {/*  */}
+
+        <RowSingleORDouble pfrType={props.pfrType}>
+          {getPfrLength.map((e, index) => (
+            <div className="flex-1" key={index}>
+              <TextArea
+                isDisabled={sectionFive.need[index] == 0 ? false : true}
+                className="my-4"
+                label="The Reason"
+                name="reason"
+                defaultValue={sectionFive.reason[index]}
+                handleChange={(e) => {
+                  updateReason(e.target.value, index);
+                }}
+                needValidation={sectionFive.need[index] == 1 ? false : true}
+                logic={
+                  sectionFive.reason[index] == "" ||
+                  sectionFive.reason[index] === "-" ||
+                  sectionFive.reason[index] === null ||
+                  sectionFive.reason[index] === undefined
+                    ? false
+                    : true
+                }
+              />
+            </div>
+          ))}
+        </RowSingleORDouble>
       </SectionCardSingleGrid>
+      {sectionFive.editableStatus === 2 && sectionFive.status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 5" />
+      ) : (
+        ""
+      )}
       <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );

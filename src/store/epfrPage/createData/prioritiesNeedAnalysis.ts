@@ -9,6 +9,7 @@ const initialState: SectionSeven = {
     typeClient: 2,
     totalDependant: 0,
     status: 0,
+    editableStatus: 0,
     answer: {
       pfrId: 0,
       clientData: [
@@ -579,143 +580,154 @@ type Actions = {
     name: string
   ) => any;
   setAdditional: (value: number, indexClient: number, name: string) => any;
+  resetSectionSeven: () => any;
 };
 
 const prioritiesNeedAnalysis = create(
   devtools(
-    persist<SectionSeven & Actions>((set, get) => ({
-      ...initialState,
-      setClient: (
-        value: number,
-        indexClient: number,
-        name: any,
-        groupData: any
-      ) =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.clientData[indexClient][groupData][name] =
-              value;
-          })
-        ),
-      addChildFund: () =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.childFund.push({
-              nameOfChild: "",
-              yearsToTertiaryEducation: 0,
-              noOfYearsOfStudy: 0,
-              annaulTuitionFees: 0,
-              educationInflationRate: 0,
-              futureValueOfAnnualTuitionFee: 0,
-              totalTuitionFee: 0,
-              annualLivingCosts: 0,
-              inflationRate: 0,
-              futureValueOfAnnualLivingCosts: 0,
-              totalLivingCost: 0,
-              totalEducationFunding: 0,
-              futureValueOfExistingResourceForEducation: 0,
-              netAmountRequired: 0,
-            });
-          })
-        ),
-      removeChildFund: (index: any) =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.childFund.splice(index, 1);
-          })
-        ),
-      setChildFund: (value: number, indexClient: number, name: any) =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.childFund[indexClient][name] = value;
-          })
-        ),
-      addMaternity: () =>
-        set(
-          produce((draft) => {
-            var client = [];
-            var dependant = [];
-            for (var i = 0; i < initialState.section7.typeClient; i++) {
-              client.push(0);
-            }
-  
-            for (var i = 0; i < initialState.section7.totalDependant; i++) {
-              dependant.push(0);
-            }
-            draft.section7.answer.addtionalMaternityPlan.push({
-              client: client,
-              dependants: dependant,
-              key: "",
-            });
-          })
-        ),
-      removeMaternity: (index: any) =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.addtionalMaternityPlan.splice(index, 1);
-          })
-        ),
-      setMaternity: (
-        value: number,
-        indexClient: number,
-        name: any,
-        groupData: any,
-        indexSub: any
-      ) =>
-        set(
-          produce((draft) => {
-            console.log("name", name);
-            console.log("indexSub", indexSub);
-            if (indexSub == null) {
-              draft.section7.answer.addtionalMaternityPlan[indexClient][name] =
+    persist<SectionSeven & Actions>(
+      (set, get) => ({
+        ...initialState,
+        setClient: (
+          value: number,
+          indexClient: number,
+          name: any,
+          groupData: any
+        ) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.clientData[indexClient][groupData][name] =
                 value;
-            } else {
-              draft.section7.answer.addtionalMaternityPlan[indexClient][
-                groupData
-              ][name] = value;
-            }
-          })
-        ),
-      setDependant: (
-        value: number,
-        indexClient: number,
-        name: any,
-        groupData: any
-      ) =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.dependantData[indexClient][groupData][name] =
-              value;
-          })
-        ),
-      setNeed: (indexClient: number, indexSub : number, value: boolean) =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.need.client[indexClient][indexSub] = value;
-          })
-        ),
-      setNeedDependant: (value: number, indexClient: number, name: any) =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.need.dependant[indexClient][name] = value;
-          })
-        ),
-      setAnswerDefaultCheck: (value: number, indexClient: number, name: any) =>
-        set(
-          produce((draft) => {
-            draft.section7.answer.defaultCheck[name] = value;
-          })
-        ),
-      setAdditional: (value: number, indexClient: number, name: any) =>
-        set(
-          produce((draft) => {
-            draft.section7.additionalNote[indexClient][name] = value;
-          })
-        ),
-    }),
-    {
-      name: 'section7'
-    }
+            })
+          ),
+        addChildFund: () =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.childFund.push({
+                nameOfChild: "",
+                yearsToTertiaryEducation: 0,
+                noOfYearsOfStudy: 0,
+                annaulTuitionFees: 0,
+                educationInflationRate: 0,
+                futureValueOfAnnualTuitionFee: 0,
+                totalTuitionFee: 0,
+                annualLivingCosts: 0,
+                inflationRate: 0,
+                futureValueOfAnnualLivingCosts: 0,
+                totalLivingCost: 0,
+                totalEducationFunding: 0,
+                futureValueOfExistingResourceForEducation: 0,
+                netAmountRequired: 0,
+              });
+            })
+          ),
+        removeChildFund: (index: any) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.childFund.splice(index, 1);
+            })
+          ),
+        setChildFund: (value: number, indexClient: number, name: any) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.childFund[indexClient][name] = value;
+            })
+          ),
+        addMaternity: () =>
+          set(
+            produce((draft) => {
+              var client = [];
+              var dependant = [];
+              for (var i = 0; i < initialState.section7.typeClient; i++) {
+                client.push(0);
+              }
+
+              for (var i = 0; i < initialState.section7.totalDependant; i++) {
+                dependant.push(0);
+              }
+              draft.section7.answer.addtionalMaternityPlan.push({
+                client: client,
+                dependants: dependant,
+                key: "",
+              });
+            })
+          ),
+        removeMaternity: (index: any) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.addtionalMaternityPlan.splice(index, 1);
+            })
+          ),
+        setMaternity: (
+          value: number,
+          indexClient: number,
+          name: any,
+          groupData: any,
+          indexSub: any
+        ) =>
+          set(
+            produce((draft) => {
+              console.log("name", name);
+              console.log("indexSub", indexSub);
+              if (indexSub == null) {
+                draft.section7.answer.addtionalMaternityPlan[indexClient][
+                  name
+                ] = value;
+              } else {
+                draft.section7.answer.addtionalMaternityPlan[indexClient][
+                  groupData
+                ][name] = value;
+              }
+            })
+          ),
+        setDependant: (
+          value: number,
+          indexClient: number,
+          name: any,
+          groupData: any
+        ) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.dependantData[indexClient][groupData][
+                name
+              ] = value;
+            })
+          ),
+        setNeed: (indexClient: number, indexSub: number, value: boolean) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.need.client[indexClient][indexSub] = value;
+            })
+          ),
+        setNeedDependant: (value: number, indexClient: number, name: any) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.need.dependant[indexClient][name] = value;
+            })
+          ),
+        setAnswerDefaultCheck: (
+          value: number,
+          indexClient: number,
+          name: any
+        ) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.defaultCheck[name] = value;
+            })
+          ),
+        setAdditional: (value: number, indexClient: number, name: any) =>
+          set(
+            produce((draft) => {
+              draft.section7.additionalNote[indexClient][name] = value;
+            })
+          ),
+        resetSectionSeven: () => {
+          set(initialState);
+        },
+      }),
+      {
+        name: "section7",
+      }
     )
   )
 

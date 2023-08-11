@@ -8,7 +8,7 @@ import AnnualIncomeCashFlow from "./AnnualIncome/AnnualIncomeCashFlow";
 import AnnualNetCashFlow from "./AnnualNetCashFlow/AnnualNetCashFlow";
 import HeadingPrimarySection from "@/components/Attributes/Sections/HeadingPrimarySection";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/HeadingSecondaryDynamicGrid";
 import RowDouble from "@/components/Attributes/Rows/Flexs/RowDouble";
@@ -18,6 +18,7 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { useRouter } from "next/router";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 
 interface Props {
   id?: any;
@@ -34,8 +35,9 @@ const CashFlow = (props: Props) => {
   ];
 
   const scrollPosition = useScrollPosition(3);
-  const scrollPositionBottomSection2 = useScrollPositionBottom(2);
-  const scrollPositionBottom = useScrollPositionBottom(3);
+  const scrollPositionNext = useScrollPosition(4);
+  const scrollPositionBottom = useScrollPositionBottom(2);
+  let pfrLocal = usePfrData((state) => state.pfr);
 
   let status = useCashFlow((state) => state.status);
   let editableStatus = useCashFlow((state) => state.editableStatus);
@@ -54,7 +56,10 @@ const CashFlow = (props: Props) => {
 
   const [saveLoading, setSaveLoading] = useState(false);
 
-  let { id, setGlobal } = usePersonalInformation();
+  let { id } = usePersonalInformation();
+  let { setGlobal } = useCashFlow();
+  let fetchAnnual = useCashFlow((state) => state.fetchAnnual)
+  let fetchExpense = useCashFlow((state) => state.fetchExpense)
 
   let checkNeedData = checkAllNeed(need);
 
@@ -115,19 +120,58 @@ const CashFlow = (props: Props) => {
     }
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection3 = await getPfrStep(3, params);
+
+      console.log(getSection3);
+      console.log(getSection3.annualIncome);
+      console.log(getSection3.annualExpenses);
+
+      // setGlobal("editableStatus", getSection2.pfr.editableSection1);
+      // setGlobal("status", getSection2.pfr.section1);
+
+      // Fetch annual
+      if (getSection3.annualExpenses.length > 0) {
+        getSection3.annualExpenses.map((data: any, index: number) => {
+          fetchExpense(index, data);
+        });
+      }
+
+      // Fetch annual expense
+      if (getSection3.annualIncome.length > 0) {
+        getSection3.annualIncome.map((data: any, index: number) => {
+          fetchAnnual(index, data);
+        });
+      }
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
   // Get data when scroll from section 2
   useEffect(() => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
-      if (scrollPositionBottomSection2 === "Process2") {
+      if (scrollPositionBottom === "Process2") {
+        setGlobal("editableStatus", pfrLocal.editableSection3);
+        setGlobal("id", router.query.id);
+        setGlobal("status", pfrLocal.section3);
+        getSectionData(router.query.id);
         console.log("Get data Section 3");
       }
     }
-  }, [scrollPositionBottomSection2, router.isReady, router.query.id]);
+  }, [scrollPositionBottom, router.isReady, router.query.id]);
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process3") {
+    if (scrollPositionNext === "okSec4") {
       if (
         (editableStatus === 0 && status === 1) ||
         (editableStatus === 2 && status === 1)
@@ -138,10 +182,10 @@ const CashFlow = (props: Props) => {
         console.log("Your data not complete Section 3");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext, editableStatus, status]);
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen">
       <div
         id="section-header-3"
         className={`sticky top-0 z-10 ${

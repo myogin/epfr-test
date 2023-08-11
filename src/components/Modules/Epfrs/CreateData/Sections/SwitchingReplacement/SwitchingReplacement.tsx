@@ -104,7 +104,7 @@ const SwitchingReplacement = (props: Props) => {
     data: [sectionData, sectionData],
     issues: [],
     originalProduct: products,
-    status: 1,
+    status: 0,
   });
 
   const setData = (params: any, index: number) => {

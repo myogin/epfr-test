@@ -13,8 +13,6 @@ import Accompainment from "./Accompaintment/Accompainment";
 import TrustedIndividual from "./TrustedIndividuals/TrustedIndividual";
 import SectionCardDoubleGrid from "@/components/Attributes/Cards/SectionCardDoubleGrid";
 import { clientIdentity, getLength } from "@/libs/helper";
-import { Accompaniment } from "@/models/SectionOne";
-import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import RetrieveSingpassModal from "../../RetrieveSingpass/RetrieveSingpassModal";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import TextThin from "@/components/Attributes/Typography/TextThin";
@@ -23,6 +21,7 @@ import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 import { useRouter } from "next/router";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 interface Props {
   id?: any;
   pfrType?: number;
@@ -39,16 +38,15 @@ const PersonalInformation = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(1);
-  const scrollPositionBottom = useScrollPositionBottom(1);
+  const scrollPositionNext = useScrollPosition(2);
 
   let dependant = usePersonalInformation((state) => state.dependant);
-  let accompaniment = usePersonalInformation((state) => state.accompaniment);
-  let setTrustedIndividuals = usePersonalInformation(
-    (state) => state.setTrustedIndividuals
-  );
+
+  let setPfr = usePfrData((state) => state.setPfr);
 
   let fetchClient = usePersonalInformation((state) => state.fetchClient);
   let fetchDependent = usePersonalInformation((state) => state.fetchDependent);
+  let fetchPfr = usePfrData((state) => state.fetchPfr);
   let fetchAccompainment = usePersonalInformation(
     (state) => state.fetchAccompainment
   );
@@ -65,6 +63,7 @@ const PersonalInformation = (props: Props) => {
   let status = usePersonalInformation((state) => state.status);
   let editableStatus = usePersonalInformation((state) => state.editableStatus);
   let id = usePersonalInformation((state) => state.id);
+  let trustedActive = usePersonalInformation((state) => state.trustedActive);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -103,6 +102,8 @@ const PersonalInformation = (props: Props) => {
           setGlobalSectionTwo("id", id);
         }
         setGlobal("editableStatus", 1);
+        setPfr("section1", 1);
+        setPfr("editableSection1", 1);
       }
 
       setSaveLoading(false); // Stop loading
@@ -124,6 +125,8 @@ const PersonalInformation = (props: Props) => {
       setGlobal("reviewDate", getSection1.pfr.reviewDate);
       setGlobal("editableStatus", getSection1.pfr.editableSection1);
       setGlobal("status", getSection1.pfr.section1);
+
+      fetchPfr(getSection1.pfr);
 
       // Fetch Client
       if (getSection1.clients.length > 0) {
@@ -164,9 +167,7 @@ const PersonalInformation = (props: Props) => {
     // If edit check the ID
     if (router.query.singpass === null || router.query.singpass === undefined) {
       if (router.query.id !== null && router.query.id !== undefined) {
-        console.log("masuk sini nggak ID nya" + router.query.id);
         getSectionData(router.query.id);
-        // getGeneralData(router.query.id);
       }
     }
   }, [router.isReady, router.query.id, router.query.singpass]);
@@ -178,9 +179,16 @@ const PersonalInformation = (props: Props) => {
     }
   }, [dependant]);
 
+  const [checkTi, setCheckTi] = useState(false);
+
+  // Trigger the trusted individual data to showing the depdendent
+  useEffect(() => {
+    setCheckTi(trustedActive);
+  }, [trustedActive]);
+
   // Save data when scrolling
   useEffect(() => {
-    if (scrollPositionBottom === "Process1") {
+    if (scrollPositionNext === "okSec2") {
       if (
         (editableStatus === 0 && status === 1) ||
         (editableStatus === 2 && status === 1)
@@ -192,14 +200,14 @@ const PersonalInformation = (props: Props) => {
         console.log("Your cannot save data");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext, editableStatus, status]);
 
   if (loading) {
     return <LoadingPage />;
   }
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen">
       {/* Sec 1 */}
       {props.pfrType === 1 ? (
         <>
@@ -317,10 +325,15 @@ const PersonalInformation = (props: Props) => {
       </HeadingSecondarySection>
       <Accompainment pfrType={props.pfrType} />
       {/* Sec 4 */}
-      <HeadingSecondarySection className="mx-8 2xl:mx-60">
-        1.4 Trusted Individual
-      </HeadingSecondarySection>
-      <TrustedIndividual />
+      {checkTi ? (
+        <>
+          <HeadingSecondarySection className="mx-8 2xl:mx-60">
+            1.4 Trusted Individual
+          </HeadingSecondarySection>
+          <TrustedIndividual />
+        </>
+      ) : null}
+
       {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 1" />
       ) : (
