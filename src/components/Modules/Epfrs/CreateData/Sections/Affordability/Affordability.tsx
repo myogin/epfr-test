@@ -146,7 +146,7 @@ const Affordability = (props: Props) => {
       let dataFix = {};
       if (localData) {
         let data = JSON.parse(localData);
-        dataFix = data.state;
+        dataFix = data.state.section8;
       }
 
       let storeDataSection = await postPfrSections(8, JSON.stringify(dataFix));
@@ -172,11 +172,15 @@ const Affordability = (props: Props) => {
     }
   };
 
+   // init section 8
+   useEffect(() => {
+    if (!router.isReady) return;
+    setInit(props.pfrType);
+  }, [router.isReady]);
+
   // Get data when scroll from section 1
   useEffect(() => {
     if (!router.isReady) return;
-    // If edit check the ID
-    setInit(props.pfrType);
 
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottom === "Process7") {
