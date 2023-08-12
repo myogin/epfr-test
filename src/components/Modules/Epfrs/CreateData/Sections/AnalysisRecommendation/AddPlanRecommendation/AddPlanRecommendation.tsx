@@ -16,7 +16,7 @@ import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/an
 
 // Model
 import {getAllCompany} from "@/services/companyService";
-import {getWholeContext, pfrSection, getRecommendation} from "@/services/pfrService";
+import {getWholeContext, pfrSection, getRecommendation, postSection9Recommendation} from "@/services/pfrService";
 import {productFindOne} from "@/services/productService";
 // import {getPfrSection} from "@/services/getPfrSection";
 
@@ -191,7 +191,7 @@ const AddPlanRecommendation = () => {
     riders : [],
     extraRiders : [],
   }
-
+  const [dataLoading, setLoading] = useState(false);
   const [initWhole, setInitWhole] = useState<any>({});
   const [dataCISPremiumType, setCISDataPremiumType]  = useState<any>([{ id: 4, name: "Single Payment" }]);
   const [dataPremiumType, setDataPremiumType]  = useState<any>([{ id: 0, name: "CASH" },{ id: 1, name: "CPF OA" },{ id: 2, name: "CPF SA" },{ id: 3, name: "CPF MEDISAVE" },{ id: 4, name: "SRS" }]);
@@ -240,6 +240,20 @@ const AddPlanRecommendation = () => {
   ]
   
   useEffect(() => {
+    setInitWhole({});
+    setCISDataPremiumType([{ id: 4, name: "Single Payment" }]);
+    setDataPremiumType([{ id: 0, name: "CASH" },{ id: 1, name: "CPF OA" },{ id: 2, name: "CPF SA" },{ id: 3, name: "CPF MEDISAVE" },{ id: 4, name: "SRS" }]);
+    setDataPaymentFreq([{ id: 0, name: "Monthly" },{ id: 1, name: "Quarterly" },{ id: 2, name: "Half-Yearly" },{ id: 3, name: "Annually" },{ id: 4, name: "Single" }])
+    setAnnualPayor([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0]
+    ]);
+
+    setSinglePayorBudget([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0]
+    ]);
+    
     const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
     const resPfrGroupId = pfrGroupId == '0' ? null : 0
@@ -675,6 +689,8 @@ const AddPlanRecommendation = () => {
     // Get One Product
     productFindOne(params).then((data) => {
       setProduct(data.product.name, 'name', null)
+      setProduct(data.product.id, 'subjectId', null)
+      setProduct(data.product.feature, 'feature', null)
       // Handle Premium Type
       var dataProduct: Array<any> = []
       if(data.product.name){
@@ -718,30 +734,31 @@ const AddPlanRecommendation = () => {
         }
 
         // Set Premium Frequency
-        if(dataSelectedCategoryType != 1){
+        console.log('dataSelectedCategoryType', dataSelectedCategoryType)
+        // if(dataSelectedCategoryType != 1){
           let dataFq: Array<any> = [];
-          if(section9Recommend.product.premiumType == 1){
+          if(dataSelectedCategoryType != 1 || section9Recommend.product.premiumType == 1){
             dataFq.push({ id: 0, name: "Monthly" })
           }
           
-          if(section9Recommend.product.premiumType == 1){
+          if(dataSelectedCategoryType != 1 || section9Recommend.product.premiumType == 1){
             dataFq.push({ id: 1, name: "Quarterly" })
           }
           
-          if(section9Recommend.product.premiumType == 1){
+          if(dataSelectedCategoryType != 1 || section9Recommend.product.premiumType == 1){
             dataFq.push({ id: 2, name: "Half-Yearly" })
           }
           
-          if(section9Recommend.product.premiumType == 1){
+          if(dataSelectedCategoryType != 1 || section9Recommend.product.premiumType == 1){
             dataFq.push({ id: 3, name: "Annually" })
           }
           
-          if(section9Recommend.product.premiumType == 0){
+          if(dataSelectedCategoryType != 1 || section9Recommend.product.premiumType == 0){
             dataFq.push({ id: 4, name: "Single Payment" })
           }
 
           setDataPaymentFreq(dataFq)
-        }
+        // }
 
         var lengthData = 0;
         var dataFunds: Array<any> = [];
@@ -1397,9 +1414,21 @@ const AddPlanRecommendation = () => {
     }
   }
 
-  const saveData = (params:any) => {
-    localStorage.setItem("section9Recommend", JSON.stringify(section9Recommend));
-    showDetailData(params);
+  const saveData = async (params:any) => {
+    setLoading(true)
+    try {
+      let pfrId = localStorage.getItem("s9_PfrId");
+      setParent(pfrId, 'pfrId', null)
+      let storeData = await postSection9Recommendation(JSON.stringify(section9Recommend));
+      if(storeData.status == 200){
+        localStorage.setItem("s9_recommendId", storeData.data.resullt);
+        showDetailData(params);
+      }
+      setLoading(false); // Stop loading in case of error
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error('error', error);
+    }
   }
 
   const cancleData = (params:any) => {
@@ -1409,6 +1438,11 @@ const AddPlanRecommendation = () => {
 
   return (
     <>
+      {dataLoading == true ? <>
+        <div className="loader-container">
+            <div className="spinner"></div>
+        </div>
+      </>: ''}
       <HeadingSecondarySection className="mx-8 2xl:mx-60">Product Details</HeadingSecondarySection>
       <div className="grid grid-cols-1 mx-8 2xl:mx-60">
         <RowDoubleGrid>
