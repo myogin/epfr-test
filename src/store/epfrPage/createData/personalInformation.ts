@@ -212,8 +212,7 @@ const personalInformation = create(
                   : false;
               draft.clientInfoSingpass[clientType].gender =
                 params.clientPfr === "Singpass" &&
-                params.gender &&
-                params.gender >= 0
+                Number(params.gender) >= 0
                   ? true
                   : false;
               draft.clientInfoSingpass[clientType].birthCountryId =
@@ -240,8 +239,7 @@ const personalInformation = create(
                   : false;
               draft.clientInfoSingpass[clientType].residencyTwo =
                 params.clientPfr === "Singpass" &&
-                params.residencyTwo &&
-                params.residencyTwo >= 0
+                Number(params.residencyTwo) >= 0
                   ? true
                   : false;
               draft.clientInfoSingpass[clientType].residencyOther =

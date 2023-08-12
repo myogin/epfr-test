@@ -2,15 +2,16 @@ import { Switch } from "@headlessui/react";
 import React, { useState } from "react";
 
 interface Props {
+  toggleName?:string;
   className?: string;
   onChange?: (isChecked: boolean) => void;
   isChecked?: boolean;
 }
 
-const Toggle = (props: Props) => {
+const ToggleCustom = (props: Props) => {
   return (
     <div className="flex items-center justify-start gap-4">
-      <div className="text-sm font-bold text-gray-light">{!props.isChecked ? "Not Review" : "Review"}</div>
+      <div className="text-sm font-bold text-gray-light">{props.toggleName}</div>
       <Switch
         checked={props.isChecked}
         onChange={props.onChange}
@@ -34,4 +35,4 @@ const Toggle = (props: Props) => {
   );
 };
 
-export default Toggle;
+export default ToggleCustom;

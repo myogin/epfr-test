@@ -117,12 +117,6 @@ const Client = (props: Props) => {
     { id: 0, name: "No" },
   ];
 
-  let country: Array<any> = [
-    { id: 1, name: "Singaporean" },
-    { id: 2, name: "Malay" },
-    { id: 3, name: "Thailand" },
-  ];
-
   let recidence: Array<any> = [
     { id: 0, name: "Singapore Citizen" },
     { id: 1, name: "Singapore PR" },
@@ -207,7 +201,11 @@ const Client = (props: Props) => {
               label="Title"
               name="clientTitle"
               indexClient={0}
-              value={clientInfo[0].clientTitle}
+              value={
+                clientInfo[0] && Number(clientInfo[0].clientTitle) >= 0
+                  ? clientInfo[0].clientTitle
+                  : "-"
+              }
               datas={clientTitles}
               handleChange={handleInputChange}
               needValidation={true}
@@ -255,7 +253,11 @@ const Client = (props: Props) => {
                 label="Sex"
                 name="gender"
                 indexClient={0}
-                value={clientInfo[0].gender}
+                value={
+                  clientInfo[0] && Number(clientInfo[0].gender) >= 0
+                    ? clientInfo[0].gender
+                    : "-"
+                }
                 datas={clientSex}
                 handleChange={handleInputChange}
                 needValidation={true}
@@ -306,7 +308,11 @@ const Client = (props: Props) => {
                 label="Nationality"
                 name="nationality"
                 indexClient={0}
-                value={clientInfo[0].nationality}
+                value={
+                  clientInfo[0] && Number(clientInfo[0].nationality) >= 0
+                    ? clientInfo[0].nationality
+                    : "-"
+                }
                 handleChange={handleInputChange}
                 needValidation={true}
                 logic={
@@ -324,7 +330,11 @@ const Client = (props: Props) => {
               name="employmentStatus"
               indexClient={0}
               label="Employment Status"
-              value={clientInfo[0].employmentStatus}
+              value={
+                clientInfo[0] && Number(clientInfo[0].employmentStatus) >= 0
+                  ? clientInfo[0].employmentStatus
+                  : "-"
+              }
               datas={employment}
               handleChange={handleInputChange}
               needValidation={true}
@@ -356,7 +366,11 @@ const Client = (props: Props) => {
               label="Annual Income"
               name="annualIncome"
               indexClient={0}
-              value={clientInfo[0].annualIncome}
+              value={
+                clientInfo[0] && Number(clientInfo[0].annualIncome) >= 0
+                  ? clientInfo[0].annualIncome
+                  : "-"
+              }
               datas={annualIncome}
               handleChange={handleInputChange}
               needValidation={true}
@@ -492,7 +506,13 @@ const Client = (props: Props) => {
                 label="Country of Birth"
                 name="birthCountryId"
                 indexClient={0}
-                value={clientInfo[0] ? clientInfo[0].birthCountryId : ""}
+                value={
+                  clientInfo[0]
+                    ? clientInfo[0].birthCountryId
+                      ? clientInfo[0].birthCountryId
+                      : "-"
+                    : "-"
+                }
                 datas={countries}
                 handleChange={handleInputChange}
               />
@@ -507,7 +527,11 @@ const Client = (props: Props) => {
                 type="text"
                 name="residencyTwo"
                 indexClient={0}
-                value={clientInfo[0].residencyTwo ? recidence[Number(clientInfo[0].residencyTwo)].name : ""}
+                value={
+                  clientInfo[0] && Number(clientInfo[0].residencyTwo) >= 0
+                    ? recidence[Number(clientInfo[0].residencyTwo)].name
+                    : ""
+                }
                 placeholder="recidency status"
               />
             ) : (
@@ -535,7 +559,13 @@ const Client = (props: Props) => {
                     label="Residential Status"
                     name="residencyTwo"
                     indexClient={0}
-                    value={clientInfo[0] ? clientInfo[0].residencyTwo : ""}
+                    value={
+                      clientInfo[0]
+                        ? Number(clientInfo[0].residencyTwo) >= 0
+                          ? clientInfo[0].residencyTwo
+                          : "-"
+                        : "-"
+                    }
                     datas={recidence}
                     handleChange={handleInputChange}
                     needValidation={true}
@@ -574,7 +604,9 @@ const Client = (props: Props) => {
                       label="Pass Type"
                       name="residency"
                       indexClient={0}
-                      value={clientInfo[0].residency}
+                      value={
+                        clientInfo[0].residency ? clientInfo[0].residency : "-"
+                      }
                       datas={passTypes}
                       handleChange={handleInputChange}
                       needValidation={true}
@@ -620,7 +652,11 @@ const Client = (props: Props) => {
               label="Marital Status"
               name="marital"
               indexClient={0}
-              value={clientInfo[0].marital}
+              value={
+                clientInfo[0] && Number(clientInfo[0].marital) >= 0
+                  ? clientInfo[0].marital
+                  : "-"
+              }
               datas={marital}
               handleChange={handleInputChange}
               needValidation={true}
@@ -691,7 +727,11 @@ const Client = (props: Props) => {
               label="Smoker"
               name="smoker"
               indexClient={0}
-              value={clientInfo[0].smoker}
+              value={
+                clientInfo[0] && Number(clientInfo[0].smoker) >= 0
+                  ? clientInfo[0].smoker
+                  : "-"
+              }
               datas={clientSmoker}
               handleChange={handleInputChange}
               needValidation={true}
@@ -713,7 +753,13 @@ const Client = (props: Props) => {
               label="Title"
               name="clientTitle"
               indexClient={index}
-              value={clientInfo[index] ? clientInfo[index].clientTitle : ""}
+              value={
+                clientInfo[index]
+                  ? Number(clientInfo[index].clientTitle) >= 0
+                    ? clientInfo[index].clientTitle
+                    : "-"
+                  : "-"
+              }
               datas={clientTitles}
               handleChange={handleInputChange}
               needValidation={true}
@@ -803,7 +849,13 @@ const Client = (props: Props) => {
                 label="Sex"
                 name="gender"
                 indexClient={index}
-                value={clientInfo[index] ? clientInfo[index].gender : ""}
+                value={
+                  clientInfo[index]
+                    ? Number(clientInfo[index].gender) >= 0
+                      ? clientInfo[index].gender
+                      : "-"
+                    : "-"
+                }
                 datas={clientSex}
                 handleChange={handleInputChange}
                 needValidation={true}
@@ -886,7 +938,11 @@ const Client = (props: Props) => {
                 name="birthCountryId"
                 indexClient={index}
                 value={
-                  clientInfo[index] ? clientInfo[index].birthCountryId : ""
+                  clientInfo[index]
+                    ? Number(clientInfo[index].birthCountryId) >= 0
+                      ? clientInfo[index].birthCountryId
+                      : "-"
+                    : "-"
                 }
                 datas={countries}
                 handleChange={handleInputChange}
@@ -906,14 +962,17 @@ const Client = (props: Props) => {
                 placeholder="Nationality"
               />
             ) : (
-              <Select
+              <SelectNationality
                 dataType="clientInfo"
                 className="mb-10"
                 label="Nationality"
                 name="nationality"
                 indexClient={index}
-                value={clientInfo[index].nationality}
-                datas={country}
+                value={
+                  clientInfo[index].nationality
+                    ? clientInfo[index].nationality
+                    : "-"
+                }
                 handleChange={handleInputChange}
                 needValidation={true}
                 logic={
@@ -944,7 +1003,13 @@ const Client = (props: Props) => {
                 label="Residential Status"
                 name="residencyTwo"
                 indexClient={index}
-                value={clientInfo[index] ? clientInfo[index].residencyTwo : ""}
+                value={
+                  clientInfo[index]
+                    ? Number(clientInfo[index].residencyTwo) >= 0
+                      ? clientInfo[index].residencyTwo
+                      : "-"
+                    : "-"
+                }
                 datas={recidence}
                 handleChange={handleInputChange}
                 needValidation={true}
@@ -981,7 +1046,11 @@ const Client = (props: Props) => {
                       label="Pass Type"
                       name="residency"
                       indexClient={index}
-                      value={clientInfo[index].residency}
+                      value={
+                        clientInfo[index].residency
+                          ? clientInfo[index].residency
+                          : "-"
+                      }
                       datas={passTypes}
                       handleChange={handleInputChange}
                       needValidation={true}
@@ -1028,7 +1097,13 @@ const Client = (props: Props) => {
               label="Marital Status"
               name="marital"
               indexClient={index}
-              value={clientInfo[index] ? clientInfo[index].marital : ""}
+              value={
+                clientInfo[index]
+                  ? Number(clientInfo[index].marital) >= 0
+                    ? clientInfo[index].marital
+                    : "-"
+                  : "-"
+              }
               datas={marital}
               handleChange={handleInputChange}
               needValidation={true}
@@ -1048,7 +1123,11 @@ const Client = (props: Props) => {
               indexClient={index}
               label="Employment Status"
               value={
-                clientInfo[index] ? clientInfo[index].employmentStatus : ""
+                clientInfo[index]
+                  ? Number(clientInfo[index].employmentStatus) >= 0
+                    ? clientInfo[index].employmentStatus
+                    : "-"
+                  : "-"
               }
               datas={employment}
               handleChange={handleInputChange}
@@ -1106,7 +1185,13 @@ const Client = (props: Props) => {
               label="Annual Income"
               name="annualIncome"
               indexClient={index}
-              value={clientInfo[index] ? clientInfo[index].annualIncome : ""}
+              value={
+                clientInfo[index]
+                  ? Number(clientInfo[index].annualIncome) >= 0
+                    ? clientInfo[index].annualIncome
+                    : "-"
+                  : "-"
+              }
               datas={annualIncome}
               handleChange={handleInputChange}
               needValidation={true}
@@ -1189,7 +1274,13 @@ const Client = (props: Props) => {
               label="Smoker"
               name="smoker"
               indexClient={index}
-              value={clientInfo[index] ? clientInfo[index].smoker : ""}
+              value={
+                clientInfo[index]
+                  ? Number(clientInfo[index].smoker) >= 0
+                    ? clientInfo[index].smoker
+                    : "-"
+                  : "-"
+              }
               datas={clientSmoker}
               handleChange={handleInputChange}
               needValidation={true}
@@ -1225,7 +1316,13 @@ const Client = (props: Props) => {
                 label="Relationship To Client 1"
                 name="relationship"
                 indexClient={index}
-                value={clientInfo[index] ? clientInfo[index].relationship : ""}
+                value={
+                  clientInfo[index]
+                    ? Number(clientInfo[index].relationship) >= 0
+                      ? clientInfo[index].relationship
+                      : "-"
+                    : "-"
+                }
                 datas={relationships}
                 handleChange={handleInputChange}
                 needValidation={true}

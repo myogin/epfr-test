@@ -197,8 +197,6 @@ const cashFlow = create(
 
               if (value > 0) {
                 draft.status = 1;
-              } else {
-                draft.status = 0;
               }
 
               if (get().editableStatus === 1 && get().status === 1) {
@@ -219,8 +217,6 @@ const cashFlow = create(
               dataNew.selected = true;
 
               if (value > 0) {
-                draft.status = 1;
-              } else {
                 draft.status = 1;
               }
 
@@ -263,6 +259,12 @@ const cashFlow = create(
                   draft.others.annualExpense.push(params);
                 }
               }
+
+              draft.status = 1;
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         patchOthers: (annualType: string, params: any) =>
@@ -276,6 +278,12 @@ const cashFlow = create(
               other.key = params.key;
               other.values[0] = params.values[0] ? params.values[0] : 0;
               other.values[1] = params.values[1] ? params.values[1] : 0;
+
+              draft.status = 1;
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeOthers: (annualType: string, params: any) =>
@@ -313,6 +321,10 @@ const cashFlow = create(
                   otherReplace.key = "";
                   otherReplace.values = [0, 0];
                 }
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
               }
             })
           ),

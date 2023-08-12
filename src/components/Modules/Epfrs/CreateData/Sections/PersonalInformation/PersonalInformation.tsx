@@ -45,6 +45,9 @@ const PersonalInformation = (props: Props) => {
   let setPfr = usePfrData((state) => state.setPfr);
 
   let fetchClient = usePersonalInformation((state) => state.fetchClient);
+  let fetchClientSingpass = usePersonalInformation(
+    (state) => state.fetchClientSingpass
+  );
   let fetchDependent = usePersonalInformation((state) => state.fetchDependent);
   let fetchPfr = usePfrData((state) => state.fetchPfr);
   let fetchAccompainment = usePersonalInformation(
@@ -62,6 +65,7 @@ const PersonalInformation = (props: Props) => {
   // Get status and editable status for checking active and non active the save function
   let status = usePersonalInformation((state) => state.status);
   let editableStatus = usePersonalInformation((state) => state.editableStatus);
+
   let id = usePersonalInformation((state) => state.id);
   let trustedActive = usePersonalInformation((state) => state.trustedActive);
 
@@ -132,6 +136,7 @@ const PersonalInformation = (props: Props) => {
       if (getSection1.clients.length > 0) {
         getSection1.clients.map((data: any, index: number) => {
           fetchClient(index, data);
+          fetchClientSingpass(index, data);
         });
       }
 
@@ -179,7 +184,7 @@ const PersonalInformation = (props: Props) => {
     if (dependant?.length && dependant[0].name !== "") {
       setShowAddDependent(true);
     }
-  }, [dependant,router.isReady]);
+  }, [dependant, router.isReady]);
 
   const [checkTi, setCheckTi] = useState(false);
 
@@ -188,11 +193,12 @@ const PersonalInformation = (props: Props) => {
     setCheckTi(trustedActive);
   }, [trustedActive]);
 
+
   // Save data when scrolling
   useEffect(() => {
     if (scrollPositionNext === "okSec2") {
       if (
-        (editableStatus === 0 && status === 1) ||
+        ((editableStatus === 0 || editableStatus === null) && status === 1) ||
         (editableStatus === 2 && status === 1)
       ) {
         console.log("can save now");
@@ -207,7 +213,10 @@ const PersonalInformation = (props: Props) => {
   return loading ? (
     <LoadingPage />
   ) : (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       {/* Sec 1 */}
       {props.pfrType === 1 ? (
         <>
@@ -306,14 +315,12 @@ const PersonalInformation = (props: Props) => {
         </>
       )}
       <Client pfrType={props.pfrType} />
-
       {/* Sec 2 */}
       <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
         <div className="text-xl font-bold">1.2 Dependent Information</div>
         <Toggle
           isChecked={showAddDependent}
           onChange={() => handleShowAddDependent(!showAddDependent)}
-          toggleName={showAddDependent ? "Review" : "Not Review"}
         />
       </HeadingSecondarySectionDoubleGrid>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -333,7 +340,6 @@ const PersonalInformation = (props: Props) => {
           <TrustedIndividual />
         </>
       ) : null}
-
       {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 1" />
       ) : (

@@ -30,7 +30,7 @@ const ClientsAcknowledgment = (props: Props) => {
   const scrollPositionBottomSection10 = useScrollPositionBottom(10);
   const [pfrId, setPfrId] = useState(0);
   const [editable, setEditable] = useState(0);
-  
+
   let getPfrLength = getLength(props.pfrType);
   let { showDetailData } = useNavigationSection();
 
@@ -215,7 +215,6 @@ const ClientsAcknowledgment = (props: Props) => {
   ]);
 
   const fetchData = async () => {
-    
     const s12Res: any = await getPfrStep(12, pfrId);
     // const s10Res: any = await getPfrStep(10, pfrId);
     // const s13Res: any = await getPfrStep(13, pfrId);
@@ -362,7 +361,9 @@ const ClientsAcknowledgment = (props: Props) => {
     }
 
     // let section10 = s10Res;
-    const section10 = JSON.parse(localStorage.getItem('section10')?? "{'data':[]}")
+    const section10 = JSON.parse(
+      localStorage.getItem("section10") ?? "{'data':[]}"
+    );
     let answers = section10["data"];
     answers.forEach((answer: any, i: any) => {
       let _1b = answer["answer1b"];
@@ -505,26 +506,35 @@ const ClientsAcknowledgment = (props: Props) => {
     if (editable === 1 && sectionElevenData.status === 1) {
       setEditable(2);
     }
-    localStorage.setItem('section11', JSON.stringify({
-      ...sectionElevenData,
-      editableStatus: editable
-    }));
+    localStorage.setItem(
+      "section11",
+      JSON.stringify({
+        ...sectionElevenData,
+        editableStatus: editable,
+      })
+    );
   }, [sectionElevenData]);
 
   useEffect(() => {
-    localStorage.setItem('section11', JSON.stringify({
-      ...sectionElevenData,
-      editableStatus: editable
-    }));
+    localStorage.setItem(
+      "section11",
+      JSON.stringify({
+        ...sectionElevenData,
+        editableStatus: editable,
+      })
+    );
   }, [editable]);
 
   useEffect(() => {
-    if (scrollPositionBottomSection10 === "Process10" && sectionElevenData.id === 0) {
-      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    if (
+      scrollPositionBottomSection10 === "Process10" &&
+      sectionElevenData.id === 0
+    ) {
+      const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
       setPfrId(section1?.state?.id);
       setSectionElevenData({
         ...sectionElevenData,
-        id: section1?.state?.id
+        id: section1?.state?.id,
       });
       fetchData();
     }
@@ -572,7 +582,10 @@ const ClientsAcknowledgment = (props: Props) => {
   }, [scrollPositionBottom]);
 
   return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-11"
         className={`sticky top-0 z-10 ${
@@ -1000,7 +1013,7 @@ const ClientsAcknowledgment = (props: Props) => {
                 let htmlBlock = [];
                 for (let i = 0; i < props.pfrType; i++) {
                   htmlBlock.push(
-                    <div className="flex-1" key={"asa"+i}>
+                    <div className="flex-1" key={"asa" + i}>
                       <Checkbox
                         onChange={(e) => onChangeSectionData(e, i, 6, 0)}
                         isChecked={!!sectionElevenData.data[i][6][0]}
