@@ -25,54 +25,53 @@ interface Props {
 }
 
 const RepresentativeDeclaration = (props: Props) => {
-  
   const [pfrId, setPfrId] = useState(0);
 
   const { push } = useRouter();
 
   const [sectionTwelveData, setSectionTwelveData] = useState({
     id: pfrId,
-    explain: '',
+    explain: "",
     jfw: false,
     spv: "0",
     spvOther: "",
     nftf: false,
     section12AnswerData: [],
-    issues : [],
-    status: 0
-  })
+    issues: [],
+    status: 0,
+  });
 
-  const scrollPosition = useScrollPosition(11);
+  const scrollPosition = useScrollPosition(12);
   const scrollPositionBottomSection11 = useScrollPositionBottom(11);
 
-  const saveData = async() => {
-      // const groupFourData = {
-      //   section10: JSON.parse(localStorage.getItem('section10')?? '{}'),
-      //   section12: JSON.parse(localStorage.getItem('section11')?? '{}'),
-      //   section13: JSON.parse(localStorage.getItem('section12')?? '{}'),
-      // }
-      const localData = localStorage.getItem("section10")
+  const saveData = async () => {
+    // const groupFourData = {
+    //   section10: JSON.parse(localStorage.getItem('section10')?? '{}'),
+    //   section12: JSON.parse(localStorage.getItem('section11')?? '{}'),
+    //   section13: JSON.parse(localStorage.getItem('section12')?? '{}'),
+    // }
+    const localData = localStorage.getItem("section10")
       ? localStorage.getItem("section10")
       : "";
 
-      let dataFix = {};
-      if (localData) {
-        let data = JSON.parse(localData);
-        dataFix = data;
-      }
+    let dataFix = {};
+    if (localData) {
+      let data = JSON.parse(localData);
+      dataFix = data;
+    }
 
-      await postPfrSections(12, JSON.stringify(dataFix));
-  }
+    await postPfrSections(12, JSON.stringify(dataFix));
+  };
 
   const finish = async () => {
     await saveData();
-    push('/create/finish')
-  }
+    push("/create/finish");
+  };
 
   const review = async () => {
     await saveData();
-    push(`/create/review/${props.pfrType === 1? 'single': 'joint'}`);
-  }
+    push(`/create/review/${props.pfrType === 1 ? "single" : "joint"}`);
+  };
 
   const [requiredNFTF, setRequiredNFTF] = useState(false);
   const [isJointFieldWork, setIsJointFieldWork] = useState(false);
@@ -83,26 +82,28 @@ const RepresentativeDeclaration = (props: Props) => {
     // console.log("Fetching ...");
 
     // const s12Res: any = await getPfrStep(12, pfrId);
-    const s12Res: any = JSON.parse(localStorage.getItem('section11')?? "false");
+    const s12Res: any = JSON.parse(
+      localStorage.getItem("section11") ?? "false"
+    );
     const s13Res: any = await getPfrStep(13, pfrId);
 
-    if(s13Res['note'] != null) {
-      sectionTwelveData.explain = s13Res['note']['note']
-      sectionTwelveData.jfw = s13Res['note']['jfw']
-      sectionTwelveData.spv = s13Res['note']['spv']
-      sectionTwelveData.spvOther = s13Res['note']['spvOther']
+    if (s13Res["note"] != null) {
+      sectionTwelveData.explain = s13Res["note"]["note"];
+      sectionTwelveData.jfw = s13Res["note"]["jfw"];
+      sectionTwelveData.spv = s13Res["note"]["spv"];
+      sectionTwelveData.spvOther = s13Res["note"]["spvOther"];
       var cekData = false;
-      if(s13Res['note']['nftf']){
-        if((s13Res['note']['nftf'] === true) || s13Res['note']['nftf'] === 1){
+      if (s13Res["note"]["nftf"]) {
+        if (s13Res["note"]["nftf"] === true || s13Res["note"]["nftf"] === 1) {
           cekData = true;
-        }else{
+        } else {
           cekData = false;
         }
       }
       sectionTwelveData.nftf = cekData;
     }
-    setSupervisor(s13Res['spv']);
-    
+    setSupervisor(s13Res["spv"]);
+
     if (!s12Res) {
       return;
     }
@@ -124,13 +125,16 @@ const RepresentativeDeclaration = (props: Props) => {
   const scrollPositionBottom = useScrollPositionBottom(11);
 
   useEffect(() => {
-    if (scrollPositionBottomSection11 === "Process11" && sectionTwelveData.id === 0) {
-      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    if (
+      scrollPositionBottomSection11 === "Process11" &&
+      sectionTwelveData.id === 0
+    ) {
+      const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
       setPfrId(section1?.state?.id);
       setSectionTwelveData({
         ...sectionTwelveData,
-        id: section1?.state?.id
-      })
+        id: section1?.state?.id,
+      });
       fetchData();
     }
   }, [scrollPositionBottomSection11]);
@@ -150,19 +154,30 @@ const RepresentativeDeclaration = (props: Props) => {
   };
 
   const closeModal = () => {
-  //   setNewProductErrors([]);
-  //   setNewProduct(productData);
+    //   setNewProductErrors([]);
+    //   setNewProduct(productData);
     setShowModal(false);
   };
 
   useEffect(() => {
-    localStorage.setItem('section12', JSON.stringify(sectionTwelveData));
+    localStorage.setItem("section12", JSON.stringify(sectionTwelveData));
   }, [sectionTwelveData]);
 
   return (
-    <div id={props.id}>
-      <div className="sticky top-0 z-10 bg-white">
-        <HeadingPrimarySection className="mx-8 mt-10 mb-10 text-2xl font-bold 2xl:mx-60">
+    <div id={props.id} className="min-h-screen mb-20">
+      <div
+        id="section-header-12"
+        className={`sticky top-0 z-10 bg-white ${
+          scrollPosition === "okSec12" ? "bg-white py-1 ease-in shadow-lg" : ""
+        }`}
+      >
+        <HeadingPrimarySection
+          className={`mx-8 2xl:mx-60 ${
+            scrollPosition === "okSec12"
+              ? "text-gray-light text-xl font-bold mb-5 mt-5"
+              : "text-2xl font-bold mb-10 mt-10"
+          }`}
+        >
           Section 12. Representative Declaration
         </HeadingPrimarySection>
       </div>
@@ -183,10 +198,14 @@ const RepresentativeDeclaration = (props: Props) => {
           </TextThin>
         </RowSingleGrid>
         <RowSingleGrid>
-          <TextArea handleChange={(e) => setSectionTwelveData({
-            ...sectionTwelveData,
-            explain: e.target.value
-          })} />
+          <TextArea
+            handleChange={(e) =>
+              setSectionTwelveData({
+                ...sectionTwelveData,
+                explain: e.target.value,
+              })
+            }
+          />
         </RowSingleGrid>
         <RowSingleGrid>
           <TextThin>
@@ -214,7 +233,7 @@ const RepresentativeDeclaration = (props: Props) => {
                 onChange={(e) => {
                   setSectionTwelveData({
                     ...sectionTwelveData,
-                    jfw: e.target.checked
+                    jfw: e.target.checked,
                   });
                   setIsJointFieldWork(e.target.checked);
                 }}
@@ -239,9 +258,7 @@ const RepresentativeDeclaration = (props: Props) => {
                   <option selected disabled={true} value="">
                     Please choose supervisor
                   </option>
-                  <option value={supervisor}>
-                    {supervisor}
-                  </option>
+                  <option value={supervisor}>{supervisor}</option>
                   {/* {["one", "two"]?.length &&
                     ["one", "two"].map((val, index) => (
                       <option key={index} value={val}>
@@ -271,12 +288,14 @@ const RepresentativeDeclaration = (props: Props) => {
               onChange={(e) => {
                 setSectionTwelveData({
                   ...sectionTwelveData,
-                  nftf: e.target.checked
-                })
+                  nftf: e.target.checked,
+                });
               }}
               label="Required field"
               lableStyle={
-                (requiredNFTF && !sectionTwelveData.nftf) ? "text-xs text-red" : "text-xs invisible"
+                requiredNFTF && !sectionTwelveData.nftf
+                  ? "text-xs text-red"
+                  : "text-xs invisible"
               }
               class=" justify-end"
             />
@@ -285,9 +304,7 @@ const RepresentativeDeclaration = (props: Props) => {
       </SectionCardSingleGrid>
 
       <SectionCardFooter className="mx-8 2xl:mx-60">
-        <ButtonGreenMedium onClick={review}>
-          Review
-        </ButtonGreenMedium>
+        <ButtonGreenMedium onClick={review}>Review</ButtonGreenMedium>
         <ButtonGreenMedium onClick={openModal}>
           Sign Now <ArrowRightLineIcon size={20} />
         </ButtonGreenMedium>
@@ -397,47 +414,53 @@ const RepresentativeDeclaration = (props: Props) => {
                     <div className="mt-2">
                       <div className="flex">
                         <div className={`w-full my-4 space-y-3`}>
-                            <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
-                              Client(s), Trusted Individual(s), Agent
-                            </label>
+                          <label
+                            htmlFor=""
+                            className="w-full text-sm font-bold text-gray-light"
+                          >
+                            Client(s), Trusted Individual(s), Agent
+                          </label>
 
-                            <select
-                              name="clientName"
-                              className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
-                              onChange={(e) => {
-                                console.log(e.target.selectedIndex)
-                              }}
-                            >
-                              <option key='remote' value='0'>
-                                Remote
-                              </option>
-                              <option key='face2face' value='0'>
-                                Face to face
-                              </option>
-                            </select>
+                          <select
+                            name="clientName"
+                            className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                            onChange={(e) => {
+                              console.log(e.target.selectedIndex);
+                            }}
+                          >
+                            <option key="remote" value="0">
+                              Remote
+                            </option>
+                            <option key="face2face" value="0">
+                              Face to face
+                            </option>
+                          </select>
                         </div>
                       </div>
 
                       <div className="flex">
                         <div className={`w-full my-4 space-y-3`}>
-                            <label htmlFor="" className="w-full text-sm font-bold text-gray-light">
-                              Supervisor
-                            </label>
+                          <label
+                            htmlFor=""
+                            className="w-full text-sm font-bold text-gray-light"
+                          >
+                            Supervisor
+                          </label>
 
-                            <select
-                              name="clientName"
-                              className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
-                              onChange={(e) => {
-                                console.log(e.target.selectedIndex)
-                              }}
-                            >
-                              <option key='remote' value='0'>
-                                Remote
-                              </option>
-                              <option key='face2face' value='0'>
-                                Face to face
-                              </option>
-                            </select>
+                          <select
+                            name="clientName"
+                            className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
+                            onChange={(e) => {
+                              console.log(e.target.selectedIndex);
+                            }}
+                          >
+                            <option key="remote" value="0">
+                              Remote
+                            </option>
+                            <option key="face2face" value="0">
+                              Face to face
+                            </option>
+                          </select>
                         </div>
                       </div>
                     </div>

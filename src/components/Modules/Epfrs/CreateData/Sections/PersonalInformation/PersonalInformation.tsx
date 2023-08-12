@@ -207,7 +207,7 @@ const PersonalInformation = (props: Props) => {
   return loading ? (
     <LoadingPage />
   ) : (
-    <div id={props.id} className="min-h-screen">
+    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
       {/* Sec 1 */}
       {props.pfrType === 1 ? (
         <>
@@ -339,8 +339,6 @@ const PersonalInformation = (props: Props) => {
       ) : (
         ""
       )}
-
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };
