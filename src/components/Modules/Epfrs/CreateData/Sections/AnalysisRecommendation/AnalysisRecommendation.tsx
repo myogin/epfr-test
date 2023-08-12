@@ -21,7 +21,7 @@ import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisR
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from "draft-js";
 import draftToHtml from "draftjs-to-html";
-import {getWholeContext, pfrSection, getRecommendation} from "@/services/pfrService";
+import {getWholeContext, pfrSection, getRecommendation, getPfr} from "@/services/pfrService";
 
 const Editor = dynamic(
   () => import('react-draft-wysiwyg').then(mod => mod.Editor),
@@ -54,6 +54,14 @@ const AnalysisRecommendation = (props: Props) => {
     reasonForRisk: EditorState.createEmpty(),
     reasonForDeviation: EditorState.createEmpty()
   });
+
+  const premiumTypes: Array<any> = [
+    'CASH',
+    'CPFOA',
+    'CPFSA',
+    'CPF MEDISAVE',
+    'SRS'
+  ];
 
   const [dataGroup, setGroup] = useState();
 
@@ -96,75 +104,103 @@ const AnalysisRecommendation = (props: Props) => {
   };
 
   const scrollPosition = useScrollPosition(9)
-  
-  const [dataAnnualPayorBudget, setAnnualPayorBudget] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-  const [dataSinglePayorBudget, setSinglePayorBudget] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-  const [dataPayorBudgetMap, setPayorBudgetMap] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-
   const [getPfr8, setPfr8] = useState<any>({});
   const [getPfr9, setPfr9] = useState<any>({});
   const [getClients, setClients] = useState<any>([]);
 
+  const [dataAnnualPayorBudget, setAnnualPayorBudget] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+  const [dataSinglePayorBudget, setSinglePayorBudget] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+  const [dataPayorBudgetMap, setPayorBudgetMap] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
   const [dataTotalAnnualPremium, setTotalAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
   const [dataTotalSinglePremium, setTotalSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
-
   const [dataTotalAnnualPremiumChoice, setTotalAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
   const [dataTotalSinglePremiumChoice, setTotalSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
-  
   const [dataMaxAnnualPremium, setMaxAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
   const [dataMaxSinglePremium, setMaxSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
   const [dataProductAnnualPremium, setProductAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
   const [dataProductSinglePremium, setProductSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-
   const [dataMaxAnnualPremiumChoice, setMaxAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
   const [dataMaxSinglePremiumChoice, setMaxSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
   const [dataProductAnnualPremiumChoice, setProductAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
   const [dataProductSinglePremiumChoice, setProductSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-
   const [dataTotalRecomendationSinglePremiumChoice, setTotalRecomendationSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
   const [dataProductRecomendationSinglePremiumChoice, setProductRecomendationSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-
   const [dataTotalRecomendationAnnualPremiumChoice, setTotalRecomendationAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
   const [dataProductRecomendationAnnualPremiumChoice, setProductRecomendationAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
-
   const [dataTotalCISILPAnnualPremiumChoice, setTotalCISILPAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
   const [dataTotalCISILPSinglePremiumChoice, setTotalCISILPSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
-
-
-  const [dataSumAnnualPremium, setSumAnnualPremium] = useState<any>([
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-  ]);
-  const [dataSumSinglePremium, setSumSinglePremium] = useState<any>([
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-  ]);
-
-  const [dataSumAnnualPremiumChoice, setSumAnnualPremiumChoice] = useState<any>([
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-  ]);
-  const [dataSumSinglePremiumChoice, setSumSinglePremiumChoice] = useState<any>([
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-  ]);
-
-  
-  const [dataSubPremium, setDataSubPremium] = useState<any>(
-    {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
-  );
-  const [dataResDataTotalPremiumArr, setResDataTotalPremiumArr] = useState<any>(
-    {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
-  );
+  const [dataSumAnnualPremium, setSumAnnualPremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+  const [dataSumSinglePremium, setSumSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+  const [dataSumAnnualPremiumChoice, setSumAnnualPremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+  const [dataSumSinglePremiumChoice, setSumSinglePremiumChoice] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+  const [dataSubPremium, setDataSubPremium] = useState<any>({"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0});
+  const [dataResDataTotalPremiumArr, setResDataTotalPremiumArr] = useState<any>({"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0});
+  const [dataRowOfGroupCell, setRowOfGroupCell] = useState<any>({
+    product : {},
+    ilp : {},
+    cis : {},
+    cisilp : {},
+    productAndRiders : {},
+    benefit: {},
+    risk :{}
+  })
+  const [dataRowsGroup, setRowsGroup] = useState<any>([])
+  const [dataProductAndRiders, setProductAndRiders] = useState([{}])
+  const [dataBenefits, setBenefits] = useState([{}])
+  const [dataRisks, setRisks] = useState([{}])
+  const [dataOutcome, setOutcome] = useState([0, 0])
 
   useEffect(() => {  
     localStorage.setItem("section9", JSON.stringify(section9));
-
     const pfrId = localStorage.getItem("s9_PfrId");
+
+    setAnnualPayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setSinglePayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setPayorBudgetMap([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setTotalAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setTotalSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setTotalAnnualPremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setTotalSinglePremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setMaxAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setMaxSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setProductAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setProductSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setMaxAnnualPremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setMaxSinglePremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setProductAnnualPremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setProductSinglePremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setTotalRecomendationSinglePremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setProductRecomendationSinglePremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setTotalRecomendationAnnualPremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+    setProductRecomendationAnnualPremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+    setTotalCISILPAnnualPremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+    setTotalCISILPSinglePremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+    setSumAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+    setSumSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+    setSumAnnualPremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+    setSumSinglePremiumChoice([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
+    setDataSubPremium({"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0});
+    setResDataTotalPremiumArr({"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0});
+    setRowOfGroupCell({
+      product : {},
+      ilp : {},
+      cis : {},
+      cisilp : {},
+      productAndRiders : {},
+      benefit: {},
+      risk :{}
+    })
+
+    setProductAndRiders([])
+    setBenefits([])
+    setRisks([])
+    setOutcome([0,0])
+
     console.log('dataTotalAnnualPremiumChoice', dataTotalAnnualPremiumChoice)
     pfrSection(9, pfrId).then((data: any) => {
       console.log('data', data)
       setPfr9(data);
+      setRowsGroup(data.rowGroups)
       var dataType: Array<any> = [];
       for(var i = 0; i < data.clients.length; i++){
         dataType[i] = i;
@@ -175,28 +211,31 @@ const AnalysisRecommendation = (props: Props) => {
       // Res Answer
         console.log('data', data)
         var overView1 = "";
-        if(data.answer.overView1){
-          overView1 = data.answer.overView1
-        }
-        
         var overView2 = "";
-        if(data.answer.overView2){
-          overView2 = data.answer.overView2
-        }
-        
         var reasonForBenefit = "";
-        if(data.answer.reasonForBenefit){
-          reasonForBenefit = data.answer.reasonForBenefit
-        }
-        
         var reasonForRisk = "";
-        if(data.answer.reasonForRisk){
-          reasonForRisk = data.answer.reasonForRisk
-        }
-        
         var reasonForDeviation = "";
-        if(data.answer.reasonForDeviation){
-          reasonForDeviation = data.answer.reasonForDeviation
+        
+        if(data.answer){
+          if(data.answer.overView1){
+            overView1 = data.answer.overView1
+          }
+          
+          if(data.answer.overView2){
+            overView2 = data.answer.overView2
+          }
+          
+          if(data.answer.reasonForBenefit){
+            reasonForBenefit = data.answer.reasonForBenefit
+          }
+          
+          if(data.answer.reasonForRisk){
+            reasonForRisk = data.answer.reasonForRisk
+          }
+          
+          if(data.answer.reasonForDeviation){
+            reasonForDeviation = data.answer.reasonForDeviation
+          }
         }
 
         setEditor({
@@ -322,30 +361,39 @@ const AnalysisRecommendation = (props: Props) => {
         calcPremiumMatrix(data)
     });
 
-    // const annualPayorBudget: Array<any> = [[],[]];
-    // const singlePayorBudget: Array<any> = [[],[]];
-    // const payorBudgetMap: Array<any> = [[],[]];
-    // pfrSection(8, pfrId).then((data: any) => {
-    //   setPfr8(data)
+    const annualPayorBudget: Array<any> = [[],[]];
+    const singlePayorBudget: Array<any> = [[],[]];
+    const payorBudgetMap: Array<any> = [[],[]];
+    pfrSection(8, pfrId).then((data: any) => {
+      setPfr8(data)
 
-    //   let payorBudgets = data['payorBudgets']
-    //   payorBudgets.map((budget: any) => {
-    //     if(budget['selection'] != 0) {
-    //       let clientId = budget['clientType']
-    //       let type = budget['type']
-    //       annualPayorBudget[clientId][type] = budget['annual']
-    //       singlePayorBudget[clientId][type] = budget['single']
-    //       payorBudgetMap[clientId][type] = true
-    //     }
-    //   })
-    // });
-    // setAnnualPayorBudget(annualPayorBudget)
-    // setSinglePayorBudget(singlePayorBudget)
-    // setPayorBudgetMap(payorBudgetMap)
+      let payorBudgets = data['payorBudgets']
+      payorBudgets.map((budget: any) => {
+        if(budget['selection'] != 0) {
+          let clientId = budget['clientType']
+          let type = budget['type']
+          annualPayorBudget[clientId][type] = budget['annual']
+          singlePayorBudget[clientId][type] = budget['single']
+          payorBudgetMap[clientId][type] = true
+        }
+      })
+    });
+    setAnnualPayorBudget(annualPayorBudget)
+    setSinglePayorBudget(singlePayorBudget)
+    setPayorBudgetMap(payorBudgetMap)
 
-    // getWholeContext(pfrId).then((data: any) => {
-    //     // console.log('wholeContext', data)
-    // });
+    const resOutcome: Array<any> = [];
+    getWholeContext(pfrId).then((dataWhole: any) => {
+      console.log('dataWhole', dataWhole)
+      dataWhole.outcomes.map((outcome: any) => {
+        let clientId = outcome['clientType'] - 1
+        resOutcome[clientId] = outcome['outcome']
+      });
+      setOutcome(resOutcome);
+    });
+
+    getProductRiderBenefitRisk()
+    getGroupRow()
 
     console.log('section9Res', section9)
   }, [section9]);
@@ -651,238 +699,238 @@ const AnalysisRecommendation = (props: Props) => {
           // 
         // HOSTPITAL
         // } else {
-          // if(product['premium_for_hospitalization']){
+          if(product['premium_for_hospitalization']){
             
-          //   let cash = product['premium_for_hospitalization'] !== null ? product['premium_for_hospitalization']['cash'] : 0
-          //   let medisave = product['premium_for_hospitalization'] !== null ?  product['premium_for_hospitalization']['cpfMedisave'] : 0
-          //   let premiumHost = cash + medisave
+            let cash = product['premium_for_hospitalization'] !== null ? product['premium_for_hospitalization']['cash'] : 0
+            let medisave = product['premium_for_hospitalization'] !== null ?  product['premium_for_hospitalization']['cpfMedisave'] : 0
+            let premiumHost = cash + medisave
             
   
-          //   if(frequency == 4) {
+            if(frequency == 4) {
       
-          //     dataTotalSinglePremiumChoice[clientId][0] += cash
-          //     setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice)
-          //     dataTotalSinglePremiumChoice[clientId][3] += medisave
-          //     setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice)
+              dataTotalSinglePremiumChoice[clientId][0] += cash
+              setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice)
+              dataTotalSinglePremiumChoice[clientId][3] += medisave
+              setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice)
       
-          //     dataProductSinglePremiumChoice[clientId][0] += cash
-          //     setProductSinglePremiumChoice(dataProductSinglePremiumChoice)
-          //     dataProductSinglePremiumChoice[clientId][3] += medisave
-          //     setProductSinglePremiumChoice(dataProductSinglePremiumChoice)
+              dataProductSinglePremiumChoice[clientId][0] += cash
+              setProductSinglePremiumChoice(dataProductSinglePremiumChoice)
+              dataProductSinglePremiumChoice[clientId][3] += medisave
+              setProductSinglePremiumChoice(dataProductSinglePremiumChoice)
   
-          //     // New amount
-          //     dataTotalRecomendationSinglePremiumChoice[clientId][0] += cash
-          //     setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
-          //     dataTotalRecomendationSinglePremiumChoice[clientId][3] += medisave
-          //     setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+              // New amount
+              dataTotalRecomendationSinglePremiumChoice[clientId][0] += cash
+              setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+              dataTotalRecomendationSinglePremiumChoice[clientId][3] += medisave
+              setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
       
-          //     dataProductRecomendationSinglePremiumChoice[clientId][0] += cash
-          //     setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
-          //     dataProductRecomendationSinglePremiumChoice[clientId][3] += medisave
-          //     setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+              dataProductRecomendationSinglePremiumChoice[clientId][0] += cash
+              setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+              dataProductRecomendationSinglePremiumChoice[clientId][3] += medisave
+              setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
       
-          //   } else if(frequency == 3) {
+            } else if(frequency == 3) {
       
-          //     dataTotalAnnualPremiumChoice[clientId][0] += cash
-          //     setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
-          //     dataTotalAnnualPremiumChoice[clientId][3] += medisave
-          //     setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              dataTotalAnnualPremiumChoice[clientId][0] += cash
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              dataTotalAnnualPremiumChoice[clientId][3] += medisave
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
       
-          //     dataProductAnnualPremiumChoice[clientId][0] += cash
-          //     setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
-          //     dataProductAnnualPremiumChoice[clientId][3] += medisave
-          //     setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
+              dataProductAnnualPremiumChoice[clientId][0] += cash
+              setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
+              dataProductAnnualPremiumChoice[clientId][3] += medisave
+              setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
   
-          //     // New amount
+              // New amount
             
-          //     dataTotalRecomendationAnnualPremiumChoice[clientId][0] += cash
-          //     setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
-          //     dataTotalRecomendationAnnualPremiumChoice[clientId][3] += medisave
-          //     setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+              dataTotalRecomendationAnnualPremiumChoice[clientId][0] += cash
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+              dataTotalRecomendationAnnualPremiumChoice[clientId][3] += medisave
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
       
-          //     dataProductRecomendationAnnualPremiumChoice[clientId][0] += cash
-          //     setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
-          //     dataProductRecomendationAnnualPremiumChoice[clientId][3] += medisave
-          //     setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+              dataProductRecomendationAnnualPremiumChoice[clientId][0] += cash
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+              dataProductRecomendationAnnualPremiumChoice[clientId][3] += medisave
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
               
-          //   } else if(frequency == 2) {
+            } else if(frequency == 2) {
       
-          //     premiumHost = premiumHost * 2
-          //     dataTotalAnnualPremiumChoice[clientId][0] += cash*2
-          //     setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
-          //     dataTotalAnnualPremiumChoice[clientId][3] += medisave*2
-          //     setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              premiumHost = premiumHost * 2
+              dataTotalAnnualPremiumChoice[clientId][0] += cash*2
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              dataTotalAnnualPremiumChoice[clientId][3] += medisave*2
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
       
-          //     dataProductAnnualPremiumChoice[clientId][0] += cash*2
-          //     setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
-          //     dataProductAnnualPremiumChoice[clientId][3] += medisave*2
-          //     setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
+              dataProductAnnualPremiumChoice[clientId][0] += cash*2
+              setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
+              dataProductAnnualPremiumChoice[clientId][3] += medisave*2
+              setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
   
-          //     // New amount
-          //     dataTotalRecomendationAnnualPremiumChoice[clientId][0] += cash*2
-          //     setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
-          //     dataTotalRecomendationAnnualPremiumChoice[clientId][3] += medisave*2
-          //     setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][0] += cash*2
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+              dataTotalRecomendationAnnualPremiumChoice[clientId][3] += medisave*2
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
       
-          //     dataProductRecomendationAnnualPremiumChoice[clientId][0] += cash*2
-          //     setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
-          //     dataProductRecomendationAnnualPremiumChoice[clientId][3] += medisave*2
-          //     setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+              dataProductRecomendationAnnualPremiumChoice[clientId][0] += cash*2
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+              dataProductRecomendationAnnualPremiumChoice[clientId][3] += medisave*2
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
       
-          //   } else if(frequency == 1) {
+            } else if(frequency == 1) {
       
-          //     premiumHost = premiumHost * 4
-          //     dataTotalAnnualPremiumChoice[clientId][0] += cash*4
-          //     setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
-          //     dataTotalAnnualPremiumChoice[clientId][3] += medisave*4
-          //     setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              premiumHost = premiumHost * 4
+              dataTotalAnnualPremiumChoice[clientId][0] += cash*4
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              dataTotalAnnualPremiumChoice[clientId][3] += medisave*4
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
       
-          //     dataProductAnnualPremiumChoice[clientId][0] += cash*4
-          //     setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
-          //     dataProductAnnualPremiumChoice[clientId][3] += medisave*4
-          //     setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
+              dataProductAnnualPremiumChoice[clientId][0] += cash*4
+              setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
+              dataProductAnnualPremiumChoice[clientId][3] += medisave*4
+              setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
   
-          //     // New amount
-          //     dataTotalRecomendationAnnualPremiumChoice[clientId][0] += cash*4
-          //     setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
-          //     dataTotalRecomendationAnnualPremiumChoice[clientId][3] += medisave*4
-          //     setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][0] += cash*4
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+              dataTotalRecomendationAnnualPremiumChoice[clientId][3] += medisave*4
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
       
-          //     dataProductRecomendationAnnualPremiumChoice[clientId][0] += cash*4
-          //     setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
-          //     dataProductRecomendationAnnualPremiumChoice[clientId][3] += medisave*4
-          //     setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+              dataProductRecomendationAnnualPremiumChoice[clientId][0] += cash*4
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+              dataProductRecomendationAnnualPremiumChoice[clientId][3] += medisave*4
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
       
-          //   } else if(frequency == 0) {
+            } else if(frequency == 0) {
       
-          //     premiumHost = premiumHost * 12
+              premiumHost = premiumHost * 12
   
-          //     dataTotalAnnualPremiumChoice[clientId][0] += cash*12
-          //     setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
-          //     dataTotalAnnualPremiumChoice[clientId][3] += medisave*12
-          //     setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              dataTotalAnnualPremiumChoice[clientId][0] += cash*12
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              dataTotalAnnualPremiumChoice[clientId][3] += medisave*12
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
       
-          //     dataProductAnnualPremiumChoice[clientId][0] += cash*12
-          //     setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
-          //     dataProductAnnualPremiumChoice[clientId][3] += medisave*12
-          //     setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
+              dataProductAnnualPremiumChoice[clientId][0] += cash*12
+              setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
+              dataProductAnnualPremiumChoice[clientId][3] += medisave*12
+              setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice)
   
-          //     // Recomendation
-          //     dataTotalRecomendationAnnualPremiumChoice[clientId][0] += cash * 12;
-          //     setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
-          //     dataTotalRecomendationAnnualPremiumChoice[clientId][3] += medisave * 12;
-          //     setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+              // Recomendation
+              dataTotalRecomendationAnnualPremiumChoice[clientId][0] += cash * 12;
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+              dataTotalRecomendationAnnualPremiumChoice[clientId][3] += medisave * 12;
+              setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
   
-          //     dataProductRecomendationAnnualPremiumChoice[clientId][0] += cash*12
-          //     setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
-          //     dataProductRecomendationAnnualPremiumChoice[clientId][3] += medisave*12
-          //     setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
-          //   }
+              dataProductRecomendationAnnualPremiumChoice[clientId][0] += cash*12
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+              dataProductRecomendationAnnualPremiumChoice[clientId][3] += medisave*12
+              setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+            }
             
-          //   if(isRider == false) {
-          //     if(dataMaxSinglePremiumChoice[clientId][0] < dataProductSinglePremiumChoice[clientId][0]) {
-          //       dataMaxSinglePremiumChoice[clientId][0] = dataProductSinglePremiumChoice[clientId][0]
-          //       setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice)
-          //     }
-          //     if(dataMaxSinglePremiumChoice[clientId][3] < dataProductSinglePremiumChoice[clientId][3]) {
-          //       dataMaxSinglePremiumChoice[clientId][3] = dataProductSinglePremiumChoice[clientId][3]
-          //       setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice)
-          //     }
-          //     if(dataMaxAnnualPremiumChoice[clientId][0] < dataProductAnnualPremiumChoice[clientId][0]) {
-          //       dataMaxAnnualPremiumChoice[clientId][0] = dataProductAnnualPremiumChoice[clientId][0]
-          //       setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
-          //     }
-          //     if(dataMaxAnnualPremiumChoice[clientId][3] < dataProductAnnualPremiumChoice[clientId][3]) {
-          //       dataMaxAnnualPremiumChoice[clientId][3] = dataProductAnnualPremiumChoice[clientId][3]
-          //       setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
-          //     }
-          //   }
-          // }
+            if(isRider == false) {
+              if(dataMaxSinglePremiumChoice[clientId][0] < dataProductSinglePremiumChoice[clientId][0]) {
+                dataMaxSinglePremiumChoice[clientId][0] = dataProductSinglePremiumChoice[clientId][0]
+                setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice)
+              }
+              if(dataMaxSinglePremiumChoice[clientId][3] < dataProductSinglePremiumChoice[clientId][3]) {
+                dataMaxSinglePremiumChoice[clientId][3] = dataProductSinglePremiumChoice[clientId][3]
+                setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice)
+              }
+              if(dataMaxAnnualPremiumChoice[clientId][0] < dataProductAnnualPremiumChoice[clientId][0]) {
+                dataMaxAnnualPremiumChoice[clientId][0] = dataProductAnnualPremiumChoice[clientId][0]
+                setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
+              }
+              if(dataMaxAnnualPremiumChoice[clientId][3] < dataProductAnnualPremiumChoice[clientId][3]) {
+                dataMaxAnnualPremiumChoice[clientId][3] = dataProductAnnualPremiumChoice[clientId][3]
+                setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice)
+              }
+            }
+          }
       
           // // RIDER RECOMMENDED PRODUCT 
-          // if(product.riders.length > 0){
+          if(product.riders.length > 0){
             
-          //   for(let iRider = 0; iRider < product.riders.length; iRider++) {
-          //     if(product.riders[iRider].premiumFrequency == 0){
-          //       dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 12;
-          //       setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+            for(let iRider = 0; iRider < product.riders.length; iRider++) {
+              if(product.riders[iRider].premiumFrequency == 0){
+                dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 12;
+                setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
   
-          //       // New amount
-          //       dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
-          //       setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
-          //       dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
-          //       setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+                // New amount
+                dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
+                setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+                dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 12;
+                setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
   
-          //     }else if(product.riders[iRider].premiumFrequency == 1){
-          //       dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 4;
-          //       setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              }else if(product.riders[iRider].premiumFrequency == 1){
+                dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 4;
+                setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
   
-          //       // New amount
-          //       dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
-          //       setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
-          //       dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
-          //       setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+                // New amount
+                dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
+                setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+                dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 4;
+                setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
               
-          //     }else if(product.riders[iRider].premiumFrequency == 2){
-          //       dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 2;
-          //       setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              }else if(product.riders[iRider].premiumFrequency == 2){
+                dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 2;
+                setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
   
-          //       // New amount
-          //       dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
-          //       setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
-          //       dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
-          //       setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+                // New amount
+                dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
+                setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+                dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 2;
+                setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
   
-          //     }else if(product.riders[iRider].premiumFrequency == 3){
-          //       dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 1;
-          //       setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
+              }else if(product.riders[iRider].premiumFrequency == 3){
+                dataTotalAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 1;
+                setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice)
   
-          //       // New amount
-          //       dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
-          //       setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
-          //       dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
-          //       setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
+                // New amount
+                dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
+                setTotalRecomendationAnnualPremiumChoice(dataTotalRecomendationAnnualPremiumChoice)
+                dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] += product.riders[iRider].premium * 1;
+                setProductRecomendationAnnualPremiumChoice(dataProductRecomendationAnnualPremiumChoice)
               
-          //     }else if(product.riders[iRider].premiumFrequency == 4){
-          //       dataTotalSinglePremiumChoice[clientId][0] += product.riders[iRider].premium;
-          //       setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice)
+              }else if(product.riders[iRider].premiumFrequency == 4){
+                dataTotalSinglePremiumChoice[clientId][0] += product.riders[iRider].premium;
+                setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice)
   
-          //       // New amount
-          //       dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
-          //       setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
-          //       dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
-          //       setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
-          //     }
-          //   }
+                // New amount
+                dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
+                setTotalRecomendationSinglePremiumChoice(dataTotalRecomendationSinglePremiumChoice)
+                dataProductRecomendationSinglePremiumChoice[clientId][premiumType] += product.riders[iRider].premium;
+                setProductRecomendationSinglePremiumChoice(dataProductRecomendationSinglePremiumChoice)
+              }
+            }
   
             
             
-          // }
+          }
   
-          // // ILP
-          // if(typeData == 0 && recommendType == 1) {
+          // ILP
+          if(typeData == 0 && recommendType == 1) {
             
-          //   if(product.riders.length > 0){
-          //     for(let iRider = 0; iRider < product.riders.length; iRider++) {
-          //       if(product.riders[iRider].premiumFrequency == 0){
-          //         dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 12;
-          //         setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
-          //       }else if(product.riders[iRider].premiumFrequency == 1){
-          //         dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 4;
-          //         setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
-          //       }else if(product.riders[iRider].premiumFrequency == 2){
-          //         dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 2;
-          //         setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
-          //       }else if(product.riders[iRider].premiumFrequency == 3){
-          //         dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 1;
-          //         setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
-          //       }else if(product.riders[iRider].premiumFrequency == 4){
-          //         dataTotalCISILPSinglePremiumChoice[clientId][0] += product.riders[iRider].premium;
-          //         setTotalCISILPSinglePremiumChoice(dataTotalCISILPSinglePremiumChoice)
-          //       }
-          //     }
-          //   }
-          // }
+            if(product.riders.length > 0){
+              for(let iRider = 0; iRider < product.riders.length; iRider++) {
+                if(product.riders[iRider].premiumFrequency == 0){
+                  dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 12;
+                  setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+                }else if(product.riders[iRider].premiumFrequency == 1){
+                  dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 4;
+                  setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+                }else if(product.riders[iRider].premiumFrequency == 2){
+                  dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 2;
+                  setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+                }else if(product.riders[iRider].premiumFrequency == 3){
+                  dataTotalCISILPAnnualPremiumChoice[clientId][0] += product.riders[iRider].premium * 1;
+                  setTotalCISILPAnnualPremiumChoice(dataTotalCISILPAnnualPremiumChoice)
+                }else if(product.riders[iRider].premiumFrequency == 4){
+                  dataTotalCISILPSinglePremiumChoice[clientId][0] += product.riders[iRider].premium;
+                  setTotalCISILPSinglePremiumChoice(dataTotalCISILPSinglePremiumChoice)
+                }
+              }
+            }
+          }
       }
     }
   }
@@ -1111,15 +1159,318 @@ const AnalysisRecommendation = (props: Props) => {
     return result
   }
 
-  // getMaxValue(data : Array<number>) {
-  //   let max : number = 0
-  //   for(let i = 0 ; i < data.length ; i ++ ) {
-  //     if(data[i] > max) {
-  //       max = data[i]
-  //     }
-  //   }
-  //   return max
-  // }
+  const getNameFromId = (id:any) => {
+    if(id < 2) {
+      return getPfr9.clients[id]['clientName']
+    } else {
+      return getPfr9.dependants[id-2]['name']
+    }
+  }
+
+  const checkNameOfInsure = (before: any, after: any) => {
+    if(before === 'Other') {
+      return after
+    }else {
+      return before
+    }
+  }
+
+  const getGroupName = (groupId:any) => {
+    let name = '';
+    getPfr9.groups.map((group:any) => {
+      if(group['id'] == groupId) {
+        name = group['name']
+      }
+    })
+    return name
+  }
+
+  const getProductRiderBenefitRisk = () => {
+    const productAndRiders: Array<any> = []
+    const benefits: Array<any> = []
+    const risks: Array<any> = []
+
+    let productNo = 0
+
+    if(getPfr9.recommendedProduct){
+      getPfr9.recommendedProduct.map((product:any, i: any) => {
+        if(product['product'] != undefined) {
+          productAndRiders.push({
+            no : productNo,
+            rowSpan : 1 + product['riders'].length,
+            typeProductCustom: 'ta',
+            name : product['name'],
+            feature : product['feature'],
+            groupId : product['groupId']
+          })
+          product['benefit'].map((b:any, index:any) => {
+  
+            let benefit = b
+  
+            if(index == 0) {
+              benefit['no'] = productNo
+              let riderBenefitCount = 0
+              product['riders'].map((rider: any) => {
+                riderBenefitCount += rider['benefit'].length
+              })
+              benefit['rowSpan'] = product['benefit'].length + riderBenefitCount
+            }
+  
+            benefit['productName'] = product['product']['name']
+            benefit['groupId'] = product['groupId']
+            benefits.push(benefit)
+          })
+          product['risk'].map((r:any, index: any) => {
+  
+            let risk = r
+  
+            if(index == 0) {
+              risk['no'] = productNo
+              let riderRiskCount = 0
+              product['riders'].map((rider:any) => {
+                riderRiskCount += rider['risk'].length
+              })
+              risk['rowSpan'] = product['risk'].length + riderRiskCount
+            }
+  
+            risk['productName'] = product['product']['name']
+            risk['groupId'] = product['groupId']
+            risks.push(risk)
+          })
+          product['riders'].map((rider:any) => {
+            productAndRiders.push({
+              typeProductCustom: 'ta',
+              name : rider['name'],
+              feature : rider['feature'],
+              groupId : product['groupId']
+            })
+            rider['benefit'].map((bb:any) => {
+              let benefit = bb
+              benefit['productName'] = rider['name']
+              benefit['mainProductName'] = product['product']['name']
+              benefit['groupId'] = product['groupId']
+              benefits.push(benefit)
+            })
+            rider['risk'].map((rr:any) => {
+              let risk = rr
+              risk['productName'] = rider['name']
+              risk['mainProductName'] = product['product']['name']
+              risk['groupId'] = product['groupId']
+              risks.push(risk)
+            })
+          })
+          productNo ++
+        }
+      })
+    }
+
+    if(getPfr9.CISILPProducts){
+      getPfr9.CISILPProducts.map((product: any, i: any) => {
+        if(product['type'] == 0 || product['type'] == 2) {
+          productAndRiders.push({
+            no : productNo,
+            rowSpan : 1 + product['riders'].length,
+            typeProductCustom: 'tb',
+            name : product['name'],
+            feature : product['feature'],
+            groupId : product['groupId']
+          })
+          product['benefit'].map((b: any, index: any) => {
+  
+            let benefit = b
+  
+            if(index == 0) {
+              benefit['no'] = productNo
+              let riderBenefitCount = 0
+              product['riders'].map((rider:any) => {
+                riderBenefitCount += rider['benefit'].length
+              })
+              benefit['rowSpan'] = product['benefit'].length + riderBenefitCount
+            }
+  
+            benefit['productName'] = product['name']
+            benefit['groupId'] = product['groupId']
+            benefits.push(benefit)
+          })
+          product['risk'].map((r: any, index: any) => {
+            let risk = r
+            if(index == 0) {
+              risk['no'] = productNo
+              let riderRiskCount = 0
+              product['riders'].map((rider:any) => {
+                riderRiskCount += rider['risk'].length
+              })
+              risk['rowSpan'] = product['risk'].length + riderRiskCount
+            }
+  
+            risk['productName'] = product['name']
+            risk['groupId'] = product['groupId']
+            risks.push(risk)
+          })
+          product['riders'].map((rider:any) => {
+            productAndRiders.push({
+              typeProductCustom: 'tb',
+              name : rider['name'],
+              feature : rider['feature'],
+              groupId : product['groupId']
+            })
+            rider['benefit'].map((bb: any) => {
+              let benefit = bb
+              benefit['productName'] = rider['name']
+              benefit['mainProductName'] = product['name']
+              benefit['groupId'] = product['groupId']
+              benefits.push(benefit)
+            })
+            rider['risk'].map((rr:any) => {
+              let risk = rr
+              risk['productName'] = rider['name']
+              risk['mainProductName'] = product['name']
+              risk['groupId'] = product['groupId']
+              risks.push(risk)
+            })
+          })
+          productNo ++
+        } else {
+          productAndRiders.push({
+            no : productNo,
+            rowSpan : 1,
+            typeProductCustom: 'tc',
+            name : product['cis']['name'],
+            feature : product['cis']['feature'],
+            groupId : product['groupId']
+          })
+          product['cis_benefit'].map((b: any, index: any) => {
+            let benefit = b
+            if(index == 0) {
+              benefit['no'] = productNo
+              benefit['rowSpan'] = product['cis_benefit'].length
+            }
+  
+            benefit['productName'] = product['cis']['name']
+            benefit['groupId'] = product['groupId']
+            benefits.push(benefit)
+          })
+          product['cis_risk'].map((r: any, index: any) => {
+            let risk = r
+            if(index == 0) {
+              risk['no'] = productNo
+              risk['rowSpan'] = product['cis_risk'].length
+            }
+  
+            risk['productName'] = product['cis']['name']
+            risk['groupId'] = product['groupId']
+            risks.push(risk)
+          })
+          productNo ++
+        }
+      })
+    }
+
+    setProductAndRiders(productAndRiders)
+    setBenefits(benefits)
+    setRisks(risks)
+    
+  }
+
+  const getGroupRow = () => {
+    setRowOfGroupCell({
+      product : {},
+      ilp : {},
+      cis : {},
+      cisilp : {},
+      productAndRiders : {},
+      benefit: {},
+      risk :{}
+    })
+    dataRowOfGroupCell['product']['length'] = 0;
+    if(getPfr9.recommendedProduct){
+      getPfr9.recommendedProduct.map((product:any) => {
+        if(dataRowOfGroupCell['product'][product['groupId']] == undefined) {
+          dataRowOfGroupCell['product'][product['groupId']] = 1 + product['riders'].length
+        } else {
+          dataRowOfGroupCell['product'][product['groupId']] += 1 + product['riders'].length
+        }
+        if(product['product']['categoryId'] == 8 || product['product']['categoryId'] == 5) {
+          dataRowOfGroupCell['product'][product['groupId']]++
+        }
+
+        dataRowOfGroupCell['product']['length'] += 1
+
+      })
+    }
+
+    if(getPfr9.CISILPProducts){
+      getPfr9.CISILPProducts.map((product: any) => {
+        if(dataRowOfGroupCell['cisilp'][product['groupId']] == undefined) {
+          dataRowOfGroupCell['cisilp'][product['groupId']] = 0
+        }
+        if(product['type'] == 1) {
+
+          if(product['cis'] == undefined) {
+            dataRowOfGroupCell['cisilp'][product['groupId']] += product['fund'].length == 0 ? 1 : product['fund'].length
+          } else {
+            dataRowOfGroupCell['cisilp'][product['groupId']] += product['fund'].length == 0 ? 1 : product['fund'].length
+          }
+        } else {
+          dataRowOfGroupCell['cisilp'][product['groupId']] += product['fund'].length == 0 ? 1 : product['fund'].length
+          dataRowOfGroupCell['cisilp'][product['groupId']] += product['riders'].length
+        }
+
+      })
+    }
+     
+    if(dataBenefits){
+      dataBenefits.map((benefit:any) => {
+        if(dataRowOfGroupCell['benefit'][benefit['groupId']] == undefined) {
+          dataRowOfGroupCell['benefit'][benefit['groupId']] = 0
+        }
+        dataRowOfGroupCell['benefit'][benefit['groupId']] ++
+      })
+    }
+
+    if(dataRisks){
+      dataRisks.map((risk:any) => {
+        if(dataRowOfGroupCell['risk'][risk['groupId']] == undefined) {
+          dataRowOfGroupCell['risk'][risk['groupId']] = 0
+        }
+        dataRowOfGroupCell['risk'][risk['groupId']] ++
+      })
+    }
+
+    if(dataProductAndRiders){
+      dataProductAndRiders.map((product:any) => {
+
+        let group = product['typeProductCustom'] + product['groupId'];
+        
+        if(dataRowOfGroupCell['productAndRiders'][group] == undefined) {
+          dataRowOfGroupCell['productAndRiders'][group] = 0
+        }
+        dataRowOfGroupCell['productAndRiders'][group] ++
+      })
+    }
+    
+    setRowOfGroupCell(dataRowOfGroupCell)
+    // console.log('dataRowOfGroupCell', dataRowOfGroupCell)
+  }
+
+  const getModelRiskCategoryName = (portfolio: any) => {
+    switch(Number(portfolio)) {
+      case 0 : return "Capital Preservation";
+      case 1 : return "Conservative";
+      case 2 : return "Balanced";
+      case 3 : return "Growth";
+      case 4 : return "Aggressive";
+      case 5 : return "N/A";
+    }
+  }
+
+  const getHigherThanProfileName = (profile: any) => {
+    switch(Number(profile)){
+      case 0 : return "No";
+      case 1 : return "Yes"
+    }
+  }
+
 
   return (
     <div id={props.id}>
@@ -1454,16 +1805,16 @@ const AnalysisRecommendation = (props: Props) => {
                 {getClients.map((resData: any, index: any) => (
                     <tr>
                       <td className="px-2 py-5">Client{ index + 1 }</td>
-                      <td className="px-2 py-5 text-center">{dataAnnualPayorBudget[index][0] - dataTotalAnnualPremiumChoice[index][0]}</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
-                      <td className="px-2 py-5 text-center">$0.0</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataAnnualPayorBudget[index][0] - dataTotalAnnualPremiumChoice[index][0]) ? 0 : dataAnnualPayorBudget[index][0] - dataTotalAnnualPremiumChoice[index][0]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataSinglePayorBudget[index][0] - dataTotalSinglePremiumChoice[index][0]) ? 0 : dataSinglePayorBudget[index][0] - dataTotalSinglePremiumChoice[index][0]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataAnnualPayorBudget[index][1] - dataTotalAnnualPremiumChoice[index][1]) ? 0 : dataAnnualPayorBudget[index][1] - dataTotalAnnualPremiumChoice[index][1]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataSinglePayorBudget[index][1] - dataTotalSinglePremiumChoice[index][1]) ? 0 : dataSinglePayorBudget[index][1] - dataTotalSinglePremiumChoice[index][1]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataAnnualPayorBudget[index][2] - dataTotalAnnualPremiumChoice[index][2]) ? 0 : dataAnnualPayorBudget[index][2] - dataTotalAnnualPremiumChoice[index][2]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataSinglePayorBudget[index][2] - dataTotalSinglePremiumChoice[index][2]) ? 0 : dataSinglePayorBudget[index][2] - dataTotalSinglePremiumChoice[index][2]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataAnnualPayorBudget[index][3] - dataTotalAnnualPremiumChoice[index][3]) ? 0 : dataAnnualPayorBudget[index][3] - dataTotalAnnualPremiumChoice[index][3]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataSinglePayorBudget[index][3] - dataTotalSinglePremiumChoice[index][3]) ? 0 : dataSinglePayorBudget[index][3] - dataTotalSinglePremiumChoice[index][3]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataAnnualPayorBudget[index][4] - dataTotalAnnualPremiumChoice[index][4]) ? 0 : dataAnnualPayorBudget[index][4] - dataTotalAnnualPremiumChoice[index][4]}</td>
+                      <td className="px-2 py-5 text-center">{isNaN(dataSinglePayorBudget[index][4] - dataTotalSinglePremiumChoice[index][4]) ? 0 : dataSinglePayorBudget[index][4] - dataTotalSinglePremiumChoice[index][4]}</td>
                     </tr>
                   ))
                 }
@@ -1486,21 +1837,27 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-2 py-5">1</td>
-                  <td className="px-2 py-5">Protection</td>
-                  <td className="px-2 py-5">5</td>
-                  <td className="w-1/12 px-2 py-5">
-                    <div className="flex w-full gap-2">
-                      <ButtonBox className="text-green-deep">
-                        <PencilLineIcon size={14} />
-                      </ButtonBox>
-                      <ButtonBox className="text-red">
-                        <CloseLineIcon size={14} />
-                      </ButtonBox>
-                    </div>
-                  </td>
-                </tr>
+                {
+                  getPfr9?.groups ? 
+                  getPfr9.groups.map((dataGroup:any, index:any) =>(
+                    <tr>
+                      <td className="px-2 py-5">{index + 1}</td>
+                      <td className="px-2 py-5">{dataGroup.name}</td>
+                      <td className="px-2 py-5">{dataGroup.recommend_products.length}</td>
+                      <td className="w-1/12 px-2 py-5">
+                        <div className="flex w-full gap-2">
+                          <ButtonBox className="text-green-deep">
+                            <PencilLineIcon size={14} />
+                          </ButtonBox>
+                          <ButtonBox className="text-red">
+                            <CloseLineIcon size={14} />
+                          </ButtonBox>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                  : ''
+                }
               </tbody>
             </table>
           </div>
@@ -1509,34 +1866,436 @@ const AnalysisRecommendation = (props: Props) => {
         {/* Recommended Product */}
         <RowSingleGrid>
           <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong">
+            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong border border-gray-soft-strong border-slate-500">
               <thead className="bg-white-bone">
                 <tr>
-                  <th className="px-2 py-5">SN</th>
-                  <th className="px-2 py-5">Name of Plan(s) / Rider(s)</th>
-                  <th className="px-2 py-5">Policy Term</th>
-                  <th className="px-2 py-5">Sum Assured</th>
-                  <th className="px-2 py-5">Premium Type</th>
-                  <th className="px-2 py-5">Premium ($)</th>
-                  <th className="px-2 py-5">Premium Frequency</th>
-                  <th className="px-2 py-5">Name of Owner / Insured</th>
-                  <th className="px-2 py-5">Client Choice</th>
-                  <th className="px-2 py-5">Group Name</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">SN</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Name of Plan(s) / Rider(s)</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Policy Term</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Sum Assured</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium Type</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium ($)</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium Frequency</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Name of Owner / Insured</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Client Choice</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Group Name</th>
                 </tr>
               </thead>
               <tbody>
+                {getPfr9?.recommendedProduct ? 
+                  getPfr9.recommendedProduct.map((product:any, index: any) => (
+                    (product['product']['categoryId'] != 8 && product['product']['categoryId'] != 5) ? 
+                      (
+                        <>
+                          <tr>
+                            <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + product['riders'].length}>{index + 1}</td>
+                            <td className="border border-gray-soft-strong px-2 py-5"><b>{ product["name"] }</b></td>
+                            <td className="border border-gray-soft-strong px-2 py-5">{ product["policyTerm"] }</td>
+                            <td className="border border-gray-soft-strong px-2 py-5">{ product["sumAssured"] }</td>
+                            <td className="border border-gray-soft-strong px-2 py-5">
+                              { premiumTypes[product["premiumPaymentType"]] }
+                            </td>
+                            <td className="border border-gray-soft-strong px-2 py-5">{ product["premium"] }</td>
+                            <td className="border border-gray-soft-strong px-2 py-5">
+                              {getPremiumFrequencyName(product["premiumFrequency"])}
+                            </td>
+                            <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + product['riders'].length}>
+                              { product["nameOfInsure"] == null || product["nameOfInsure"] == '-1' ? getNameFromId(product["nameOfOwner"]) : getNameFromId(product["nameOfOwner"]) + "/" + checkNameOfInsure(product["nameOfInsure"], product["nameOfInsureOther"])}
+                            </td>
+                            <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + product['riders'].length}>
+                              <div className="items-center justify-start gap-2 mb-10" id={`custome-checkbox-${index}`}>
+                                <div className="items-start justify-start gap-4">
+                                  <input
+                                    type="checkbox"
+                                    checked={product.checked}
+                                    className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                                  />
+                                  <span></span>
+                                </div>
+                              </div>
+                            </td>
+                            { index == 0 || product['groupId'] != getPfr9.recommendedProduct[index - 1]['groupId'] ? 
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataRowOfGroupCell['product'][product['groupId']] >= 2 ? dataRowOfGroupCell['product'][product['groupId']] + dataRowsGroup[product['groupId']].length : (dataRowOfGroupCell['product']['length'] == 1) ? dataRowOfGroupCell['product'][product['groupId']] : (dataRowOfGroupCell['product'][product['groupId']] == 1) ? dataRowOfGroupCell['product'][product['groupId']] + 1 : dataRowOfGroupCell['product'][product['groupId']]}>
+                                { getGroupName(product["groupId"]) }
+                              </td>
+                              : ''
+                            }
+                          </tr>
+                          {
+                            product?.riders ? 
+                              product.riders.map((rider:any, index:any) => (
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      <ul>
+                                        <li>{ rider["name"] }</li>
+                                      </ul>
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ rider["policyTerm"] }</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ rider["sumAssured"] }</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ premiumTypes[rider["premiumPaymentType"]] }</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ rider["premium"] }</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ getPremiumFrequencyName(rider["premiumFrequency"]) }</td>
+                                  </tr>
+                                </> 
+                              ))
+                            : ''
+                          }
+                          {
+                            getPfr9?.recommendedProduct ? 
+                              getPfr9.recommendedProduct.length != 1 ? 
+                                (<>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5" colSpan={4}>
+                                      <b>Subtotal Premium ($)</b>
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      {product['premiumFrequency'] == 4 ? 
+                                        (<>
+                                          <b>{ product["totPremium"] }</b>
+                                        </>)
+                                      : (<>
+                                          <b>{ product["totPremium"] }</b>
+                                      </>)}
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { product['premiumFrequency'] == 4 ? (<>
+                                        <b>{getPremiumFrequencyName(product['premiumFrequency'])}</b>
+                                      </>) : <>
+                                        <b>Annually</b>
+                                      </> }
+                                    </td>
+                                  </tr>
+                                </>)
+                              : ''
+                            : ''
+                          }
+                        </>
+                      )
+                    : 
+                    (<>
+                      <tr>
+                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2 + product['riders'].length}>
+                          { index + 1 }
+                        </td>
+                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2}><b>{ product["name"] }</b></td>
+                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2}>{ product["policyTerm"] }</td>
+                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2}>{ product["sumAssured"] }</td>
+                        <td className="border border-gray-soft-strong px-2 py-5">CASH</td>
+                        <td className="border border-gray-soft-strong px-2 py-5">
+                          { product['premium_for_hospitalization'] !== null ? 
+                              <>{product["premium_for_hospitalization"]["cash"]}</>
+                            :
+                            <>0</>
+                          }
+                        </td>
+                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2}>
+                          {
+                            getPremiumFrequencyName(product["premiumFrequency"])
+                          }
+                        </td>
+
+                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2 + product['riders'].length}>
+                          { product["nameOfInsure"] == null || product["nameOfInsure"] == '-1' ? getNameFromId(product["nameOfOwner"]) : getNameFromId(product["nameOfOwner"]) + "/" + checkNameOfInsure(product["nameOfInsure"], product["nameOfInsureOther"]) }
+                        </td>
+                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2 + product['riders'].length}>
+                          <div className="items-center justify-start gap-2 mb-10" id={`custome-checkbox-${index}`}>
+                            <div className="items-start justify-start gap-4">
+                              <input
+                                type="checkbox"
+                                checked={product.checked}
+                                className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                              />
+                              <span></span>
+                            </div>
+                          </div>
+                        </td>
+                        { index == 0 || product['groupId'] != getPfr9.recommendedProduct[index - 1]['groupId'] ?
+                            <td className="border border-gray-soft-strong px-2 py-5"
+                              rowSpan={
+                                dataRowOfGroupCell['product'][product['groupId']] > 2
+                                  ? dataRowOfGroupCell['product'][product['groupId']] + dataRowsGroup[product['groupId']].length
+                                  : (dataRowOfGroupCell['product']['length'] == 1) ? dataRowOfGroupCell['product'][product['groupId']] : 
+                                  (dataRowOfGroupCell['product'][product['groupId']] == 1) ? dataRowOfGroupCell['product'][product['groupId']] + 1 : dataRowOfGroupCell['product'][product['groupId']]}
+                            >
+                              { getGroupName(product["groupId"]) }
+                            </td> 
+                          :
+                            ''
+                        }
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-soft-strong px-2 py-5">CPF MEDISAVE</td>
+                        <td className="border border-gray-soft-strong px-2 py-5">
+                          { product['premium_for_hospitalization'] !== null ? 
+                            <>
+                              {product["premium_for_hospitalization"][
+                                "cpfMedisave"
+                              ]}
+                            </> 
+                            :
+                            <>
+                              0
+                            </>
+                          }
+                        </td>
+                      </tr>
+                      {
+                        product?.riders ? 
+                          product.riders.map((rider:any, index:any) => (
+                            <>
+                              <tr aria-rowspan={2}>
+                                <td className="border border-gray-soft-strong px-2 py-5">
+                                  <ul>
+                                    <li>{ rider["name"] }</li>
+                                  </ul>
+                                </td>
+                                <td className="border border-gray-soft-strong px-2 py-5">{ rider["policyTerm"] }</td>
+                                <td className="border border-gray-soft-strong px-2 py-5">{ rider["sumAssured"] }</td>
+                                <td className="border border-gray-soft-strong px-2 py-5">{ premiumTypes[rider["premiumPaymentType"]] }</td>
+                                <td className="border border-gray-soft-strong px-2 py-5">{ rider["premium"] }</td>
+                                <td className="border border-gray-soft-strong px-2 py-5">{ getPremiumFrequencyName(rider["premiumFrequency"]) }</td>
+                              </tr>
+                            </> 
+                          ))
+                        : ''
+                      }
+                      {
+                        getPfr9?.recommendedProduct ? 
+                          getPfr9.recommendedProduct.length != 1 ? 
+                            (<>
+                                <tr>
+                                  <td className="border border-gray-soft-strong px-2 py-5" colSpan={4}>
+                                    <b>Subtotal Premium ($)</b>
+                                  </td>
+                                  <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                  <td className="border border-gray-soft-strong px-2 py-5">
+                                    {product['premiumFrequency'] == 4 ? 
+                                      (<>
+                                        <b>{ product["totPremium"] }</b>
+                                      </>)
+                                    : (<>
+                                        <b>{ product["totPremium"] }</b>
+                                    </>)}
+                                  </td>
+                                  <td className="border border-gray-soft-strong px-2 py-5">
+                                    { product['premiumFrequency'] == 4 ? (<>
+                                      <b>{getPremiumFrequencyName(product['premiumFrequency'])}</b>
+                                    </>) : <>
+                                      <b>Annually</b>
+                                    </> }
+                                  </td>
+                                </tr>
+                            </>)
+                          : ''
+                        : ''
+                      }
+                    </>)
+                  ))
+                : ''}
+              </tbody>
+              <tbody>
                 <tr>
-                  <td className="px-2 py-5">1</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                </tr>
+                  <td className="border border-gray-soft-strong px-2 py-5" colSpan={10}><b>Total By Client Choice ($)</b></td>
+                  </tr>
+                  { getPfr9?.clients ? 
+                    getPfr9?.clients.map((dataClient: any, i: any) => (
+                      <>
+                        <tr>
+                          <td className="border border-gray-soft-strong px-2 py-5" colSpan={4}><b>Client { i + 1 } </b></td>
+                          <td className="border border-gray-soft-strong px-2 py-5">
+                            {dataTotalRecomendationAnnualPremiumChoice[i][0] > 0 ? (
+                            <>
+                              <b>CASH<br /></b>
+                            </>
+                            ) : ''}
+                          
+                            {dataTotalRecomendationSinglePremiumChoice[i][0] > 0 ? (
+                            <>
+                              <b>CASH<br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationAnnualPremiumChoice[i][1] > 0 ? (
+                            <>
+                              <b>CPFOA<br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationSinglePremiumChoice[i][1] > 0 ? (
+                            <>
+                              <b>CPFOA<br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationAnnualPremiumChoice[i][2] > 0 ? (
+                            <>
+                              <b>CPFSA<br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationSinglePremiumChoice[i][2] > 0 ? (
+                            <>
+                              <b>CPFSA<br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationAnnualPremiumChoice[i][3] > 0 ? (
+                            <>
+                              <b>CPF MEDISAVE<br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationSinglePremiumChoice[i][3] > 0 ? (
+                            <>
+                              <b>CPF MEDISAVE<br /></b>
+                            </>
+                            ) : ''}
+
+                            {dataTotalRecomendationAnnualPremiumChoice[i][4] > 0 ? (
+                            <>
+                              <b>SRS<br /></b>
+                            </>
+                            ) : ''}
+                            {dataTotalRecomendationSinglePremiumChoice[i][4] > 0 ? (
+                            <>
+                              <b>SRS<br /></b>
+                            </>
+                            ) : ''}
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5">
+                            {dataTotalRecomendationAnnualPremiumChoice[i][0] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationAnnualPremiumChoice[i][0]}<br /></b>
+                            </>
+                            ) : ''}
+                          
+                            {dataTotalRecomendationSinglePremiumChoice[i][0] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationSinglePremiumChoice[i][0]}<br /></b>
+                            </>
+                            ) : ''}
+                      
+                            {dataTotalRecomendationAnnualPremiumChoice[i][1] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationAnnualPremiumChoice[i][1]}<br /></b>
+                            </>
+                            ) : ''}
+                      
+                            {dataTotalRecomendationSinglePremiumChoice[i][1] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationSinglePremiumChoice[i][1]}<br /></b>
+                            </>
+                            ) : ''}
+                    
+                            {dataTotalRecomendationAnnualPremiumChoice[i][2] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationAnnualPremiumChoice[i][2]}<br /></b>
+                            </>
+                            ) : ''}
+                    
+                            {dataTotalRecomendationSinglePremiumChoice[i][2] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationSinglePremiumChoice[i][2]}<br /></b>
+                            </>
+                            ) : ''}
+                    
+                            {dataTotalRecomendationAnnualPremiumChoice[i][3] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationAnnualPremiumChoice[i][3]}<br /></b>
+                            </>
+                            ) : ''}
+          
+                            {dataTotalRecomendationSinglePremiumChoice[i][3] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationSinglePremiumChoice[i][3]}<br /></b>
+                            </>
+                            ) : ''}
+              
+                            {dataTotalRecomendationAnnualPremiumChoice[i][4] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationAnnualPremiumChoice[i][4]}<br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationSinglePremiumChoice[i][4] > 0 ? (
+                            <>
+                              <b>{dataTotalRecomendationSinglePremiumChoice[i][4]}</b>
+                            </>
+                            ) : ''}
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5">
+                            {dataTotalRecomendationAnnualPremiumChoice[i][0] > 0 ? (
+                            <>
+                              <b>Annually <br /></b>
+                            </>
+                            ) : ''}
+                          
+                            {dataTotalRecomendationSinglePremiumChoice[i][0] > 0 ? (
+                            <>
+                              <b>Single Payment <br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationAnnualPremiumChoice[i][1] > 0 ? (
+                            <>
+                              <b>Annually <br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationSinglePremiumChoice[i][1] > 0 ? (
+                            <>
+                              <b>Single Payment <br /></b>
+                            </>
+                            ) : ''}
+              
+                            {dataTotalRecomendationAnnualPremiumChoice[i][2] > 0 ? (
+                            <>
+                              <b>Annually <br /></b>
+                            </>
+                            ) : ''}
+              
+                            {dataTotalRecomendationSinglePremiumChoice[i][2] > 0 ? (
+                            <>
+                              <b>Single Payment <br /></b>
+                            </>
+                            ) : ''}
+                    
+                            {dataTotalRecomendationAnnualPremiumChoice[i][3] > 0 ? (
+                            <>
+                              <b>Annually <br /></b>
+                            </>
+                            ) : ''}
+          
+                            {dataTotalRecomendationSinglePremiumChoice[i][3] > 0 ? (
+                            <>
+                              <b>Single Payment <br /></b>
+                            </>
+                            ) : ''}
+                
+                            {dataTotalRecomendationAnnualPremiumChoice[i][4] > 0 ? (
+                            <>
+                              <b>Annually <br /></b>
+                            </>
+                            ) : ''}
+        
+                            {dataTotalRecomendationSinglePremiumChoice[i][4] > 0 ? (
+                            <>
+                              <b>Single Payment <br /></b>
+                            </>
+                            ) : ''}
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5">
+                            {getNameFromId(i)}
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5">
+        
+                          </td>
+                        </tr>
+                      </>
+                    ))
+                  : ''}
               </tbody>
             </table>
           </div>
@@ -1545,32 +2304,131 @@ const AnalysisRecommendation = (props: Props) => {
         {/* Ilp Product */}
         <RowSingleGrid>
           <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong">
+            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong border border-gray-soft-strong border-slate-500">
               <thead className="bg-white-bone">
                 <tr>
-                  <th className="px-2 py-5">SN</th>
-                  <th className="px-2 py-5">Name of Plan(s) / Rider(s)</th>
-                  <th className="px-2 py-5">Policy Term</th>
-                  <th className="px-2 py-5">Sum Assured</th>
-                  <th className="px-2 py-5">Premium Type</th>
-                  <th className="px-2 py-5">Premium ($)</th>
-                  <th className="px-2 py-5">Premium Frequency</th>
-                  <th className="px-2 py-5">Name of Owner / Insured</th>
-                  <th className="px-2 py-5">Policy</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">SN</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Name of ILP Plan / Rider(s)</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Fund Name</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Fund Amount (%)</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium Type</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium ($)</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium Frequency</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Model Portfolio Risk Category</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Is the recommendation of a higher risk than the client's risk profile? </th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Name of Owner/Insured</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Client Choice </th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Deviate</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Group Name</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-2 py-5">1</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                </tr>
+                { getPfr9?.CISILPProducts ? 
+                    getPfr9.CISILPProducts.map((product: any, i: any) => (
+                      <> 
+                        <tr>
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
+                            { getPfr9.recommendedProduct.length + i + 1 }
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                            { product.cis ? product.cis.name : product["name"] }
+                          </td>
+                          { product['fund'].length > 0 ? 
+                            <>
+                              <td className="border border-gray-soft-strong px-2 py-5">
+                                { product["fund"][0]["name"] }
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5">
+                                { product["fund"][0]["fund"] }
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                                { premiumTypes[product["premiumPaymentType"]] }
+                              </td>
+                            </>
+                            : 
+                            <>
+                              <td className="border border-gray-soft-strong px-2 py-5"></td>
+                              <td className="border border-gray-soft-strong px-2 py-5"></td>
+                            </>
+                          }
+                         
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                            { product["premium"] }
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                            {
+                              getPremiumFrequencyName(product["premiumFrequency"])
+                            }
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                            {
+                              getModelRiskCategoryName(
+                                product["modelPortfolioRiskCategory"]
+                              )
+                            }
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                            {
+                              getHigherThanProfileName(
+                                product["higherThanRiskProfile"]
+                              )
+                            }
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
+                            { product["nameOfInsure"] == null || product["nameOfInsure"] == '-1' ? getNameFromId(product["nameOfOwner"]) : getNameFromId(product["nameOfOwner"]) + "/" + checkNameOfInsure(product["nameOfInsure"], product["nameOfInsureOther"]) }
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
+                            <div className="items-center justify-start gap-2 mb-10" id={`custome-checkbox2-${i}`}>
+                              <div className="items-start justify-start gap-4">
+                                <input
+                                  type="checkbox"
+                                  checked={product.checked}
+                                  className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                                />
+                                <span></span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
+                            { dataOutcome[product['nameOfOwner']] == 1 ? <>
+                            <div className="items-center justify-start gap-2 mb-10" id={`custome-checkbox2-${i}`}>
+                              <div className="items-start justify-start gap-4">
+                                <input
+                                  type="checkbox"
+                                  checked={product.checked}
+                                  className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                                />
+                                <span></span>
+                              </div>
+                            </div>
+                            </> : ''}
+                          </td>
+                          { i == 0 || product['groupId'] != getPfr9.CISILPProducts[i - 1]['groupId'] ?
+                          <>
+                            <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataRowOfGroupCell['cisilp'][product['groupId']] > 5 ? dataRowOfGroupCell['cisilp'][product['groupId']] + 2 : dataRowOfGroupCell['cisilp'][product['groupId']] + 1}>
+                              { getGroupName(product["groupId"]) }
+                            </td>
+                          </> : ''}
+                        </tr>
+                        {
+                          product.fund.length > 0 ? 
+                            product.fund.map((fund: any, f: any) => (
+                              (f != 0) ? 
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ fund["name"] }</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ fund["fund"] }</td>
+                                  </tr>
+                                </>
+                              : ''
+                            ))
+                          : ''
+                        }
+                      </>
+                    ))
+                  : 
+                  ''
+                }
               </tbody>
             </table>
           </div>
