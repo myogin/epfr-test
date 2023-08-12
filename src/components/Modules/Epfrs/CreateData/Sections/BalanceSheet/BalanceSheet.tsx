@@ -154,6 +154,20 @@ const BalanceSheet = (props: Props) => {
       setGlobal("editableStatus", 2);
     }
   }, [others, reason, need]);
+
+  const [showSection, setShowSection] = useState(false);
+  useEffect(() => {
+    if (props.pfrType == 1) {
+      setShowSection(need[0] == 1 ? true : false);
+    } else {
+      if (need[0] || need[1]) {
+        setShowSection(true);
+      } else {
+        setShowSection(false);
+      }
+    }
+  }, [need, props.pfrType]);
+
   return (
     <div id={props.id}>
       <div
@@ -180,7 +194,7 @@ const BalanceSheet = (props: Props) => {
         </HeadingPrimarySection>
       </div>
 
-      {need[0] || need[1] ? (
+      {showSection ? (
         <>
           <div className="grid grid-cols-3 mx-8 mb-10 2xl:mx-60">
             <div className="grid col-span-2">

@@ -573,6 +573,19 @@ const RiskProfile = (props: Props) => {
       });
     }
   }, [sectionFive.answers, sectionFive.need, sectionFive.reason]);
+
+  const [showSection, setShowSection] = useState(false);
+  useEffect(() => {
+    if (props.pfrType == 1) {
+      setShowSection(sectionFive.need[0] == 1 ? true : false);
+    } else {
+      if (sectionFive.need[0] || sectionFive.need[1]) {
+        setShowSection(true);
+      } else {
+        setShowSection(false);
+      }
+    }
+  }, [sectionFive.need]);
   return (
     <div id={props.id}>
       <div
@@ -598,7 +611,7 @@ const RiskProfile = (props: Props) => {
           )}
         </HeadingPrimarySection>
       </div>
-      {sectionFive.need[0] || sectionFive.need[1] ? (
+      {showSection ? (
         <>
           <HeadingSecondarySection className="mx-8 2xl:mx-60">
             5.1 Risk Profile Questionarie
