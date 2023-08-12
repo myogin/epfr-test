@@ -1840,7 +1840,7 @@ const AnalysisRecommendation = (props: Props) => {
                 {
                   getPfr9?.groups ? 
                   getPfr9.groups.map((dataGroup:any, index:any) =>(
-                    <tr>
+                    <tr key={"sas"+index}>
                       <td className="px-2 py-5">{index + 1}</td>
                       <td className="px-2 py-5">{dataGroup.name}</td>
                       <td className="px-2 py-5">{dataGroup.recommend_products.length}</td>
@@ -1866,19 +1866,19 @@ const AnalysisRecommendation = (props: Props) => {
         {/* Recommended Product */}
         <RowSingleGrid>
           <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong border border-gray-soft-strong border-slate-500">
+            <table className="w-full text-sm text-left border divide-y rounded-md divide-gray-soft-strong border-gray-soft-strong border-slate-500">
               <thead className="bg-white-bone">
                 <tr>
-                  <th className="border border-gray-soft-strong px-2 py-5">SN</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Name of Plan(s) / Rider(s)</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Policy Term</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Sum Assured</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium Type</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium ($)</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium Frequency</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Name of Owner / Insured</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Client Choice</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Group Name</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">SN</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Name of Plan(s) / Rider(s)</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Policy Term</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Sum Assured</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium Type</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium ($)</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium Frequency</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Name of Owner / Insured</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Client Choice</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Group Name</th>
                 </tr>
               </thead>
               <tbody>
@@ -1888,21 +1888,21 @@ const AnalysisRecommendation = (props: Props) => {
                       (
                         <>
                           <tr>
-                            <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + product['riders'].length}>{index + 1}</td>
-                            <td className="border border-gray-soft-strong px-2 py-5"><b>{ product["name"] }</b></td>
-                            <td className="border border-gray-soft-strong px-2 py-5">{ product["policyTerm"] }</td>
-                            <td className="border border-gray-soft-strong px-2 py-5">{ product["sumAssured"] }</td>
-                            <td className="border border-gray-soft-strong px-2 py-5">
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={1 + product['riders'].length}>{index + 1}</td>
+                            <td className="px-2 py-5 border border-gray-soft-strong"><b>{ product["name"] }</b></td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">{ product["policyTerm"] }</td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">{ product["sumAssured"] }</td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
                               { premiumTypes[product["premiumPaymentType"]] }
                             </td>
-                            <td className="border border-gray-soft-strong px-2 py-5">{ product["premium"] }</td>
-                            <td className="border border-gray-soft-strong px-2 py-5">
+                            <td className="px-2 py-5 border border-gray-soft-strong">{ product["premium"] }</td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
                               {getPremiumFrequencyName(product["premiumFrequency"])}
                             </td>
-                            <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + product['riders'].length}>
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={1 + product['riders'].length}>
                               { product["nameOfInsure"] == null || product["nameOfInsure"] == '-1' ? getNameFromId(product["nameOfOwner"]) : getNameFromId(product["nameOfOwner"]) + "/" + checkNameOfInsure(product["nameOfInsure"], product["nameOfInsureOther"])}
                             </td>
-                            <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + product['riders'].length}>
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={1 + product['riders'].length}>
                               <div className="items-center justify-start gap-2 mb-10" id={`custome-checkbox-${index}`}>
                                 <div className="items-start justify-start gap-4">
                                   <input
@@ -1915,7 +1915,7 @@ const AnalysisRecommendation = (props: Props) => {
                               </div>
                             </td>
                             { index == 0 || product['groupId'] != getPfr9.recommendedProduct[index - 1]['groupId'] ? 
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataRowOfGroupCell['product'][product['groupId']] >= 2 ? dataRowOfGroupCell['product'][product['groupId']] + dataRowsGroup[product['groupId']].length : (dataRowOfGroupCell['product']['length'] == 1) ? dataRowOfGroupCell['product'][product['groupId']] : (dataRowOfGroupCell['product'][product['groupId']] == 1) ? dataRowOfGroupCell['product'][product['groupId']] + 1 : dataRowOfGroupCell['product'][product['groupId']]}>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataRowOfGroupCell['product'][product['groupId']] >= 2 ? dataRowOfGroupCell['product'][product['groupId']] + dataRowsGroup[product['groupId']].length : (dataRowOfGroupCell['product']['length'] == 1) ? dataRowOfGroupCell['product'][product['groupId']] : (dataRowOfGroupCell['product'][product['groupId']] == 1) ? dataRowOfGroupCell['product'][product['groupId']] + 1 : dataRowOfGroupCell['product'][product['groupId']]}>
                                 { getGroupName(product["groupId"]) }
                               </td>
                               : ''
@@ -1926,16 +1926,16 @@ const AnalysisRecommendation = (props: Props) => {
                               product.riders.map((rider:any, index:any) => (
                                 <>
                                   <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       <ul>
                                         <li>{ rider["name"] }</li>
                                       </ul>
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ rider["policyTerm"] }</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ rider["sumAssured"] }</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ premiumTypes[rider["premiumPaymentType"]] }</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ rider["premium"] }</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ getPremiumFrequencyName(rider["premiumFrequency"]) }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ rider["policyTerm"] }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ rider["sumAssured"] }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ premiumTypes[rider["premiumPaymentType"]] }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ rider["premium"] }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ getPremiumFrequencyName(rider["premiumFrequency"]) }</td>
                                   </tr>
                                 </> 
                               ))
@@ -1946,11 +1946,11 @@ const AnalysisRecommendation = (props: Props) => {
                               getPfr9.recommendedProduct.length != 1 ? 
                                 (<>
                                   <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5" colSpan={4}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong" colSpan={4}>
                                       <b>Subtotal Premium ($)</b>
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       {product['premiumFrequency'] == 4 ? 
                                         (<>
                                           <b>{ product["totPremium"] }</b>
@@ -1959,7 +1959,7 @@ const AnalysisRecommendation = (props: Props) => {
                                           <b>{ product["totPremium"] }</b>
                                       </>)}
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { product['premiumFrequency'] == 4 ? (<>
                                         <b>{getPremiumFrequencyName(product['premiumFrequency'])}</b>
                                       </>) : <>
@@ -1976,30 +1976,30 @@ const AnalysisRecommendation = (props: Props) => {
                     : 
                     (<>
                       <tr>
-                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2 + product['riders'].length}>
+                        <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + product['riders'].length}>
                           { index + 1 }
                         </td>
-                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2}><b>{ product["name"] }</b></td>
-                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2}>{ product["policyTerm"] }</td>
-                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2}>{ product["sumAssured"] }</td>
-                        <td className="border border-gray-soft-strong px-2 py-5">CASH</td>
-                        <td className="border border-gray-soft-strong px-2 py-5">
+                        <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2}><b>{ product["name"] }</b></td>
+                        <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2}>{ product["policyTerm"] }</td>
+                        <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2}>{ product["sumAssured"] }</td>
+                        <td className="px-2 py-5 border border-gray-soft-strong">CASH</td>
+                        <td className="px-2 py-5 border border-gray-soft-strong">
                           { product['premium_for_hospitalization'] !== null ? 
                               <>{product["premium_for_hospitalization"]["cash"]}</>
                             :
                             <>0</>
                           }
                         </td>
-                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2}>
+                        <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2}>
                           {
                             getPremiumFrequencyName(product["premiumFrequency"])
                           }
                         </td>
 
-                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2 + product['riders'].length}>
+                        <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + product['riders'].length}>
                           { product["nameOfInsure"] == null || product["nameOfInsure"] == '-1' ? getNameFromId(product["nameOfOwner"]) : getNameFromId(product["nameOfOwner"]) + "/" + checkNameOfInsure(product["nameOfInsure"], product["nameOfInsureOther"]) }
                         </td>
-                        <td className="border border-gray-soft-strong px-2 py-5" rowSpan={2 + product['riders'].length}>
+                        <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + product['riders'].length}>
                           <div className="items-center justify-start gap-2 mb-10" id={`custome-checkbox-${index}`}>
                             <div className="items-start justify-start gap-4">
                               <input
@@ -2012,7 +2012,7 @@ const AnalysisRecommendation = (props: Props) => {
                           </div>
                         </td>
                         { index == 0 || product['groupId'] != getPfr9.recommendedProduct[index - 1]['groupId'] ?
-                            <td className="border border-gray-soft-strong px-2 py-5"
+                            <td className="px-2 py-5 border border-gray-soft-strong"
                               rowSpan={
                                 dataRowOfGroupCell['product'][product['groupId']] > 2
                                   ? dataRowOfGroupCell['product'][product['groupId']] + dataRowsGroup[product['groupId']].length
@@ -2026,8 +2026,8 @@ const AnalysisRecommendation = (props: Props) => {
                         }
                       </tr>
                       <tr>
-                        <td className="border border-gray-soft-strong px-2 py-5">CPF MEDISAVE</td>
-                        <td className="border border-gray-soft-strong px-2 py-5">
+                        <td className="px-2 py-5 border border-gray-soft-strong">CPF MEDISAVE</td>
+                        <td className="px-2 py-5 border border-gray-soft-strong">
                           { product['premium_for_hospitalization'] !== null ? 
                             <>
                               {product["premium_for_hospitalization"][
@@ -2046,16 +2046,16 @@ const AnalysisRecommendation = (props: Props) => {
                           product.riders.map((rider:any, index:any) => (
                             <>
                               <tr aria-rowspan={2}>
-                                <td className="border border-gray-soft-strong px-2 py-5">
+                                <td className="px-2 py-5 border border-gray-soft-strong">
                                   <ul>
                                     <li>{ rider["name"] }</li>
                                   </ul>
                                 </td>
-                                <td className="border border-gray-soft-strong px-2 py-5">{ rider["policyTerm"] }</td>
-                                <td className="border border-gray-soft-strong px-2 py-5">{ rider["sumAssured"] }</td>
-                                <td className="border border-gray-soft-strong px-2 py-5">{ premiumTypes[rider["premiumPaymentType"]] }</td>
-                                <td className="border border-gray-soft-strong px-2 py-5">{ rider["premium"] }</td>
-                                <td className="border border-gray-soft-strong px-2 py-5">{ getPremiumFrequencyName(rider["premiumFrequency"]) }</td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">{ rider["policyTerm"] }</td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">{ rider["sumAssured"] }</td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">{ premiumTypes[rider["premiumPaymentType"]] }</td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">{ rider["premium"] }</td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">{ getPremiumFrequencyName(rider["premiumFrequency"]) }</td>
                               </tr>
                             </> 
                           ))
@@ -2066,11 +2066,11 @@ const AnalysisRecommendation = (props: Props) => {
                           getPfr9.recommendedProduct.length != 1 ? 
                             (<>
                                 <tr>
-                                  <td className="border border-gray-soft-strong px-2 py-5" colSpan={4}>
+                                  <td className="px-2 py-5 border border-gray-soft-strong" colSpan={4}>
                                     <b>Subtotal Premium ($)</b>
                                   </td>
-                                  <td className="border border-gray-soft-strong px-2 py-5"></td>
-                                  <td className="border border-gray-soft-strong px-2 py-5">
+                                  <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
                                     {product['premiumFrequency'] == 4 ? 
                                       (<>
                                         <b>{ product["totPremium"] }</b>
@@ -2079,7 +2079,7 @@ const AnalysisRecommendation = (props: Props) => {
                                         <b>{ product["totPremium"] }</b>
                                     </>)}
                                   </td>
-                                  <td className="border border-gray-soft-strong px-2 py-5">
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
                                     { product['premiumFrequency'] == 4 ? (<>
                                       <b>{getPremiumFrequencyName(product['premiumFrequency'])}</b>
                                     </>) : <>
@@ -2097,14 +2097,14 @@ const AnalysisRecommendation = (props: Props) => {
               </tbody>
               <tbody>
                 <tr>
-                  <td className="border border-gray-soft-strong px-2 py-5" colSpan={10}><b>Total By Client Choice ($)</b></td>
+                  <td className="px-2 py-5 border border-gray-soft-strong" colSpan={10}><b>Total By Client Choice ($)</b></td>
                   </tr>
                   { getPfr9?.clients ? 
                     getPfr9?.clients.map((dataClient: any, i: any) => (
                       <>
                         <tr>
-                          <td className="border border-gray-soft-strong px-2 py-5" colSpan={4}><b>Client { i + 1 } </b></td>
-                          <td className="border border-gray-soft-strong px-2 py-5">
+                          <td className="px-2 py-5 border border-gray-soft-strong" colSpan={4}><b>Client { i + 1 } </b></td>
+                          <td className="px-2 py-5 border border-gray-soft-strong">
                             {dataTotalRecomendationAnnualPremiumChoice[i][0] > 0 ? (
                             <>
                               <b>CASH<br /></b>
@@ -2164,7 +2164,7 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                             ) : ''}
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5">
+                          <td className="px-2 py-5 border border-gray-soft-strong">
                             {dataTotalRecomendationAnnualPremiumChoice[i][0] > 0 ? (
                             <>
                               <b>{dataTotalRecomendationAnnualPremiumChoice[i][0]}<br /></b>
@@ -2225,7 +2225,7 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                             ) : ''}
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5">
+                          <td className="px-2 py-5 border border-gray-soft-strong">
                             {dataTotalRecomendationAnnualPremiumChoice[i][0] > 0 ? (
                             <>
                               <b>Annually <br /></b>
@@ -2286,10 +2286,10 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                             ) : ''}
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5">
+                          <td className="px-2 py-5 border border-gray-soft-strong">
                             {getNameFromId(i)}
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5">
+                          <td className="px-2 py-5 border border-gray-soft-strong">
         
                           </td>
                         </tr>
@@ -2304,22 +2304,22 @@ const AnalysisRecommendation = (props: Props) => {
         {/* Ilp Product */}
         <RowSingleGrid>
           <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong border border-gray-soft-strong border-slate-500">
+            <table className="w-full text-sm text-left border divide-y rounded-md divide-gray-soft-strong border-gray-soft-strong border-slate-500">
               <thead className="bg-white-bone">
                 <tr>
-                  <th className="border border-gray-soft-strong px-2 py-5">SN</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Name of ILP Plan / Rider(s)</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Fund Name</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Fund Amount (%)</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium Type</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium ($)</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium Frequency</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Model Portfolio Risk Category</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Is the recommendation of a higher risk than the client's risk profile? </th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Name of Owner/Insured</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Client Choice </th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Deviate</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Group Name</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">SN</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Name of ILP Plan / Rider(s)</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Fund Name</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Fund Amount (%)</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium Type</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium ($)</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium Frequency</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Model Portfolio Risk Category</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">{`Is the recommendation of a higher risk than the client's risk profile?`}</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Name of Owner/Insured</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Client Choice </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Deviate</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Group Name</th>
                 </tr>
               </thead>
               <tbody>
@@ -2327,57 +2327,57 @@ const AnalysisRecommendation = (props: Props) => {
                     getPfr9.CISILPProducts.map((product: any, i: any) => (
                       <> 
                         <tr>
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
                             { getPfr9.recommendedProduct.length + i + 1 }
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
                             { product.cis ? product.cis.name : product["name"] }
                           </td>
                           { product['fund'].length > 0 ? 
                             <>
-                              <td className="border border-gray-soft-strong px-2 py-5">
+                              <td className="px-2 py-5 border border-gray-soft-strong">
                                 { product["fund"][0]["name"] }
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5">
+                              <td className="px-2 py-5 border border-gray-soft-strong">
                                 { product["fund"][0]["fund"] }
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
                                 { premiumTypes[product["premiumPaymentType"]] }
                               </td>
                             </>
                             : 
                             <>
-                              <td className="border border-gray-soft-strong px-2 py-5"></td>
-                              <td className="border border-gray-soft-strong px-2 py-5"></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong"></td>
                             </>
                           }
                          
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
                             { product["premium"] }
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
                             {
                               getPremiumFrequencyName(product["premiumFrequency"])
                             }
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
                             {
                               getModelRiskCategoryName(
                                 product["modelPortfolioRiskCategory"]
                               )
                             }
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 : product['fund'].length}>
                             {
                               getHigherThanProfileName(
                                 product["higherThanRiskProfile"]
                               )
                             }
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
                             { product["nameOfInsure"] == null || product["nameOfInsure"] == '-1' ? getNameFromId(product["nameOfOwner"]) : getNameFromId(product["nameOfOwner"]) + "/" + checkNameOfInsure(product["nameOfInsure"], product["nameOfInsureOther"]) }
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
                             <div className="items-center justify-start gap-2 mb-10" id={`custome-checkbox2-${i}`}>
                               <div className="items-start justify-start gap-4">
                                 <input
@@ -2389,7 +2389,7 @@ const AnalysisRecommendation = (props: Props) => {
                               </div>
                             </div>
                           </td>
-                          <td className="border border-gray-soft-strong px-2 py-5" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
+                          <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={product['fund'].length == 0 ? 1 + product['riders'].length : product['fund'].length + product['riders'].length}>
                             { dataOutcome[product['nameOfOwner']] == 1 ? <>
                             <div className="items-center justify-start gap-2 mb-10" id={`custome-checkbox2-${i}`}>
                               <div className="items-start justify-start gap-4">
@@ -2405,7 +2405,7 @@ const AnalysisRecommendation = (props: Props) => {
                           </td>
                           { i == 0 || product['groupId'] != getPfr9.CISILPProducts[i - 1]['groupId'] ?
                           <>
-                            <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataRowOfGroupCell['cisilp'][product['groupId']] > 5 ? dataRowOfGroupCell['cisilp'][product['groupId']] + 2 : dataRowOfGroupCell['cisilp'][product['groupId']] + 1}>
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataRowOfGroupCell['cisilp'][product['groupId']] > 5 ? dataRowOfGroupCell['cisilp'][product['groupId']] + 2 : dataRowOfGroupCell['cisilp'][product['groupId']] + 1}>
                               { getGroupName(product["groupId"]) }
                             </td>
                           </> : ''}
@@ -2416,8 +2416,8 @@ const AnalysisRecommendation = (props: Props) => {
                               (f != 0) ? 
                                 <>
                                   <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ fund["name"] }</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ fund["fund"] }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ fund["name"] }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ fund["fund"] }</td>
                                   </tr>
                                 </>
                               : ''
