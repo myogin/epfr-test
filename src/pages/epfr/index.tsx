@@ -10,11 +10,8 @@ import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
 import { useLoginData } from "@/store/login/logindata";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { getAllPfrData, validateToken } from "@/services/pfrService";
-import { log } from "console";
-import http from "@/libs/httpSetting";
-import authHeader from "@/libs/authHeader";
-import { signIn, useSession } from "next-auth/react";
+import { getAllPfrData } from "@/services/pfrService";
+import { useSession } from "next-auth/react";
 import { siteConfig } from "@/libs/config";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
@@ -24,6 +21,9 @@ import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import { useAffordability } from "@/store/epfrPage/createData/affordability";
+import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
+import { useAnalysisRecommendationGroup } from "@/store/epfrPage/createData/analysisRecommendationGroup";
+import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/analysisRecommendationProduct";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,6 +40,10 @@ const EpfrPage: Page = () => {
   let { resetSectionSix } = useCustomerKnowledgeAssesment();
   let { resetSectionSeven } = usePrioritiesNeedAnalysis();
   let { resetSectionEight } = useAffordability();
+  let { resetSectionNine } = useAnalysisRecommendation();
+  let { resetGroupRecommendation } = useAnalysisRecommendationGroup();
+  let { resetRecommendationProduct } = useAnalysisRecommendationProduct();
+  
 
   const getGeneralData = async () => {
     if (router.query.edit) {
@@ -56,6 +60,9 @@ const EpfrPage: Page = () => {
     resetSectionSix();
     resetSectionSeven();
     resetSectionEight();
+    resetSectionNine();
+    resetGroupRecommendation();
+    resetRecommendationProduct();
 
     router.push(`create/${params}`);
   };

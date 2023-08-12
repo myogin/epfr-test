@@ -14,9 +14,15 @@ import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React, {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import { useAffordability } from "@/store/epfrPage/createData/affordability";
 import { getLength } from "@/libs/helper";
+import { useRouter } from "next/router";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
+import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 interface Props {
   id?: any;
@@ -24,15 +30,36 @@ interface Props {
 }
 
 const Affordability = (props: Props) => {
-  let {
-    section8,
-    setPayorDetail,
-    setPayorBudget,
-    setSourceOfWealth,
-    setAssetOrSurplus
-  } = useAffordability();
+  const router = useRouter();
+  let id = usePersonalInformation((state) => state.id);
 
-  let getPfrLength = getLength(props.pfrType);
+  let section8 = useAffordability((state) => state.section8);
+  let setPayorDetail = useAffordability((state) => state.setPayorDetail);
+  let setPayorBudget = useAffordability((state) => state.setPayorBudget);
+  let setSourceOfWealth = useAffordability((state) => state.setSourceOfWealth);
+  let setAssetOrSurplus = useAffordability((state) => state.setAssetOrSurplus);
+  let setGlobal = useAffordability((state) => state.setGlobal);
+  let setInit = useAffordability((state) => state.setInit);
+
+  let editableStatus = useAffordability(
+    (state) => state.section8.editableStatus
+  );
+  let status = useAffordability((state) => state.section8.status);
+
+  let idSectionNine = useAnalysisRecommendation(
+    (state) => state.section9.pfrId
+  );
+  let setGlobalSectionNine = useAnalysisRecommendation(
+    (state) => state.setParent
+  );
+
+  const scrollPositionBottom = useScrollPositionBottom(7);
+  const scrollPositionNext = useScrollPosition(9);
+  const scrollPosition = useScrollPosition(8);
+
+  let pfrLocal = usePfrData((state) => state.pfr);
+
+  // let getPfrLength = getLength(props.pfrType);
 
   let fillInformation: Array<any> = [
     { id: 0, name: "No" },
@@ -55,16 +82,10 @@ const Affordability = (props: Props) => {
   let { showDetailData } = useNavigationSection();
 
   const dataPayorDetail = (data: any) => {
-    var resData = [
-      "Cash", 
-      "CPF OA",
-      "CPF SA",
-      "CPF Medisave",
-      "SRS"
-    ];
+    let resData = ["Cash", "CPF OA", "CPF SA", "CPF Medisave", "SRS"];
 
     return resData[data];
-  } 
+  };
 
   const handlePayorDetail = (event: any, key: any) => {
     const { groupdata } = event.target.dataset;
@@ -72,11 +93,11 @@ const Affordability = (props: Props) => {
     setPayorDetail(key, name, groupdata, value);
   };
 
-  const checkboxPayorBudget = (event:any, key:any, index:any) => {
+  const checkboxPayorBudget = (event: any, key: any, index: any) => {
     const { name, value } = event.target;
-    console.log('value', value)
+    console.log("value", value);
     setPayorBudget(key, index, name, value);
-  }
+  };
 
   const handleSourceOfWealth = (event: any, key: any) => {
     const { name, value } = event.target;
@@ -88,14 +109,97 @@ const Affordability = (props: Props) => {
     setAssetOrSurplus(key, name, value);
   };
 
-  useEffect(() => {  
-    console.log('section8', section8);
-    localStorage.setItem("section8", JSON.stringify(section8));
-  }, [section8]);
-  
-  const scrollPosition = useScrollPosition(8);
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection8 = await getPfrStep(8, params);
+
+      console.log(getSection8);
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  // Store data
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section8")
+        ? localStorage.getItem("section8")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data.state;
+      }
+
+      let storeDataSection = await postPfrSections(8, JSON.stringify(dataFix));
+
+      // If save success get ID and store to localstorage
+      if (storeDataSection.data.result === "success") {
+        if (
+          idSectionNine === 0 ||
+          idSectionNine === null ||
+          idSectionNine === undefined
+        ) {
+          setGlobalSectionNine("pfrId", storeDataSection.data.pfrId);
+        } else {
+          setGlobalSectionNine("pfrId", id);
+        }
+        setGlobal("editableStatus", 1);
+      }
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
+  // Get data when scroll from section 1
+  useEffect(() => {
+    if (!router.isReady) return;
+    // If edit check the ID
+    setInit(props.pfrType);
+
+    if (router.query.id !== null && router.query.id !== undefined) {
+      if (scrollPositionBottom === "Process7") {
+        setGlobal("editableStatus", pfrLocal.editableSection8);
+        setGlobal("id", router.query.id);
+        setGlobal("status", pfrLocal.section8);
+        // getSectionData(router.query.id);
+      }
+    }
+  }, [scrollPositionBottom, router.isReady, router.query.id]);
+
+  useEffect(() => {
+    if (scrollPositionNext === "okSec9") {
+      if (
+        (editableStatus === 0 && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("section8", section8);
+        // storeData();
+      } else {
+        console.log("Your data not complete Section 2");
+      }
+    }
+  }, [scrollPositionNext, editableStatus, status]);
+
   return (
-    <div id={props.id}>
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-8"
         className={`sticky top-0 z-10 ${
@@ -114,211 +218,309 @@ const Affordability = (props: Props) => {
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowDoubleGrid>
-          {section8.payorDetail.map(function(value:any, key:any){
-            return (
-              <div className="text-left space-y-11" key={"payor-detail-top-"+key}>
-                <Select
-                  className="my-4"
-                  name="isSelf"
+          {section8.payorDetail.map((data, key) => (
+            <div
+              className="text-left space-y-11"
+              key={"payor-detail-top-" + key}
+            >
+              <Select
+                className="my-4"
+                name="isSelf"
+                dataType="payorDetail"
+                datas={payorForClient}
+                value={data.isSelf ? data.isSelf : "-"}
+                handleChange={(event) => handlePayorDetail(event, key)}
+                label={`Payor For Client ${key + 1}`}
+              />
+            </div>
+          ))}
+        </RowDoubleGrid>
+
+        <RowDoubleGrid>
+          {section8.payorDetail.map((data, key) => {
+            return data.isSelf == 1 ? (
+              <div className="text-left space-y-11" key={"payor-detail-" + key}>
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="relationShip"
                   dataType="payorDetail"
-                  datas={payorForClient}
-                  value={value.isSelf}
+                  label={`Payor Relationship To Client : ${key + 1}`}
                   handleChange={(event) => handlePayorDetail(event, key)}
-                  label={`Payor For Client ${key+1}`}
+                  needValidation={true}
+                  logic={
+                    data.relationShip == "" || data.relationShip == null
+                      ? false
+                      : true
+                  }
+                  value={data.relationShip}
+                />
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="payorName"
+                  dataType="payorDetail"
+                  label={`Payor Name :`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                  needValidation={true}
+                  logic={
+                    data.payorName == "" || data.payorName == null
+                      ? false
+                      : true
+                  }
+                  value={data.payorName}
+                />
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="passportNo"
+                  dataType="payorDetail"
+                  label={`Payor NRIC / Passport Number :`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                  needValidation={true}
+                  logic={
+                    data.passportNo == "" || data.passportNo == null
+                      ? false
+                      : true
+                  }
+                  value={data.passportNo}
+                />
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="occupation"
+                  dataType="payorDetail"
+                  label={`Payor Occupation :`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                  needValidation={true}
+                  logic={
+                    data.occupation == "" || data.occupation == null
+                      ? false
+                      : true
+                  }
+                  value={data.occupation}
+                />
+                <Input
+                  className="mb-10"
+                  type="text"
+                  placeholder=""
+                  name="payorIncome"
+                  dataType="payorDetail"
+                  label={`Payor Annual Income Range (S$) :`}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                  needValidation={true}
+                  logic={
+                    data.payorIncome == 0 || data.payorIncome == null
+                      ? false
+                      : true
+                  }
+                  value={data.payorIncome}
                 />
               </div>
+            ) : (
+              ""
             );
           })}
         </RowDoubleGrid>
-        
-        <RowDoubleGrid>
-          {section8.payorDetail.map(function(value:any, key:any){ 
-              return (value.isSelf == 1) ? (
-                  <div className="text-left space-y-11" key={"payor-detail-"+key}>
-                    <Input
-                      className="mb-10"
-                      type="text"
-                      placeholder=""
-                      name="relationShip"
-                      dataType="payorDetail"
-                      label={`PAYOR RELATIONSHIP TO CLIENT : ${key+1}`}
-                      handleChange={(event) => handlePayorDetail(event, key)}
-                      needValidation={true}
-                      logic={(value.relationShip == "" || value.relationShip == null)  ? false : true}
-                      value={value.relationShip}
-                    />
-                    <Input
-                      className="mb-10"
-                      type="text"
-                      placeholder=""
-                      name="payorName"
-                      dataType="payorDetail"
-                      label={`PAYOR NAME :`}
-                      handleChange={(event) => handlePayorDetail(event, key)}
-                      needValidation={true}
-                      logic={(value.payorName == "" || value.payorName == null)  ? false : true}
-                      value={value.payorName}
-                    />
-                    <Input
-                      className="mb-10"
-                      type="text"
-                      placeholder=""
-                      name="passportNo"
-                      dataType="payorDetail"
-                      label={`PAYOR NRIC / PASSPORT NUMBER :`}
-                      handleChange={(event) => handlePayorDetail(event, key)}
-                      needValidation={true}
-                      logic={(value.passportNo == "" || value.passportNo == null)  ? false : true}
-                      value={value.passportNo}
-                    />
-                    <Input
-                      className="mb-10"
-                      type="text"
-                      placeholder=""
-                      name="occupation"
-                      dataType="payorDetail"
-                      label={`PAYOR OCCUPATION :`}
-                      handleChange={(event) => handlePayorDetail(event, key)}
-                      needValidation={true}
-                      logic={(value.occupation == "" || value.occupation == null)  ? false : true}
-                      value={value.occupation}
-                    />
-                    <Input
-                      className="mb-10"
-                      type="text"
-                      placeholder=""
-                      name="payorIncome"
-                      dataType="payorDetail"
-                      label={`PAYOR ANNUAL INCOME RANGE (S$) :`}
-                      handleChange={(event) => handlePayorDetail(event, key)}
-                      needValidation={true}
-                      logic={(value.payorIncome == "" || value.payorIncome == null)  ? false : true}
-                      value={value.payorIncome}
-                    />
-                  </div>
-              )
-            : ''
-          })}
-        </RowDoubleGrid>
       </SectionCardSingleGrid>
-      
+
       <SectionCardSingleGrid className="mx-8 2xl:mx-60" key={"part-2"}>
         <RowSingleGrid key={"row-1"}>
-          <HeadingSecondarySection key={"heading-1"}>Payor Budget</HeadingSecondarySection>
+          <HeadingSecondarySection key={"heading-1"}>
+            Payor Budget
+          </HeadingSecondarySection>
         </RowSingleGrid>
         <RowSixGrid key={"row-six"}>
           <div></div>
-          {payorDetails?.length && payorDetails.map((val, index) => (
-            <div key={"payor-budget-top"+val.id} className="flex items-center justify-center text-sm font-normal">
-            {val.name}
-          </div>
-          ))}
+          {payorDetails?.length &&
+            payorDetails.map((val, index) => (
+              <div
+                key={"payor-budget-top" + val.id}
+                className="flex items-center justify-center text-sm font-normal"
+              >
+                {val.name}
+              </div>
+            ))}
         </RowSixGrid>
-        {section8.payorBudget.map(function(value:any, key:any){
-          return (
-            <RowSixGrid key={"payor-budget-top-data"+key}>
-              <label className="text-sm font-bold" key={"client"+key}>Client {key+1}</label>
-              {value?.length && value.map((val: any, index: any) => (
-                <div key={"payor-budget-checkbox"+index} className="flex items-center justify-center">
-                <input type="checkbox" name="selection" onChange={(event) => checkboxPayorBudget(event, key, index)} checked={value.selection}  className='p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1' />
+        {section8.payorBudget.map((data, key) => (
+          <RowSixGrid key={"payor-budget-top-data" + key}>
+            <label className="text-sm font-bold" key={"client" + key}>
+              Client {key + 1}
+            </label>
+            {data?.length &&
+              data.map((val, index) => (
+                <div
+                  key={"payor-budget-checkbox" + index}
+                  className="flex items-center justify-center"
+                >
+                  <Checkbox
+                    name="selection"
+                    onChange={(event) => checkboxPayorBudget(event, key, index)}
+                  />
                 </div>
               ))}
-            </RowSixGrid>
-          );
-        })}
-            
+          </RowSixGrid>
+        ))}
       </SectionCardSingleGrid>
-        
-      {section8.payorBudget.map(function(value:any, key:any){
+
+      {section8.payorBudget.map((data, key) => {
         return (
-          <SectionCardSingleGrid className="mx-8 2xl:mx-60" key={"payor-"+key}>
-            <RowSingleGrid key={"reference"+key}>
+          <SectionCardSingleGrid
+            className="mx-8 border-b 2xl:mx-60 border-gray-soft-strong"
+            key={"payor-" + key}
+          >
+            <RowSingleGrid key={"reference" + key}>
               <h4 className="text-sm font-bold mb-9">
-                References From Previous Sections Client {key+1}
+                References From Previous Sections Client {key + 1}
               </h4>
             </RowSingleGrid>
-            <RowTripleGrid className="mb-16" key={"total-annual"+key}>
-              <div className="text-center space-y-11">
-                <div className="text-sm font-bold">Total Annual Income ($)</div>
+            <RowTripleGrid className="mb-16" key={"total-annual" + key}>
+              <div className="space-y-8 text-center">
+                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                  Total Annual Income ($)
+                </div>
                 <div className="text-sm font-normal">0</div>
               </div>
-              <div className="text-center space-y-11">
-                <div className="text-sm font-bold">Total Annual Expense ($)</div>
+              <div className="space-y-8 text-center">
+                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                  Total Annual Expense ($)
+                </div>
                 <div className="text-sm font-normal">0</div>
               </div>
-              <div className="text-center space-y-11">
-                <div className="text-sm font-bold">Annual Surplus / Shortfall ($)</div>
+              <div className="space-y-8 text-center">
+                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                  Annual Surplus / Shortfall ($)
+                </div>
                 <div className="text-sm font-normal">0</div>
               </div>
             </RowTripleGrid>
-            <RowTripleGrid key={"total-asset"+key}>
-              <div className="text-center space-y-11">
-                <div className="text-sm font-bold">Total Asset($)</div>
+            <RowTripleGrid key={"total-asset" + key}>
+              <div className="space-y-8 text-center">
+                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                  Total Asset($)
+                </div>
                 <div className="text-sm font-normal">0</div>
               </div>
-              <div className="text-center space-y-11">
-                <div className="text-sm font-bold">Total Liabilities($)</div>
+              <div className="space-y-8 text-center">
+                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                  Total Liabilities($)
+                </div>
                 <div className="text-sm font-normal">0</div>
               </div>
-              <div className="text-center space-y-11">
-                <div className="text-sm font-bold">Net Worth ($)</div>
+              <div className="space-y-8 text-center">
+                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                  Net Worth ($)
+                </div>
                 <div className="text-sm font-normal">0</div>
               </div>
             </RowTripleGrid>
 
             {/* Payor Details */}
-            <RowSingleGrid>
-              <RowSingleGrid>
-                <HeadingSecondarySection>Payor Details</HeadingSecondarySection>
-              </RowSingleGrid>
-            </RowSingleGrid>
-            <RowFourthGrid>
-              <div></div>
-              <div className="text-sm font-bold text-right">Annual ($)</div>
-              <div className="text-sm font-bold text-right">Single ($)</div>
-              <div className="text-sm font-bold text-right">Source of Fund</div>
-            </RowFourthGrid>
-            
-            {value?.length && value.map((val: any, index: any) => (
-              (val.selection === true) ? 
-              <RowFourthGrid key={"payor-detail-"+key+"-"+index} className="items-center">
-                <div key={`dataPayorDetail`+index}>
-                  <TextSmall className="text-gray-light">{dataPayorDetail(index)}</TextSmall>
-                </div>
-                <div>
-                  <Input
-                    className="my-4"
-                    type="text"
-                    formStyle="text-right"
-                    name="annual"
-                    value={val.annual}
-                    handleChange={(event) => checkboxPayorBudget(event, key, index)}
-                  />
-                </div>
-                <div>
-                  <Input
-                    className="my-4"
-                    type="text"
-                    formStyle="text-right"
-                    name="single"
-                    value={val.single}
-                    handleChange={(event) => checkboxPayorBudget(event, key, index)}
-                  />
-                </div>
-                <div>
-                  <div className="mb-2">
-                    <Checkbox lableStyle="text-sm font-normal" label="Past / Current Employment" name="sourceOfFund" onChange={(event) => checkboxPayorBudget(event, key, index)} isChecked={(val.sourceOfFund == 'Past / Current Employment')} value="Past / Current Employment"/>
+            {data.length > 0 ? (
+              <>
+                <RowSingleGrid>
+                  <RowSingleGrid>
+                    <HeadingSecondarySection>
+                      Payor Details
+                    </HeadingSecondarySection>
+                  </RowSingleGrid>
+                </RowSingleGrid>
+                <RowFourthGrid>
+                  <div></div>
+                  <div className="text-sm font-bold text-right">Annual ($)</div>
+                  <div className="text-sm font-bold text-right">Single ($)</div>
+                  <div className="text-sm font-bold text-right">
+                    Source of Fund
+                  </div>
+                </RowFourthGrid>
+              </>
+            ) : null}
+
+            {data?.length &&
+              data.map((val, index) =>
+                val.selection === true ? (
+                  <RowFourthGrid
+                    key={"payor-detail-" + key + "-" + index}
+                    className="items-center"
+                  >
+                    <div key={`dataPayorDetail` + index}>
+                      <TextSmall className="text-gray-light">
+                        {dataPayorDetail(index)}
+                      </TextSmall>
                     </div>
-                  <div className="mb-2">
-                    <Checkbox lableStyle="text-sm font-normal" label="Investment" name="sourceOfFund" onChange={(event) => checkboxPayorBudget(event, key, index)} isChecked={(val.sourceOfFund == 'Investment')} value="Investment"/>
+                    <div>
+                      <Input
+                        className="my-4"
+                        type="text"
+                        formStyle="text-right"
+                        name="annual"
+                        value={val.annual}
+                        handleChange={(event) =>
+                          checkboxPayorBudget(event, key, index)
+                        }
+                      />
                     </div>
-                  <div className="mb-2">
-                    <Checkbox lableStyle="text-sm font-normal" label="Inheritance" name="sourceOfFund" onChange={(event) => checkboxPayorBudget(event, key, index)} isChecked={(val.sourceOfFund == 'Inheritance')} value="Inheritance"/>
+                    <div>
+                      <Input
+                        className="my-4"
+                        type="text"
+                        formStyle="text-right"
+                        name="single"
+                        value={val.single}
+                        handleChange={(event) =>
+                          checkboxPayorBudget(event, key, index)
+                        }
+                      />
                     </div>
-                </div>
-              </RowFourthGrid>
-              : ''
-            ))}     
+                    <div>
+                      <div className="mb-2">
+                        <Checkbox
+                          lableStyle="text-sm font-normal"
+                          label="Past / Current Employment"
+                          name="sourceOfFund"
+                          onChange={(event) =>
+                            checkboxPayorBudget(event, key, index)
+                          }
+                          isChecked={
+                            val.sourceOfFund == "Past / Current Employment"
+                          }
+                          value="Past / Current Employment"
+                        />
+                      </div>
+                      <div className="mb-2">
+                        <Checkbox
+                          lableStyle="text-sm font-normal"
+                          label="Investment"
+                          name="sourceOfFund"
+                          onChange={(event) =>
+                            checkboxPayorBudget(event, key, index)
+                          }
+                          isChecked={val.sourceOfFund == "Investment"}
+                          value="Investment"
+                        />
+                      </div>
+                      <div className="mb-2">
+                        <Checkbox
+                          lableStyle="text-sm font-normal"
+                          label="Inheritance"
+                          name="sourceOfFund"
+                          onChange={(event) =>
+                            checkboxPayorBudget(event, key, index)
+                          }
+                          isChecked={val.sourceOfFund == "Inheritance"}
+                          value="Inheritance"
+                        />
+                      </div>
+                    </div>
+                  </RowFourthGrid>
+                ) : (
+                  ""
+                )
+              )}
           </SectionCardSingleGrid>
         );
       })}
@@ -327,69 +529,131 @@ const Affordability = (props: Props) => {
         Source of Wealth
       </HeadingSecondarySection>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <div className={(section8.sourceOfWealth.length > 1) ? `grid grid-cols-1 gap-8 mb-5 lg:grid-cols-2 sm:grid-cols-2 md:grid-cols-2` : `grid grid-cols-1 gap-8 mb-5`}>
-        {section8.sourceOfWealth.map(function(value:any, key:any){
-          return (
-            <div key={`sourceOfWealth`+key}>
-              <TextSmall>Client {key+1}</TextSmall><br></br>
-              <div className="flex items-center justify-start gap-4 text-sm font-normal text-gray-light">
-                <div className="flex items-center justify-start gap-2" key={`employment`+key}>
-                  <Checkbox label="Past / Current Employment" name="employment" onChange={(e) => handleSourceOfWealth(e, key)} isChecked={value.employment} value={value.employment}/>
+        <div
+          className={
+            section8.sourceOfWealth.length > 1
+              ? `grid grid-cols-1 gap-8 mb-5 lg:grid-cols-2 sm:grid-cols-2 md:grid-cols-2`
+              : `grid grid-cols-1 gap-8 mb-5`
+          }
+        >
+          {section8.sourceOfWealth.map((data, key) => {
+            return (
+              <div key={`sourceOfWealth` + key}>
+                <TextSmall>Client {key + 1}</TextSmall>
+                <br></br>
+                <div className="flex items-center justify-start gap-4 text-sm font-normal text-gray-light">
+                  <div
+                    className="flex items-center justify-start gap-2"
+                    key={`employment` + key}
+                  >
+                    <Checkbox
+                      label="Past / Current Employment"
+                      name="employment"
+                      onChange={(e) => handleSourceOfWealth(e, key)}
+                      isChecked={data.employment}
+                      value={data.employment}
+                    />
+                  </div>
+                  <div
+                    className="flex items-center justify-start gap-2"
+                    key={`investment` + key}
+                  >
+                    <Checkbox
+                      label="Investment"
+                      name="investment"
+                      onChange={(e) => handleSourceOfWealth(e, key)}
+                      isChecked={data.investment}
+                      value={data.investment}
+                    />
+                  </div>
+                  <div
+                    className="flex items-center justify-start gap-2"
+                    key={`inheritance` + key}
+                  >
+                    <Checkbox
+                      label="Inheritance"
+                      name="inheritance"
+                      onChange={(e) => handleSourceOfWealth(e, key)}
+                      isChecked={data.inheritance}
+                      value={data.inheritance}
+                    />
+                  </div>
+                  <div
+                    className="flex items-center justify-start gap-2"
+                    key={`other` + key}
+                  >
+                    <Checkbox
+                      label="Saving"
+                      name="other"
+                      onChange={(e) => handleSourceOfWealth(e, key)}
+                      isChecked={data.other}
+                      value={data.other}
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center justify-start gap-2" key={`investment`+key}>
-                  <Checkbox label="Investment" name="investment" onChange={(e) => handleSourceOfWealth(e, key)} isChecked={value.investment} value={value.investment}/>
-                </div>
-                <div className="flex items-center justify-start gap-2" key={`inheritance`+key}>
-                  <Checkbox label="Inheritance" name="inheritance" onChange={(e) => handleSourceOfWealth(e, key)} isChecked={value.inheritance} value={value.inheritance}/>
-                </div>
-                <div className="flex items-center justify-start gap-2" key={`other`+key}>
-                  <Checkbox label="Saving" name="other" onChange={(e) => handleSourceOfWealth(e, key)} isChecked={value.other} value={value.other}/>
+                <br />
+                <div>
+                  <TextSmall>If other please specify</TextSmall>
+                  <TextArea
+                    className="my-4"
+                    name="otherExplain"
+                    defaultValue={data.otherExplain}
+                    handleChange={(e) => handleSourceOfWealth(e, key)}
+                  />
+                  <small>
+                    To indicate source of wealth if transaction(s) is/are ≤
+                    $150,000
+                  </small>
                 </div>
               </div>
-              <br/>
-              <div >
-                <TextSmall>If other please specify</TextSmall>
-                <TextArea className="my-4" name="otherExplain" defaultValue={value.otherExplain} handleChange={(e) => handleSourceOfWealth(e, key)} />
-                <small>
-                  To indicate source of wealth if transaction(s) is/are ≤ $150,000
-                </small>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
         </div>
       </SectionCardSingleGrid>
-
-      
 
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
-        <div key={`sourceOfWealthIndex`} className={(section8.sourceOfWealth.length > 1) ? 'grid grid-cols-1 gap-8 mb-5 lg:grid-cols-2 sm:grid-cols-2 md:grid-cols-2' : 'grid grid-cols-1 gap-8 mb-5'}>
-        {section8.sourceOfWealth.map(function(value:any, key:any){
-          return (
-            <div className="" key={`SOW-1-`+key}>
-              <TextThin>
-                Is the budget set aside a substantial portion of The Payor’s assets
-                or surplus?
-              </TextThin>
-              <Select
-                className="my-4"
-                datas={fillInformation}                
-                dataType="assetOrSurplus"
-                value={value.answer}
-                name="answer"
-                handleChange={(event) => handleAssetOrSurplus(event, key)}
-              />
-              <small className="text-sm italic font-normal">
-                {`If the answer is "Yes", a potential risk of not being able to
+        <div
+          key={`sourceOfWealthIndex`}
+          className={
+            section8.sourceOfWealth.length > 1
+              ? "grid grid-cols-1 gap-8 mb-5 lg:grid-cols-2 sm:grid-cols-2 md:grid-cols-2"
+              : "grid grid-cols-1 gap-8 mb-5"
+          }
+        >
+          {section8.assetOrSurplus.map((data, key) => {
+            return (
+              <div className="" key={`SOW-1-` + key}>
+                <TextThin>
+                  Is the budget set aside a substantial portion of The Payor’s
+                  assets or surplus?
+                </TextThin>
+                <Select
+                  className="my-4"
+                  datas={fillInformation}
+                  dataType="assetOrSurplus"
+                  value={data.answer}
+                  name="answer"
+                  handleChange={(event) => handleAssetOrSurplus(event, key)}
+                />
+
+                {data.answer == 1 ? (
+                  <TextArea
+                    label="Reason"
+                    placeholder="Please provide reason for setting aside a substantial budget"
+                    defaultValue={data.reason}
+                  />
+                ) : null}
+
+                <small className="text-sm italic font-normal">
+                  {`If the answer is "Yes", a potential risk of not being able to
                 continue paying premiums in the future may occur. Budget is
                 considered substantial if it is more than 50% of assets or surplus`}
-              </small>
-            </div>
-          );
-        })}
+                </small>
+              </div>
+            );
+          })}
         </div>
       </SectionCardSingleGrid>
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
       {/* <SectionCardFooter>
         <ButtonGreenMedium>
           Continue <ArrowRightLineIcon size={20} />

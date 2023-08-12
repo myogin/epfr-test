@@ -1473,7 +1473,7 @@ const AnalysisRecommendation = (props: Props) => {
 
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
       <div id="section-header-9" className={`sticky top-0 z-10 ${scrollPosition === "okSec9" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
         <HeadingPrimarySection className={`mx-8 2xl:mx-60 ${scrollPosition === "okSec9" ? "text-gray-light text-xl font-bold mb-5 mt-5" : "text-2xl font-bold mb-10 mt-10"}`}>
           Section 9. Analysis & Recommendation{" "}
@@ -1803,7 +1803,7 @@ const AnalysisRecommendation = (props: Props) => {
               </thead>
               <tbody>
                 {getClients.map((resData: any, index: any) => (
-                    <tr>
+                    <tr key={"ssd"+index}>
                       <td className="px-2 py-5">Client{ index + 1 }</td>
                       <td className="px-2 py-5 text-center">{isNaN(dataAnnualPayorBudget[index][0] - dataTotalAnnualPremiumChoice[index][0]) ? 0 : dataAnnualPayorBudget[index][0] - dataTotalAnnualPremiumChoice[index][0]}</td>
                       <td className="px-2 py-5 text-center">{isNaN(dataSinglePayorBudget[index][0] - dataTotalSinglePremiumChoice[index][0]) ? 0 : dataSinglePayorBudget[index][0] - dataTotalSinglePremiumChoice[index][0]}</td>
@@ -2643,7 +2643,6 @@ const AnalysisRecommendation = (props: Props) => {
           {/* <TextArea label="Reason" defaultValue="Test reason" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
       {/* <SectionCardFooter>
         <ButtonGreenMedium onClick={() => saveData(10)}>
           Continue <ArrowRightLineIcon size={20} />

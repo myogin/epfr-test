@@ -95,7 +95,7 @@ const Verify: Page = () => {
               <div className="mb-10">
                 <div className="flex justify-between w-full gap-2">
                   <input
-                    className="w-12 rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md"
                     autoFocus
                     type="text"
                     value={codeNumber[0]}
@@ -110,7 +110,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md"
                     type="text"
                     value={codeNumber[1]}
                     onFocus={(e) => {
@@ -124,7 +124,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md"
                     type="text"
                     value={codeNumber[2]}
                     onFocus={(e) => {
@@ -138,7 +138,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md"
                     type="text"
                     value={codeNumber[3]}
                     onFocus={(e) => {
@@ -152,7 +152,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md"
                     type="text"
                     value={codeNumber[4]}
                     onFocus={(e) => {
@@ -166,7 +166,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md"
                     type="text"
                     value={codeNumber[5]}
                     onFocus={(e) => {

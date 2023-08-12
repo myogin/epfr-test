@@ -60,11 +60,15 @@ type Actions = {
     setProductRiderBenefitArr: (value: any, riderId: string) => any;
     setProductRiderRiskArr: (value: any, riderId: string) => any;
     setProductHospital: (value: any, name: string) => any;
+    resetRecommendationProduct: () => any;
 };
 
 const AnalysisRecommendationProduct = create(
   devtools<SectionNineRecommendation & Actions>((set, get) => ({
     ...initialState,
+    resetRecommendationProduct: () => {
+        set(initialState);
+      },
     setParent: (value: string, name: string, groupData: any) => set(
         produce((draft) => {
             draft.section9Recommend[name] = value;

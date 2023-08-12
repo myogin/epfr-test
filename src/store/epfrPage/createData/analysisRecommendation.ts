@@ -30,16 +30,20 @@ const initialState: SectionNine = {
 // Action
 type Actions = {
     setParent: (name: string, value: any) => any;
+    resetSectionNine: () => any;
 };
 
 const AnalysisRecommendation = create(
   devtools<SectionNine & Actions>((set, get) => ({
     ...initialState,
+    resetSectionNine: () => {
+        set(initialState);
+      },
     setParent: (name: string, value: any) => set(
         produce((draft) => {
             draft.section9[name] = value;
         })
-    )
+    ),
   }))
 
 );

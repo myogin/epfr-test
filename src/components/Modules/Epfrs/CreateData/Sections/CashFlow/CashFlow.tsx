@@ -173,7 +173,7 @@ const CashFlow = (props: Props) => {
   useEffect(() => {
     if (scrollPositionNext === "okSec4") {
       if (
-        (editableStatus === 0 && status === 1) ||
+        ((editableStatus === 0 || editableStatus === null) && status === 1) ||
         (editableStatus === 2 && status === 1)
       ) {
         console.log("can save now");
@@ -185,7 +185,7 @@ const CashFlow = (props: Props) => {
   }, [scrollPositionNext, editableStatus, status]);
 
   return (
-    <div id={props.id} className="min-h-screen">
+    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
       <div
         id="section-header-3"
         className={`sticky top-0 z-10 ${
@@ -443,7 +443,6 @@ const CashFlow = (props: Props) => {
       ) : (
         ""
       )}
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };

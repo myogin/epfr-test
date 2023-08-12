@@ -32,13 +32,15 @@ const Checkbox = (props: Props) => {
           ref={props.innerRef}
           className={`p-2 rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1 `}
         />
-        <div
-          className={`${props.lableStyle} ${
-            props.isDisabled && "text-gray-soft-strong"
-          }`}
-        >
-          {props.label}
-        </div>
+        {props.label ? (
+          <div
+            className={`${props.lableStyle} ${
+              props.isDisabled && "text-gray-soft-strong"
+            }`}
+          >
+            {props.label}
+          </div>
+        ) : null}
       </div>
       {props.needValidation && !props.logic ? (
         <div className="flex items-start">
