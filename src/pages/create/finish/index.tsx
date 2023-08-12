@@ -34,8 +34,11 @@ const EpfrCreateFinish: Page = () => {
 
   const fetchData = async () => {
     const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-    // const pfrId = section1?.state?.id;
-    const pfrId = 11966;
+    const pfrId = section1?.state?.id;
+    // const pfrId = 11966;
+    if (pfrId === 0) {
+      push("/");
+    }
 
     const res: any = await getPfrShow(pfrId);
     setSigners(res['signers']);
