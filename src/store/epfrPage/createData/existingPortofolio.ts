@@ -1254,7 +1254,7 @@ const existingPortofolio = create(
         patchLoan: (params: any) =>
           set(
             produce((draft) => {
-              const dataPatch = draft.summaryOfSRS.find(
+              const dataPatch = draft.summaryOfLoans.find(
                 (el: any) => el.id === params.id
               );
               dataPatch.client = params.client;

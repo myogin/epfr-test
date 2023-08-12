@@ -23,6 +23,7 @@ import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
 
 interface Props {
   id?: any;
@@ -40,6 +41,12 @@ const Affordability = (props: Props) => {
   let setAssetOrSurplus = useAffordability((state) => state.setAssetOrSurplus);
   let setGlobal = useAffordability((state) => state.setGlobal);
   let setInit = useAffordability((state) => state.setInit);
+
+  // section8 Temp and support data
+  let annualIncomeTemp = useAffordabilityTemp((state) => state.annualIncome);
+  let annualExpenseTemp = useAffordabilityTemp((state) => state.annualExpense);
+  let assetTemp = useAffordabilityTemp((state) => state.asset);
+  let loanTemp = useAffordabilityTemp((state) => state.loan);
 
   let editableStatus = useAffordability(
     (state) => state.section8.editableStatus
@@ -228,9 +235,11 @@ const Affordability = (props: Props) => {
                 name="isSelf"
                 dataType="payorDetail"
                 datas={payorForClient}
-                value={data.isSelf ? data.isSelf : "-"}
+                value={data.isSelf >=0 ? data.isSelf : "-"}
                 handleChange={(event) => handlePayorDetail(event, key)}
                 label={`Payor For Client ${key + 1}`}
+                needValidation={true}
+                logic={String(data.isSelf) === "" || String(data.isSelf) === "-" ? false : true}
               />
             </div>
           ))}
@@ -383,19 +392,19 @@ const Affordability = (props: Props) => {
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Total Annual Income ($)
                 </div>
-                <div className="text-sm font-normal">0</div>
+                <div className="text-sm font-normal">{annualIncomeTemp[key].ammount}</div>
               </div>
               <div className="space-y-8 text-center">
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Total Annual Expense ($)
                 </div>
-                <div className="text-sm font-normal">0</div>
+                <div className="text-sm font-normal">{annualExpenseTemp[key].ammount}</div>
               </div>
               <div className="space-y-8 text-center">
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Annual Surplus / Shortfall ($)
                 </div>
-                <div className="text-sm font-normal">0</div>
+                <div className="text-sm font-normal">{annualIncomeTemp[key].ammount - annualExpenseTemp[key].ammount}</div>
               </div>
             </RowTripleGrid>
             <RowTripleGrid key={"total-asset" + key}>
@@ -403,19 +412,19 @@ const Affordability = (props: Props) => {
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Total Asset($)
                 </div>
-                <div className="text-sm font-normal">0</div>
+                <div className="text-sm font-normal">{assetTemp[key].ammount}</div>
               </div>
               <div className="space-y-8 text-center">
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Total Liabilities($)
                 </div>
-                <div className="text-sm font-normal">0</div>
+                <div className="text-sm font-normal">{loanTemp[key].ammount}</div>
               </div>
               <div className="space-y-8 text-center">
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Net Worth ($)
                 </div>
-                <div className="text-sm font-normal">0</div>
+                <div className="text-sm font-normal">{assetTemp[key].ammount - loanTemp[key].ammount}</div>
               </div>
             </RowTripleGrid>
 
