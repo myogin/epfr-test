@@ -23,6 +23,8 @@ import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useRouter } from "next/router";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
+import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
 
 interface Props {
   id?: any;
@@ -31,6 +33,7 @@ interface Props {
 
 const ExistingPortofolio = (props: Props) => {
   let id = usePersonalInformation((state) => state.id);
+  let pfrLocal = usePfrData((state) => state.pfr);
   const router = useRouter();
 
   let editableStatus = useExistingPortofolio((state) => state.editableStatus);
@@ -49,16 +52,24 @@ const ExistingPortofolio = (props: Props) => {
   let summaryOfInsurance = useExistingPortofolio(
     (state) => state.summaryOfInsurance
   );
-  let summaryOfInsurance2 = useExistingPortofolio(
-    (state) => state.summaryOfInsurance2
-  );
+
   let summaryOfLoans = useExistingPortofolio((state) => state.summaryOfLoans);
   let summaryOfCPF = useExistingPortofolio((state) => state.summaryOfCPF);
   let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);
+
   let setToggle = useExistingPortofolio((state) => state.setToggle);
   let setGlobal = useExistingPortofolio((state) => state.setGlobal);
+  let fetchProperty = useExistingPortofolio((state) => state.fetchProperty);
+  let fetchInvestment = useExistingPortofolio((state) => state.fetchInvestment);
+  let fetchSaving = useExistingPortofolio((state) => state.fetchSaving);
+  let fetchCpf = useExistingPortofolio((state) => state.fetchCpf);
+  let fetchInsurance = useExistingPortofolio((state) => state.fetchInsurance);
+  let fetchInsurance2 = useExistingPortofolio((state) => state.fetchInsurance2);
+  let fetchLoan = useExistingPortofolio((state) => state.fetchLoan);
+  let fetchSrs = useExistingPortofolio((state) => state.fetchSrs);
 
   let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
+  let setAffordabilityTemp = useAffordabilityTemp((state) => state.setGlobal);
   let idSectionThree = useCashFlow((state) => state.id);
 
   const [saveLoading, setSaveLoading] = useState(false);
@@ -70,8 +81,8 @@ const ExistingPortofolio = (props: Props) => {
   const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
 
   const scrollPosition = useScrollPosition(2);
-  const scrollPositionBottomSection1 = useScrollPositionBottom(1);
-  const scrollPositionBottom = useScrollPositionBottom(2);
+  const scrollPositionNext = useScrollPosition(3);
+  const scrollPositionBottom = useScrollPositionBottom(1);
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -126,69 +137,57 @@ const ExistingPortofolio = (props: Props) => {
 
       console.log(getSection2);
 
-      setGlobal("editableStatus", getSection2.pfr.editableSection1);
-      setGlobal("status", getSection2.pfr.section1);
-
       // Fetch Client
       if (getSection2.summaryOfProperty.length > 0) {
         getSection2.summaryOfProperty.map((data: any, index: number) => {
-          // fetchClient(index, data);
+          fetchProperty(index, data);
         });
       }
 
       // Fetch accompaintment
       if (getSection2.summaryOfInvestment.length > 0) {
         getSection2.summaryOfInvestment.map((data: any, index: number) => {
-          // fetchAccompainment(index, data);
+          fetchInvestment(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfSaving.length > 0) {
         getSection2.summaryOfSaving.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchSaving(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfCPF.length > 0) {
         getSection2.summaryOfCPF.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
-        });
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfSaving.length > 0) {
-        getSection2.summaryOfSaving.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchCpf(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance.length > 0) {
         getSection2.summaryOfInsurance.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchInsurance(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance2.length > 0) {
         getSection2.summaryOfInsurance2.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchInsurance2(index, data);
         });
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfLoans.length > 0) {
-        getSection2.summaryOfLoans.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
-        });
+        fetchLoan(getSection2.summaryOfLoans);
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfSRS.length > 0) {
         getSection2.summaryOfSRS.map((data: any, index: number) => {
-          // fetchTrustedIndividuals(data);
+          fetchSrs(index, data);
         });
       }
 
@@ -199,21 +198,102 @@ const ExistingPortofolio = (props: Props) => {
     }
   };
 
+  // count assets and liabilities
+  useEffect(() => {
+    let asset = [0, 0];
+    let liability = [0, 0];
+
+    // property
+    summaryOfProperty.map((data1, index1) => {
+      if (Number(data1.client) === 0) {
+        asset[Number(data1.client)] += Number(data1.currentMarketValue);
+      } else {
+        asset[Number(data1.client)] += Number(data1.currentMarketValue);
+      }
+    });
+
+    // srs
+    summaryOfSRS.map((data2, index1) => {
+      if (Number(data2.client) === 0) {
+        asset[Number(data2.client)] += Number(data2.amount);
+      } else {
+        asset[Number(data2.client)] += Number(data2.amount);
+      }
+    });
+
+    // srs
+    summaryOfInvestment.map((data3, index1) => {
+      if (Number(data3.client) === 0) {
+        asset[Number(data3.client)] += Number(data3.currentvalue);
+      } else {
+        asset[Number(data3.client)] += Number(data3.currentvalue);
+      }
+    });
+
+    // saving
+    summaryOfSavings.map((data4, index1) => {
+      if (Number(data4.client) === 0) {
+        asset[Number(data4.client)] += Number(data4.savingAmount);
+      } else {
+        asset[Number(data4.client)] += Number(data4.savingAmount);
+      }
+    });
+
+    // cpf
+    summaryOfCPF.map((data5, index1) => {
+      
+      if (Number(data5.client) === 0) {
+        let sumCpf = Number(data5.ordinaryAccount) + Number(data5.specialAccount) + Number(data5.medisaveAccount) + Number(data5.retirementAccount)
+        asset[Number(data5.client)] += sumCpf;
+      } else {
+        let sumCpf = Number(data5.ordinaryAccount) + Number(data5.specialAccount) + Number(data5.medisaveAccount) + Number(data5.retirementAccount)
+        asset[Number(data5.client)] += sumCpf;
+      }
+    });
+
+    // Loan liabilities
+    summaryOfLoans.map((data6, index1) => {
+      if (Number(data6.client) === 0) {
+        liability[Number(data6.client)] += Number(data6.currentOutstandingLoan);
+      } else {
+        liability[Number(data6.client)] += Number(data6.currentOutstandingLoan);
+      }
+    });
+
+    summaryOfProperty.map((data7, index1) => {
+      if (Number(data7.client) === 0) {
+        liability[Number(data7.client)] += Number(data7.currentOutstanding);
+      } else {
+        liability[Number(data7.client)] += Number(data7.currentOutstanding);
+      }
+    });
+
+    setAffordabilityTemp("asset", 0, asset[0])
+    setAffordabilityTemp("asset", 1, asset[1])
+
+    setAffordabilityTemp("loan", 0, liability[0])
+    setAffordabilityTemp("loan", 1, liability[1])
+    
+  }, [summaryOfCPF, summaryOfSavings, summaryOfInvestment, summaryOfSRS, summaryOfProperty, summaryOfLoans]);
+
   // Get data when scroll from section 1
   useEffect(() => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
-      if (scrollPositionBottomSection1 === "Process1") {
-        console.log("Get data Section 2");
+      if (scrollPositionBottom === "Process1") {
+        setGlobal("editableStatus", pfrLocal.editableSection2);
+        setGlobal("id", router.query.id);
+        setGlobal("status", pfrLocal.section2);
+        getSectionData(router.query.id);
       }
     }
-  }, [scrollPositionBottomSection1, router.isReady, router.query.id]);
+  }, [scrollPositionBottom, router.isReady, router.query.id]);
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process2") {
+    if (scrollPositionNext === "okSec3") {
       if (
-        (editableStatus === 0 && status === 1) ||
+        ((editableStatus === 0 || editableStatus === null) && status === 1) ||
         (editableStatus === 2 && status === 1)
       ) {
         console.log("can save now");
@@ -222,10 +302,13 @@ const ExistingPortofolio = (props: Props) => {
         console.log("Your data not complete Section 2");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext, editableStatus, status]);
 
   return (
-    <div id={props.id}>
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-2"
         className={`sticky top-0 z-10 ${
@@ -255,9 +338,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
             <Toggle
               isChecked={summaryOfProperty[0].editting}
-              toggleName={
-                summaryOfProperty[0].editting ? "Review" : "Not Review"
-              }
               onChange={() =>
                 handleToggle(
                   "summaryOfProperty",
@@ -275,9 +355,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>
             <Toggle
               isChecked={summaryOfInvestment[0].editting}
-              toggleName={
-                summaryOfInvestment[0].editting ? "Review" : "Not Review"
-              }
               onChange={() =>
                 handleToggle(
                   "summaryOfInvestment",
@@ -294,9 +371,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.3 Summary of Saving(s)</h2>
             <Toggle
               isChecked={summaryOfSavings[0].editting}
-              toggleName={
-                summaryOfSavings[0].editting ? "Review" : "Not Review"
-              }
               onChange={() =>
                 handleToggle(
                   "summaryOfSavings",
@@ -313,7 +387,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.4 Summary of CPF</h2>
             <Toggle
               isChecked={summaryOfCPF[0].editting}
-              toggleName={summaryOfCPF[0].editting ? "Review" : "Not Review"}
               onChange={() =>
                 handleToggle("summaryOfCPF", 0, !summaryOfCPF[0].editting)
               }
@@ -326,9 +399,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.5 Summary of Insurance(s)</h2>
             <Toggle
               isChecked={summaryOfInsurance[0].editting}
-              toggleName={
-                summaryOfInsurance[0].editting ? "Review" : "Not Review"
-              }
               onChange={() =>
                 handleToggle(
                   "summaryOfInsurance",
@@ -347,7 +417,6 @@ const ExistingPortofolio = (props: Props) => {
             </h2>
             <Toggle
               isChecked={summaryOfSRS[0].editting}
-              toggleName={summaryOfSRS[0].editting ? "Review" : "Not Review"}
               onChange={() =>
                 handleToggle("summaryOfSRS", 0, !summaryOfSRS[0].editting)
               }
@@ -362,7 +431,6 @@ const ExistingPortofolio = (props: Props) => {
             </h2>
             <Toggle
               isChecked={summaryOfLoans[0].editting}
-              toggleName={summaryOfLoans[0].editting ? "Review" : "Not Review"}
               onChange={() =>
                 handleToggle("summaryOfLoans", 0, !summaryOfLoans[0].editting)
               }
@@ -446,7 +514,6 @@ const ExistingPortofolio = (props: Props) => {
       ) : (
         ""
       )}
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };

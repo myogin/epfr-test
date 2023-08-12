@@ -169,7 +169,7 @@ const BalanceSheet = (props: Props) => {
   }, [need, props.pfrType]);
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
       <div
         id="section-header-4"
         className={`sticky top-0 z-10 ${
@@ -329,7 +329,6 @@ const BalanceSheet = (props: Props) => {
       ) : (
         ""
       )}
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };

@@ -1,13 +1,19 @@
+import { useAffordability } from "@/store/epfrPage/createData/affordability";
+import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
+import { useAnalysisRecommendationGroup } from "@/store/epfrPage/createData/analysisRecommendationGroup";
+import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/analysisRecommendationProduct";
+import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
+import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
+import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
 import { Dialog, Transition } from "@headlessui/react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import File3FillIcon from "remixicon-react/File3FillIcon";
-import File3LineIcon from "remixicon-react/File3LineIcon";
 
 const PfrButtonModal = () => {
   const router = useRouter();
@@ -16,6 +22,14 @@ const PfrButtonModal = () => {
   let { resetSectionOne } = usePersonalInformation();
   let { resetSectionTwo } = useExistingPortofolio();
   let { resetSectionThree } = useCashFlow();
+  let { resetPfr } = usePfrData();
+  let { resetSectionFour } = useBalanceSheet();
+  let { resetSectionSix } = useCustomerKnowledgeAssesment();
+  let { resetSectionSeven } = usePrioritiesNeedAnalysis();
+  let { resetSectionEight } = useAffordability();
+  let { resetSectionNine } = useAnalysisRecommendation();
+  let { resetGroupRecommendation } = useAnalysisRecommendationGroup();
+  let { resetRecommendationProduct } = useAnalysisRecommendationProduct();
 
   const closeModal = () => {
     setShowModal(false);
@@ -26,9 +40,18 @@ const PfrButtonModal = () => {
   };
 
   const goToCreatePfr = (params: string) => {
+    console.log("masuk sini nggak ni button")
     resetSectionOne();
     resetSectionTwo();
     resetSectionThree();
+    resetPfr();
+    resetSectionFour();
+    resetSectionSix();
+    resetSectionSeven();
+    resetSectionEight();
+    resetSectionNine();
+    resetGroupRecommendation();
+    resetRecommendationProduct();
 
     router.push(`create/${params}`);
   };

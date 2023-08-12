@@ -23,6 +23,8 @@ import {productFindOne} from "@/services/productService";
 // import {getPfrSection} from "@/services/getPfrSection";
 
 import AddLineIcon from "remixicon-react/AddLineIcon";
+import EditLineIcon from "remixicon-react/EditLineIcon";
+import DeleteBin2LineIcon from "remixicon-react/DeleteBin2LineIcon";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
 
@@ -42,6 +44,14 @@ const GroupRecommendation = () => {
   const saveData = (params: any) => {
     showDetailData(params);
   };
+
+  const currencyFormat = (num:any) => {
+    if(num){
+      return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }else{
+      return 0.00
+    }
+  }
 
   // Code
   const [getPfrData, setPfrData] = useState<any>({});
@@ -66,54 +76,68 @@ const GroupRecommendation = () => {
   const [dataProductSinglePremium, setProductSinglePremium] = useState<any>([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
   
   const [dataSubPremium, setDataSubPremium] = useState<any>(
-    {"Monthly": 0,"Quarterly": 0,"Half-Yearly": 0,"Annually": 0,"SinglePayment": 0}
+    {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
   );
   const [dataResDataTotalPremiumArr, setResDataTotalPremiumArr] = useState<any>(
-    {"Monthly": 0,"Quarterly": 0,"Half-Yearly": 0,"Annually": 0,"SinglePayment": 0}
+    {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
   );
 
+  const [dataIcomes, setDataIcomes] = useState<any>([]);
+  const [dataExpense, setDataExpense] = useState<any>([]);
+
+  const premiumTypes: Array<any> = [
+    'CASH',
+    'CPFOA',
+    'CPFSA',
+    'CPF MEDISAVE',
+    'SRS'
+  ]
+  // END STATE
   useEffect(() => {
     const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
     
     // Find Pfr Section 8
-    const annualPayorBudget: Array<any> = [[]];
-    const singlePayorBudget: Array<any> = [[]];
-    const annualRemainBudget: Array<any> = [[]];
-    const singleRemainBudget: Array<any> = [[]];
+    const annualPayorBudget: Array<any> = [[],[]];
+    const singlePayorBudget: Array<any> = [[],[]];
+    const annualRemainBudget: Array<any> = [[],[]];
+    const singleRemainBudget: Array<any> = [[],[]];
     
-    console.log('pfrGroupId', pfrGroupId)
 
     // Find Group Recommend
     var resDataTotalPremiumArr: Array<any> = [];
-    
-    getRecommendationGroup(10653, pfrGroupId).then((data: any) => {
-      setRecommendationData(data)
+    // Find Pfr Section 9
+    pfrSection(9, pfrId).then((data: any) => {
+      setPfr9(data)
+      calcReaminingBudgets(data)
+    });
+
+    getRecommendationGroup(pfrId, pfrGroupId).then((data: any) => {
       if(data.products){
         if(data.products.length > 0){
           data.products.map((product: any) => {
               var dataName = getPremiumFrequencyName(product.premiumFrequency);
               if(dataName != undefined){
-                const dataSubPremium = {
+                setDataSubPremium({
+                  ...dataSubPremium,
                   [dataName]: product['premium']
-                }
+                })
 
-                if(resDataTotalPremiumArr[dataName]){
-                  resDataTotalPremiumArr[dataName] += product['premium'];
-                }
               
-                product['riders'].map((rider:any) => {
-                  console.log('rirder',rider['premium'])
-                  if(dataSubPremium[getPremiumFrequencyName(rider.premiumFrequency)]){
-                    dataSubPremium[getPremiumFrequencyName(rider.premiumFrequency)] += rider['premium'];
-                  }else{
-                    dataSubPremium[getPremiumFrequencyName(rider.premiumFrequency)] = rider['premium'];
-                  }
+                if(dataResDataTotalPremiumArr[dataName] >= 0){
+                  dataResDataTotalPremiumArr[dataName] += product['premium'];
+                }
 
-                  if(resDataTotalPremiumArr[getPremiumFrequencyName(rider.premiumFrequency)]){
-                    resDataTotalPremiumArr[getPremiumFrequencyName(rider.premiumFrequency)] += rider['premium'];
-                  }else{
-                    resDataTotalPremiumArr[getPremiumFrequencyName(rider.premiumFrequency)] = rider['premium'];
+
+                product.riders.map((rider:any) => {
+                  if(dataName != undefined){
+                    if(dataSubPremium[dataName] >= 0){
+                      dataSubPremium[dataName] += rider['premium'];
+                    }
+
+                    if(dataResDataTotalPremiumArr[dataName] >= 0){
+                      dataResDataTotalPremiumArr[dataName] += rider['premium'];
+                    }
                   }
                 });
 
@@ -126,15 +150,19 @@ const GroupRecommendation = () => {
           })
         }
       }
+      setRecommendationData(data)
+      getTotalPremium()
     });
 
+    
     // Find Pfr 
-    getPfr(10653).then((data:any) => {
+    getPfr(pfrId).then((data:any) => {
       setPfrData(data)
     })    
 
-    pfrSection(8, 10653).then((data: any) => {
+    pfrSection(8, pfrId).then((data: any) => {
       setPfr8(data)
+
       let payorBudgets = data['payorBudgets']
       payorBudgets.map((budget: any) => {
         if(budget['selection'] != 0) {
@@ -146,21 +174,23 @@ const GroupRecommendation = () => {
           singleRemainBudget[clientId][type] = budget['single']
         }
       })
+
+      const icome: Array<any> = [];
+      data.annualIncome.map((income:any) => {
+        income[Number(income['client'])-1] = Number(income['sum'])
+      })
+
+      const expenses: Array<any> = [];
+      data.annualExpense.map((expense:any) => {
+        expense[0] = Number(expense['sum1'])
+        expense[1] = Number(expense['sum2'])
+      })
     });
-    
     setAnnualPayorBudget(annualPayorBudget)
     setSinglePayorBudget(singlePayorBudget)
     setAnnualRemainBudget(annualRemainBudget)
     setSingleRemainBudget(singleRemainBudget)
 
-    // Find Pfr Section 9
-    pfrSection(9, 10653).then((data: any) => {
-      setPfr9(data)
-      calcReaminingBudgets(data)
-      // getTotalPremium()
-    });
-
-      console.log('getRecommendationData', getRecommendationData)
   }, [section9RecommendGroup]);
 
 
@@ -168,15 +198,14 @@ const GroupRecommendation = () => {
     switch(Number(premiumFrequency)) {
       case 0 : return "Monthly";
       case 1 : return "Quarterly";
-      case 2 : return "Half-Yearly";
+      case 2 : return "HalfYearly";
       case 3 : return "Annually";
-      case 4 : return "Single Payment";
+      case 4 : return "SinglePayment";
     }
   }
 
   // Calc
   const calcReaminingBudgets = (resDta: any) => {
-    console.log('resDta', resDta)
     var groupIdParam  = Number(localStorage.getItem("s9_dataGroup"))
     resDta.groups.map((group: any) => {
       let groupId = group['id']
@@ -189,7 +218,6 @@ const GroupRecommendation = () => {
       let CISProducts: any     = getProductsByFilteringGroupId(groupId, resDta.CISProduct)
       let customProducts: any  = getProductsByFilteringGroupId(groupId, resDta.customProduct)
 
-      // console.log('products', products)
 
       products.map((product: any) => {
           setProductAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]);
@@ -304,7 +332,6 @@ const GroupRecommendation = () => {
         }
 
         if(dataMaxAnnualPremium[clientId][premiumType] < dataProductAnnualPremium[clientId][premiumType]) {
-          console.log('if first', dataProductAnnualPremium[clientId][premiumType])
           dataMaxAnnualPremium[clientId][premiumType] += dataProductAnnualPremium[clientId][premiumType]
         }
 
@@ -397,12 +424,10 @@ const GroupRecommendation = () => {
           dataMaxSinglePremium[clientId][3] += dataProductSinglePremium[clientId][3]
         }
         if(dataMaxAnnualPremium[clientId][0] < dataProductAnnualPremium[clientId][0]) {
-          console.log('else first')
 
           dataMaxAnnualPremium[clientId][0] += dataProductAnnualPremium[clientId][0]
         }
         if(dataMaxAnnualPremium[clientId][3] < dataProductAnnualPremium[clientId][3]) {
-          console.log('else second')
 
           dataMaxAnnualPremium[clientId][3] += dataProductAnnualPremium[clientId][3]
         }
@@ -413,7 +438,6 @@ const GroupRecommendation = () => {
   }
 
   const getProductsByFilteringGroupId = (groupId: any, products:any) => {
-    console.log('productss', products)
     var result = [];
     if(products){
       if(products.length > 0){
@@ -471,38 +495,122 @@ const GroupRecommendation = () => {
     }
   }
 
-  // getTotalPremium() {
+  const getTotalPremium = () => {
 
-  //   this.products.forEach(product => {
-  //       product['riders'].forEach(rider => {
-  //         rider['categoryId']= -1
-  //         this.calcPremium(rider, true)
-  //       })
-  //       this.calcPremium(product)
-  //   })
+    if(getRecommendationData?.products){
+      getRecommendationData.products.map((product: any) => {
+        product['riders'].map((rider: any) => {
+          rider['categoryId']= -1
+          calcPremium(rider, true)
+        })
+        calcPremium(product, false)
+      })
+    }
 
-  //   this.ILPProducts.forEach(product => {
+    if(getRecommendationData?.ILP){
+      getRecommendationData.ILP.map((product: any) => {
+        product['riders'].map((rider: any) => {
+          rider['categoryId']= -1
+          calcPremium(rider, true)
+        })
+        calcPremium(product, false)
+      })
+    }
 
-  //     product['riders'].forEach(rider => {
-  //       rider['categoryId']= -1
-  //       this.calcPremium(rider, true)
-  //     })
-  //     this.calcPremium(product)
-  //   })
+    if(getRecommendationData?.custom){
+      getRecommendationData.custom.map((product: any) => {
+        product['riders'].map((rider: any) => {
+          rider['categoryId']= -1
+          calcPremium(rider, true)
+        })
+        calcPremium(product, false)
+      })
+    }
+    
 
-  //   this.customProducts.forEach(product => {
+    if(getRecommendationData?.CIS){
+      getRecommendationData.CIS.map((product: any) => {
+        calcPremiumForCIS(product)
+      })
+    }
+  }
 
-  //     product['riders'].forEach(rider => {
-  //       rider['categoryId']= -1
-  //       this.calcPremium(rider, true)
-  //     })
-  //     this.calcPremium(product)
-  //   })
+  const getPortfolioName = (portfolio:any) => {
+    if(portfolio == undefined) {
+      return "N/A"
+    } else {
+      return portfolio['name']
+    }
+  }
+  // checkCondition() {
+  //   this.msg = []
+  //   let issues = [[],[]]
+  //   let issuesForSingle = [[], []]
+  //   for(let i = 0 ; i < this.type ; i ++ ) {
+  //     for(let j =  0; j < 5 ; j ++ ) {
+  //       if(this.maxAnnualPremium[i][j] > this.annualRemainBudget[i][j] ) {
+  //           issues[i].push(this.premiumTypes[j])
+  //         }
+  //         if(this.maxSinglePremium[i][j] > this.singleRemainBudget[i][j] ) {
+  //           issuesForSingle[i].push(this.premiumTypes[j])
+  //         }
+  //     }
+  //     let  msg = ''
+  //     for(let k = 0 ; k < issues[i].length ; k ++ ) {
+  //       if(issues[i].length == 1) {
+  //         msg = `Client${i+1}'s annual ${issues[i][k]}`
+  //       } else {
+  //           if(k == 0) {
+  //             msg += `Client${i+1}'s annual ${issues[i][k]}`
+  //           } else {
+  //             msg += `, ${issues[i][k]}`
+  //           }
+  //       }
+  //     }
+  //     if(issues[i].length == 1) {
+  //       msg += ' is over from budget'
+  //       this.msg.push(
+  //         msg
+  //       )
+  //     } else if(issues[i].length > 1) {
+  //       msg += ' are over from budget'
+  //       this.msg.push(
+  //         msg
+  //       )
+  //     }
+  //     msg = ''
+  //     for(let k = 0 ; k < issuesForSingle[i].length ; k ++ ) {
+  //       if(issuesForSingle[i].length == 1) {
+  //         msg = `Client${i+1}'s single ${issuesForSingle[i][k]}`
+  //       } else {
+  //           if(k == 0) {
+  //             msg += `Client${i+1}'s single ${issuesForSingle[i][k]}`
+  //           } else {
+  //             msg += `, ${issuesForSingle[i][k]}`
+  //           }
+  //       }
+  //     }
+  //     if(issuesForSingle[i].length == 1) {
+  //       msg += ' is over from budget'
+  //       this.msg.push(
+  //         msg
+  //       )
+  //     } else if(issuesForSingle[i].length > 1) {
+  //       msg += ' are over from budget'
+  //       this.msg.push(
+  //         msg
+  //       )
+  //     }
 
-  //   this.CISProducts.forEach(product => {
-  //     this.calcPremiumForCIS(product)
-  //   })
 
+  //   }
+
+
+  //   if(this.msg.length == 0) {
+  //     return true
+  //   } else {
+  //     return false
+  //   }
   // }
 
   // sumTotal(){
@@ -590,7 +698,6 @@ const GroupRecommendation = () => {
   //       }
   //     }
   //   }
-  //   console.log('res',res)
   //   return res;
   // }
 
@@ -645,34 +752,65 @@ const GroupRecommendation = () => {
                           Client {index+1}
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${dataAnnualPayorBudget[index][0]}
+                          { currencyFormat(dataAnnualPayorBudget[index][0]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataSinglePayorBudget[index][0] }
+                          { currencyFormat(dataSinglePayorBudget[index][0]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataAnnualPayorBudget[index][1] }
+                          { currencyFormat(dataAnnualPayorBudget[index][1]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataSinglePayorBudget[index][1] }
+                          { currencyFormat(dataSinglePayorBudget[index][1]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataAnnualPayorBudget[index][2] }
+                          { currencyFormat(dataAnnualPayorBudget[index][2]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataSinglePayorBudget[index][2] }
+                          { currencyFormat(dataSinglePayorBudget[index][2]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataAnnualPayorBudget[index][3] }
+                          { currencyFormat(dataAnnualPayorBudget[index][3]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataSinglePayorBudget[index][3] }
+                          { currencyFormat(dataSinglePayorBudget[index][3]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataAnnualPayorBudget[index][4] }
+                          { currencyFormat(dataAnnualPayorBudget[index][4]) }
                         </td>
                         <td className="px-2 py-5 text-center">
-                          ${ dataSinglePayorBudget[index][4] }
+                          { currencyFormat(dataSinglePayorBudget[index][4]) }
+                        </td>
+                      </tr>
+                    </>
+                  ))
+                : ''}
+              </tbody>
+            </table>
+          </div>
+        </RowSingleGrid>
+
+        {/* Annual Surplus */}
+        <RowSingleGrid>
+          <TextSmall>Annual Surplus</TextSmall>
+          <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+            <table className="w-full text-sm divide-y rounded-md divide-gray-soft-strong">
+              <thead className="bg-white-bone">
+                <tr className="border-b border-gray-soft-strong">
+                  <th className="px-2 py-5">Clients</th>
+                  <th className="px-2 py-5">Annual Surplus</th>
+                </tr>
+              </thead>
+              <tbody>
+                {getPfrData?.clients ? 
+                  getPfrData.clients.map((data: any, index:any) => (
+                    <>
+                      <tr key={index}>
+                        <td className="px-2 py-5">
+                          Client {index+1}
+                        </td>
+                        <td className="px-2 py-5 text-center">
+                          {isNaN(getPfr8.annualIncome[index] - getPfr8.annualExpense[index]) ? 0 : getPfr8.annualIncome[index] - getPfr8.annualExpense[index]}
                         </td>
                       </tr>
                     </>
@@ -727,16 +865,16 @@ const GroupRecommendation = () => {
                     <>
                       <tr>
                         <td className="px-2 py-5">Client {index + 1}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][0] - dataMaxAnnualPremium[index][0]) ? 0 : dataAnnualRemainBudget[index][0] - dataMaxAnnualPremium[index][0]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][0] - dataMaxSinglePremium[index][0]) ? 0 : dataSingleRemainBudget[index][0] - dataMaxSinglePremium[index][0]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][1] - dataMaxAnnualPremium[index][1]) ? 0 : dataAnnualRemainBudget[index][1] - dataMaxAnnualPremium[index][1]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][1] - dataMaxSinglePremium[index][1]) ? 0 : dataSingleRemainBudget[index][1] - dataMaxSinglePremium[index][1]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][2] - dataMaxAnnualPremium[index][2]) ? 0 : dataAnnualRemainBudget[index][2] - dataMaxAnnualPremium[index][2]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][2] - dataMaxSinglePremium[index][2]) ? 0 : dataSingleRemainBudget[index][2] - dataMaxSinglePremium[index][2]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][3] - dataMaxAnnualPremium[index][3]) ? 0 : dataAnnualRemainBudget[index][3] - dataMaxAnnualPremium[index][3]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][3] - dataMaxSinglePremium[index][3]) ? 0 : dataSingleRemainBudget[index][3] - dataMaxSinglePremium[index][3]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][4] - dataMaxAnnualPremium[index][4]) ? 0 : dataAnnualRemainBudget[index][4] - dataMaxAnnualPremium[index][4]}</td>
-                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][4] - dataMaxSinglePremium[index][4]) ? 0 : dataSingleRemainBudget[index][4] - dataMaxSinglePremium[index][4]}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][0] - dataMaxAnnualPremium[index][0]) ? 0 : currencyFormat(dataAnnualRemainBudget[index][0] - dataMaxAnnualPremium[index][0])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][0] - dataMaxSinglePremium[index][0]) ? 0 : currencyFormat(dataSingleRemainBudget[index][0] - dataMaxSinglePremium[index][0])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][1] - dataMaxAnnualPremium[index][1]) ? 0 : currencyFormat(dataAnnualRemainBudget[index][1] - dataMaxAnnualPremium[index][1])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][1] - dataMaxSinglePremium[index][1]) ? 0 : currencyFormat(dataSingleRemainBudget[index][1] - dataMaxSinglePremium[index][1])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][2] - dataMaxAnnualPremium[index][2]) ? 0 : currencyFormat(dataAnnualRemainBudget[index][2] - dataMaxAnnualPremium[index][2])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][2] - dataMaxSinglePremium[index][2]) ? 0 : currencyFormat(dataSingleRemainBudget[index][2] - dataMaxSinglePremium[index][2])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][3] - dataMaxAnnualPremium[index][3]) ? 0 : currencyFormat(dataAnnualRemainBudget[index][3] - dataMaxAnnualPremium[index][3])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][3] - dataMaxSinglePremium[index][3]) ? 0 : currencyFormat(dataSingleRemainBudget[index][3] - dataMaxSinglePremium[index][3])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][4] - dataMaxAnnualPremium[index][4]) ? 0 : currencyFormat(dataAnnualRemainBudget[index][4] - dataMaxAnnualPremium[index][4])}</td>
+                        <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][4] - dataMaxSinglePremium[index][4]) ? 0 : currencyFormat(dataSingleRemainBudget[index][4] - dataMaxSinglePremium[index][4])}</td>
                       </tr>
                     </>
                   ))
@@ -757,34 +895,182 @@ const GroupRecommendation = () => {
         {/* Recommended Product */}
         <RowSingleGrid>
           <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong">
+            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong border border-gray-soft-strong border-slate-500">
               <thead className="bg-white-bone">
                 <tr>
-                  <th className="px-2 py-5">SN</th>
-                  <th className="px-2 py-5">Name of Plan(s) / Rider(s)</th>
-                  <th className="px-2 py-5">Policy Term</th>
-                  <th className="px-2 py-5">Sum Assured</th>
-                  <th className="px-2 py-5">Premium Type</th>
-                  <th className="px-2 py-5">Premium ($)</th>
-                  <th className="px-2 py-5">Premium Frequency</th>
-                  <th className="px-2 py-5">Name of Owner / Insured</th>
-                  <th className="px-2 py-5">Client Choice</th>
-                  <th className="px-2 py-5">Group Name</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">SN</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Product/Rider Name</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium Type</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium($)</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Premium Frequency</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Owner</th>
+                  <th className="border border-gray-soft-strong px-2 py-5">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-2 py-5">1</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                </tr>
+                {getRecommendationData?.products ? 
+                    getRecommendationData.products.map((dataProd: any, index:any) => (
+                        dataProd['product']['categoryId'] != 8 && dataProd['product']['categoryId'] != 5 ? 
+                        (
+                          <>
+                            <tr>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>{index + 1}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5"><b>{dataProd.name}</b></td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{premiumTypes[dataProd.premiumPaymentType]}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{currencyFormat(dataProd.premium)}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{getPremiumFrequencyName(dataProd.premiumFrequency)}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>Client {dataProd.nameOfOwner + 1}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                  <EditLineIcon key={index} />
+                                </ButtonBox>
+                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                  <DeleteBin2LineIcon key={index} />
+                                </ButtonBox>
+                                
+                              </td>
+                            </tr>
+
+                            {dataProd?.riders ? 
+                              dataProd.riders.map((dataRide: any) => (
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      <ul>
+                                        <li>{ dataRide["name"] }</li>
+                                      </ul>
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { premiumTypes[dataRide["premiumPaymentType"]] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ dataRide["premium"] }</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      {
+                                        getPremiumFrequencyName(dataRide["premiumFrequency"])
+                                      }
+                                    </td>
+                                  </tr>
+                                </>
+                              ))
+                            : ''}
+
+                            <tr>
+                              <td className="px-2 py-5 border border-gray-soft-strong" colSpan={3}><b>Subtotal Premium ($)</b></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">
+                                <span>
+                                <b>
+                                  {dataProd.premiumFrequency == 4 ? 
+                                    <>{dataProd["totPremium"]} {getPremiumFrequencyName(dataProd["premiumFrequency"])}</>
+                                  : ''}
+                                </b>
+                                </span>
+                                <span>
+                                <b>
+                                  {dataProd.premiumFrequency != 4 ? 
+                                    <>{dataProd["totPremium"]} Annually</>
+                                  : ''}
+                                </b>
+                                </span>
+                              </td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" colSpan={2}></td>
+                            </tr>  
+                          </>
+                          
+                        )
+                        : 
+                        (<>
+                          <tr>
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + dataProd['riders'].length}>
+                              { index + 1 }
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2}>
+                              <b>{ dataProd["name"] }</b>
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">CASH</td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {
+                                dataProd["premium_for_hospitalization"]["cash"]
+                              }
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2}>
+                              {
+                                getPremiumFrequencyName(
+                                  dataProd["premiumFrequency"]
+                                )
+                              }
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + dataProd['riders'].length}>
+                              Client { dataProd["nameOfOwner"] + 1 }
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + dataProd['riders'].length}>
+                                <ButtonBox className="text-green-deep" onClick={showDetail}>
+                                  <EditLineIcon key={index} />
+                                </ButtonBox>
+                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                  <DeleteBin2LineIcon key={index} />
+                                </ButtonBox>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-2 py-5 border border-gray-soft-strong">CPF MEDISAVE</td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {
+                                dataProd["premium_for_hospitalization"][
+                                  "cpfMedisave"
+                                ]
+                              }
+                            </td>
+                          </tr>
+
+                          {dataProd?.riders ? 
+                              dataProd.riders.map((dataRide: any) => (
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      <ul>
+                                        <li>{ dataRide["name"] }</li>
+                                      </ul>
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { premiumTypes[dataRide["premiumPaymentType"]] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{ dataRide["premium"] }</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      {
+                                        getPremiumFrequencyName(dataRide["premiumFrequency"])
+                                      }
+                                    </td>
+                                  </tr>
+                                </>
+                              ))
+                          : ''}
+
+                          <tr>
+                            <td className="px-2 py-5 border border-gray-soft-strong" colSpan={3}><b>Subtotal Premium ($)</b></td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              <span>
+                              <b>
+                                {dataProd.premiumFrequency == 4 ? 
+                                  <>{dataProd["totPremium"]} {getPremiumFrequencyName(dataProd["premiumFrequency"])}</>
+                                : ''}
+                              </b>
+                              </span>
+                              <span>
+                              <b>
+                                {dataProd.premiumFrequency != 4 ? 
+                                  <>{dataProd["totPremium"]} Annually</>
+                                : ''}
+                              </b>
+                              </span>
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong" colSpan={2}></td>
+                          </tr> 
+                        </>)        
+                      
+                    ))
+                : ''}
+
+              
               </tbody>
             </table>
           </div>
@@ -797,28 +1083,240 @@ const GroupRecommendation = () => {
               <thead className="bg-white-bone">
                 <tr>
                   <th className="px-2 py-5">SN</th>
-                  <th className="px-2 py-5">Name of Plan(s) / Rider(s)</th>
-                  <th className="px-2 py-5">Policy Term</th>
-                  <th className="px-2 py-5">Sum Assured</th>
+                  <th className="px-2 py-5">Name of ILP Plan</th>
                   <th className="px-2 py-5">Premium Type</th>
-                  <th className="px-2 py-5">Premium ($)</th>
-                  <th className="px-2 py-5">Premium Frequency</th>
-                  <th className="px-2 py-5">Name of Owner / Insured</th>
-                  <th className="px-2 py-5">Policy</th>
+                  <th className="px-2 py-5">Premium($)</th>
+                  <th className="px-2 py-5">Fund Name</th>
+                  <th className="px-2 py-5">Fund Amount (%)</th>
+                  <th className="px-2 py-5">Owner</th>
+                  <th className="px-2 py-5">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-2 py-5">1</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                  <td className="px-2 py-5">$0.0</td>
-                </tr>
+                {getRecommendationData?.ILP ? 
+                    getRecommendationData.ILP.map((dataProd: any, index:any) => (
+                        <>
+                            <tr>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                  {index + 1}
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
+                                {dataProd.name}
+                              </b></td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                  Client {dataProd.nameOfOwner + 1}
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                  <EditLineIcon key={index} />
+                                </ButtonBox>
+                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                  <DeleteBin2LineIcon key={index} />
+                                </ButtonBox>
+                                
+                              </td>
+                            </tr> 
+                            {dataProd?.fund ? 
+                              dataProd.fund.map((dataFund:any, indexFund:any) => (
+                                indexFund != 0 ?
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.name}</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.fund}</td>
+                                  </tr>
+                                </>
+                                : ''
+                              ))
+                            : ''}  
+
+                            {dataProd?.riders ? 
+                              dataProd.riders.map((dataRide:any, indexRide:any) => (
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { dataRide["name"] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { premiumTypes[dataRide["premiumPaymentType"]] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { dataRide["premium"] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                  </tr>
+                                </>
+                              ))
+                            : ''}
+                            
+                            <tr>
+                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}><b>Subtotal Premium ($)</b></td>
+                              <td className="border border-gray-soft-strong px-2 py-5">
+                                <b>{ currencyFormat(dataProd["premium"]) }</b>
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}></td>
+                            </tr>
+                        </>        
+                    ))
+                : ''}
+
+                {/* Data Custome Product */}
+                {getRecommendationData?.custom ? 
+                    getRecommendationData.custom.map((dataProd: any, index:any) => (
+                        <>
+                            <tr>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                  {index + 1}
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
+                                {dataProd.name}
+                              </b></td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                  Client {dataProd.nameOfOwner + 1}
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                  <EditLineIcon key={index} />
+                                </ButtonBox>
+                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                  <DeleteBin2LineIcon key={index} />
+                                </ButtonBox>
+                                
+                              </td>
+                            </tr> 
+                            {dataProd?.fund ? 
+                              dataProd.fund.map((dataFund:any, indexFund:any) => (
+                                indexFund != 0 ?
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.name}</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.fund}</td>
+                                  </tr>
+                                </>
+                                : ''
+                              ))
+                            : ''}  
+
+                            {dataProd?.riders ? 
+                              dataProd.riders.map((dataRide:any, indexRide:any) => (
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { dataRide["name"] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { premiumTypes[dataRide["premiumPaymentType"]] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { dataRide["premium"] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                  </tr>
+                                </>
+                              ))
+                            : ''}
+                            
+                            <tr>
+                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}><b>Subtotal Premium ($)</b></td>
+                              <td className="border border-gray-soft-strong px-2 py-5">
+                                <b>{ currencyFormat(dataProd["premium"]) }</b>
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}></td>
+                            </tr>
+                        </>        
+                    ))
+                : ''}
+
+                {/* Data CIS */}
+                {getRecommendationData?.CIS ? 
+                    getRecommendationData.CIS.map((dataProd: any, index:any) => (
+                        <>
+                            <tr>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                  {index + 1}
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
+                                {getPortfolioName(dataProd.cis)}
+                              </b></td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
+                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                  Client {dataProd.nameOfOwner + 1}
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                                ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                  <EditLineIcon key={index} />
+                                </ButtonBox>
+                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                  <DeleteBin2LineIcon key={index} />
+                                </ButtonBox>
+                                
+                              </td>
+                            </tr> 
+                            {dataProd?.fund ? 
+                              dataProd.fund.map((dataFund:any, indexFund:any) => (
+                                indexFund != 0 ?
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.name}</td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.fund}</td>
+                                  </tr>
+                                </>
+                                : ''
+                              ))
+                            : ''}  
+
+                            {dataProd?.riders ? 
+                              dataProd.riders.map((dataRide:any, indexRide:any) => (
+                                <>
+                                  <tr>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { dataRide["name"] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { premiumTypes[dataRide["premiumPaymentType"]] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                      { dataRide["premium"] }
+                                    </td>
+                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                  </tr>
+                                </>
+                              ))
+                            : ''}
+                            
+                            <tr>
+                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}><b>Subtotal Premium ($)</b></td>
+                              <td className="border border-gray-soft-strong px-2 py-5">
+                                <b>{ currencyFormat(dataProd["premium"]) }</b>
+                              </td>
+                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}></td>
+                            </tr>
+                        </>        
+                    ))
+                : ''}
+              
               </tbody>
             </table>
           </div>

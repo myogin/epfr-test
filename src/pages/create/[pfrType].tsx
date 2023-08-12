@@ -10,7 +10,7 @@ import { Page } from "@/pages/_app";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
 import CustomerKnowledgeAssesment from "@/components/Modules/Epfrs/CreateData/Sections/CustomerKnowledgeAssesment/CustomerKnowledgeAssesment";
 import Affordability from "@/components/Modules/Epfrs/CreateData/Sections/Affordability/Affordability";
@@ -119,7 +119,7 @@ const CreatePfrPage: Page = () => {
         </div>
         <div className="mb-7">
           {" "}
-          <Link href="/epfr" className="flex text-white">
+          <Link href="/overview" className="flex text-white">
             <ArrowLeftSLineIcon /> Back to EPFR list
           </Link>
         </div>
@@ -148,7 +148,7 @@ const CreatePfrPage: Page = () => {
         <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
           <GlobalCard className="min-h-screen pt-16">
             <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60 mb-14">
-              <Link href="/epfr" className="flex text-green-deep">
+              <Link href="/overview" className="flex text-green-deep">
                 <ArrowLeftSLineIcon /> Back
               </Link>
               <TitleMedium>New EPFR Documents</TitleMedium>

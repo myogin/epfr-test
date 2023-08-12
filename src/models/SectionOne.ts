@@ -44,7 +44,7 @@ export interface ClientformationSingpass {
   email: boolean;
   businessNature: boolean;
   residentialAddr: boolean;
-  cpfEmployer : boolean;
+  cpfEmployer: boolean;
   residencyOther: boolean;
   marital: boolean;
   employmentStatus: boolean;
@@ -69,7 +69,7 @@ export interface DependantInformation {
 }
 
 export interface Accompaniment {
-  clientType:number;
+  clientType: number;
   age: number;
   english_spoken: string;
   english_written: string;
@@ -107,4 +107,5 @@ export interface SectionOne {
   reviewDate?: string;
   status?: number;
   editableStatus?: number;
+  trustedActive: boolean;
 }

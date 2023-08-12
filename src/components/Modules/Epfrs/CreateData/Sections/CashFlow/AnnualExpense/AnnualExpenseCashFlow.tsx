@@ -7,9 +7,10 @@ import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparen
 import Input from "@/components/Forms/Input";
 import { checkCountDataOther, getLength } from "@/libs/helper";
 import { AnnualGeneral } from "@/models/SectionThree";
+import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { Dialog, Transition } from "@headlessui/react";
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
@@ -18,18 +19,16 @@ interface Props {
   pfrType?: number;
 }
 const AnnualExpenseCashFlow = (props: Props) => {
-
   let getPfrLength = getLength(props.pfrType);
 
-  let {
-    need,
-    annualExpense,
-    others,
-    setAnnualExpanse,
-    removeOthers,
-    setOthers,
-    patchOthers,
-  } = useCashFlow();
+  let setAnnualExpanse = useCashFlow((state) => state.setAnnualExpanse);
+  let setOthers = useCashFlow((state) => state.setOthers);
+  let patchOthers = useCashFlow((state) => state.patchOthers);
+  let removeOthers = useCashFlow((state) => state.removeOthers);
+
+  let need = useCashFlow((state) => state.need);
+  let annualExpense = useCashFlow((state) => state.annualExpense);
+  let others = useCashFlow((state) => state.others);
 
   let checkIndex = checkCountDataOther(others?.annualExpense);
 
@@ -46,6 +45,10 @@ const AnnualExpenseCashFlow = (props: Props) => {
   const [saveType, setSaveType] = useState("");
 
   const [newData, setNewData] = useState(initialState);
+
+  let [checkTotal, setCheckTotal] = useState([0, 0]);
+
+  let setAffodability = useAffordabilityTemp((state) => state.setGlobal);
 
   let [annualDataOther, setAnnualDataOther] = useState([0, 0]);
   let [monthlyDataOther, setMonthlyDataOther] = useState([0, 0]);
@@ -76,8 +79,8 @@ const AnnualExpenseCashFlow = (props: Props) => {
     initialState.values[0] = 0;
     initialState.values[1] = 0;
     setNewData(initialState);
-    setAnnualDataOther([0,0])
-    setMonthlyDataOther([0,0])
+    setAnnualDataOther([0, 0]);
+    setMonthlyDataOther([0, 0]);
     setShowModalOther(true);
   };
 
@@ -88,8 +91,8 @@ const AnnualExpenseCashFlow = (props: Props) => {
   const editOther = (params: number) => {
     setSaveType("update");
 
-    setAnnualDataOther([0,0])
-    setMonthlyDataOther([0,0])
+    setAnnualDataOther([0, 0]);
+    setMonthlyDataOther([0, 0]);
 
     const detailData = others?.annualExpense.filter((obj) => obj.id === params);
 
@@ -197,6 +200,34 @@ const AnnualExpenseCashFlow = (props: Props) => {
       setAnnualExpanse(name, indexdata, indexclient, value * 12);
     }
   };
+
+  // count total annual income
+  useEffect(() => {
+    if (annualExpense.length > 0) {
+      let totalOther = [0, 0];
+      let newArray: any[] = [];
+      getPfrLength.map((dataA, index) => {
+        if (others.annualExpense.length > 0) {
+          others.annualExpense.map((dataB, indexA) => {
+            totalOther[index] += Number(dataB.values[index]);
+          });
+        }
+
+        if (annualExpense.length > 0) {
+          annualExpense.map((dataB, indexA) => {
+            totalOther[index] += Number(dataB.values[index]);
+          });
+        }
+
+        newArray = [...checkTotal];
+        newArray[index] = totalOther[index];
+
+        setAffodability("annualExpense", index, totalOther[index])
+      });
+
+      setCheckTotal(newArray);
+    }
+  }, [annualExpense, others.annualExpense]);
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -643,10 +674,14 @@ const AnnualExpenseCashFlow = (props: Props) => {
                 need[index] ? (
                   <>
                     <div className="text-right">
-                      <span className="text-green-deep">0</span>
+                      <span className="text-green-deep">
+                        {checkTotal[index] / 12}
+                      </span>
                     </div>
                     <div className="text-right">
-                      <span className="text-green-deep">0</span>
+                      <span className="text-green-deep">
+                        {checkTotal[index]}
+                      </span>
                     </div>
                   </>
                 ) : (
