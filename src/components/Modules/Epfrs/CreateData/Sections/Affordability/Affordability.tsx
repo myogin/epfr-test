@@ -40,7 +40,7 @@ const Affordability = (props: Props) => {
   let setAssetOrSurplus = useAffordability((state) => state.setAssetOrSurplus);
   let setGlobal = useAffordability((state) => state.setGlobal);
   let setInit = useAffordability((state) => state.setInit);
-  
+
   let editableStatus = useAffordability(
     (state) => state.section8.editableStatus
   );
@@ -196,7 +196,10 @@ const Affordability = (props: Props) => {
   }, [scrollPositionNext, editableStatus, status]);
 
   return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-8"
         className={`sticky top-0 z-10 ${
@@ -225,7 +228,7 @@ const Affordability = (props: Props) => {
                 name="isSelf"
                 dataType="payorDetail"
                 datas={payorForClient}
-                value={data.isSelf}
+                value={data.isSelf ? data.isSelf : "-"}
                 handleChange={(event) => handlePayorDetail(event, key)}
                 label={`Payor For Client ${key + 1}`}
               />
@@ -243,7 +246,7 @@ const Affordability = (props: Props) => {
                   placeholder=""
                   name="relationShip"
                   dataType="payorDetail"
-                  label={`PAYOR RELATIONSHIP TO CLIENT : ${key + 1}`}
+                  label={`Payor Relationship To Client : ${key + 1}`}
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
@@ -259,7 +262,7 @@ const Affordability = (props: Props) => {
                   placeholder=""
                   name="payorName"
                   dataType="payorDetail"
-                  label={`PAYOR NAME :`}
+                  label={`Payor Name :`}
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
@@ -275,7 +278,7 @@ const Affordability = (props: Props) => {
                   placeholder=""
                   name="passportNo"
                   dataType="payorDetail"
-                  label={`PAYOR NRIC / PASSPORT NUMBER :`}
+                  label={`Payor NRIC / Passport Number :`}
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
@@ -291,7 +294,7 @@ const Affordability = (props: Props) => {
                   placeholder=""
                   name="occupation"
                   dataType="payorDetail"
-                  label={`PAYOR OCCUPATION :`}
+                  label={`Payor Occupation :`}
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={
@@ -307,7 +310,7 @@ const Affordability = (props: Props) => {
                   placeholder=""
                   name="payorIncome"
                   dataType="payorDetail"
-                  label={`PAYOR ANNUAL INCOME RANGE (S$) :`}
+                  label={`Payor Annual Income Range (S$) :`}
                   handleChange={(event) => handlePayorDetail(event, key)}
                   needValidation={true}
                   logic={

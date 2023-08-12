@@ -212,7 +212,7 @@ const ExistingPortofolio = (props: Props) => {
   useEffect(() => {
     if (scrollPositionNext === "okSec3") {
       if (
-        (editableStatus === 0 && status === 1) ||
+        ((editableStatus === 0 || editableStatus === null) && status === 1) ||
         (editableStatus === 2 && status === 1)
       ) {
         console.log("can save now");
@@ -254,9 +254,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.1 Summary of Property(ies)</h2>
             <Toggle
               isChecked={summaryOfProperty[0].editting}
-              toggleName={
-                summaryOfProperty[0].editting ? "Review" : "Not Review"
-              }
               onChange={() =>
                 handleToggle(
                   "summaryOfProperty",
@@ -274,9 +271,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.2 Summary of Investment(s)</h2>
             <Toggle
               isChecked={summaryOfInvestment[0].editting}
-              toggleName={
-                summaryOfInvestment[0].editting ? "Review" : "Not Review"
-              }
               onChange={() =>
                 handleToggle(
                   "summaryOfInvestment",
@@ -293,9 +287,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.3 Summary of Saving(s)</h2>
             <Toggle
               isChecked={summaryOfSavings[0].editting}
-              toggleName={
-                summaryOfSavings[0].editting ? "Review" : "Not Review"
-              }
               onChange={() =>
                 handleToggle(
                   "summaryOfSavings",
@@ -312,7 +303,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.4 Summary of CPF</h2>
             <Toggle
               isChecked={summaryOfCPF[0].editting}
-              toggleName={summaryOfCPF[0].editting ? "Review" : "Not Review"}
               onChange={() =>
                 handleToggle("summaryOfCPF", 0, !summaryOfCPF[0].editting)
               }
@@ -325,9 +315,6 @@ const ExistingPortofolio = (props: Props) => {
             <h2 className="text-xl font-bold">2.5 Summary of Insurance(s)</h2>
             <Toggle
               isChecked={summaryOfInsurance[0].editting}
-              toggleName={
-                summaryOfInsurance[0].editting ? "Review" : "Not Review"
-              }
               onChange={() =>
                 handleToggle(
                   "summaryOfInsurance",
@@ -346,7 +333,6 @@ const ExistingPortofolio = (props: Props) => {
             </h2>
             <Toggle
               isChecked={summaryOfSRS[0].editting}
-              toggleName={summaryOfSRS[0].editting ? "Review" : "Not Review"}
               onChange={() =>
                 handleToggle("summaryOfSRS", 0, !summaryOfSRS[0].editting)
               }
@@ -361,7 +347,6 @@ const ExistingPortofolio = (props: Props) => {
             </h2>
             <Toggle
               isChecked={summaryOfLoans[0].editting}
-              toggleName={summaryOfLoans[0].editting ? "Review" : "Not Review"}
               onChange={() =>
                 handleToggle("summaryOfLoans", 0, !summaryOfLoans[0].editting)
               }

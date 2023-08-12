@@ -6,11 +6,11 @@ import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import Toggle from "@/components/Forms/Toggle";
+import ToggleCustom from "@/components/Forms/ToggleCustom";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import React, { useState } from "react";
 
 const TrustedIndividual = () => {
-
   let { trustedIndividuals, setTrustedIndividuals } = usePersonalInformation();
 
   let languages: Array<any> = [
@@ -23,12 +23,11 @@ const TrustedIndividual = () => {
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
-    console.log("Masuk sini nggak")
+    console.log("Masuk sini nggak");
     setTrustedIndividuals(name, value);
   };
 
-  const handleCheckbox = (name : string, value : boolean) => {
-
+  const handleCheckbox = (name: string, value: boolean) => {
     setTrustedIndividuals(name, value);
   };
 
@@ -36,7 +35,7 @@ const TrustedIndividual = () => {
     <>
       <SectionCardDoubleGrid className="mx-8 2xl:mx-60">
         <div>
-          <Toggle
+          <ToggleCustom
             isChecked={trustedIndividuals.condition1}
             toggleName="Two of Following Profiles"
           />
@@ -58,7 +57,8 @@ const TrustedIndividual = () => {
             needValidation={true}
             logic={
               trustedIndividuals.nameOfTrustedIndividual === "" ||
-              trustedIndividuals.nameOfTrustedIndividual === "-"
+              trustedIndividuals.nameOfTrustedIndividual === "-" ||
+              trustedIndividuals.nameOfTrustedIndividual === null
                 ? false
                 : true
             }
@@ -74,7 +74,8 @@ const TrustedIndividual = () => {
             needValidation={true}
             logic={
               trustedIndividuals.passportNo === "" ||
-              trustedIndividuals.passportNo === "-"
+              trustedIndividuals.passportNo === "-" ||
+              trustedIndividuals.passportNo === null
                 ? false
                 : true
             }
@@ -89,7 +90,7 @@ const TrustedIndividual = () => {
           />
         </div>
         <div>
-          <Toggle
+          <ToggleCustom
             isChecked={trustedIndividuals.condition2}
             toggleName="The Following Profile"
           />
@@ -107,7 +108,8 @@ const TrustedIndividual = () => {
             needValidation={true}
             logic={
               trustedIndividuals.trustedEmail === "" ||
-              trustedIndividuals.trustedEmail === "-"
+              trustedIndividuals.trustedEmail === "-" ||
+              trustedIndividuals.trustedEmail === null
                 ? false
                 : true
             }
@@ -123,7 +125,8 @@ const TrustedIndividual = () => {
             needValidation={true}
             logic={
               trustedIndividuals.relationship === "" ||
-              trustedIndividuals.relationship === "-"
+              trustedIndividuals.relationship === "-" ||
+              trustedIndividuals.relationship === null
                 ? false
                 : true
             }
@@ -139,7 +142,8 @@ const TrustedIndividual = () => {
             name="contactNumber"
             logic={
               trustedIndividuals.contactNumber === "" ||
-              trustedIndividuals.contactNumber === "-"
+              trustedIndividuals.contactNumber === "-" ||
+              trustedIndividuals.contactNumber === null
                 ? false
                 : true
             }
@@ -154,7 +158,9 @@ const TrustedIndividual = () => {
           <Checkbox
             needValidation={true}
             name="declaration"
-            onChange={(event) => handleCheckbox(event.target.name, !trustedIndividuals.declaration)}
+            onChange={(event) =>
+              handleCheckbox(event.target.name, !trustedIndividuals.declaration)
+            }
             logic={trustedIndividuals.declaration}
             isChecked={trustedIndividuals.declaration}
             lableStyle="text-sm font-normal text-gray-light"

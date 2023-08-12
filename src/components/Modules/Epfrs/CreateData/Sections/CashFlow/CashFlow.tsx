@@ -173,7 +173,7 @@ const CashFlow = (props: Props) => {
   useEffect(() => {
     if (scrollPositionNext === "okSec4") {
       if (
-        (editableStatus === 0 && status === 1) ||
+        ((editableStatus === 0 || editableStatus === null) && status === 1) ||
         (editableStatus === 2 && status === 1)
       ) {
         console.log("can save now");
