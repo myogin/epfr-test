@@ -515,7 +515,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   }, [section7]);
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
       <div
         id="section-header-7"
         className={`sticky top-0 z-10 ${
@@ -685,7 +685,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         {(section7.answer.need.client[0][11] || section7.answer.need.client[1][11]) ? <OtherInsurance pfrType={props.pfrType}/> : ""}
       </>
 
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
+
       {/* <SectionCardFooter>
         <ButtonGreenMedium onClick={() => saveData(3)}>
           Continue <ArrowRightLineIcon size={20} />

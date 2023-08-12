@@ -572,7 +572,7 @@ const ClientsAcknowledgment = (props: Props) => {
   }, [scrollPositionBottom]);
 
   return (
-    <div id={props.id}>
+    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
       <div
         id="section-header-11"
         className={`sticky top-0 z-10 ${
@@ -1140,7 +1140,6 @@ const ClientsAcknowledgment = (props: Props) => {
         ""
       )}
 
-      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
       {/* <SectionCardFooter>
         <ButtonGreenMedium>
           Continue <ArrowRightLineIcon size={20} />
