@@ -7,6 +7,7 @@ import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparen
 import Input from "@/components/Forms/Input";
 import { checkCountDataOther, getLength } from "@/libs/helper";
 import { AnnualGeneral, AnnualIncome, Datas } from "@/models/SectionThree";
+import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
@@ -26,6 +27,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
   let setOthers = useCashFlow((state) => state.setOthers);
   let patchOthers = useCashFlow((state) => state.patchOthers);
   let removeOthers = useCashFlow((state) => state.removeOthers);
+
+  let setAffodability = useAffordabilityTemp((state) => state.setGlobal);
 
   let need = useCashFlow((state) => state.need);
   let data = useCashFlow((state) => state.data);
@@ -314,6 +317,8 @@ const AnnualIncomeCashFlow = (props: Props) => {
 
         newArray = [...checkTotal];
         newArray[index] = result;
+
+        setAffodability("annualIncome", index, result)
       });
 
       setCheckTotal(newArray);
