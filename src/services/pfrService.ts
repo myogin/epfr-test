@@ -40,6 +40,17 @@ export const getWholeContext = async (id: any) => {
   return res.data;
 };
 
+// Pfr Secction 9 Recommendation
+export const postSection9Recommendation = async (data: any) => {
+  return await http.post(`/pfr/save/recommend`, data, {
+    headers: authHeader(),
+  });
+};
+
+export const removeRecommendation = async (pfrId:any, id: any) => {
+  return await http.get(`/pfr/delete/recommend/${pfrId}/${id}`, { headers: authHeader() });
+};
+
 export const pfrSection = async (section: any, id: any) => {
   const headers = {
     Authorization:

@@ -8,6 +8,11 @@ import {getPfr} from "@/services/pfrService";
 import React, { useState, useEffect } from "react";
 
 
+// const checkData = () => {
+//     let s9_recommendId = localStorage.getItem("s9_recommendId")
+//     console.log('asdasdassd', s9_recommendId)
+// }
+
 const initialState: SectionNineRecommendation = {
     section9Recommend: {
         groupId: 0,
@@ -61,11 +66,14 @@ type Actions = {
     setProductRiderRiskArr: (value: any, riderId: string) => any;
     setProductHospital: (value: any, name: string) => any;
     resetRecommendationProduct: () => any;
+    editRecommendationProduct: (data:any) => any;
+    
 };
 
 const AnalysisRecommendationProduct = create(
   devtools<SectionNineRecommendation & Actions>((set, get) => ({
     ...initialState,
+    // checkData: checkData(),.
     resetRecommendationProduct: () => {
         set(initialState);
       },
@@ -120,7 +128,13 @@ const AnalysisRecommendationProduct = create(
         produce((draft) => {
             draft.section9Recommend.product.premiumForHospitalization[name] = value;
         })
-    )
+    ),
+    editRecommendationProduct: (data: any) => {
+        console.log('initialState', initialState)
+        // set(
+        //     "section9Recommend": data
+        // );
+      },
   }))
 
 );
