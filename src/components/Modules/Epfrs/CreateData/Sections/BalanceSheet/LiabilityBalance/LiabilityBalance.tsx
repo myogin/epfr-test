@@ -21,8 +21,14 @@ interface Props {
 }
 const LiabilityBalance = (props: Props) => {
   // zustand
-  const { others, addLiability, deleteLiability, totalCalc } =
-    useBalanceSheet();
+  const {
+    others,
+    addLiability,
+    updateLiability,
+    deleteLiability,
+    totalCalc,
+    initData,
+  } = useBalanceSheet();
   const [showModal, setShowModal] = useState(false);
   const [asset, setAsset] = useState<assetInterface>({
     key: "",
@@ -36,6 +42,7 @@ const LiabilityBalance = (props: Props) => {
       key: event.target.value,
     });
   };
+  const [saveType, setSaveType] = useState<any[]>([""]);
 
   const handleValue = (event: any, index: any) => {
     let newValue: any = [];
@@ -52,6 +59,15 @@ const LiabilityBalance = (props: Props) => {
   const openModal = () => {
     setAsset({ key: "", otherValue: [0, 0] });
     setShowModal(true);
+    setSaveType(["add", null]);
+  };
+
+  const openEditModal = (id: number) => {
+    console.log(others.liability[id]);
+
+    setAsset(others.liability[id]);
+    setShowModal(true);
+    setSaveType(["edit", id]);
   };
 
   const closeModal = () => {
@@ -69,6 +85,12 @@ const LiabilityBalance = (props: Props) => {
       return false;
     }
   };
+  const saveButton = () => {
+    saveType[0] === "add"
+      ? addLiability(asset)
+      : updateLiability(saveType[1], asset);
+    closeModal();
+  };
 
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
@@ -81,87 +103,93 @@ const LiabilityBalance = (props: Props) => {
             <div>
               <TextSmall className="text-gray-light">Housing</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <Fragment key={"asas"+index}>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.liabilities[index].housing)}
+                  </TextSmall>
+                </div>
+              </Fragment>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Vehicle</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <Fragment key={"asas"+index}>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.liabilities[index].vehicle)}
+                  </TextSmall>
+                </div>
+              </Fragment>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Renovation</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <Fragment key={"asas"+index}>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.liabilities[index].renovation)}
+                  </TextSmall>
+                </div>
+              </Fragment>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Credit Card</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <Fragment key={"asas"+index}>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.liabilities[index].creditCard)}
+                  </TextSmall>
+                </div>
+              </Fragment>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Personal Loan</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <Fragment key={"asas"+index}>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.liabilities[index].personalLoan)}
+                  </TextSmall>
+                </div>
+              </Fragment>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Overdraft</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <Fragment key={"asas"+index}>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.liabilities[index].overdraft)}
+                  </TextSmall>
+                </div>
+              </Fragment>
+            ))}
           </RowSingleJointGrid>
         </div>
       </RowDoubleGrid>
       <RowDoubleGrid>
         <div>
-          <TextSmall className="text-gray-light flex ">
+          <TextSmall className="flex text-gray-light ">
             Other(s)
-            <ButtonBox className="text-green-deep ml-2" onClick={openModal}>
+            <ButtonBox className="ml-2 text-green-deep" onClick={openModal}>
               <AddLineIcon size={14} />
             </ButtonBox>
           </TextSmall>
@@ -203,6 +231,7 @@ const LiabilityBalance = (props: Props) => {
                             type="text"
                             placeholder="Liability"
                             name="key"
+                            value={asset.key}
                             handleChange={handleKey}
                             needValidation={true}
                             logic={asset.key === "" ? false : true}
@@ -214,6 +243,7 @@ const LiabilityBalance = (props: Props) => {
                               type="text"
                               name="otherValue"
                               placeholder="Cost"
+                              value={asset.otherValue[index]}
                               handleChange={(input) =>
                                 handleValue(input, index)
                               }
@@ -225,12 +255,11 @@ const LiabilityBalance = (props: Props) => {
                       <div className="flex gap-4 mt-4">
                         <ButtonGreenMedium
                           onClick={() => {
-                            addLiability(asset);
-                            closeModal();
+                            saveButton();
                           }}
                           disabled={disableButton(asset)}
                         >
-                          Add
+                          Save
                         </ButtonGreenMedium>
                         <ButtonTransparentMedium onClick={closeModal}>
                           Cancel
@@ -248,10 +277,13 @@ const LiabilityBalance = (props: Props) => {
           {others.liability.map((assetsData: any, index) => (
             <Fragment key={index}>
               <RowSingleJointGrid pfrType={props.pfrType}>
-                <TextSmall className="text-gray-light flex justify-between">
+                <TextSmall className="flex justify-between text-gray-light">
                   {assetsData.key}
                   <div>
-                    <ButtonBox className="text-green-deep mr-1">
+                    <ButtonBox
+                      className="mr-1 text-green-deep"
+                      onClick={() => openEditModal(index)}
+                    >
                       <PencilLineIcon size={14} />
                     </ButtonBox>
                     <ButtonBox

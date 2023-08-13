@@ -3,27 +3,26 @@ import { devtools } from "zustand/middleware";
 import { produce } from "immer";
 import { SectionNine } from "@/models/SectionNine";
 
-import {getPfr, getRecommendationGroup, pfrSection, getWholeContext} from "@/services/pfrService";
-
-
 const initialState: SectionNine = {
     section9: {
-        pfrId: 0,
-        overView1: "",
-        overView2: "",
-        reasonForBenefit: "",
-        reasonForRisk: "",
-        reasonForDeviation: "",
         checkedData: [
             {
                 id: 0,
                 checked: 0
             }
         ],
+        pfrId: 0,
+        overView1: "",
+        overView2: "",
+        reasonForBenefit: "",
+        reasonForRisk: "",
+        reasonForDeviation: "",
+        
         issues: [],
         deviates: [],
         deviationChanged: false,
-        status: 1
+        status: 0,
+        editableStatus: 0
     }
 };
 

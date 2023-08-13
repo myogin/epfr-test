@@ -24,6 +24,7 @@ import { usePersonalInformation } from "@/store/epfrPage/createData/personalInfo
 import { useRouter } from "next/router";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
+import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
 
 interface Props {
   id?: any;
@@ -55,6 +56,7 @@ const ExistingPortofolio = (props: Props) => {
   let summaryOfLoans = useExistingPortofolio((state) => state.summaryOfLoans);
   let summaryOfCPF = useExistingPortofolio((state) => state.summaryOfCPF);
   let summaryOfSRS = useExistingPortofolio((state) => state.summaryOfSRS);
+
   let setToggle = useExistingPortofolio((state) => state.setToggle);
   let setGlobal = useExistingPortofolio((state) => state.setGlobal);
   let fetchProperty = useExistingPortofolio((state) => state.fetchProperty);
@@ -67,6 +69,7 @@ const ExistingPortofolio = (props: Props) => {
   let fetchSrs = useExistingPortofolio((state) => state.fetchSrs);
 
   let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
+  let setAffordabilityTemp = useAffordabilityTemp((state) => state.setGlobal);
   let idSectionThree = useCashFlow((state) => state.id);
 
   const [saveLoading, setSaveLoading] = useState(false);
@@ -195,6 +198,112 @@ const ExistingPortofolio = (props: Props) => {
     }
   };
 
+  // count assets and liabilities
+  useEffect(() => {
+    let asset = [0, 0];
+    let liability = [0, 0];
+
+    // property
+    summaryOfProperty.map((data1, index1) => {
+      if (Number(data1.client) === 0) {
+        asset[Number(data1.client)] += Number(data1.currentMarketValue);
+      } else {
+        asset[Number(data1.client)] += Number(data1.currentMarketValue);
+      }
+    });
+
+    // srs
+    let srs = [0, 0];
+    summaryOfSRS.map((data2, index1) => {
+      if (Number(data2.client) === 0) {
+        asset[Number(data2.client)] += Number(data2.amount);
+        srs[Number(data2.client)] += Number(data2.amount);
+      } else {
+        srs[Number(data2.client)] += Number(data2.amount);
+        asset[Number(data2.client)] += Number(data2.amount);
+      }
+    });
+
+    setAffordabilityTemp("summaryOfSRS", 0, srs[0])
+    setAffordabilityTemp("summaryOfSRS", 1, srs[1])
+    // srs
+    summaryOfInvestment.map((data3, index1) => {
+      if (Number(data3.client) === 0) {
+        asset[Number(data3.client)] += Number(data3.currentvalue);
+      } else {
+        asset[Number(data3.client)] += Number(data3.currentvalue);
+      }
+    });
+
+    // saving
+    let saving = [0, 0];
+    summaryOfSavings.map((data4, index1) => {
+      if (Number(data4.client) === 0) {
+        asset[Number(data4.client)] += Number(data4.savingAmount);
+        saving[Number(data4.client)] += Number(data4.savingAmount);
+      } else {
+        asset[Number(data4.client)] += Number(data4.savingAmount);
+        saving[Number(data4.client)] += Number(data4.savingAmount);
+      }
+    });
+
+    setAffordabilityTemp("summaryOfSaving", 0, saving[0])
+    setAffordabilityTemp("summaryOfSaving", 1, saving[1])
+
+    // cpf
+    let cpfOa = [0, 0];
+    let cpfSa = [0, 0];
+    let cpfMedisave = [0, 0];
+    summaryOfCPF.map((data5, index1) => {
+      
+      if (Number(data5.client) === 0) {
+        
+        let sumCpf = Number(data5.ordinaryAccount) + Number(data5.specialAccount) + Number(data5.medisaveAccount) + Number(data5.retirementAccount)
+        asset[Number(data5.client)] += sumCpf;
+        cpfOa[Number(data5.client)] += Number(data5.ordinaryAccount);
+        cpfSa[Number(data5.client)] += Number(data5.specialAccount);
+        cpfMedisave[Number(data5.client)] += Number(data5.medisaveAccount);
+      } else {
+        let sumCpf = Number(data5.ordinaryAccount) + Number(data5.specialAccount) + Number(data5.medisaveAccount) + Number(data5.retirementAccount)
+        asset[Number(data5.client)] += sumCpf;
+        cpfOa[Number(data5.client)] += Number(data5.ordinaryAccount);
+        cpfSa[Number(data5.client)] += Number(data5.specialAccount);
+        cpfMedisave[Number(data5.client)] += Number(data5.medisaveAccount);
+      }
+    });
+    setAffordabilityTemp("summaryOfCpfOa", 0, cpfOa[0])
+    setAffordabilityTemp("summaryOfCpfOa", 1, cpfOa[1])
+
+    setAffordabilityTemp("summaryOfCpfSa", 0, cpfSa[0])
+    setAffordabilityTemp("summaryOfCpfSa", 1, cpfSa[1])
+
+    setAffordabilityTemp("summaryOfCpfMedisave", 0, cpfMedisave[0])
+    setAffordabilityTemp("summaryOfCpfMedisave", 1, cpfMedisave[1])
+    // Loan liabilities
+    summaryOfLoans.map((data6, index1) => {
+      if (Number(data6.client) === 0) {
+        liability[Number(data6.client)] += Number(data6.currentOutstandingLoan);
+      } else {
+        liability[Number(data6.client)] += Number(data6.currentOutstandingLoan);
+      }
+    });
+
+    summaryOfProperty.map((data7, index1) => {
+      if (Number(data7.client) === 0) {
+        liability[Number(data7.client)] += Number(data7.currentOutstanding);
+      } else {
+        liability[Number(data7.client)] += Number(data7.currentOutstanding);
+      }
+    });
+
+    setAffordabilityTemp("asset", 0, asset[0])
+    setAffordabilityTemp("asset", 1, asset[1])
+
+    setAffordabilityTemp("loan", 0, liability[0])
+    setAffordabilityTemp("loan", 1, liability[1])
+    
+  }, [summaryOfCPF, summaryOfSavings, summaryOfInvestment, summaryOfSRS, summaryOfProperty, summaryOfLoans]);
+
   // Get data when scroll from section 1
   useEffect(() => {
     if (!router.isReady) return;
@@ -224,7 +333,10 @@ const ExistingPortofolio = (props: Props) => {
   }, [scrollPositionNext, editableStatus, status]);
 
   return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-2"
         className={`sticky top-0 z-10 ${

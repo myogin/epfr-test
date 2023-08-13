@@ -208,8 +208,11 @@ const existingPortofolio = create(
                   params.monthlyLoanRepaymentCPF;
                 dataReplace.currentMarketValue = params.currentMarketValue;
                 dataReplace.clientPfr = params.clientPfr;
+
+                draft.declineToReview[0] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
+                params['editting'] = params.client !== "" ? true : false
                 draft.summaryOfProperty.push(params);
               }
 
@@ -352,8 +355,11 @@ const existingPortofolio = create(
                 dataReplace.investmentAmount = params.investmentAmount;
                 dataReplace.currentvalue = params.currentvalue;
                 dataReplace.sourceOfInvestment = params.sourceOfInvestment;
+
+                draft.declineToReview[1] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
+                params['editting'] = params.client !== "" ? true : false
                 draft.summaryOfInvestment.push(params);
               }
 
@@ -486,8 +492,11 @@ const existingPortofolio = create(
                 dataReplace.bank = params.bank;
                 dataReplace.yearDeposit = params.yearDeposit;
                 dataReplace.savingAmount = params.savingAmount;
+
+                draft.declineToReview[2] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
+                params['editting'] = params.client !== "" ? true : false
                 draft.summaryOfSavings.push(params);
               }
 
@@ -611,8 +620,11 @@ const existingPortofolio = create(
                 dataReplace.medisaveAccount = params.medisaveAccount;
                 dataReplace.retirementAccount = params.retirementAccount;
                 dataReplace.clientPfr = params.clientPfr;
+
+                draft.declineToReview[3] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
+                params['editting'] = params.client !== "" ? true : false
                 draft.summaryOfCPF.push(params);
               }
 
@@ -750,8 +762,11 @@ const existingPortofolio = create(
                 dataReplace.cash = params.cash;
                 dataReplace.medisave = params.medisave;
                 dataReplace.sourceOfFund = params.sourceOfFund;
+
+                draft.declineToReview[4] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
+                params['editting'] = params.client !== "" ? true : false
                 draft.summaryOfInsurance.push(params);
               }
 
@@ -921,8 +936,11 @@ const existingPortofolio = create(
                 dataReplace.medisave = params.medisave;
                 dataReplace.frequency = params.frequency;
                 dataReplace.sourceOfFund = params.sourceOfFund;
+
+                draft.declineToReview[4] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
+                params['editting'] = params.client !== "" ? true : false
                 draft.summaryOfInsurance2.push(params);
               }
 
@@ -1064,8 +1082,11 @@ const existingPortofolio = create(
                 dataReplace.client = params.client;
                 dataReplace.editting = params.client !== "" ? true : false;
                 dataReplace.amount = params.amount;
+
+                draft.declineToReview[5] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
+                params['editting'] = params.client !== "" ? true : false
                 draft.summaryOfSRS.push(params);
               }
 
@@ -1190,8 +1211,11 @@ const existingPortofolio = create(
                     dataReplace.monthlyLoanRepayment =
                       param.monthlyLoanRepayment;
                     dataReplace.clientPfr = param.clientPfr;
+
+                    draft.declineToReview[6] = param.client !== "" ? 0 : 1;
                   } else {
                     param["id"] = ++checkLengthLoan;
+                    param['editting'] = param.client !== "" ? true : false
                     draft.summaryOfLoans.push(param);
                   }
 
@@ -1254,7 +1278,7 @@ const existingPortofolio = create(
         patchLoan: (params: any) =>
           set(
             produce((draft) => {
-              const dataPatch = draft.summaryOfSRS.find(
+              const dataPatch = draft.summaryOfLoans.find(
                 (el: any) => el.id === params.id
               );
               dataPatch.client = params.client;

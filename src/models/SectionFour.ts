@@ -6,6 +6,7 @@ export interface SectionFour {
   issues: any[];
   status: number;
   totalCalc?: totalCalc;
+  initData?: any;
   editableStatus?: number;
 }
 

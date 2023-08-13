@@ -52,8 +52,8 @@ const SavingPortofolio = () => {
   let buttonSave = checkButtonActive(newData);
 
   let deposits: Array<any> = [
-    { id: "0", name: "Savings Account" },
-    { id: "1", name: "Fixed Deposit" },
+    { id: 0, name: "Savings Account" },
+    { id: 1, name: "Fixed Deposit" },
   ];
 
   const saveData = () => {
@@ -93,7 +93,7 @@ const SavingPortofolio = () => {
     removeSaving(params);
     setShowModalRemove(false);
   };
-
+  
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <div className="flex flex-col w-full">
@@ -184,18 +184,20 @@ const SavingPortofolio = () => {
                                 : true
                             }
                           />
-                          <Input
-                            className="my-4"
-                            label="Year Deposite"
-                            type="text"
-                            value={newData.yearDeposit}
-                            handleChange={(event) =>
-                              setNewData({
-                                ...newData,
-                                yearDeposit: Number(event.target.value),
-                              })
-                            }
-                          />
+                          {newData.typeOfDeposit === 1 ? (
+                            <Input
+                              className="my-4"
+                              label="Year Deposite"
+                              type="text"
+                              value={newData.yearDeposit}
+                              handleChange={(event) =>
+                                setNewData({
+                                  ...newData,
+                                  yearDeposit: Number(event.target.value),
+                                })
+                              }
+                            />
+                          ) : null}
                         </div>
                         <div>
                           <Input
@@ -332,7 +334,11 @@ const SavingPortofolio = () => {
                   <tr key={index}>
                     <td className="px-2 py-5">{++index}</td>
                     <td className="px-2 py-5">{clientName(data.client)}</td>
-                    <td className="px-2 py-5">{data.typeOfDeposit >= 0 ? deposits[Number(data.typeOfDeposit)].name : ""}</td>
+                    <td className="px-2 py-5">
+                      {data.typeOfDeposit >= 0
+                        ? deposits[Number(data.typeOfDeposit)].name
+                        : ""}
+                    </td>
                     <td className="px-2 py-5">{data.bank}</td>
                     <td className="px-2 py-5">{data.savingAmount}</td>
                     <td className="w-1/12 px-2 py-5">
