@@ -247,8 +247,8 @@ const ExistingPortofolio = (props: Props) => {
       }
     });
 
-    setAffordabilityTemp("summaryOfCpfSaving", 0, saving[0])
-    setAffordabilityTemp("summaryOfCpfSaving", 1, saving[1])
+    setAffordabilityTemp("summaryOfSaving", 0, saving[0])
+    setAffordabilityTemp("summaryOfSaving", 1, saving[1])
 
     // cpf
     let cpfOa = [0, 0];

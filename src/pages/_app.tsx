@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: Props) {
   if (Component.getLayout) {
     return getLayout(
       <SessionProvider session={pageProps.session}>
-        <NextNProgress />
+        <NextNProgress options={{ showSpinner: false }} />
         <Component {...pageProps} />
       </SessionProvider>
     );
