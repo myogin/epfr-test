@@ -2,7 +2,7 @@ export interface SectionFive {
   id: number;
   need: number[];
   reason: any[];
-  answers: Array<Array<number>>;
+  answers: any[];
   riskCapacity: number[];
   riskAttitude: number[];
   issues: any[];
