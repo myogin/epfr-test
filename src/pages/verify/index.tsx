@@ -36,7 +36,11 @@ const Verify: Page = () => {
         error("Code error. Check your code or re-send please");
       } else {
         const session = await getSession();
-        setLogin(session?.user?.token, session?.user?.id);
+        setLogin(
+          session?.user?.token,
+          session?.user?.id,
+          session?.user?.fullName
+        );
         deleteEmail();
         push("/overview");
       }
