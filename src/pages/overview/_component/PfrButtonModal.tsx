@@ -40,7 +40,6 @@ const PfrButtonModal = () => {
   };
 
   const goToCreatePfr = (params: string) => {
-    console.log("masuk sini nggak ni button")
     resetSectionOne();
     resetSectionTwo();
     resetSectionThree();
