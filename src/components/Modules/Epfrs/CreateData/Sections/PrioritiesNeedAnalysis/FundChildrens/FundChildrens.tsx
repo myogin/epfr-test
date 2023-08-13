@@ -196,7 +196,7 @@ const FundChildrens =(props : Props) => {
                     className="mb-10"
                     name="nameOfChild"
                     value={section7.answer.childFund[i].nameOfChild}
-                    datas={childrenName}
+                    datas={section7.dependants}
                     handleChange={(event) => setDataClient(event, i)}
                   />
                 </td>

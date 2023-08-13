@@ -26,7 +26,7 @@ interface Props {
 
 const ClientsAcknowledgment = (props: Props) => {
   const scrollPosition = useScrollPosition(11);
-  const scrollPositionBottom = useScrollPositionBottom(11);
+  const scrollPositionNext = useScrollPosition(12);
   const scrollPositionBottomSection10 = useScrollPositionBottom(10);
   const [pfrId, setPfrId] = useState(0);
   const [editable, setEditable] = useState(0);
@@ -567,7 +567,7 @@ const ClientsAcknowledgment = (props: Props) => {
   };
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process11") {
+    if (scrollPositionNext === "Process12") {
       if (
         (editable === 0 && sectionElevenData.status === 1) ||
         (editable === 2 && sectionElevenData.status === 1)
@@ -579,7 +579,7 @@ const ClientsAcknowledgment = (props: Props) => {
         console.log("Your cannot save data");
       }
     }
-  }, [scrollPositionBottom]);
+  }, [scrollPositionNext]);
 
   return (
     <div

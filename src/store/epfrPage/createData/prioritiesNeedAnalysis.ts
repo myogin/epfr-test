@@ -44,6 +44,7 @@ const getStatus = (draft: SectionSeven) => {
 const initialState: SectionSeven = {
   section7: {
     pfrId: 0,
+    dependants: [],
     typeClient: 1,
     totalDependant: 0,
     status: 0,
@@ -622,6 +623,11 @@ type Actions = {
   addIssue: (value: any) => any;
   resetIssue: () => any;
   setGlobal: (name: string, value: any) => any;
+  fetchDefaultCheck: (data: any) => any;
+  fetchMaternityOther: (data: any) => any;
+  fetchClientData: (data: any, i: number) => any;
+  fetchDependantData: (data: any, i: number) => any;
+  fetchNeed: (data: any, i: number, type: string) => any;
 };
 
 const prioritiesNeedAnalysis = create(
@@ -641,6 +647,85 @@ const prioritiesNeedAnalysis = create(
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
                 draft.section7.editableStatus = 2;
+              }
+            })
+          ),
+        fetchNeed: (data: any, i: number, type: string) => 
+          set(
+            produce((draft) => {
+              if (type === 'client') {
+                draft.section7.answer.need.client[i] = data;
+              } else {
+                draft.section7.answer.need.dependant[i] = data;
+              }
+            })
+          ),
+        fetchClientData: (data: any, i: number) =>
+          set(
+            produce((draft) => {
+              console.log("default client fetch: ", data);
+
+              draft.section7.answer.clientData[i] = {
+                clientId: data['id'],
+                dependantId: data['dependantId'],
+                incomeProtectionUponDeath: JSON.parse(data['incomeProtectionUponDeath']),
+                fundDisabilityIncomeExpense: JSON.parse(data['fundDisabilityIncomeExpense']),
+                fundCriticalIllnessExpense: JSON.parse(data['fundCriticalIllnessExpense']),
+                fundMediumToLongTerm: JSON.parse(data['fundMediumToLongTerm']),
+                fundRetirementLifeStyle: JSON.parse(data['fundRetirementLifeStyle']),
+                coverForPersonalAccident: JSON.parse(data['coverForPersonalAccident']),
+                fundLongTermCare: JSON.parse(data['fundLongTermCare']),
+                fundHospitalExpense: JSON.parse(data['fundHospitalExpense']),
+                estatePlaning: JSON.parse(data['estatePlaning']),
+                otherInsures: JSON.parse(data['otherInsures']),
+                maternity: JSON.parse(data['maternityPlan']),
+              }
+            })
+          ),
+        fetchDependantData: (data: any, i: number) =>
+          set(
+            produce((draft) => {
+              console.log("default dependant fetch: ", data);
+
+              draft.section7.answer.dependantData[i] = {
+                clientId: data['id'],
+                dependantId: data['dependantId'],
+                incomeProtectionUponDeath: JSON.parse(data['incomeProtectionUponDeath']),
+                fundDisabilityIncomeExpense: JSON.parse(data['fundDisabilityIncomeExpense']),
+                fundCriticalIllnessExpense: JSON.parse(data['fundCriticalIllnessExpense']),
+                fundMediumToLongTerm: JSON.parse(data['fundMediumToLongTerm']),
+                fundRetirementLifeStyle: JSON.parse(data['fundRetirementLifeStyle']),
+                coverForPersonalAccident: JSON.parse(data['coverForPersonalAccident']),
+                fundLongTermCare: JSON.parse(data['fundLongTermCare']),
+                fundHospitalExpense: JSON.parse(data['fundHospitalExpense']),
+                estatePlaning: JSON.parse(data['estatePlaning']),
+                otherInsures: JSON.parse(data['otherInsues']),
+                maternity: JSON.parse(data['maternity']),
+              }
+            })
+          ),
+        fetchMaternityOther: (data: any) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.addtionalMaternityPlan = [];
+              draft.section7.answer.addtionalMaternityPlan.push(data);
+            })
+          ),
+        fetchDefaultCheck: (data: any) => 
+          set(
+            produce((draft) => {
+              console.log("default Check fetch: ", data);
+              draft.section7.answer.defaultCheck = {
+                income_protection_upon_death_mortgage: data['income_protection_upon_death_mortgage'],
+                income_protection_upon_death_debt: data['income_protection_upon_death_debt'],
+                income_protection_upon_death_other: data['income_protection_upon_death_other'],
+                income_protection_upon_death_death: data['income_protection_upon_death_death'],
+                fund_disability_income_expense_mortgage: data['fund_disability_income_expense_mortgage'],
+                fund_disability_income_expense_disability: data['fund_disability_income_expense_disability'],
+                fund_critical_illness_expense_mortgage: data['fund_critical_illness_expense_mortgage'],
+                fund_critical_illness_expense_ci: data['fund_critical_illness_expense_ci'],
+                cover_for_personal_accident_benefit: data['cover_for_personal_accident_benefit'],
+                maternity_other: data['maternity_other'],
               }
             })
           ),

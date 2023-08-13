@@ -21,7 +21,7 @@ import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritie
 import { SectionSeven } from "@/models/SectionSeven";
 import { Result } from "postcss";
 import { parse } from "path";
-import { postPfrSections } from "@/services/pfrService";
+import { getAllPfrData, getPfrStep, postPfrSections } from "@/services/pfrService";
 import { is } from "immutable";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
@@ -38,6 +38,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   {/* No Data */}
 
+  // actions
   let {
     section7,
     setClient,
@@ -47,6 +48,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     setAdditional,
     setChildFund,
     setGlobal,
+    fetchDefaultCheck,
+    fetchMaternityOther,
+    fetchClientData,
+    fetchDependantData,
+    fetchNeed,
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
@@ -663,13 +669,263 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     setGlobal('typeClient', props.pfrType);
   }, [])
 
-  useEffect(() => {
-    if (scrollPositionBottomPrev === "Process6" && section7.pfrId === 0) {
+  const getSectionData = async (pfrId: number) => {
+    const res: any = await getAllPfrData(pfrId);
+    const data: any = await getPfrStep(7, pfrId);
 
-      console.log('set id');
-      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-      setGlobal('pfrId', section1?.state?.id);
+    setGlobal("typeClient", Number(res['pfr']['type']));
+    setGlobal("status", Number(res['pfr']['status']));
+    setGlobal("totalDependant", Number(res['dependants']));
+    let clientData = res['clients'];
+    let dependantData = res['dependantsData'];
+    setGlobal("dependants", dependantData);
+
+    let clientDatas = data['clientData'];
+    let dependantDatas = data['dependantData'];
+    let childFunds = data['childFund'];
+    let needs = data['needs'];
+    let notes = data['note'];
+    let loans = data['loan'];
+    let personalLoans = data['personalLoans'];
+    let insurances = data['stdData'];
+    let mortgages = data['mortgage'];
+    let maternityOthers = data['maternityOthers']
+    let liabilityOthers = data['liabilityOther'];
+    let defaultCheck = data['defaultCheck']
+
+    if(defaultCheck !=  undefined) {
+      fetchDefaultCheck(defaultCheck);
     }
+
+    maternityOthers.forEach((other: any) => {
+      let key = other['key']
+      let clientData = JSON.parse(other['clientData'])
+      let dependantData = JSON.parse(other['dependantData'])
+
+      let _clientData = Array(clientDatas.length).fill(0)
+      let _dependantData = Array(dependantDatas.length).fill(0)
+
+      clientData.forEach((data:any, i:number) => {
+        _clientData[i] = data
+      });
+      dependantData.forEach((data:any, i:number) => {
+        _dependantData[i] = data
+      });
+
+      let maternityOther = {
+        clients: _clientData,
+        key: key,
+        dependants: _dependantData
+      };
+
+      fetchMaternityOther(maternityOther);
+    })
+
+    clientDatas.forEach((client:any, i:number) => {
+      fetchClientData(client, i);
+    });
+
+    dependantDatas.forEach((dependant:any, i:number) => {
+      if (dependant['section7_data'] != null) {
+        fetchDependantData(dependant['section7_data'] ,i);
+        // this.pfrData.dependantData[i] = this.retrieveDataFromBackend(
+        //   dependant['section7_data']
+        // );
+      }
+      // this.pfrData.dependantData[i].dependantId = dependant['id']
+    });
+
+    // clientData.forEach((client, i) => {
+    //   this.pfrData.clientData[i].fundRetirementLifeStyle.age = this.ageFromDateOfBirthday(client['dateOfBirth'])
+    //   this.pfrData.clientData[i].fundRetirementLifeStyle.updateValues()
+    // })
+
+    // dependantData.forEach((dependant, i) => {
+    //   this.pfrData.dependantData[i].fundRetirementLifeStyle.age = this.ageFromDateOfBirthday(dependant['dateOfBirth'])
+    //   this.pfrData.dependantData[i].fundRetirementLifeStyle.updateValues()
+    // })
+
+
+    // loans.forEach((loan) => {
+    //   this.loan[loan['client']] = Number(loan['sum']);
+    // });
+
+    // liabilityOthers.forEach(liabilityOther => {
+    //   for(let i = 0 ; i < this.pfrType ; i ++) {
+    //     this.loan[i] += Number(liabilityOther[`sum${i + 1}`])
+    //   }
+    // })
+
+    // this.loan.forEach((loan, i) => {
+    //   if(i >= this.pfrType) {
+    //     return
+    //   }
+    //   if(!this.pfrData.defaultCheck.income_protection_upon_death_other) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.others = Number(loan);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.updateValues()
+    //   }
+    // })
+
+    // personalLoans.forEach(loan => {
+    //   this.personalLoans[loan['client']] = Number(loan['sum'])
+    // })
+
+    // this.personalLoans.forEach((loan, i) => {
+    //   if(i >= this.pfrType) {
+    //     return
+    //   }
+    //   if(!this.pfrData.defaultCheck.income_protection_upon_death_debt) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.personalDebts = Number(loan)
+
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.updateValues()
+
+    //   }
+    // })
+
+    // mortgages.forEach((mortgage) => {
+    //   this.mortgage[mortgage['client']] = Number(mortgage['sum']);
+    // });
+
+    // this.mortgage.forEach((mortgage, i) => {
+    //   if(i >= this.pfrType) {
+    //     return
+    //   }
+    //   if(!this.pfrData.defaultCheck.income_protection_upon_death_mortgage) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.mortgage = Number(mortgage);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.fund_disability_income_expense_mortgage) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundDisabilityIncomeExpense.mortgage = Number(mortgage);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundDisabilityIncomeExpense.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.fund_critical_illness_expense_mortgage) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundCriticalIllnessExpense.mortgage = Number(mortgage);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundCriticalIllnessExpense.updateValues()
+
+    //   }
+    // })
+
+    // insurances.forEach((insurance) => {
+    //   this.insurance[insurance['client']] = {
+    //     death: Number(insurance['death']),
+    //     tpd: Number(insurance['tpd']),
+    //     ci: Number(insurance['ci']),
+    //     acc: Number(insurance['acc']),
+    //   };
+    // });
+
+    // this.insurance.forEach((insurance, i) => {
+    //   if(i >= this.pfrType) {
+    //     return
+    //   }
+    //   if(!this.pfrData.defaultCheck.income_protection_upon_death_death) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.existingInsuranceCoverageOnDeath = Number(
+    //       insurance['death']
+    //     );
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.fund_disability_income_expense_disability){
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundDisabilityIncomeExpense.existingInsuranceCoverageOnDisability = Number(
+    //       insurance['tpd']
+    //     );
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundDisabilityIncomeExpense.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.fund_critical_illness_expense_ci) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundCriticalIllnessExpense.existingInsuranceCoverageOnCI = Number(
+    //       insurance['ci']
+    //     );
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundCriticalIllnessExpense.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.cover_for_personal_accident_benefit) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].coverForPersonalAccident.less = Number(insurance['acc']);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].coverForPersonalAccident.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.maternity_other) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].maternity.less = Number(insurance['acc'])
+    //     this.pfrData.clientData[
+    //       i
+    //     ].maternity.updateValuesWithOther(this.pfrData.addtionalMaternityPlan, 'clients', i)
+    //   }
+    // })
+
+
+    // childFunds.forEach((child) => {
+    //   let fund = new FundChildEducation();
+    //   fund.retrieveData(child);
+    //   this.pfrData.childFund.push(fund);
+    // });
+
+    if (needs != null) {
+      let obj = JSON.parse(needs['needs']);
+      if (obj['client'] != undefined) {
+        obj['client'].forEach((need:any, i: number) => {
+          fetchNeed(need, i, 'client');
+        });
+      }
+      if (obj['dependant'] != undefined) {
+        obj['dependant'].forEach((need:any, i: number) => {
+          fetchNeed(need, i, 'dependant');
+        });
+      }
+    }
+    // notes.forEach((note) => {
+    //   this.additionalNote[note['noteId']]['note'] = note['note'];
+    // });
+  }
+
+  useEffect(() => {
+    // if (scrollPositionBottomPrev === "Process6" && section7.pfrId === 0) {
+    //   const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    //   setGlobal('pfrId', section1?.state?.id);
+    //   getSectionData(section1?.state?.id);
+    // }
+    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    setGlobal('pfrId', section1?.state?.id);
+    getSectionData(section1?.state?.id);
   }, [scrollPositionBottomPrev]);
 
   useEffect(() => {
