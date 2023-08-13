@@ -39,7 +39,13 @@ const GroupRecommendation = () => {
 
   let {showDetailData} = useNavigationSection();
 
-  const showDetail = () => {
+  const showDetail = (id :any) => {
+    localStorage.setItem("s9_recommendId", id)
+    showDetailData(92);
+  };
+
+  const showDetailAdd = () => {
+    localStorage.setItem("s9_recommendId", "")
     showDetailData(92);
   };
 
@@ -819,7 +825,7 @@ const GroupRecommendation = () => {
         {/* Button Add Group */}
         <RowSingleGrid>
           <TextSmall>Product(s) / Rider(s)</TextSmall>
-          <ButtonBox className="text-green-deep" onClick={showDetail}>
+          <ButtonBox className="text-green-deep" onClick={(event) => showDetailAdd()}>
             <AddLineIcon />
           </ButtonBox>
         </RowSingleGrid>
@@ -853,7 +859,7 @@ const GroupRecommendation = () => {
                               <td className="border border-gray-soft-strong px-2 py-5">{getPremiumFrequencyName(dataProd.premiumFrequency)}</td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>Client {dataProd.nameOfOwner + 1}</td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
@@ -935,7 +941,7 @@ const GroupRecommendation = () => {
                               Client { dataProd["nameOfOwner"] + 1 }
                             </td>
                             <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
@@ -1046,7 +1052,7 @@ const GroupRecommendation = () => {
                               </td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
@@ -1121,7 +1127,7 @@ const GroupRecommendation = () => {
                               </td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
@@ -1196,7 +1202,7 @@ const GroupRecommendation = () => {
                               </td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>

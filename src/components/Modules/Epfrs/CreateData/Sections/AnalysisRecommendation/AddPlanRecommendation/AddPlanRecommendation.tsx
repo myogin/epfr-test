@@ -63,7 +63,8 @@ const AddPlanRecommendation = () => {
     setProductRiderArr,
     setProductRiderBenefitArr,
     setProductRiderRiskArr,
-    setProductHospital
+    setProductHospital,
+    editRecommendationProduct
   } = useAnalysisRecommendationProduct();
 
   let benefits: Array<any> = [
@@ -240,6 +241,51 @@ const AddPlanRecommendation = () => {
   ]
   
   useEffect(() => {
+    let s9_recommendId = localStorage.getItem("s9_recommendId")
+    if(s9_recommendId){
+      editRecommendationProduct({
+        groupId: 2,
+        pfrId: 0,
+        product: {
+            selected: false,
+            edit: false,
+            subjectId: 0,
+            name: "",
+            type: 0,
+            productType: 0,
+            id: 0,
+            categoryId: 0,
+            companyId: 0,
+            policyTerm: "",
+            sumAssured: "",
+            premiumPaymentType: "",
+            premium: 0,
+            premiumFrequency: 0,
+            currency: "",
+            funds: [],
+            modelPortfolioRiskCategory: 0,
+            higherThanRiskProfile: 0,
+            nameOfOwner: 0,
+            nameOfInsure: "",
+            nameOfInsureOther: "",
+            benefit: [],
+            risk: [],
+            portfolio: 0,
+            fundName: "",
+            fundAmount: 0,
+            premiumForHospitalization: {
+                cash: 0,
+                cpfMedisave: 0
+            },
+            groupId: 0,
+            premiumType: -1,
+            feature: null
+        },
+        riders: [],
+        extraRiders: []
+      })
+    }
+    
     setInitWhole({});
     setCISDataPremiumType([{ id: 4, name: "Single Payment" }]);
     setDataPremiumType([{ id: 0, name: "CASH" },{ id: 1, name: "CPF OA" },{ id: 2, name: "CPF SA" },{ id: 3, name: "CPF MEDISAVE" },{ id: 4, name: "SRS" }]);
