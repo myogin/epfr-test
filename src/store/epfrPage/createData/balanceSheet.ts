@@ -80,17 +80,6 @@ class liabilities {
   creditCard = 0;
   personalLoan = 0;
   overdraft = 0;
-  getSum() {
-    return (
-      this.housing +
-      this.vehicle +
-      this.renovation +
-      this.education +
-      this.creditCard +
-      this.personalLoan +
-      this.overdraft
-    );
-  }
 }
 
 const initialState: SectionFour = {
@@ -174,14 +163,53 @@ const balanceSheet = (set: any, get: any) => ({
   calcTotal: (api?: any) =>
     set(
       produce((drafts: any) => {
+        // calc fetchData assets
+        let assetsData: Array<number> = [0, 0];
+        drafts.initData.assets.forEach((e: any, i: any) => {
+          assetsData[i] =
+            e.property.residence +
+            e.property.investment +
+            e.investments.bonds +
+            e.investments.unitTrusts +
+            e.investments.stockShares +
+            e.investments.others +
+            e.savings.bankSavingAccount +
+            e.savings.fixedDeposits +
+            e.cpf.ordinaryAccount +
+            e.cpf.specialAccount +
+            e.cpf.medisave +
+            e.cpf.retirementAccount +
+            e.srs.accountBalance;
+        });
+
+        // calc fetchData assets
+        let liabilitiesData: Array<number> = [0, 0];
+        drafts.initData.liabilities.forEach((e: any, i: any) => {
+          liabilitiesData[i] =
+            e.housing +
+            e.vehicle +
+            e.renovation +
+            e.education +
+            e.creditCard +
+            e.personalLoan +
+            e.overdraft;
+        });
+
+        // calc newAssets(Other(s))
         let newClientAsset: Array<number> = [0, 0];
         drafts.others.asset.forEach((e: any, i: any) => {
           e.otherValue.forEach((e2: any, i2: any) => {
             newClientAsset[i2] += parseInt(e2);
           });
         });
-        drafts.totalCalc.asset = newClientAsset;
+        // merge fetch asset and newAssets(Other(s))
+        let newTotalAsset: Array<number> = [0, 0];
+        newTotalAsset.forEach((e: any, i: any) => {
+          newTotalAsset[i] = assetsData[i] + newClientAsset[i];
+        });
+        drafts.totalCalc.asset = newTotalAsset;
 
+        // calc newLiabilites(Other(s))
         let newClientLiability: Array<number> = [0, 0];
         drafts.others.liability.forEach((e: any, i: any) => {
           e.otherValue.forEach((e2: any, i2: any) => {
@@ -189,12 +217,17 @@ const balanceSheet = (set: any, get: any) => ({
           });
         });
 
-        drafts.totalCalc.liability = newClientLiability;
+        // merge fetch liabilities and newLiabilites(Other(s))
+        let newTotalLiability: Array<number> = [0, 0];
+        newTotalLiability.forEach((e: any, i: any) => {
+          newTotalLiability[i] = liabilitiesData[i] + newClientLiability[i];
+        });
+        drafts.totalCalc.liability = newTotalLiability;
 
         let client1Network =
-          drafts.totalCalc.asset[0] + drafts.totalCalc.liability[0];
+          drafts.totalCalc.asset[0] - drafts.totalCalc.liability[0];
         let client2Network =
-          drafts.totalCalc.asset[1] + drafts.totalCalc.liability[1];
+          drafts.totalCalc.asset[1] - drafts.totalCalc.liability[1];
         drafts.totalCalc.network = [client1Network, client2Network];
       })
     ),
@@ -256,12 +289,12 @@ const balanceSheet = (set: any, get: any) => ({
   fetchInitData: (fetchData: any) =>
     set(
       produce((drafts: any) => {
-        console.log(fetchData);
         // fetch assets property
         let properties = fetchData.summaryOfProperty;
         properties.forEach((property: any) => {
           let clientId = Number(property.client);
-          let propertyId = Number(property.typeOfProperty);
+          let propertyId = property.typeOfProperty;
+
           if (propertyId == 0) {
             drafts.initData.assets[clientId].property.residence = Number(
               property.sum
@@ -275,6 +308,7 @@ const balanceSheet = (set: any, get: any) => ({
 
         // fetch assets investment
         let investments = fetchData.summaryOfInvestment;
+
         investments.forEach((investment: any) => {
           let clientId = Number(investment.client);
           let propertyId = Number(investment.type);
@@ -385,7 +419,7 @@ const balanceSheet = (set: any, get: any) => ({
 
         outstanding.forEach((property: any) => {
           let clientId = Number(property.client);
-          drafts.initData.liabilities[clientId].housing += Number(
+          drafts.initData.liabilities[clientId].housing = Number(
             property["sum"]
           );
         });

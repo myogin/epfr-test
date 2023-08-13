@@ -20,6 +20,7 @@ import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { useRouter } from "next/router";
+import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 
 interface Props {
   id?: any;
@@ -42,7 +43,6 @@ const BalanceSheet = (props: Props) => {
     status,
     fetchLiability,
     fetchAsset,
-    initData,
     fetchInitData,
   } = useBalanceSheet();
   const router = useRouter();
@@ -51,26 +51,9 @@ const BalanceSheet = (props: Props) => {
   const scrollPosition = useScrollPosition(4);
   const scrollPositionBottom = useScrollPositionBottom(4);
   const scrollPosition3 = useScrollPosition(3);
+  const scrollPositionNext = useScrollPosition(3);
+
   const [loading, setLoading] = useState(false);
-
-  const [getAssets, setGetAssets] = useState(null);
-
-  function fetchingAssets(data: any) {
-    // let properties = data["summaryOfProperty"];
-    // properties.forEach((property:any) => {
-    //   let clientId = Number(property["client"]);
-    //   let propertyId = Number(property["typeOfProperty"]);
-    //   if (propertyId == 0) {
-    //     this.pfrData.clients[clientId].property.residence = Number(
-    //       property["sum"]
-    //     );
-    //   } else {
-    //     this.pfrData.clients[clientId].property.investment = Number(
-    //       property["sum"]
-    //     );
-    //   }
-    // });
-  }
 
   const getSectionData = async (params: any) => {
     try {
@@ -96,31 +79,15 @@ const BalanceSheet = (props: Props) => {
   };
   // load data for section 4 when position at 3
   useEffect(() => {
-    if (router.query.id !== null && router.query.id !== undefined) {
-      getSectionData(router.query.id);
-      // getGeneralData(router.query.id);
+    if (scrollPositionNext === "okSec3") {
+      if (router.query.id !== null && router.query.id !== undefined) {
+        getSectionData(router.query.id);
+        // getGeneralData(router.query.id);
+      }
     }
-  }, []);
+  }, [scrollPositionNext]);
 
   useEffect(() => {
-    // const headers = {
-    //   Authorization:
-    //     "$2y$10$yQoEFyhzHdojmueU8TZZQu4EOZH3pcrYem9iMn5KyIM1qlD0DLd3W",
-    // };
-    // async function getDataS4() {
-    //   await axios
-    //     .get(`http://203.85.37.54:8000/api/pfr/get/s4/11011`, {
-    //       headers: headers,
-    //     })
-    //     .then((res) => {
-    //       setDataS4(res.data);
-    //       // console.log(res.data);
-
-    //       retrieveClientData(res.data);
-    //     });
-    // }
-    // getDataS4();
-
     calcTotal();
   }, [others]);
   // get id from group 1 and paste to grou 2
@@ -190,8 +157,9 @@ const BalanceSheet = (props: Props) => {
       }
     }
   }, [need, props.pfrType]);
-
-  return (
+  return loading ? (
+    <LoadingPage />
+  ) : (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
@@ -350,11 +318,11 @@ const BalanceSheet = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {editableStatus === 2 && status === 1 ? (
+      {/* {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 4" />
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };
