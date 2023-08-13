@@ -286,14 +286,14 @@ const SwitchingReplacement = (props: Props) => {
     getPfrLength.map((data, i) => {
       console.log("section: ", sectionTenData.data);
       console.log("index: ", i);
-      if(sectionTenData.data[i].answer1.a.answer == 1 && (sectionTenData.data[i].answer1.a.reason == '' || sectionTenData.data[i].answer1.a.reason == undefined)) {
+      if(sectionTenData.data[i]?.answer1.a.answer == 1 && (sectionTenData.data[i]?.answer1.a.reason == '' || sectionTenData.data[i]?.answer1.a.reason == undefined)) {
         sectionTenData.issues.push({
           subsectionId : 1,
           content : "Need to explain the reason",
           clientId : i + 1
         })
       }
-      if(sectionTenData.data[i].answer1.b == 1 && (sectionTenData.data[i].answer3 == '' || sectionTenData.data[i].answer3 == undefined)) {
+      if(sectionTenData.data[i]?.answer1.b == 1 && (sectionTenData.data[i]?.answer3 == '' || sectionTenData.data[i]?.answer3 == undefined)) {
         sectionTenData.issues.push({
           subsectionId : 3,
           content : "Need to explain the reason",
@@ -458,13 +458,44 @@ const SwitchingReplacement = (props: Props) => {
     }
 
     if(answers.length != 0) {
-      sectionTenData.data = []
-      answers.forEach((answer:any, index: number) => {
+      getPfrLength.map((data: any, index: number) => {
+      // answers.forEach((answer:any, index: number) => {
+        let answer = answers[index];
+        console.log("Answer of Index ", index, " :", answer['answer1a']);
+        setShowReason([answers[0]['answer1a'], answers[1]['answer1a']]);
+        setShowReasonTwo([answers[0]['answer1b'], answers[1]['answer1b']]);
         setSectionTenData({
           ...sectionTenData,
           data: sectionTenData.data?.map((item, i) => {
             if (i == index) {
-              return answer
+              return {
+                ...item,
+                answer1: {
+                  a: {
+                    answer: answer['answer1a'],
+                    reason: answer['reason1a']
+                  },
+                  b : answer['answer1b'],
+                },
+                answer2: answer['answer2'],
+                answer3: answer['answer3'],
+                answer4: {
+                  companyName : answer['companyName'],
+                  typeOfProduct : answer['typeOfProduct'],
+                  premium : answer['premium'],
+                  premiumType : answer['premiumType'],
+                  typeMaturity: answer['typeMaturity'],
+                  benefit : answer['benefit'],
+                  inceptionDate : answer['inception'],
+                  maturityDate : answer['maturity'],
+                },
+                answer5: answer['answer5'],
+                answer6: answer['answer6'],
+                answer7: answer['answer7'],
+                answer8: answer['answer8'],
+                answer9: answer['answer9'],
+                answer10: answer['answer10'],
+              }
             } else {
               return item;
             }

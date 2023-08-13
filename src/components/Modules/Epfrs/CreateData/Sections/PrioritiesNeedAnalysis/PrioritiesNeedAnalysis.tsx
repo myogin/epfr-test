@@ -58,7 +58,6 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     fetchClientData,
     fetchDependantData,
     fetchNeed,
-    setInit,
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
@@ -272,16 +271,12 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   // End Rumus Fund Retirement
 
-  // const isChecked = (index: number) => {
-  //   if (section7.typeClient === 2) {
-  //     return section7.answer.need.client[0][index] || section7.answer.need.client[1][index]
-  //   } else {
-  //     return section7.answer.need.client[0][index];
-  //   }
-  // }
-
   const isChecked = (index: number) => {
-    return false
+    if (section7.answer.need.client.length === 2) {
+      return section7.answer.need.client[0][index] || section7.answer.need.client[1][index]
+    } else {
+      return section7.answer.need.client[0][index];
+    }
   }
 
 
@@ -937,6 +932,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     // }
 
     if (!router.isReady) return;
+    // setInit(props.pfrType);
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottomPrev === "Process6") {
