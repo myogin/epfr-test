@@ -84,7 +84,7 @@ const initialState: SectionEightTemp = {
       ammount: 0,
     },
   ],
-  summaryOfCpfSaving: [
+  summaryOfSaving: [
     {
       client: 1,
       ammount: 0,

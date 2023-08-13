@@ -13,5 +13,5 @@ export interface SectionEightTemp {
   summaryOfCpfOa: AnnualGeneral[];
   summaryOfCpfSa: AnnualGeneral[];
   summaryOfCpfMedisave: AnnualGeneral[];
-  summaryOfCpfSaving: AnnualGeneral[];
+  summaryOfSaving: AnnualGeneral[];
 }
