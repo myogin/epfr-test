@@ -315,11 +315,20 @@ const AnnualIncomeCashFlow = (props: Props) => {
           Number(totalOtherFix) -
           Number(less);
 
-        newArray = [...checkTotal];
-        newArray[index] = result;
+          console.log("isinya apa di dalam")
+          console.log(result)
+        // newArray = [...checkTotal];
+
+        console.log("new arra ini apa")
+        console.log(newArray)
+
+        newArray[index] = result
 
         setAffodability("annualIncome", index, result)
       });
+
+      console.log("isinya apa")
+      console.log(newArray);
 
       setCheckTotal(newArray);
     }

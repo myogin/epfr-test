@@ -219,7 +219,7 @@ const AnnualExpenseCashFlow = (props: Props) => {
           });
         }
 
-        newArray = [...checkTotal];
+        // newArray = [...checkTotal];
         newArray[index] = totalOther[index];
 
         setAffodability("annualExpense", index, totalOther[index])

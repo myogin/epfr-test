@@ -993,7 +993,10 @@ const Client = (props: Props) => {
                 type="text"
                 name="residencyTwo"
                 indexClient={index}
-                value={clientInfo[index].residencyTwo}
+                value={clientInfo[index] && Number(clientInfo[index].residencyTwo) >= 0
+                  ? recidence[Number(clientInfo[index].residencyTwo)].name
+                  : ""
+              }
                 placeholder="recidency status"
               />
             ) : (
@@ -1176,7 +1179,7 @@ const Client = (props: Props) => {
               name="companyName"
               indexClient={index}
               value={clientInfo[index] ? clientInfo[index].companyName : ""}
-              placeholder="Manager"
+              placeholder="your company here"
               handleChange={handleInputChange}
             />
             <Select
