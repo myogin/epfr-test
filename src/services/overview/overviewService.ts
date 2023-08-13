@@ -40,6 +40,20 @@ export const deletePfr = async (pfrId: number | null) => {
     return res.data;
   }
 };
+
+export const duplucatePfr = async (data: any) => {
+  let type = data.newType == 1 ? "single" : "joint";
+  const res = await http.post(
+    `/pfr/duplicate/${type}`,
+    {
+      ...data,
+    },
+    {
+      headers: authHeader(),
+    }
+  );
+  return res.data;
+};
 export async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

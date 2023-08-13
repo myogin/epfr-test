@@ -1,6 +1,10 @@
 import ButtonBorder from "@/components/Forms/Buttons/ButtonBorder";
 
-import { getPfrList, deletePfr } from "@/services/overview/overviewService";
+import {
+  getPfrList,
+  deletePfr,
+  duplucatePfr,
+} from "@/services/overview/overviewService";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -99,8 +103,66 @@ const PfrTable = (props: Props) => {
         setIsLoading(false);
       });
   };
-  const duplicatePfr = (pfrId: any) => {};
 
+  const [showModalDuplicate, setShowModalDuplicate] = useState(false);
+  // const [dataDuplicate, setDataDuplicate] = useState({});
+  const [selectedTypePfr, setSelectedTypePfr] = useState<undefined | number>(
+    undefined
+  );
+  const [newTypePfr, setNewTypePfr] = useState<undefined | number>(undefined);
+  const [targetClient, setTargetClient] = useState<undefined | number>(0);
+  const [targetClientShow, setTargetClientShow] = useState(false);
+
+  const closeModalDuplicate = () => {
+    setSelectedTypePfr(undefined);
+    setNewTypePfr(undefined);
+    setIdPfr(null);
+    setShowModalDuplicate(false);
+  };
+
+  const openModalDuplicate = (pfrId: any, type: string) => {
+    if (type == "single") {
+      setSelectedTypePfr(1);
+      setNewTypePfr(1);
+    } else if (type == "joint") {
+      setSelectedTypePfr(2);
+      setNewTypePfr(2);
+    }
+
+    setIdPfr(pfrId);
+    setShowModalDuplicate(true);
+  };
+  const duplicatePfr = () => {
+    let newDuplicate = {
+      pfrId: idPfr,
+      currentType: selectedTypePfr,
+      newType: newTypePfr,
+      targetClient: targetClient,
+    };
+
+    setShowModalDuplicate(false);
+    setIsLoading(true);
+    duplucatePfr(newDuplicate)
+      .then((res) => {
+        success("Delete Success");
+        getALldata();
+      })
+      .catch((err) => {
+        error("Delete error please contact Administrator");
+        setIsLoading(false);
+      });
+  };
+
+  const handleChangeTypePfr = (e: any) => {
+    setNewTypePfr(e);
+
+    if (selectedTypePfr == 2 && newTypePfr == 2) {
+      setTargetClientShow(true);
+    } else {
+      setTargetClientShow(false);
+      setTargetClient(0);
+    }
+  };
   if (isLoading)
     return (
       <>
@@ -218,7 +280,12 @@ const PfrTable = (props: Props) => {
                       <Menu.Item>
                         {({ active }) => (
                           <button
-                            onClick={() => duplicatePfr(item.pfr.id)}
+                            onClick={() =>
+                              openModalDuplicate(
+                                item.pfr.id,
+                                item.type.toLowerCase()
+                              )
+                            }
                             className={classNames(
                               active
                                 ? "bg-gray-soft-light text-gray-light"
@@ -314,6 +381,100 @@ const PfrTable = (props: Props) => {
             </Transition>
 
             {/* modal duplicate */}
+            <Transition appear show={showModalDuplicate} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={closeModalDuplicate}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-opacity-25 bg-gray-light" />
+                </Transition.Child>
+
+                <div className="fixed inset-0 overflow-y-auto">
+                  <div className="flex items-center justify-center min-h-full p-4 text-center">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 scale-95"
+                      enterTo="opacity-100 scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 scale-100"
+                      leaveTo="opacity-0 scale-95"
+                    >
+                      <Dialog.Panel className="w-full max-w-[350px] p-10 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                        <Dialog.Title
+                          as="h3"
+                          className="mb-8 text-xl font-medium leading-6 text-gray-light text-center"
+                        >
+                          Duplicate a new PFR
+                        </Dialog.Title>
+                        <div className="grid grid-cols-1 gap-2">
+                          <div className="font-bold">Current PFR Type:</div>
+                          <div>{selectedTypePfr}</div>
+                          <div className="font-bold">New PFR Type:</div>
+                          <div>
+                            <select
+                              className="cursor-pointer rounded"
+                              defaultValue={newTypePfr}
+                              onChange={(e: any) =>
+                                handleChangeTypePfr(e.target.value)
+                              }
+                            >
+                              <option value={1}>SINGLE</option>
+                              <option value={2}>JOINT</option>
+                            </select>
+                          </div>
+                          {targetClientShow && (
+                            <>
+                              <div className="font-bold">
+                                Which client will be used?
+                              </div>
+                              <div>
+                                <select
+                                  className="cursor-pointer rounded"
+                                  defaultValue={targetClient}
+                                  onChange={(e: any) =>
+                                    setTargetClient(e.target.value)
+                                  }
+                                >
+                                  <option value={0}>Select</option>
+                                  <option value={1}>Client 1</option>
+                                  <option value={2}>Client 2</option>
+                                </select>
+                              </div>
+                            </>
+                          )}
+
+                          <div className="mt-4">
+                            <button
+                              className="bg-green-deep hover:bg-[#0c9553] text-white font-bold py-2 px-4 rounded mr-2"
+                              onClick={duplicatePfr}
+                            >
+                              Duplicate
+                            </button>
+                            <button
+                              className="bg-red hover:bg-[#d90000] text-white font-bold py-2 px-4 rounded"
+                              onClick={closeModalDuplicate}
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition>
           </div>
         </Fragment>
       ))}
