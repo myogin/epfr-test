@@ -53,6 +53,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     fetchClientData,
     fetchDependantData,
     fetchNeed,
+    setInit,
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
@@ -926,6 +927,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
     setGlobal('pfrId', section1?.state?.id);
     getSectionData(section1?.state?.id);
+    setInit(props.pfrType);
   }, [scrollPositionBottomPrev]);
 
   useEffect(() => {
