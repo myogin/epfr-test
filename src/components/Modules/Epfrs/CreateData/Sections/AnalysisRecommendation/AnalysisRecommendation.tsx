@@ -2158,7 +2158,7 @@ const AnalysisRecommendation = (props: Props) => {
               </thead>
               <tbody>
                 {getClients.map((resData: any, index: any) => (
-                  <>
+                  <Fragment key={"sds"+index}>
                     <tr key={index}>
                       <td className="px-2 py-5">Client {index + 1}</td>
                       <td className="px-2 py-5 text-center">
@@ -2192,7 +2192,7 @@ const AnalysisRecommendation = (props: Props) => {
                         {currencyFormat(dataSinglePayorBudget[index][4])}
                       </td>
                     </tr>
-                  </>
+                  </Fragment>
                 ))}
               </tbody>
             </table>
@@ -2238,8 +2238,7 @@ const AnalysisRecommendation = (props: Props) => {
               </thead>
               <tbody>
                 {getClients.map((resData: any, index: any) => (
-                  <>
-                    <tr key={index}>
+                  <Fragment key={"sds"+index}>
                       <td className="px-2 py-5">Client {index + 1}</td>
                       <td className="px-2 py-5 text-center">
                         {isNaN(dataTotalAnnualPremiumChoice[index][0])
@@ -2311,8 +2310,7 @@ const AnalysisRecommendation = (props: Props) => {
                               dataTotalSinglePremiumChoice[index][4]
                             )}
                       </td>
-                    </tr>
-                  </>
+                  </Fragment>
                 ))}
               </tbody>
             </table>
@@ -2359,7 +2357,7 @@ const AnalysisRecommendation = (props: Props) => {
               </thead>
               <tbody>
                 {getClients.map((resData: any, index: any) => (
-                  <tr key={"ssd" + index}>
+                  <Fragment key={"ssd" + index}>
                     <td className="px-2 py-5">Client{index + 1}</td>
                     <td className="px-2 py-5 text-center">
                       {isNaN(
@@ -2451,7 +2449,7 @@ const AnalysisRecommendation = (props: Props) => {
                         : dataSinglePayorBudget[index][4] -
                           dataTotalSinglePremiumChoice[index][4]}
                     </td>
-                  </tr>
+                  </Fragment>
                 ))}
               </tbody>
             </table>

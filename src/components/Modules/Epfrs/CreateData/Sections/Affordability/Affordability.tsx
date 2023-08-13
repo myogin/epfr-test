@@ -161,17 +161,12 @@ const Affordability = (props: Props) => {
     setPayorBudget(key, index, name, value);
 
     if (name === "annual") {
-      console.log("Masuk sini annual " + value + " " + name + " " + index);
-      console.log(
-        "Masuk sini total " +
-          (annualIncomeTemp[key].ammount - annualExpenseTemp[key].ammount)
-      );
+
       if (index === 0) {
         if (
           value >
           annualIncomeTemp[key].ammount - annualExpenseTemp[key].ammount
         ) {
-          console.log("Masuk sini annual seksi 1");
 
           let annualLogicData = [...annualLogic];
           annualLogicData[key].validate[index] = {
@@ -359,17 +354,7 @@ const Affordability = (props: Props) => {
     try {
       setSaveLoading(true); // Set loading before sending API request
 
-      let localData = localStorage.getItem("section8")
-        ? localStorage.getItem("section8")
-        : "";
-
-      let dataFix = {};
-      if (localData) {
-        let data = JSON.parse(localData);
-        dataFix = data.state.section8;
-      }
-
-      let storeDataSection = await postPfrSections(8, JSON.stringify(dataFix));
+      let storeDataSection = await postPfrSections(8, JSON.stringify(section8));
 
       // If save success get ID and store to localstorage
       if (storeDataSection.data.result === "success") {
@@ -405,7 +390,7 @@ const Affordability = (props: Props) => {
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottom === "Process7") {
         setGlobal("editableStatus", pfrLocal.editableSection8);
-        setGlobal("id", router.query.id);
+        setGlobal("pfrId", router.query.id);
         setGlobal("status", pfrLocal.section8);
         // getSectionData(router.query.id);
       }
@@ -415,13 +400,13 @@ const Affordability = (props: Props) => {
   useEffect(() => {
     if (scrollPositionNext === "okSec9") {
       if (
-        (editableStatus === 0 && status === 1) ||
+        ((editableStatus === 0 || editableStatus === null) && status === 1) ||
         (editableStatus === 2 && status === 1)
       ) {
-        console.log("section8", section8);
-        // storeData();
+        console.log("save section8", section8);
+        storeData();
       } else {
-        console.log("Your data not complete Section 2");
+        console.log("Your data not complete Section 8");
       }
     }
   }, [scrollPositionNext, editableStatus, status]);
