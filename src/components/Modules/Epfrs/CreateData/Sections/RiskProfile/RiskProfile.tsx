@@ -32,8 +32,10 @@ import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/Headin
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import { postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import { useRouter } from "next/router";
+import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 interface Props {
   id?: any;
   pfrType: number;
@@ -60,6 +62,7 @@ function checkValidate(data: any, user: any) {
 const RiskProfile = (props: Props) => {
   const [notReviewAll, setNotReviewAll] = useState(false);
 
+  const router = useRouter();
   const scrollPosition = useScrollPosition(5);
 
   const [sectionFive, setSectionFive] = useState<SectionFive>({
@@ -586,8 +589,41 @@ const RiskProfile = (props: Props) => {
       }
     }
   }, [sectionFive.need]);
-  return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+
+  // fetching data for section 5 when position at 4
+  const scrollPositionNext = useScrollPosition(4);
+
+  useEffect(() => {
+    if (scrollPositionNext === "okSec4") {
+      if (router.query.id !== null && router.query.id !== undefined) {
+        getSectionData(router.query.id);
+        // getGeneralData(router.query.id);
+      }
+    }
+  }, [scrollPositionNext]);
+
+  const [loading, setLoading] = useState(false);
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection5 = await getPfrStep(5, params);
+
+      // fetching question 0
+      console.log(q0State);
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+  return loading ? (
+    <LoadingPage />
+  ) : (
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-5"
         className={`sticky top-0 z-10 ${
