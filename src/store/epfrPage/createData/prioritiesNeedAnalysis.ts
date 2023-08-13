@@ -3,10 +3,49 @@ import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
 import { SectionSeven } from "@/models/SectionSeven";
 
+function checkCondition(draft: SectionSeven) {
+
+  let result = false
+  if(draft.section7.answer.need == undefined) {
+    return false
+  }
+  for(let i = 0 ; i < 14 ; i ++ ) {
+    for(let j = 0 ; j < draft.section7.typeClient ; j ++ ) {
+      console.log("need Client: ", draft.section7.answer.need.client[j][i]);
+      result = result || draft.section7.answer.need.client[j][i]
+    }
+    for(let k = 0 ; k < draft.section7.totalDependant; k ++ ) {
+      result = result || draft.section7.answer.need.dependant[k][i]
+    }
+    result = result || ( draft.section7.answer.childFund.length > 0 )
+  }
+  return result
+};
+
+const getStatus = (draft: SectionSeven) => {
+  draft.section7.answer.issues = [];
+
+  let condition = checkCondition(draft);
+  if(!condition) {
+    draft.section7.answer.issues.push({
+      subsectionId : 0,
+      content : "Need to complete form at least 1",
+      clientId : 0
+    })
+  }
+
+  if(draft.section7.answer.issues.length == 0) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 const initialState: SectionSeven = {
   section7: {
     pfrId: 0,
-    typeClient: 2,
+    dependants: [],
+    typeClient: 1,
     totalDependant: 0,
     status: 0,
     editableStatus: 0,
@@ -130,22 +169,22 @@ const initialState: SectionSeven = {
         },
       ],
       childFund: [
-        {
-          nameOfChild: "",
-          yearsToTertiaryEducation: 0,
-          noOfYearsOfStudy: 0,
-          annaulTuitionFees: 0,
-          educationInflationRate: 0,
-          futureValueOfAnnualTuitionFee: 0,
-          totalTuitionFee: 0,
-          annualLivingCosts: 0,
-          inflationRate: 0,
-          futureValueOfAnnualLivingCosts: 0,
-          totalLivingCost: 0,
-          totalEducationFunding: 0,
-          futureValueOfExistingResourceForEducation: 0,
-          netAmountRequired: 0,
-        },
+        // {
+        //   nameOfChild: "",
+        //   yearsToTertiaryEducation: 0,
+        //   noOfYearsOfStudy: 0,
+        //   annaulTuitionFees: 0,
+        //   educationInflationRate: 0,
+        //   futureValueOfAnnualTuitionFee: 0,
+        //   totalTuitionFee: 0,
+        //   annualLivingCosts: 0,
+        //   inflationRate: 0,
+        //   futureValueOfAnnualLivingCosts: 0,
+        //   totalLivingCost: 0,
+        //   totalEducationFunding: 0,
+        //   futureValueOfExistingResourceForEducation: 0,
+        //   netAmountRequired: 0,
+        // },
       ],
       dependantData: [
         {
@@ -581,7 +620,14 @@ type Actions = {
   ) => any;
   setAdditional: (value: number, indexClient: number, name: string) => any;
   resetSectionSeven: () => any;
+  addIssue: (value: any) => any;
+  resetIssue: () => any;
   setGlobal: (name: string, value: any) => any;
+  fetchDefaultCheck: (data: any) => any;
+  fetchMaternityOther: (data: any) => any;
+  fetchClientData: (data: any, i: number) => any;
+  fetchDependantData: (data: any, i: number) => any;
+  fetchNeed: (data: any, i: number, type: string) => any;
 };
 
 const prioritiesNeedAnalysis = create(
@@ -600,7 +646,86 @@ const prioritiesNeedAnalysis = create(
               draft.section7.answer.clientData[indexClient][groupData][name] = value;
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
+              }
+            })
+          ),
+        fetchNeed: (data: any, i: number, type: string) => 
+          set(
+            produce((draft) => {
+              if (type === 'client') {
+                draft.section7.answer.need.client[i] = data;
+              } else {
+                draft.section7.answer.need.dependant[i] = data;
+              }
+            })
+          ),
+        fetchClientData: (data: any, i: number) =>
+          set(
+            produce((draft) => {
+              console.log("default client fetch: ", data);
+
+              draft.section7.answer.clientData[i] = {
+                clientId: data['id'],
+                dependantId: data['dependantId'],
+                incomeProtectionUponDeath: JSON.parse(data['incomeProtectionUponDeath']),
+                fundDisabilityIncomeExpense: JSON.parse(data['fundDisabilityIncomeExpense']),
+                fundCriticalIllnessExpense: JSON.parse(data['fundCriticalIllnessExpense']),
+                fundMediumToLongTerm: JSON.parse(data['fundMediumToLongTerm']),
+                fundRetirementLifeStyle: JSON.parse(data['fundRetirementLifeStyle']),
+                coverForPersonalAccident: JSON.parse(data['coverForPersonalAccident']),
+                fundLongTermCare: JSON.parse(data['fundLongTermCare']),
+                fundHospitalExpense: JSON.parse(data['fundHospitalExpense']),
+                estatePlaning: JSON.parse(data['estatePlaning']),
+                otherInsures: JSON.parse(data['otherInsures']),
+                maternity: JSON.parse(data['maternityPlan']),
+              }
+            })
+          ),
+        fetchDependantData: (data: any, i: number) =>
+          set(
+            produce((draft) => {
+              console.log("default dependant fetch: ", data);
+
+              draft.section7.answer.dependantData[i] = {
+                clientId: data['id'],
+                dependantId: data['dependantId'],
+                incomeProtectionUponDeath: JSON.parse(data['incomeProtectionUponDeath']),
+                fundDisabilityIncomeExpense: JSON.parse(data['fundDisabilityIncomeExpense']),
+                fundCriticalIllnessExpense: JSON.parse(data['fundCriticalIllnessExpense']),
+                fundMediumToLongTerm: JSON.parse(data['fundMediumToLongTerm']),
+                fundRetirementLifeStyle: JSON.parse(data['fundRetirementLifeStyle']),
+                coverForPersonalAccident: JSON.parse(data['coverForPersonalAccident']),
+                fundLongTermCare: JSON.parse(data['fundLongTermCare']),
+                fundHospitalExpense: JSON.parse(data['fundHospitalExpense']),
+                estatePlaning: JSON.parse(data['estatePlaning']),
+                otherInsures: JSON.parse(data['otherInsues']),
+                maternity: JSON.parse(data['maternity']),
+              }
+            })
+          ),
+        fetchMaternityOther: (data: any) =>
+          set(
+            produce((draft) => {
+              draft.section7.answer.addtionalMaternityPlan = [];
+              draft.section7.answer.addtionalMaternityPlan.push(data);
+            })
+          ),
+        fetchDefaultCheck: (data: any) => 
+          set(
+            produce((draft) => {
+              console.log("default Check fetch: ", data);
+              draft.section7.answer.defaultCheck = {
+                income_protection_upon_death_mortgage: data['income_protection_upon_death_mortgage'],
+                income_protection_upon_death_debt: data['income_protection_upon_death_debt'],
+                income_protection_upon_death_other: data['income_protection_upon_death_other'],
+                income_protection_upon_death_death: data['income_protection_upon_death_death'],
+                fund_disability_income_expense_mortgage: data['fund_disability_income_expense_mortgage'],
+                fund_disability_income_expense_disability: data['fund_disability_income_expense_disability'],
+                fund_critical_illness_expense_mortgage: data['fund_critical_illness_expense_mortgage'],
+                fund_critical_illness_expense_ci: data['fund_critical_illness_expense_ci'],
+                cover_for_personal_accident_benefit: data['cover_for_personal_accident_benefit'],
+                maternity_other: data['maternity_other'],
               }
             })
           ),
@@ -625,7 +750,7 @@ const prioritiesNeedAnalysis = create(
               });
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
@@ -635,7 +760,7 @@ const prioritiesNeedAnalysis = create(
               draft.section7.answer.childFund.splice(index, 1);
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
@@ -645,30 +770,30 @@ const prioritiesNeedAnalysis = create(
               draft.section7.answer.childFund[indexClient][name] = value;
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
         addMaternity: () =>
           set(
             produce((draft) => {
-              var client = [];
+              var clients = [];
               var dependant = [];
               for (var i = 0; i < initialState.section7.typeClient; i++) {
-                client.push(0);
+                clients.push(0);
               }
 
               for (var i = 0; i < initialState.section7.totalDependant; i++) {
                 dependant.push(0);
               }
               draft.section7.answer.addtionalMaternityPlan.push({
-                client: client,
+                clients: clients,
                 dependants: dependant,
                 key: "",
               });
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
@@ -678,7 +803,7 @@ const prioritiesNeedAnalysis = create(
               draft.section7.answer.addtionalMaternityPlan.splice(index, 1);
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
@@ -704,7 +829,7 @@ const prioritiesNeedAnalysis = create(
               }
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
@@ -721,7 +846,7 @@ const prioritiesNeedAnalysis = create(
               ] = value;
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
@@ -731,8 +856,10 @@ const prioritiesNeedAnalysis = create(
               draft.section7.answer.need.client[indexClient][indexSub] = value;
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
+
+              draft.section7.status = getStatus(draft);
             })
           ),
         setNeedDependant: (value: number, indexClient: number, name: any) =>
@@ -741,7 +868,7 @@ const prioritiesNeedAnalysis = create(
               draft.section7.answer.need.dependant[indexClient][name] = value;
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
@@ -755,7 +882,7 @@ const prioritiesNeedAnalysis = create(
               draft.section7.answer.defaultCheck[name] = value;
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
@@ -765,21 +892,39 @@ const prioritiesNeedAnalysis = create(
               draft.section7.additionalNote[indexClient][name] = value;
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
+                draft.section7.editableStatus = 2;
               }
             })
           ),
         resetSectionSeven: () => {
           set(initialState);
         },
+        addIssue: (value: any) => {
+          set(
+            produce((draft) => {
+              draft.section7.answer.issues.push(value);
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.section7.editableStatus = 2;
+              }
+            })
+          )
+        },
+        resetIssue: () => {
+          set(
+            produce((draft) => {
+              draft.section7.answer.issues = [];
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.section7.editableStatus = 2;
+              }
+            })
+          )
+        },
         setGlobal: (name: string, value: any) => {
           set(
             produce((draft) => {
-              draft.section7['name'] = value;
-
-              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
-                draft.editableStatus = 2;
-              }
+              draft.section7[name] = value;
             })
           )
         }

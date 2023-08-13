@@ -482,6 +482,8 @@ const IncomeProtection = (props: Props) => {
               {getPfrLength.map((data, i) => (
                   <td key={"o" + i}>
                     <Input
+                      readonly={!section7.answer.defaultCheck
+                        .income_protection_upon_death_mortgage}
                       formStyle="text-right"
                       className="mb-10"
                       type="text"
@@ -501,6 +503,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"p" + i}>
                     <Input
+                      readonly={!section7.answer.defaultCheck
+                        .income_protection_upon_death_mortgage}
                       formStyle="text-right"
                       className="mb-10"
                       type="text"
@@ -542,6 +546,8 @@ const IncomeProtection = (props: Props) => {
               {getPfrLength.map((data, i) => (
                   <td key={"q" + i}>
                     <Input
+                      readonly={!section7.answer.defaultCheck
+                        .income_protection_upon_death_debt}
                       formStyle="text-right"
                       className="mb-10"
                       type="text"
@@ -561,6 +567,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"r" + i}>
                     <Input
+                      readonly={!section7.answer.defaultCheck
+                        .income_protection_upon_death_debt}
                       formStyle="text-right"
                       className="mb-10"
                       type="text"
@@ -602,6 +610,8 @@ const IncomeProtection = (props: Props) => {
               {getPfrLength.map((data, i) => (
                   <td key={"s" + i}>
                     <Input
+                      readonly={!section7.answer.defaultCheck
+                        .income_protection_upon_death_other}
                       formStyle="text-right"
                       className="mb-10"
                       type="text"
@@ -621,6 +631,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"t" + i}>
                     <Input
+                      readonly={!section7.answer.defaultCheck
+                        .income_protection_upon_death_other}
                       formStyle="text-right"
                       className="mb-10"
                       type="text"
@@ -724,6 +736,8 @@ const IncomeProtection = (props: Props) => {
               {getPfrLength.map((data, i) => (
                   <td key={"y" + i}>
                     <Input
+                      readonly={!section7.answer.defaultCheck
+                        .income_protection_upon_death_death}
                       formStyle="text-right"
                       className="mb-10"
                       type="text"

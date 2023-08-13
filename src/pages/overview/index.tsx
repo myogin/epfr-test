@@ -10,8 +10,12 @@ import PfrTable from "./_component/PfrTable";
 import PfrButtonModal from "./_component/PfrButtonModal";
 import { siteConfig } from "@/libs/config";
 import PfrNavbar from "./_component/PfrNavbar";
+import { useSession } from "next-auth/react";
 
 const Overview = () => {
+  // const { data: session, status } = useSession();
+  // console.log(session);
+
   let showElement = useDetailDataEpfr(
     (state: { dataId: number }) => state.dataId
   );

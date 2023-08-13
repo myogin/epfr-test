@@ -21,7 +21,10 @@ import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritie
 import { SectionSeven } from "@/models/SectionSeven";
 import { Result } from "postcss";
 import { parse } from "path";
-import { postPfrSections } from "@/services/pfrService";
+import { getAllPfrData, getPfrStep, postPfrSections } from "@/services/pfrService";
+import { is } from "immutable";
+import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 interface Props {
   id?: any;
   pfrType: number;
@@ -35,6 +38,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   {/* No Data */}
 
+  // actions
   let {
     section7,
     setClient,
@@ -44,13 +48,18 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     setAdditional,
     setChildFund,
     setGlobal,
+    fetchDefaultCheck,
+    fetchMaternityOther,
+    fetchClientData,
+    fetchDependantData,
+    fetchNeed,
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
   let { showDetailData } = useNavigationSection();
 
   const uncheckAll = (data: boolean, indexSub: number) => {
-    if(!data) {
+    if(!data && props.pfrType === 2) {
       setNeed(1, indexSub, data);
     }
   }
@@ -121,6 +130,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   const scrollPosition = useScrollPosition(7);
   const scrollPositionNext = useScrollPosition(8);
+  const scrollPositionBottomPrev = useScrollPositionBottom(6);
+
   
   const getPV = (fv:any, rate:any, n: any) =>{
     let sum = 0;
@@ -253,8 +264,15 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   // Rumus Fund Retirement 
 
-  // End Rumus Fund Retirement 
+  // End Rumus Fund Retirement
 
+  const isChecked = (index: number) => {
+    if (section7.typeClient === 2) {
+      return section7.answer.need.client[0][index] || section7.answer.need.client[1][index]
+    } else {
+      return section7.answer.need.client[0][index];
+    }
+  }
 
 
   useEffect(() => {    
@@ -263,6 +281,22 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       if(section7.answer.clientData.length > 0){
         section7.answer.clientData.map(function(v: any, k: any){
           // IncomeProtect  
+            if (!section7.answer.defaultCheck.income_protection_upon_death_mortgage) {
+              setClient(0, k, 'mortgage', 'incomeProtectionUponDeath');
+            }
+
+            if (!section7.answer.defaultCheck.income_protection_upon_death_debt) {
+              setClient(0, k, 'personalDebts', 'incomeProtectionUponDeath');
+            }
+
+            if (!section7.answer.defaultCheck.income_protection_upon_death_other) {
+              setClient(0, k, 'others', 'incomeProtectionUponDeath');
+            }
+
+            if (!section7.answer.defaultCheck.income_protection_upon_death_death) {
+              setClient(0, k, 'existingInsuranceCoverageOnDeath', 'incomeProtectionUponDeath');
+            }
+
             const IncomeProtect = v.incomeProtectionUponDeath;
             const resCapitalSum = capitalSumRequired(IncomeProtect);  
             setClient(resCapitalSum, k, 'capitalSumRequired', 'incomeProtectionUponDeath');
@@ -278,6 +312,14 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           // End IncomeProtect
 
           // Rumus Fund Disabilities
+              if (!section7.answer.defaultCheck.fund_disability_income_expense_mortgage) {
+                setClient(0, k, 'mortgage', 'fundDisabilityIncomeExpense');
+              }
+
+              if (!section7.answer.defaultCheck.fund_disability_income_expense_disability) {
+                setClient(0, k, 'existingInsuranceCoverageOnDisability', 'fundDisabilityIncomeExpense');
+              }
+
               const FunDisability = v.fundDisabilityIncomeExpense;
               const FundDisabResCapitalSum = FundDisabCapitalSumRequired(FunDisability);
               setClient(FundDisabResCapitalSum, k, 'capitalSumRequired', 'fundDisabilityIncomeExpense')
@@ -293,6 +335,14 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           // End Rumus Fund Disabilities
 
           // Rumus Fund Critical Illness
+            if (!section7.answer.defaultCheck.fund_critical_illness_expense_mortgage) {
+              setClient(0, k, 'mortgage', 'fundCriticalIllnessExpense');
+            }
+
+            if (!section7.answer.defaultCheck.fund_critical_illness_expense_ci) {
+              setClient(0, k, 'existingInsuranceCoverageOnCI', 'fundCriticalIllnessExpense');
+            }
+
             const FunCriticalIllness = v.fundCriticalIllnessExpense;
             const FunCritResCapitalSum = FundCritCapitalSumRequired(FunCriticalIllness);
             setClient(FunCritResCapitalSum, k, 'capitalSumRequired', 'fundCriticalIllnessExpense')
@@ -358,6 +408,10 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         // End Fund Fund Retirement Data
 
         // Cover Personal Accident
+          if (!section7.answer.defaultCheck.cover_for_personal_accident_benefit) {
+            setClient(0, k, 'less', 'coverForPersonalAccident');
+          }
+
           const resCoverPersonalAccident = v.coverForPersonalAccident;
           const coverNetAmountRequired = resCoverPersonalAccident.amountNeeded - resCoverPersonalAccident.less;
           setClient(coverNetAmountRequired, k, 'netAmountRequired', 'coverForPersonalAccident');
@@ -370,8 +424,22 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         // End Fund Long Term
 
         // Maternity Others
+          if (!section7.answer.defaultCheck.maternity_other) {
+            setClient(0, k, 'less', 'maternity');
+          }
+
+          let otherSum = 0;
+
+          if(section7.answer.addtionalMaternityPlan.length > 0){
+            section7.answer.addtionalMaternityPlan.map(function(v: any, k: any) {
+              v.clients.map(function(val: any, ind: any) {
+                otherSum += Number(val);
+              });
+            });
+          }
+
           const resMaternity = v.maternity;
-          const MaterNetAmountRequired = resMaternity.amountNeeded - resMaternity.less;
+          const MaterNetAmountRequired = resMaternity.amountNeeded - resMaternity.less - otherSum;
           setClient(MaterNetAmountRequired, k, 'netAmountRequired', 'maternity');
         // End Maternity Others
         });
@@ -381,6 +449,18 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       if(section7.answer.dependantData.length > 0){
         section7.answer.dependantData.map(function(v: any, k: any){
           // IncomeProtect  
+
+          if (!section7.answer.defaultCheck.income_protection_upon_death_mortgage) {
+            setDependant(0, k, 'mortgage', 'incomeProtectionUponDeath');
+          }
+
+          if (!section7.answer.defaultCheck.income_protection_upon_death_debt) {
+            setDependant(0, k, 'personalDebts', 'incomeProtectionUponDeath');
+          }
+
+          if (!section7.answer.defaultCheck.income_protection_upon_death_other) {
+            setDependant(0, k, 'others', 'incomeProtectionUponDeath');
+          }
             const IncomeProtect = v.incomeProtectionUponDeath;
             const resCapitalSum = capitalSumRequired(IncomeProtect);  
             setDependant(resCapitalSum, k, 'capitalSumRequired', 'incomeProtectionUponDeath');
@@ -396,6 +476,14 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           // End IncomeProtect
 
           // Rumus Fund Disabilities
+              if (!section7.answer.defaultCheck.fund_disability_income_expense_mortgage) {
+                setDependant(0, k, 'mortgage', 'fundDisabilityIncomeExpense');
+              }
+
+              if (!section7.answer.defaultCheck.fund_disability_income_expense_disability) {
+                setDependant(0, k, 'existingInsuranceCoverageOnDisability', 'fundDisabilityIncomeExpense');
+              }
+
               const FunDisability = v.fundDisabilityIncomeExpense;
               const FundDisabResCapitalSum = FundDisabCapitalSumRequired(FunDisability);
               setDependant(FundDisabResCapitalSum, k, 'capitalSumRequired', 'fundDisabilityIncomeExpense')
@@ -411,6 +499,14 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           // End Rumus Fund Disabilities
 
           // Rumus Fund Critical Illness
+            if (!section7.answer.defaultCheck.fund_critical_illness_expense_mortgage) {
+              setDependant(0, k, 'mortgage', 'fundCriticalIllnessExpense');
+            }
+
+            if (!section7.answer.defaultCheck.fund_critical_illness_expense_ci) {
+              setDependant(0, k, 'existingInsuranceCoverageOnCI', 'fundCriticalIllnessExpense');
+            }
+
             const FunCriticalIllness = v.fundCriticalIllnessExpense;
             const FunCritResCapitalSum = FundCritCapitalSumRequired(FunCriticalIllness);
             setDependant(FunCritResCapitalSum, k, 'capitalSumRequired', 'fundCriticalIllnessExpense')
@@ -475,6 +571,10 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         // End Fund Fund Retirement Dataaa
 
         // Cover Personal Accident
+          if (!section7.answer.defaultCheck.cover_for_personal_accident_benefit) {
+            setDependant(0, k, 'less', 'coverForPersonalAccident');
+          }
+
           const resCoverPersonalAccident = v.coverForPersonalAccident;
           const coverNetAmountRequired = resCoverPersonalAccident.amountNeeded - resCoverPersonalAccident.less;
           setClient(coverNetAmountRequired, k, 'netAmountRequired', 'coverForPersonalAccident');
@@ -487,9 +587,24 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         // End Fund Long Term
 
         // Maternity Others
+          if (!section7.answer.defaultCheck.maternity_other) {
+            setDependant(0, k, 'less', 'maternity');
+          }
+
+          let otherSum = 0;
+
+          if(section7.answer.addtionalMaternityPlan.length > 0){
+            section7.answer.addtionalMaternityPlan.map(function(v: any, k: any) {
+              v.dependants.map(function(val: any, ind: any) {
+                otherSum += Number(val);
+              });
+            });
+          }
+
           const resMaternity = v.maternity;
-          const MaterNetAmountRequired = resMaternity.amountNeeded - resMaternity.less;
-          setClient(MaterNetAmountRequired, k, 'netAmountRequired', 'maternity');
+          const MaterNetAmountRequired = resMaternity.amountNeeded - resMaternity.less - otherSum;
+          
+          setDependant(MaterNetAmountRequired, k, 'netAmountRequired', 'maternity');
         // End Maternity Others
         });
       }
@@ -515,11 +630,10 @@ const PrioritiesNeedAnalysis = (props: Props) => {
           const resNetAmountRequired = FundChildNetAmountRequired(v);
           setChildFund(resNetAmountRequired, k, 'netAmountRequired');
         });
+      }
 
-      }  
-
-      localStorage.setItem("section7", JSON.stringify(section7));
-  }, [section7]);
+      // localStorage.setItem("section7", JSON.stringify(section7));
+  }, [section7.answer, section7.additionalNote]);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -535,10 +649,12 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       let dataFix = {};
       if (localData) {
         let data = JSON.parse(localData);
-        dataFix = data.state;
+        dataFix = data.state.section7;
       }
 
-      let storeDataSection = await postPfrSections(7, JSON.stringify(dataFix));
+      console.log("Data: ", dataFix);
+
+      await postPfrSections(7, JSON.stringify(dataFix));
 
       setGlobal("editableStatus", 1);
 
@@ -548,6 +664,269 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    setGlobal('typeClient', props.pfrType);
+  }, [])
+
+  const getSectionData = async (pfrId: number) => {
+    const res: any = await getAllPfrData(pfrId);
+    const data: any = await getPfrStep(7, pfrId);
+
+    setGlobal("typeClient", Number(res['pfr']['type']));
+    setGlobal("status", Number(res['pfr']['status']));
+    setGlobal("totalDependant", Number(res['dependants']));
+    let clientData = res['clients'];
+    let dependantData = res['dependantsData'];
+    setGlobal("dependants", dependantData);
+
+    let clientDatas = data['clientData'];
+    let dependantDatas = data['dependantData'];
+    let childFunds = data['childFund'];
+    let needs = data['needs'];
+    let notes = data['note'];
+    let loans = data['loan'];
+    let personalLoans = data['personalLoans'];
+    let insurances = data['stdData'];
+    let mortgages = data['mortgage'];
+    let maternityOthers = data['maternityOthers']
+    let liabilityOthers = data['liabilityOther'];
+    let defaultCheck = data['defaultCheck']
+
+    if(defaultCheck !=  undefined) {
+      fetchDefaultCheck(defaultCheck);
+    }
+
+    maternityOthers.forEach((other: any) => {
+      let key = other['key']
+      let clientData = JSON.parse(other['clientData'])
+      let dependantData = JSON.parse(other['dependantData'])
+
+      let _clientData = Array(clientDatas.length).fill(0)
+      let _dependantData = Array(dependantDatas.length).fill(0)
+
+      clientData.forEach((data:any, i:number) => {
+        _clientData[i] = data
+      });
+      dependantData.forEach((data:any, i:number) => {
+        _dependantData[i] = data
+      });
+
+      let maternityOther = {
+        clients: _clientData,
+        key: key,
+        dependants: _dependantData
+      };
+
+      fetchMaternityOther(maternityOther);
+    })
+
+    clientDatas.forEach((client:any, i:number) => {
+      fetchClientData(client, i);
+    });
+
+    dependantDatas.forEach((dependant:any, i:number) => {
+      if (dependant['section7_data'] != null) {
+        fetchDependantData(dependant['section7_data'] ,i);
+        // this.pfrData.dependantData[i] = this.retrieveDataFromBackend(
+        //   dependant['section7_data']
+        // );
+      }
+      // this.pfrData.dependantData[i].dependantId = dependant['id']
+    });
+
+    // clientData.forEach((client, i) => {
+    //   this.pfrData.clientData[i].fundRetirementLifeStyle.age = this.ageFromDateOfBirthday(client['dateOfBirth'])
+    //   this.pfrData.clientData[i].fundRetirementLifeStyle.updateValues()
+    // })
+
+    // dependantData.forEach((dependant, i) => {
+    //   this.pfrData.dependantData[i].fundRetirementLifeStyle.age = this.ageFromDateOfBirthday(dependant['dateOfBirth'])
+    //   this.pfrData.dependantData[i].fundRetirementLifeStyle.updateValues()
+    // })
+
+
+    // loans.forEach((loan) => {
+    //   this.loan[loan['client']] = Number(loan['sum']);
+    // });
+
+    // liabilityOthers.forEach(liabilityOther => {
+    //   for(let i = 0 ; i < this.pfrType ; i ++) {
+    //     this.loan[i] += Number(liabilityOther[`sum${i + 1}`])
+    //   }
+    // })
+
+    // this.loan.forEach((loan, i) => {
+    //   if(i >= this.pfrType) {
+    //     return
+    //   }
+    //   if(!this.pfrData.defaultCheck.income_protection_upon_death_other) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.others = Number(loan);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.updateValues()
+    //   }
+    // })
+
+    // personalLoans.forEach(loan => {
+    //   this.personalLoans[loan['client']] = Number(loan['sum'])
+    // })
+
+    // this.personalLoans.forEach((loan, i) => {
+    //   if(i >= this.pfrType) {
+    //     return
+    //   }
+    //   if(!this.pfrData.defaultCheck.income_protection_upon_death_debt) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.personalDebts = Number(loan)
+
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.updateValues()
+
+    //   }
+    // })
+
+    // mortgages.forEach((mortgage) => {
+    //   this.mortgage[mortgage['client']] = Number(mortgage['sum']);
+    // });
+
+    // this.mortgage.forEach((mortgage, i) => {
+    //   if(i >= this.pfrType) {
+    //     return
+    //   }
+    //   if(!this.pfrData.defaultCheck.income_protection_upon_death_mortgage) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.mortgage = Number(mortgage);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.fund_disability_income_expense_mortgage) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundDisabilityIncomeExpense.mortgage = Number(mortgage);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundDisabilityIncomeExpense.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.fund_critical_illness_expense_mortgage) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundCriticalIllnessExpense.mortgage = Number(mortgage);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundCriticalIllnessExpense.updateValues()
+
+    //   }
+    // })
+
+    // insurances.forEach((insurance) => {
+    //   this.insurance[insurance['client']] = {
+    //     death: Number(insurance['death']),
+    //     tpd: Number(insurance['tpd']),
+    //     ci: Number(insurance['ci']),
+    //     acc: Number(insurance['acc']),
+    //   };
+    // });
+
+    // this.insurance.forEach((insurance, i) => {
+    //   if(i >= this.pfrType) {
+    //     return
+    //   }
+    //   if(!this.pfrData.defaultCheck.income_protection_upon_death_death) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.existingInsuranceCoverageOnDeath = Number(
+    //       insurance['death']
+    //     );
+    //     this.pfrData.clientData[
+    //       i
+    //     ].incomeProtectionUponDeath.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.fund_disability_income_expense_disability){
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundDisabilityIncomeExpense.existingInsuranceCoverageOnDisability = Number(
+    //       insurance['tpd']
+    //     );
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundDisabilityIncomeExpense.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.fund_critical_illness_expense_ci) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundCriticalIllnessExpense.existingInsuranceCoverageOnCI = Number(
+    //       insurance['ci']
+    //     );
+    //     this.pfrData.clientData[
+    //       i
+    //     ].fundCriticalIllnessExpense.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.cover_for_personal_accident_benefit) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].coverForPersonalAccident.less = Number(insurance['acc']);
+    //     this.pfrData.clientData[
+    //       i
+    //     ].coverForPersonalAccident.updateValues()
+    //   }
+
+    //   if(!this.pfrData.defaultCheck.maternity_other) {
+    //     this.pfrData.clientData[
+    //       i
+    //     ].maternity.less = Number(insurance['acc'])
+    //     this.pfrData.clientData[
+    //       i
+    //     ].maternity.updateValuesWithOther(this.pfrData.addtionalMaternityPlan, 'clients', i)
+    //   }
+    // })
+
+
+    // childFunds.forEach((child) => {
+    //   let fund = new FundChildEducation();
+    //   fund.retrieveData(child);
+    //   this.pfrData.childFund.push(fund);
+    // });
+
+    if (needs != null) {
+      let obj = JSON.parse(needs['needs']);
+      if (obj['client'] != undefined) {
+        obj['client'].forEach((need:any, i: number) => {
+          fetchNeed(need, i, 'client');
+        });
+      }
+      if (obj['dependant'] != undefined) {
+        obj['dependant'].forEach((need:any, i: number) => {
+          fetchNeed(need, i, 'dependant');
+        });
+      }
+    }
+    // notes.forEach((note) => {
+    //   this.additionalNote[note['noteId']]['note'] = note['note'];
+    // });
+  }
+
+  useEffect(() => {
+    // if (scrollPositionBottomPrev === "Process6" && section7.pfrId === 0) {
+    //   const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    //   setGlobal('pfrId', section1?.state?.id);
+    //   getSectionData(section1?.state?.id);
+    // }
+    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    setGlobal('pfrId', section1?.state?.id);
+    getSectionData(section1?.state?.id);
+  }, [scrollPositionBottomPrev]);
 
   useEffect(() => {
     if (scrollPositionNext === "okSec8") {
@@ -588,36 +967,36 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             7.1 Protection (Income Protection Upon Death)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][0] || section7.answer.need.client[1][0]}
+            isChecked={isChecked(0)}
             onChange={(event) => setIncomeProtection(!section7.answer.need.client[0][0], 0, 0)} />
             {/* <Toggle /> */}
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][0] || section7.answer.need.client[1][0]) ? <IncomeProtection pfrType={props.pfrType} /> : ""}
+        {isChecked(0) ? <IncomeProtection pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.2 Protection (Fund Disability Income / Expense)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][1] || section7.answer.need.client[1][1]}
+            isChecked={isChecked(1)}
             onChange={() => setFundDisability(!section7.answer.need.client[0][1], 0, 1)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][1] || section7.answer.need.client[1][1]) ? <FundDisability pfrType={props.pfrType} /> : ""}
+        {isChecked(1) ? <FundDisability pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.3 Protection (Fund Critical Illness Expense)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][2] || section7.answer.need.client[1][2]}
+            isChecked={isChecked(2)}
             onChange={() => setFundCritical(!section7.answer.need.client[0][2], 0, 2)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][2] || section7.answer.need.client[1][2]) ? <FundCritical pfrType={props.pfrType} /> : ""}
+        {isChecked(2) ? <FundCritical pfrType={props.pfrType} /> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
@@ -637,91 +1016,97 @@ const PrioritiesNeedAnalysis = (props: Props) => {
             Investment Needs / Other Goals)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][4] || section7.answer.need.client[1][4]}
+            isChecked={isChecked(4)}
             onChange={(event) => setFundMediumToLong(!section7.answer.need.client[0][4], 0, 4)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][4] || section7.answer.need.client[1][4]) ? <FundMediumToLong pfrType={props.pfrType}/> : ""}
+        {(isChecked(4)) ? <FundMediumToLong pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.6 Saving & Investment (Fund Retirement Lifestyle)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][5] || section7.answer.need.client[1][5]}
+            isChecked={isChecked(5)}
             onChange={(event) => setFundRetirement(!section7.answer.need.client[0][5], 0, 5)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][5] || section7.answer.need.client[1][5]) ? <FundRetirement pfrType={props.pfrType}/> : ""}
+        {(isChecked(5)) ? <FundRetirement pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.7 Accident & Health (Cover for Personal Accident)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][6] || section7.answer.need.client[1][6]}
+            isChecked={isChecked(6)}
             onChange={(event) => setCoverForPersonal(!section7.answer.need.client[0][6], 0, 6)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][6] || section7.answer.need.client[1][6] ? <CoverForPersonal pfrType={props.pfrType}/> : ""}
+        {isChecked(6) ? <CoverForPersonal pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.8 Accident & Health (Fund Long Term Care)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][7] || section7.answer.need.client[1][7]}
+            isChecked={isChecked(7)}
             onChange={(event) => setFundLongTermCare(!section7.answer.need.client[0][7], 0, 7)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][7] || section7.answer.need.client[1][7]) ? <FundLongTermCare pfrType={props.pfrType}/> : ""}
+        {(isChecked(7)) ? <FundLongTermCare pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">
             7.9 Accident & Health (Fund Hospital Expenses)
           </h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][8] || section7.answer.need.client[1][8]}
+            isChecked={isChecked(8)}
             onChange={(event) => setFundHospitalExpense(!section7.answer.need.client[0][8], 0, 8)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][8] || section7.answer.need.client[1][8]) ? <FundHospitalExpenses pfrType={props.pfrType}/> : ""}
+        {(isChecked(8)) ? <FundHospitalExpenses pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.10 Maternity Plan</h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][9] || section7.answer.need.client[1][9]}
+            isChecked={isChecked(9)}
             onChange={(event) => setMaternityPlan(!section7.answer.need.client[0][9], 0, 9)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {section7.answer.need.client[0][9] || section7.answer.need.client[1][9] ? <MaternityPlan pfrType={props.pfrType}/> : ""}
+        {isChecked(9) ? <MaternityPlan pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.11 Estate Planning</h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][10] || section7.answer.need.client[1][10]}
+            isChecked={isChecked(10)}
             onChange={(event) => setEstatePlanning(!section7.answer.need.client[0][10], 0, 10)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][10] || section7.answer.need.client[1][10]) ? <EstatePlanning pfrType={props.pfrType}/> : ""}
+        {(isChecked(10)) ? <EstatePlanning pfrType={props.pfrType}/> : ""}
 
         <HeadingSecondarySectionDoubleGrid className="mx-8 2xl:mx-60">
           <h2 className="text-xl font-bold">7.12 Other Insurance(s)</h2>
           <Toggle
-            isChecked={section7.answer.need.client[0][11] || section7.answer.need.client[1][11]}
+            isChecked={isChecked(11)}
             onChange={(event) => setOtherInsurance(!section7.answer.need.client[0][11], 0, 11)}
           />
         </HeadingSecondarySectionDoubleGrid>
 
-        {(section7.answer.need.client[0][11] || section7.answer.need.client[1][11]) ? <OtherInsurance pfrType={props.pfrType}/> : ""}
+        {(isChecked(11)) ? <OtherInsurance pfrType={props.pfrType}/> : ""}
       </>
+
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 7" />
+      ) : (
+        ""
+      )}
 
 
       {/* <SectionCardFooter>

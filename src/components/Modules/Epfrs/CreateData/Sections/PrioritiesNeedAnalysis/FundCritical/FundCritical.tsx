@@ -438,6 +438,8 @@ const FundCritical = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i} className={``}>
                 <Input
+                  readonly={!section7.answer.defaultCheck
+                    .fund_critical_illness_expense_mortgage}
                   formStyle="text-right"
                   className="mb-10"
                   type="text"
@@ -457,6 +459,8 @@ const FundCritical = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={!section7.answer.defaultCheck
+                      .fund_critical_illness_expense_mortgage}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -604,6 +608,8 @@ const FundCritical = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i} className={``}>
                 <Input
+                  readonly={!section7.answer.defaultCheck
+                    .fund_critical_illness_expense_ci}
                   formStyle="text-right"
                   className="mb-10"
                   type="text"
@@ -623,6 +629,8 @@ const FundCritical = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={!section7.answer.defaultCheck
+                      .fund_critical_illness_expense_ci}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"

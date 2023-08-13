@@ -10,7 +10,7 @@ import Settings5FillIcon from "remixicon-react/Settings5FillIcon";
 
 import SidebarLink from "./SidebarLink";
 import SidebarLinkIcon from "./SidebarLinkIcon";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useLoginData } from "@/store/login/logindata";
 
 interface Props {
@@ -20,6 +20,8 @@ interface Props {
 
 const SidebarBottomMenu = (prop: Props) => {
   const { delLogin } = useLoginData();
+
+  const { name } = useLoginData();
   let bottomMenu = [
     {
       url: "/notifications",
@@ -66,6 +68,7 @@ const SidebarBottomMenu = (prop: Props) => {
           );
         })} */}
         <div>
+          <span className="p-3">Hi {name} ~</span>
           <button
             className="flex w-full justify-start gap-4 p-3 hover:cursor-pointer items-center"
             onClick={logout}

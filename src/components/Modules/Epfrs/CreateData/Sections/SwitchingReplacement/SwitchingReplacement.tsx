@@ -29,7 +29,7 @@ interface Props {
 
 const SwitchingReplacement = (props: Props) => {
   const scrollPosition = useScrollPosition(10);
-  const scrollPositionBottom = useScrollPositionBottom(10);
+  const scrollPositionNext = useScrollPosition(11);
   const scrollPositionBottomSection9 = useScrollPositionBottom(9);
   const [pfrId, setPfrId] = useState(0);
   const [editable, setEditable] = useState(0);
@@ -324,7 +324,7 @@ const SwitchingReplacement = (props: Props) => {
   }, [editable]);
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process10") {
+    if (scrollPositionNext === "Process11") {
       if (
         (editable === 0 && sectionTenData.status === 1) ||
         (editable === 2 && sectionTenData.status === 1)
@@ -336,7 +336,7 @@ const SwitchingReplacement = (props: Props) => {
         console.log("Your cannot save data");
       }
     }
-  }, [scrollPositionBottom]);
+  }, [scrollPositionNext]);
 
   return (
     <div id={props.id}>

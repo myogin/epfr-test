@@ -230,6 +230,7 @@ const MaternityPlan = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asda" + i} className={``}>
                 <Input
+                  readonly={!section7.answer.defaultCheck.maternity_other}
                   formStyle="text-right"
                   className="mb-10"
                   type="text"
@@ -246,6 +247,7 @@ const MaternityPlan = (props: Props) => {
               return (
                 <td key={"asda" + i} className={``}>
                   <Input
+                    readonly={!section7.answer.defaultCheck.maternity_other}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -288,7 +290,7 @@ const MaternityPlan = (props: Props) => {
                       </div>
                     </div>
                   </td>
-                  {maternity.client.map(function (v: any, i: any) {
+                  {maternity.clients.map(function (v: any, i: any) {
                     return (
                       <td key={"asda" + i} className={``}>
                         <Input
@@ -297,7 +299,7 @@ const MaternityPlan = (props: Props) => {
                           type="text"
                           placeholder="1,000,000"
                           name={i}
-                          dataType="client"
+                          dataType="clients"
                           value={v}
                           handleChange={(event) =>
                             handleMaternity(event, index, i)
