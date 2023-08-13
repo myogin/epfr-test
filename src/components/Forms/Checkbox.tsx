@@ -8,6 +8,9 @@ interface Props {
   label?: string;
   lableStyle?: string;
   value?: any;
+  dataType?: string;
+  indexData?: number;
+  indexClient?: number;
   dataId?: number;
   name?: any;
   innerRef?: (e: any) => void;
@@ -19,10 +22,13 @@ interface Props {
 
 const Checkbox = (props: Props) => {
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${props.className}`}>
       <div className="flex items-start justify-start gap-4">
         <input
           type="checkbox"
+          data-groupdata={props.dataType}
+          data-indexdata={props.indexData}
+          data-indexclient={props.indexClient}
           disabled={props.isDisabled}
           checked={props.isChecked}
           onChange={props.onChange}

@@ -42,6 +42,11 @@ const Affordability = (props: Props) => {
   let setGlobal = useAffordability((state) => state.setGlobal);
   let setInit = useAffordability((state) => state.setInit);
 
+  let setExisting = useAffordability((state) => state.setExisting);
+  let setExistingMedisave = useAffordability(
+    (state) => state.setExistingMedisave
+  );
+
   // section8 Temp and support data
   let annualIncomeTemp = useAffordabilityTemp((state) => state.annualIncome);
   let annualExpenseTemp = useAffordabilityTemp((state) => state.annualExpense);
@@ -155,19 +160,28 @@ const Affordability = (props: Props) => {
     setPayorDetail(key, name, groupdata, value);
   };
 
+  const handleExisting = (event: any, key: any, index: any) => {
+    const { name, value } = event.target;
+    const { groupdata } = event.target.dataset;
+
+    if (groupdata === "medisaveResource") {
+      setExistingMedisave(name, key, value);
+    } else {
+      setExisting(name, key, value);
+    }
+  };
+
   const checkboxPayorBudget = (event: any, key: any, index: any) => {
     const { name, value } = event.target;
     console.log("value", value);
     setPayorBudget(key, index, name, value);
 
     if (name === "annual") {
-
       if (index === 0) {
         if (
           value >
           annualIncomeTemp[key].ammount - annualExpenseTemp[key].ammount
         ) {
-
           let annualLogicData = [...annualLogic];
           annualLogicData[key].validate[index] = {
             ...annualLogicData[key].validate[index],
@@ -703,6 +717,90 @@ const Affordability = (props: Props) => {
                         logic={annualLogic[key].validate[index].validation}
                         textError={annualLogic[key].validate[index].error}
                       />
+
+                      {/* CASH ANNUAL */}
+                      {index === 0 ? (
+                        <>
+                          <Checkbox
+                            className="mb-4"
+                            dataType="cash"
+                            value={section8.fromExistingResources[key]}
+                            isChecked={section8.fromExistingResources[key]}
+                            lableStyle="text-xs"
+                            label="Funding From Existing Resources"
+                            name="fromExistingResources"
+                            onChange={(event) =>
+                              handleExisting(event, key, index)
+                            }
+                          />
+                          <TextArea
+                            dataType="cash"
+                            name="reasonForResources"
+                            defaultValue={section8.reasonForResources[key]}
+                            needValidation={true}
+                            handleChange={(event) =>
+                              handleExisting(event, key, index)
+                            }
+                            logic={
+                              (section8.fromExistingResources[key] == true &&
+                                section8.reasonForResources[key] === null) ||
+                              section8.reasonForResources[key] === ""
+                                ? false
+                                : true
+                            }
+                          />
+                        </>
+                      ) : null}
+
+                      {/* MEDISAVE ANNUAL */}
+                      {index === 3 ? (
+                        <>
+                          <Checkbox
+                            className="mb-4"
+                            dataType="medisaveResource"
+                            lableStyle="text-xs"
+                            value={
+                              section8.medisaveResource.fromExistingResources[
+                                key
+                              ]
+                            }
+                            isChecked={
+                              section8.medisaveResource.fromExistingResources[
+                                key
+                              ]
+                            }
+                            label="Funding From Existing Resources"
+                            name="fromExistingResources"
+                            onChange={(event) =>
+                              handleExisting(event, key, index)
+                            }
+                          />
+                          <TextArea
+                            dataType="medisaveResource"
+                            name="reasonForResources"
+                            needValidation={true}
+                            handleChange={(event) =>
+                              handleExisting(event, key, index)
+                            }
+                            logic={
+                              (section8.medisaveResource.fromExistingResources[
+                                key
+                              ] == true &&
+                                section8.medisaveResource.reasonForResources[
+                                  key
+                                ] === null) ||
+                              section8.medisaveResource.reasonForResources[
+                                key
+                              ] === ""
+                                ? false
+                                : true
+                            }
+                            defaultValue={
+                              section8.medisaveResource.reasonForResources[key]
+                            }
+                          />
+                        </>
+                      ) : null}
                     </div>
                     <div>
                       <Input
@@ -718,6 +816,91 @@ const Affordability = (props: Props) => {
                         logic={singleLogic[key].validate[index].validation}
                         textError={singleLogic[key].validate[index].error}
                       />
+                      {/* CASH SINGLE */}
+                      {index === 0 ? (
+                        <>
+                          <Checkbox
+                            className="mb-4"
+                            dataType="cash"
+                            value={section8.fromExistingResourcesForSingle[key]}
+                            lableStyle="text-xs"
+                            isChecked={
+                              section8.fromExistingResourcesForSingle[key]
+                            }
+                            label="Funding From Existing Resources"
+                            name="fromExistingResourcesForSingle"
+                            onChange={(event) =>
+                              handleExisting(event, key, index)
+                            }
+                          />
+                          <TextArea
+                            dataType="cash"
+                            name="reasonForResourcesForSingle"
+                            defaultValue={
+                              section8.reasonForResourcesForSingle[key]
+                            }
+                            handleChange={(event) =>
+                              handleExisting(event, key, index)
+                            }
+                            needValidation={true}
+                            logic={
+                              (section8.fromExistingResourcesForSingle[key] ==
+                                true &&
+                                section8.reasonForResourcesForSingle[key] ===
+                                  null) ||
+                              section8.reasonForResourcesForSingle[key] === ""
+                                ? false
+                                : true
+                            }
+                          />
+                        </>
+                      ) : null}
+
+                      {/* MEDISAVE SINGLE */}
+                      {index === 3 ? (
+                        <>
+                          <Checkbox
+                            className="mb-4"
+                            dataType="medisaveResource"
+                            lableStyle="text-xs"
+                            value={
+                              section8.medisaveResource
+                                .fromExistingResourcesForSingle[key]
+                            }
+                            isChecked={
+                              section8.medisaveResource
+                                .fromExistingResourcesForSingle[key]
+                            }
+                            label="Funding From Existing Resources"
+                            name="fromExistingResourcesForSingle"
+                            onChange={(event) =>
+                              handleExisting(event, key, index)
+                            }
+                          />
+                          <TextArea
+                            dataType="medisaveResource"
+                            name="reasonForResourcesForSingle"
+                            needValidation={true}
+                            handleChange={(event) =>
+                              handleExisting(event, key, index)
+                            }
+                            logic={
+                              (section8.medisaveResource
+                                .fromExistingResourcesForSingle[key] == true &&
+                                section8.medisaveResource
+                                  .reasonForResourcesForSingle[key] === null) ||
+                              section8.medisaveResource
+                                .reasonForResourcesForSingle[key] === ""
+                                ? false
+                                : true
+                            }
+                            defaultValue={
+                              section8.medisaveResource
+                                .reasonForResourcesForSingle[key]
+                            }
+                          />
+                        </>
+                      ) : null}
                     </div>
                     <div>
                       <div className="mb-2">
