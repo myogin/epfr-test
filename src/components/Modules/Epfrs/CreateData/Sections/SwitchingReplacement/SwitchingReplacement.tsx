@@ -277,6 +277,10 @@ const SwitchingReplacement = (props: Props) => {
     }
   };
 
+  const validate = () => {
+    
+  }
+
   useEffect(() => {
     if (scrollPositionBottomSection9 === "Process9" && sectionTenData.id === 0) {
       const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
@@ -335,7 +339,7 @@ const SwitchingReplacement = (props: Props) => {
   }, [scrollPositionBottom]);
 
   return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+    <div id={props.id}>
       <div
         id="section-header-10"
         className={`sticky top-0 z-10 ${
@@ -1051,6 +1055,7 @@ const SwitchingReplacement = (props: Props) => {
         ""
       )}
 
+      <div className="mt-20 mb-20 border-b border-gray-soft-strong"></div>
     </div>
   );
 };

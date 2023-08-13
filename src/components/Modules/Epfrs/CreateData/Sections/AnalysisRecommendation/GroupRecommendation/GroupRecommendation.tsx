@@ -8,16 +8,17 @@ import TextSmall from "@/components/Attributes/Typography/TextSmall";
 import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonRedMedium from "@/components/Forms/Buttons/ButtonRedMedium";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
+import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 
 import Checkbox from "@/components/Forms/Checkbox";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { useAnalysisRecommendationGroup } from "@/store/epfrPage/createData/analysisRecommendationGroup";
 
 // Service
-import {getPfr, getRecommendationGroup, pfrSection} from "@/services/pfrService";
+import {getPfr, getRecommendationGroup, pfrSection, removeRecommendation} from "@/services/pfrService";
 import {getAllCompany} from "@/services/companyService";
 import {productFindOne} from "@/services/productService";
 // import {getPfrSection} from "@/services/getPfrSection";
@@ -26,6 +27,7 @@ import AddLineIcon from "remixicon-react/AddLineIcon";
 import EditLineIcon from "remixicon-react/EditLineIcon";
 import DeleteBin2LineIcon from "remixicon-react/DeleteBin2LineIcon";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
+import { Transition, Dialog } from "@headlessui/react";
 
 
 const GroupRecommendation = () => {
@@ -37,7 +39,13 @@ const GroupRecommendation = () => {
 
   let {showDetailData} = useNavigationSection();
 
-  const showDetail = () => {
+  const showDetail = (id :any) => {
+    localStorage.setItem("s9_recommendId", id)
+    showDetailData(92);
+  };
+
+  const showDetailAdd = () => {
+    localStorage.setItem("s9_recommendId", "")
     showDetailData(92);
   };
 
@@ -84,6 +92,7 @@ const GroupRecommendation = () => {
 
   const [dataIcomes, setDataIcomes] = useState<any>([]);
   const [dataExpense, setDataExpense] = useState<any>([]);
+  const [dataLoad, setLoad] = useState<any>(false);
 
   const premiumTypes: Array<any> = [
     'CASH',
@@ -94,6 +103,29 @@ const GroupRecommendation = () => {
   ]
   // END STATE
   useEffect(() => {
+    setPfr8({});
+    setPfr9({});
+
+    setAnnualPayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setSinglePayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setAnnualRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setSingleRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    
+    setTotalAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setTotalSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setMaxAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    setMaxSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+
+    setProductAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    setProductSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    
+    setDataSubPremium(
+      {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
+    );
+    setResDataTotalPremiumArr(
+      {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
+    );
+
     const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
     
@@ -111,8 +143,8 @@ const GroupRecommendation = () => {
       setPfr9(data)
       calcReaminingBudgets(data)
     });
-
     getRecommendationGroup(pfrId, pfrGroupId).then((data: any) => {
+      console.log('data', data)
       if(data.products){
         if(data.products.length > 0){
           data.products.map((product: any) => {
@@ -191,7 +223,7 @@ const GroupRecommendation = () => {
     setAnnualRemainBudget(annualRemainBudget)
     setSingleRemainBudget(singleRemainBudget)
 
-  }, [section9RecommendGroup]);
+  }, [section9RecommendGroup, dataLoad]);
 
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {
@@ -542,168 +574,73 @@ const GroupRecommendation = () => {
       return portfolio['name']
     }
   }
-  // checkCondition() {
-  //   this.msg = []
-  //   let issues = [[],[]]
-  //   let issuesForSingle = [[], []]
-  //   for(let i = 0 ; i < this.type ; i ++ ) {
-  //     for(let j =  0; j < 5 ; j ++ ) {
-  //       if(this.maxAnnualPremium[i][j] > this.annualRemainBudget[i][j] ) {
-  //           issues[i].push(this.premiumTypes[j])
-  //         }
-  //         if(this.maxSinglePremium[i][j] > this.singleRemainBudget[i][j] ) {
-  //           issuesForSingle[i].push(this.premiumTypes[j])
-  //         }
-  //     }
-  //     let  msg = ''
-  //     for(let k = 0 ; k < issues[i].length ; k ++ ) {
-  //       if(issues[i].length == 1) {
-  //         msg = `Client${i+1}'s annual ${issues[i][k]}`
-  //       } else {
-  //           if(k == 0) {
-  //             msg += `Client${i+1}'s annual ${issues[i][k]}`
-  //           } else {
-  //             msg += `, ${issues[i][k]}`
-  //           }
-  //       }
-  //     }
-  //     if(issues[i].length == 1) {
-  //       msg += ' is over from budget'
-  //       this.msg.push(
-  //         msg
-  //       )
-  //     } else if(issues[i].length > 1) {
-  //       msg += ' are over from budget'
-  //       this.msg.push(
-  //         msg
-  //       )
-  //     }
-  //     msg = ''
-  //     for(let k = 0 ; k < issuesForSingle[i].length ; k ++ ) {
-  //       if(issuesForSingle[i].length == 1) {
-  //         msg = `Client${i+1}'s single ${issuesForSingle[i][k]}`
-  //       } else {
-  //           if(k == 0) {
-  //             msg += `Client${i+1}'s single ${issuesForSingle[i][k]}`
-  //           } else {
-  //             msg += `, ${issuesForSingle[i][k]}`
-  //           }
-  //       }
-  //     }
-  //     if(issuesForSingle[i].length == 1) {
-  //       msg += ' is over from budget'
-  //       this.msg.push(
-  //         msg
-  //       )
-  //     } else if(issuesForSingle[i].length > 1) {
-  //       msg += ' are over from budget'
-  //       this.msg.push(
-  //         msg
-  //       )
-  //     }
 
+  const [showModal, setShowModal] = useState(false);
+  const [dataRemoveId, setRemoveId] = useState(false);
+  const removeData = async (id: any, modalData: any) => {
+    if(modalData){
+      setRemoveId(id)
+      setShowModal(true)
+    }else{
+      setShowModal(false)
+      var idpfr = localStorage.getItem("s9_PfrId");
+      let rm = await removeRecommendation(idpfr, dataRemoveId);
+      if(rm.status == 200){
+        // showDetailData(91)
+        setLoad(true)
+      }
+    }
+  }
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
-  //   }
-
-
-  //   if(this.msg.length == 0) {
-  //     return true
-  //   } else {
-  //     return false
-  //   }
-  // }
-
-  // sumTotal(){
-  //   var res = 0;
-  //   if(this.products){
-  //     if(this.products.length > 0){
-  //       this.products.forEach(function(v, k){
-  //         res += v.premium;
-  //         if(v.premium_for_hospitalization){
-  //           var getPfr9 = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
-  //           res = getPfr9;
-  //         }
-
-  //         if(v.riders){
-  //           if(v.riders.length > 0){
-  //             v.riders.forEach(function(vRider){
-  //               res += vRider.premium;
-  //             });
-  //           }
-  //         }
-  //       });
-  //     }
-  //   }
-
-  //   return res;
-  // }
-
-  // sumTotalILP(){
-  //   var res = 0;
-  //   if(this.ILPProducts){
-  //     if(this.ILPProducts.length > 0){
-  //       this.ILPProducts.forEach(function(v, k){
-  //         res += v.premium;
-  //         if(v.premium_for_hospitalization){
-  //           var getPfr9 = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
-  //           res = getPfr9;
-  //         }
-
-  //         if(v.riders){
-  //           if(v.riders.length > 0){
-  //             v.riders.forEach(function(vRider){
-  //               res += vRider.premium;
-  //             });
-  //           }
-  //         }
-
-  //       });
-
-  //       if(this.customProducts.length > 0){
-  //         this.customProducts.forEach(function(v, k){
-  //           res += v.premium;
-  //           if(v.premium_for_hospitalization){
-  //             var getPfr9 = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
-  //             res = getPfr9;
-  //           }
-  
-  //           if(v.riders){
-  //             if(v.riders.length > 0){
-  //               v.riders.forEach(function(vRider){
-  //                 res += vRider.premium;
-  //               });
-  //             }
-  //           }
-  
-  //         });
-  //       }
-
-  //       if(this.CISProducts.length > 0){
-  //         this.CISProducts.forEach(function(v, k){
-  //           res += v.premium;
-  //           if(v.premium_for_hospitalization){
-  //             var getPfr9 = res + v.premium_for_hospitalization.cash + v.premium_for_hospitalization.cpfMedisave;
-  //             res = getPfr9;
-  //           }
-  
-  //           if(v.riders){
-  //             if(v.riders.length > 0){
-  //               v.riders.forEach(function(vRider){
-  //                 res += vRider.premium;
-  //               });
-  //             }
-  //           }
-  
-  //         });
-  //       }
-  //     }
-  //   }
-  //   return res;
-  // }
-
-  
   return (
     <>
+      <Transition appear show={showModal} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-opacity-25 bg-gray-light" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex items-center justify-center min-h-full p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95" >
+                <Dialog.Panel className="w-full max-w-2xl p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                  <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                    Are You Sure Want To Delete This Data ?
+                  </Dialog.Title>
+
+                  <div className="flex gap-4 mt-4">
+                    <ButtonRedMedium onClick={() => removeData(0, false)}>
+                      Delete
+                    </ButtonRedMedium>
+                    <ButtonTransparentMedium onClick={closeModal}>
+                      Cancel
+                    </ButtonTransparentMedium>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         {/* Payor Budget */}
         <RowSingleGrid>
@@ -810,7 +747,8 @@ const GroupRecommendation = () => {
                           Client {index+1}
                         </td>
                         <td className="px-2 py-5 text-center">
-                          {isNaN(getPfr8.annualIncome[index] - getPfr8.annualExpense[index]) ? 0 : getPfr8.annualIncome[index] - getPfr8.annualExpense[index]}
+                          { getPfr8?.annualIncome ? isNaN(getPfr8.annualIncome[index] - getPfr8.annualExpense[index]) ? 0 : getPfr8.annualIncome[index] - getPfr8.annualExpense[index] : 0
+                          }
                         </td>
                       </tr>
                     </>
@@ -887,7 +825,7 @@ const GroupRecommendation = () => {
         {/* Button Add Group */}
         <RowSingleGrid>
           <TextSmall>Product(s) / Rider(s)</TextSmall>
-          <ButtonBox className="text-green-deep" onClick={showDetail}>
+          <ButtonBox className="text-green-deep" onClick={(event) => showDetailAdd()}>
             <AddLineIcon />
           </ButtonBox>
         </RowSingleGrid>
@@ -921,10 +859,10 @@ const GroupRecommendation = () => {
                               <td className="border border-gray-soft-strong px-2 py-5">{getPremiumFrequencyName(dataProd.premiumFrequency)}</td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>Client {dataProd.nameOfOwner + 1}</td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
-                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
                                   <DeleteBin2LineIcon key={index} />
                                 </ButtonBox>
                                 
@@ -1003,10 +941,10 @@ const GroupRecommendation = () => {
                               Client { dataProd["nameOfOwner"] + 1 }
                             </td>
                             <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
-                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
                                   <DeleteBin2LineIcon key={index} />
                                 </ButtonBox>
                             </td>
@@ -1114,10 +1052,10 @@ const GroupRecommendation = () => {
                               </td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
-                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
                                   <DeleteBin2LineIcon key={index} />
                                 </ButtonBox>
                                 
@@ -1189,10 +1127,10 @@ const GroupRecommendation = () => {
                               </td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
-                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
                                   <DeleteBin2LineIcon key={index} />
                                 </ButtonBox>
                                 
@@ -1264,10 +1202,10 @@ const GroupRecommendation = () => {
                               </td>
                               <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={showDetail}>
+                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
                                   <EditLineIcon key={index} />
                                 </ButtonBox>
-                                <ButtonBox className="text-amber-600" onClick={showDetail}>
+                                <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
                                   <DeleteBin2LineIcon key={index} />
                                 </ButtonBox>
                                 

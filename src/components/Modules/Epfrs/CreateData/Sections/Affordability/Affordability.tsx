@@ -47,6 +47,19 @@ const Affordability = (props: Props) => {
   let annualExpenseTemp = useAffordabilityTemp((state) => state.annualExpense);
   let assetTemp = useAffordabilityTemp((state) => state.asset);
   let loanTemp = useAffordabilityTemp((state) => state.loan);
+  let summaryOfSRSTemp = useAffordabilityTemp((state) => state.summaryOfSRS);
+  let summaryOfCpfOaTemp = useAffordabilityTemp(
+    (state) => state.summaryOfCpfOa
+  );
+  let summaryOfCpfSaTemp = useAffordabilityTemp(
+    (state) => state.summaryOfCpfSa
+  );
+  let summaryOfCpfMedisaveTemp = useAffordabilityTemp(
+    (state) => state.summaryOfCpfMedisave
+  );
+  let summaryOfSavingTemp = useAffordabilityTemp(
+    (state) => state.summaryOfSaving
+  );
 
   let editableStatus = useAffordability(
     (state) => state.section8.editableStatus
@@ -63,6 +76,48 @@ const Affordability = (props: Props) => {
   const scrollPositionBottom = useScrollPositionBottom(7);
   const scrollPositionNext = useScrollPosition(9);
   const scrollPosition = useScrollPosition(8);
+
+  const [annualLogic, setAnnualLogic] = useState([
+    {
+      validate: [
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+      ],
+    },
+    {
+      validate: [
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+      ],
+    },
+  ]);
+
+  const [singleLogic, setSingleLogic] = useState([
+    {
+      validate: [
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+      ],
+    },
+    {
+      validate: [
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+        { validation: true, error: "" },
+      ],
+    },
+  ]);
 
   let pfrLocal = usePfrData((state) => state.pfr);
 
@@ -104,7 +159,172 @@ const Affordability = (props: Props) => {
     const { name, value } = event.target;
     console.log("value", value);
     setPayorBudget(key, index, name, value);
+
+    if (name === "annual") {
+      console.log("Masuk sini annual " + value + " " + name + " " + index);
+      console.log(
+        "Masuk sini total " +
+          (annualIncomeTemp[key].ammount - annualExpenseTemp[key].ammount)
+      );
+      if (index === 0) {
+        if (
+          value >
+          annualIncomeTemp[key].ammount - annualExpenseTemp[key].ammount
+        ) {
+          console.log("Masuk sini annual seksi 1");
+
+          let annualLogicData = [...annualLogic];
+          annualLogicData[key].validate[index] = {
+            ...annualLogicData[key].validate[index],
+            validation: false,
+            error: "Cash can't be more than Surplus",
+          };
+          setAnnualLogic(annualLogicData);
+          setGlobal("status", 0);
+        } else {
+          let annualLogicData = [...annualLogic];
+          annualLogicData[key].validate[index] = {
+            ...annualLogicData[key].validate[index],
+            validation: true,
+            error: "",
+          };
+          setAnnualLogic(annualLogicData);
+          setGlobal("status", 1);
+        }
+      }
+
+      // SRS
+      if (index === 4) {
+        let singleSrs =
+          section8.payorBudget[key][index].single >= 0
+            ? section8.payorBudget[key][index].single
+            : 0;
+        if (value + singleSrs > summaryOfSRSTemp[key].ammount) {
+          let annualLogicData = [...annualLogic];
+          annualLogicData[key].validate[index] = {
+            ...annualLogicData[key].validate[index],
+            validation: false,
+            error: "More than value on Section 2.6",
+          };
+          setAnnualLogic(annualLogicData);
+
+          setGlobal("status", 0);
+        } else {
+          let annualLogicData = [...annualLogic];
+          annualLogicData[key].validate[index] = {
+            ...annualLogicData[key].validate[index],
+            validation: true,
+            error: "",
+          };
+          setAnnualLogic(annualLogicData);
+          setGlobal("status", 1);
+        }
+      }
+    }
+
+    if (name === "single") {
+      if (index === 0) {
+        if (value > summaryOfSavingTemp[key].ammount) {
+          let singleLogicData = [...singleLogic];
+          singleLogicData[key].validate[index] = {
+            ...singleLogicData[key].validate[index],
+            validation: false,
+            error: "More than value on Section 2.3",
+          };
+          setSingleLogic(singleLogicData);
+
+          setGlobal("status", 0);
+        } else {
+          let singleLogicData = [...singleLogic];
+          singleLogicData[key].validate[index] = {
+            ...singleLogicData[key].validate[index],
+            validation: true,
+            error: "",
+          };
+          setSingleLogic(singleLogicData);
+          setGlobal("status", 1);
+        }
+      }
+
+      if (index === 1) {
+        // CPF OA
+        if (value > summaryOfCpfOaTemp[key].ammount) {
+          let singleLogicData = [...singleLogic];
+          singleLogicData[key].validate[index] = {
+            ...singleLogicData[key].validate[index],
+            validation: false,
+            error: "More than value on Section 2.4",
+          };
+          setSingleLogic(singleLogicData);
+
+          setGlobal("status", 0);
+        } else {
+          let singleLogicData = [...singleLogic];
+          singleLogicData[key].validate[index] = {
+            ...singleLogicData[key].validate[index],
+            validation: true,
+            error: "",
+          };
+          setSingleLogic(singleLogicData);
+          setGlobal("status", 1);
+        }
+      }
+
+      if (index === 2) {
+        // CPF SA
+        if (value > summaryOfCpfSaTemp[key].ammount) {
+          let singleLogicData = [...singleLogic];
+          singleLogicData[key].validate[index] = {
+            ...singleLogicData[key].validate[index],
+            validation: false,
+            error: "More than value on Section 2.4",
+          };
+          setSingleLogic(singleLogicData);
+
+          setGlobal("status", 0);
+        } else {
+          let singleLogicData = [...singleLogic];
+          singleLogicData[key].validate[index] = {
+            ...singleLogicData[key].validate[index],
+            validation: true,
+            error: "",
+          };
+          setSingleLogic(singleLogicData);
+          setGlobal("status", 1);
+        }
+      }
+
+      if (index === 4) {
+        // SRS
+        let annualSrs =
+          section8.payorBudget[key][index].annual >= 0
+            ? section8.payorBudget[key][index].annual
+            : 0;
+        if (value + annualSrs > summaryOfSRSTemp[key].ammount) {
+          let singleLogicData = [...singleLogic];
+          singleLogicData[key].validate[index] = {
+            ...singleLogicData[key].validate[index],
+            validation: false,
+            error: "More than value on Section 2.6",
+          };
+          setSingleLogic(singleLogicData);
+
+          setGlobal("status", 0);
+        } else {
+          let singleLogicData = [...singleLogic];
+          singleLogicData[key].validate[index] = {
+            ...singleLogicData[key].validate[index],
+            validation: true,
+            error: "",
+          };
+          setSingleLogic(singleLogicData);
+          setGlobal("status", 1);
+        }
+      }
+    }
   };
+
+  console.log(annualLogic);
 
   const handleSourceOfWealth = (event: any, key: any) => {
     const { name, value } = event.target;
@@ -172,8 +392,8 @@ const Affordability = (props: Props) => {
     }
   };
 
-   // init section 8
-   useEffect(() => {
+  // init section 8
+  useEffect(() => {
     if (!router.isReady) return;
     setInit(props.pfrType);
   }, [router.isReady]);
@@ -239,11 +459,15 @@ const Affordability = (props: Props) => {
                 name="isSelf"
                 dataType="payorDetail"
                 datas={payorForClient}
-                value={data.isSelf >=0 ? data.isSelf : "-"}
+                value={data.isSelf >= 0 ? data.isSelf : "-"}
                 handleChange={(event) => handlePayorDetail(event, key)}
                 label={`Payor For Client ${key + 1}`}
                 needValidation={true}
-                logic={String(data.isSelf) === "" || String(data.isSelf) === "-" ? false : true}
+                logic={
+                  String(data.isSelf) === "" || String(data.isSelf) === "-"
+                    ? false
+                    : true
+                }
               />
             </div>
           ))}
@@ -371,6 +595,7 @@ const Affordability = (props: Props) => {
                   className="flex items-center justify-center"
                 >
                   <Checkbox
+                    isChecked={val.selection}
                     name="selection"
                     onChange={(event) => checkboxPayorBudget(event, key, index)}
                   />
@@ -396,19 +621,26 @@ const Affordability = (props: Props) => {
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Total Annual Income ($)
                 </div>
-                <div className="text-sm font-normal">{annualIncomeTemp[key].ammount}</div>
+                <div className="text-sm font-normal">
+                  {annualIncomeTemp[key].ammount}
+                </div>
               </div>
               <div className="space-y-8 text-center">
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Total Annual Expense ($)
                 </div>
-                <div className="text-sm font-normal">{annualExpenseTemp[key].ammount}</div>
+                <div className="text-sm font-normal">
+                  {annualExpenseTemp[key].ammount}
+                </div>
               </div>
               <div className="space-y-8 text-center">
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Annual Surplus / Shortfall ($)
                 </div>
-                <div className="text-sm font-normal">{annualIncomeTemp[key].ammount - annualExpenseTemp[key].ammount}</div>
+                <div className="text-sm font-normal">
+                  {annualIncomeTemp[key].ammount -
+                    annualExpenseTemp[key].ammount}
+                </div>
               </div>
             </RowTripleGrid>
             <RowTripleGrid key={"total-asset" + key}>
@@ -416,19 +648,25 @@ const Affordability = (props: Props) => {
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Total Asset($)
                 </div>
-                <div className="text-sm font-normal">{assetTemp[key].ammount}</div>
+                <div className="text-sm font-normal">
+                  {assetTemp[key].ammount}
+                </div>
               </div>
               <div className="space-y-8 text-center">
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Total Liabilities($)
                 </div>
-                <div className="text-sm font-normal">{loanTemp[key].ammount}</div>
+                <div className="text-sm font-normal">
+                  {loanTemp[key].ammount}
+                </div>
               </div>
               <div className="space-y-8 text-center">
                 <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
                   Net Worth ($)
                 </div>
-                <div className="text-sm font-normal">{assetTemp[key].ammount - loanTemp[key].ammount}</div>
+                <div className="text-sm font-normal">
+                  {assetTemp[key].ammount - loanTemp[key].ammount}
+                </div>
               </div>
             </RowTripleGrid>
 
@@ -467,6 +705,7 @@ const Affordability = (props: Props) => {
                     </div>
                     <div>
                       <Input
+                        readonly={index === 1 || index === 2 ? true : false}
                         className="my-4"
                         type="text"
                         formStyle="text-right"
@@ -475,6 +714,9 @@ const Affordability = (props: Props) => {
                         handleChange={(event) =>
                           checkboxPayorBudget(event, key, index)
                         }
+                        needValidation={true}
+                        logic={annualLogic[key].validate[index].validation}
+                        textError={annualLogic[key].validate[index].error}
                       />
                     </div>
                     <div>
@@ -487,6 +729,9 @@ const Affordability = (props: Props) => {
                         handleChange={(event) =>
                           checkboxPayorBudget(event, key, index)
                         }
+                        needValidation={true}
+                        logic={singleLogic[key].validate[index].validation}
+                        textError={singleLogic[key].validate[index].error}
                       />
                     </div>
                     <div>

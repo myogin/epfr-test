@@ -22,6 +22,8 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import {getWholeContext, pfrSection, getRecommendation, getPfr} from "@/services/pfrService";
+import { useRouter } from "next/router";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 const Editor = dynamic(
   () => import('react-draft-wysiwyg').then(mod => mod.Editor),
@@ -39,6 +41,7 @@ const AnalysisRecommendation = (props: Props) => {
     setParent
   } = useAnalysisRecommendation();
 
+  const router = useRouter();
   const currencyFormat = (num:any) => {
     if(num){
       return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -91,6 +94,7 @@ const AnalysisRecommendation = (props: Props) => {
     setParent('reasonForDeviation', draftToHtml(convertToRaw(editorData.reasonForDeviation.getCurrentContent())));
   };
 
+  let idPfr = usePersonalInformation((state) => state.id);
   let { showDetailData } = useNavigationSection();
   const showDetail = (params: any, data: any) => {
     localStorage.setItem("s9_PfrId", '10623');
@@ -151,8 +155,11 @@ const AnalysisRecommendation = (props: Props) => {
   const [dataOutcome, setOutcome] = useState([0, 0])
 
   useEffect(() => {  
+    console.log('id', idPfr)
+
     localStorage.setItem("section9", JSON.stringify(section9));
     const pfrId = localStorage.getItem("s9_PfrId");
+    // const pfrId = idPfr;
 
     setAnnualPayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
     setSinglePayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
@@ -1471,7 +1478,6 @@ const AnalysisRecommendation = (props: Props) => {
     }
   }
 
-
   return (
     <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
       <div id="section-header-9" className={`sticky top-0 z-10 ${scrollPosition === "okSec9" ? "bg-white py-1 ease-in shadow-lg" : ""}`}>
@@ -1601,7 +1607,7 @@ const AnalysisRecommendation = (props: Props) => {
                   <Menu.Item>
                     {({ active }) => (
                       <a
-                        onClick={() => showDetail("Protection 2", 0)}
+                        onClick={() => showDetail("Long-Term Care", 0)}
                         className={classNames(
                           active
                             ? "bg-gray-soft-light text-gray-light"
@@ -1609,7 +1615,7 @@ const AnalysisRecommendation = (props: Props) => {
                           "block px-4 py-2 text-sm cursor-pointer"
                         )}
                       >
-                        Protection 2
+                        Long-Term Care
                       </a>
                     )}
                   </Menu.Item>

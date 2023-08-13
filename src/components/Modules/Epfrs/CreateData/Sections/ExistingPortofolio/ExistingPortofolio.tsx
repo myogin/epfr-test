@@ -213,14 +213,19 @@ const ExistingPortofolio = (props: Props) => {
     });
 
     // srs
+    let srs = [0, 0];
     summaryOfSRS.map((data2, index1) => {
       if (Number(data2.client) === 0) {
         asset[Number(data2.client)] += Number(data2.amount);
+        srs[Number(data2.client)] += Number(data2.amount);
       } else {
+        srs[Number(data2.client)] += Number(data2.amount);
         asset[Number(data2.client)] += Number(data2.amount);
       }
     });
 
+    setAffordabilityTemp("summaryOfSRS", 0, srs[0])
+    setAffordabilityTemp("summaryOfSRS", 1, srs[1])
     // srs
     summaryOfInvestment.map((data3, index1) => {
       if (Number(data3.client) === 0) {
@@ -231,26 +236,49 @@ const ExistingPortofolio = (props: Props) => {
     });
 
     // saving
+    let saving = [0, 0];
     summaryOfSavings.map((data4, index1) => {
       if (Number(data4.client) === 0) {
         asset[Number(data4.client)] += Number(data4.savingAmount);
+        saving[Number(data4.client)] += Number(data4.savingAmount);
       } else {
         asset[Number(data4.client)] += Number(data4.savingAmount);
+        saving[Number(data4.client)] += Number(data4.savingAmount);
       }
     });
 
+    setAffordabilityTemp("summaryOfCpfSaving", 0, saving[0])
+    setAffordabilityTemp("summaryOfCpfSaving", 1, saving[1])
+
     // cpf
+    let cpfOa = [0, 0];
+    let cpfSa = [0, 0];
+    let cpfMedisave = [0, 0];
     summaryOfCPF.map((data5, index1) => {
       
       if (Number(data5.client) === 0) {
+        
         let sumCpf = Number(data5.ordinaryAccount) + Number(data5.specialAccount) + Number(data5.medisaveAccount) + Number(data5.retirementAccount)
         asset[Number(data5.client)] += sumCpf;
+        cpfOa[Number(data5.client)] += Number(data5.ordinaryAccount);
+        cpfSa[Number(data5.client)] += Number(data5.specialAccount);
+        cpfMedisave[Number(data5.client)] += Number(data5.medisaveAccount);
       } else {
         let sumCpf = Number(data5.ordinaryAccount) + Number(data5.specialAccount) + Number(data5.medisaveAccount) + Number(data5.retirementAccount)
         asset[Number(data5.client)] += sumCpf;
+        cpfOa[Number(data5.client)] += Number(data5.ordinaryAccount);
+        cpfSa[Number(data5.client)] += Number(data5.specialAccount);
+        cpfMedisave[Number(data5.client)] += Number(data5.medisaveAccount);
       }
     });
+    setAffordabilityTemp("summaryOfCpfOa", 0, cpfOa[0])
+    setAffordabilityTemp("summaryOfCpfOa", 1, cpfOa[1])
 
+    setAffordabilityTemp("summaryOfCpfSa", 0, cpfSa[0])
+    setAffordabilityTemp("summaryOfCpfSa", 1, cpfSa[1])
+
+    setAffordabilityTemp("summaryOfCpfMedisave", 0, cpfMedisave[0])
+    setAffordabilityTemp("summaryOfCpfMedisave", 1, cpfMedisave[1])
     // Loan liabilities
     summaryOfLoans.map((data6, index1) => {
       if (Number(data6.client) === 0) {
