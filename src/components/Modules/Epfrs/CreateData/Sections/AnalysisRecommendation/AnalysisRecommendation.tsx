@@ -94,10 +94,12 @@ const AnalysisRecommendation = (props: Props) => {
     setParent('reasonForDeviation', draftToHtml(convertToRaw(editorData.reasonForDeviation.getCurrentContent())));
   };
 
-  let idPfr = usePersonalInformation((state) => state.id);
+  let idPfr = usePersonalInformation((state:any) => state.id);
   let { showDetailData } = useNavigationSection();
   const showDetail = (params: any, data: any) => {
-    localStorage.setItem("s9_PfrId", '10623');
+    var idPfr2 = usePersonalInformation((state:any) => state.id);
+    localStorage.setItem("s9_PfrId", idPfr2);
+    // localStorage.setItem("s9_PfrId", '10623');
     localStorage.setItem("s9_dataGroup", '0');
     localStorage.setItem("group_name", params);
 
@@ -155,8 +157,6 @@ const AnalysisRecommendation = (props: Props) => {
   const [dataOutcome, setOutcome] = useState([0, 0])
 
   useEffect(() => {  
-    console.log('id', idPfr)
-
     localStorage.setItem("section9", JSON.stringify(section9));
     const pfrId = localStorage.getItem("s9_PfrId");
     // const pfrId = idPfr;

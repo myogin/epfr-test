@@ -64,7 +64,8 @@ const AddPlanRecommendation = () => {
     setProductRiderBenefitArr,
     setProductRiderRiskArr,
     setProductHospital,
-    editRecommendationProduct
+    editRecommendationProduct,
+    resetRecommendationProduct
   } = useAnalysisRecommendationProduct();
 
   let benefits: Array<any> = [
@@ -241,51 +242,7 @@ const AddPlanRecommendation = () => {
   ]
   
   useEffect(() => {
-    let s9_recommendId = localStorage.getItem("s9_recommendId")
-    if(s9_recommendId){
-      editRecommendationProduct({
-        groupId: 2,
-        pfrId: 0,
-        product: {
-            selected: false,
-            edit: false,
-            subjectId: 0,
-            name: "",
-            type: 0,
-            productType: 0,
-            id: 0,
-            categoryId: 0,
-            companyId: 0,
-            policyTerm: "",
-            sumAssured: "",
-            premiumPaymentType: "",
-            premium: 0,
-            premiumFrequency: 0,
-            currency: "",
-            funds: [],
-            modelPortfolioRiskCategory: 0,
-            higherThanRiskProfile: 0,
-            nameOfOwner: 0,
-            nameOfInsure: "",
-            nameOfInsureOther: "",
-            benefit: [],
-            risk: [],
-            portfolio: 0,
-            fundName: "",
-            fundAmount: 0,
-            premiumForHospitalization: {
-                cash: 0,
-                cpfMedisave: 0
-            },
-            groupId: 0,
-            premiumType: -1,
-            feature: null
-        },
-        riders: [],
-        extraRiders: []
-      })
-    }
-    
+
     setInitWhole({});
     setCISDataPremiumType([{ id: 4, name: "Single Payment" }]);
     setDataPremiumType([{ id: 0, name: "CASH" },{ id: 1, name: "CPF OA" },{ id: 2, name: "CPF SA" },{ id: 3, name: "CPF MEDISAVE" },{ id: 4, name: "SRS" }]);
@@ -409,7 +366,9 @@ const AddPlanRecommendation = () => {
 
       // Remap Get Categories
       data.category.map((value: any, k: any) => {
+        let realId = value.id;
         resultCateg.push({
+          idReal: realId,
           id: k, 
           name: value.categoryName
         })
@@ -500,7 +459,60 @@ const AddPlanRecommendation = () => {
     console.log('section9Recommend', section9Recommend)
     setDataSelectedCategoryId(section9Recommend.product.categoryId);
     setCompany(section9Recommend.product.companyId);
+    showEdit()
   }, [section9Recommend]);
+
+  const showEdit = () => {
+    console.log('dataCategory', dataCategory)
+    console.log('dataCompany', dataCompany)
+    let s9_recommendId = localStorage.getItem("s9_recommendId")
+    if(s9_recommendId){
+      if(section9Recommend.product.id == 0){
+        getRecommendation(s9_recommendId).then((data:any) => {
+          console.log('data', data)
+          setSelectedCategory(data.product.categoryId)
+          setSelectedCompany(data.product.companyId)
+          setProductValueSelect(data.product.id)
+          editRecommendationProduct({
+            "section9Recommend": {
+              "groupId": data.groupId,
+              "pfrId": data.pfrId,
+              "riders": data.riders,
+              "product": {
+                "subjectId": data.subjectId,
+                "name": data.name,
+                "id": data.product.id,
+                "categoryId": data.product.categoryId,
+                "companyId": data.product.companyId,
+                "policyTerm": data.policyTerm,
+                "sumAssured": data.sumAssured,
+                "premiumPaymentType": data.premiumPaymentType,
+                "premium": data.premium,
+                "premiumFrequency": data.premiumFrequency,
+                "funds": data.funds ? data.funds : [],
+                "modelPortfolioRiskCategory": data.modelPortfolioRiskCategory,
+                "higherThanRiskProfile": data.higherThanRiskProfile,
+                "nameOfOwner": data.nameOfOwner,
+                "nameOfInsure": data.nameOfInsure,
+                "nameOfInsureOther": data.nameOfInsureOther,
+                "benefit": data.benefit,
+                "risk": data.risk,
+                "portfolio": data.portfolio,
+                "premiumForHospitalization": data.premiumForHospitalization,
+                "groupId": data.groupId,
+                "premiumType": data.premiumType,
+                "feature": data.product.feature,
+                "type": data.type
+              },
+              "extraRiders": []
+            }
+          })
+        });
+      }
+    }
+  }
+
+
 
   const onChangePortfolio = () => {
     if(section9Recommend.product.portfolio == 0) {
@@ -1464,9 +1476,11 @@ const AddPlanRecommendation = () => {
     setLoading(true)
     try {
       let pfrId = localStorage.getItem("s9_PfrId");
-      setParent(pfrId, 'pfrId', null)
+      var resId = (pfrId != null) ? pfrId.toString() : '0';
+      setParent(resId, 'pfrId', null)
       let storeData = await postSection9Recommendation(JSON.stringify(section9Recommend));
       if(storeData.status == 200){
+        resetRecommendationProduct()
         localStorage.setItem("s9_recommendId", storeData.data.resullt);
         showDetailData(params);
       }
@@ -1478,6 +1492,7 @@ const AddPlanRecommendation = () => {
   }
 
   const cancleData = (params:any) => {
+    resetRecommendationProduct()
     showDetailData(params);
   }
 
