@@ -318,11 +318,11 @@ const BalanceSheet = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {/* {editableStatus === 2 && status === 1 ? (
+      {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 4" />
       ) : (
         ""
-      )} */}
+      )}
     </div>
   );
 };
