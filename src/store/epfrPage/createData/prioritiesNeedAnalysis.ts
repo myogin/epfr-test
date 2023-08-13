@@ -581,6 +581,7 @@ type Actions = {
   ) => any;
   setAdditional: (value: number, indexClient: number, name: string) => any;
   resetSectionSeven: () => any;
+  setGlobal: (name: string, value: any) => any;
 };
 
 const prioritiesNeedAnalysis = create(
@@ -596,8 +597,11 @@ const prioritiesNeedAnalysis = create(
         ) =>
           set(
             produce((draft) => {
-              draft.section7.answer.clientData[indexClient][groupData][name] =
-                value;
+              draft.section7.answer.clientData[indexClient][groupData][name] = value;
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         addChildFund: () =>
@@ -619,18 +623,30 @@ const prioritiesNeedAnalysis = create(
                 futureValueOfExistingResourceForEducation: 0,
                 netAmountRequired: 0,
               });
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeChildFund: (index: any) =>
           set(
             produce((draft) => {
               draft.section7.answer.childFund.splice(index, 1);
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setChildFund: (value: number, indexClient: number, name: any) =>
           set(
             produce((draft) => {
               draft.section7.answer.childFund[indexClient][name] = value;
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         addMaternity: () =>
@@ -650,12 +666,20 @@ const prioritiesNeedAnalysis = create(
                 dependants: dependant,
                 key: "",
               });
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         removeMaternity: (index: any) =>
           set(
             produce((draft) => {
               draft.section7.answer.addtionalMaternityPlan.splice(index, 1);
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setMaternity: (
@@ -678,6 +702,10 @@ const prioritiesNeedAnalysis = create(
                   groupData
                 ][name] = value;
               }
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setDependant: (
@@ -691,18 +719,30 @@ const prioritiesNeedAnalysis = create(
               draft.section7.answer.dependantData[indexClient][groupData][
                 name
               ] = value;
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setNeed: (indexClient: number, indexSub: number, value: boolean) =>
           set(
             produce((draft) => {
               draft.section7.answer.need.client[indexClient][indexSub] = value;
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setNeedDependant: (value: number, indexClient: number, name: any) =>
           set(
             produce((draft) => {
               draft.section7.answer.need.dependant[indexClient][name] = value;
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setAnswerDefaultCheck: (
@@ -713,17 +753,36 @@ const prioritiesNeedAnalysis = create(
           set(
             produce((draft) => {
               draft.section7.answer.defaultCheck[name] = value;
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setAdditional: (value: number, indexClient: number, name: any) =>
           set(
             produce((draft) => {
               draft.section7.additionalNote[indexClient][name] = value;
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         resetSectionSeven: () => {
           set(initialState);
         },
+        setGlobal: (name: string, value: any) => {
+          set(
+            produce((draft) => {
+              draft.section7['name'] = value;
+
+              if (get().section7.editableStatus === 1 && get().section7.status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          )
+        }
       }),
       {
         name: "section7",
