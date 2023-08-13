@@ -21,6 +21,7 @@ import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritie
 import { SectionSeven } from "@/models/SectionSeven";
 import { Result } from "postcss";
 import { parse } from "path";
+import { postPfrSections } from "@/services/pfrService";
 interface Props {
   id?: any;
   pfrType: number;
@@ -41,7 +42,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     setNeed,
     setAnswerDefaultCheck,
     setAdditional,
-    setChildFund
+    setChildFund,
+    setGlobal,
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
@@ -113,7 +115,12 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     uncheckAll(data, indexSub);
   };
 
+  // Get status and editable status for checking active and non active the save function
+  let status = usePrioritiesNeedAnalysis((state) => state.section7.status);
+  let editableStatus = usePrioritiesNeedAnalysis((state) => state.section7.editableStatus);
+
   const scrollPosition = useScrollPosition(7);
+  const scrollPositionNext = useScrollPosition(8);
   
   const getPV = (fv:any, rate:any, n: any) =>{
     let sum = 0;
@@ -513,6 +520,49 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
       localStorage.setItem("section7", JSON.stringify(section7));
   }, [section7]);
+
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  // Store data
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section7")
+        ? localStorage.getItem("section7")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data.state;
+      }
+
+      let storeDataSection = await postPfrSections(7, JSON.stringify(dataFix));
+
+      setGlobal("editableStatus", 1);
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (scrollPositionNext === "okSec8") {
+      if (
+        ((editableStatus === 0 || editableStatus === null) && status === 1) ||
+        (editableStatus === 2 && status === 1)
+      ) {
+        console.log("can save now");
+        // setSaveLoading(true);
+        storeData();
+      } else {
+        console.log("Your cannot save data");
+      }
+    }
+  }, [scrollPositionNext, editableStatus, status]);
 
   return (
     <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
