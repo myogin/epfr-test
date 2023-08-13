@@ -185,6 +185,7 @@ type Actions = {
   updateID: (id: any) => any;
   setGlobal: (name: string, value: any) => any;
   resetSectionSix: () => any;
+  fetchAnswers: (fetchData: any) => any;
 };
 const customerKnowledgeAssesment = (set: any, get: any) => ({
   ...initialState,
@@ -297,6 +298,16 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
     ),
   resetSectionSix: () => {
     set(initialState);
+  },
+  fetchAnswers: (fetchData: any) => {
+    set(
+      produce((drafts: any) => {
+        fetchData.forEach((el: any, i: number) => {
+          drafts.answer[i] = JSON.parse(el.answer);
+          drafts.outcome[i] = el.outcome;
+        });
+      })
+    );
   },
 });
 export const useCustomerKnowledgeAssesment = create(

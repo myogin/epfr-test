@@ -17,10 +17,12 @@ import { getLength } from "@/libs/helper";
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import { useCustomerKnowledgeAssesment } from "@/store/epfrPage/createData/customerKnowledgeAssesment";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import { postPfr, postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfr, postPfrSections } from "@/services/pfrService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import { useRouter } from "next/router";
+import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 
 interface Props {
   id?: any;
@@ -41,6 +43,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
     status,
     editableStatus,
     setGlobal,
+    fetchAnswers,
   } = useCustomerKnowledgeAssesment();
   const [showSection, setShowSection] = useState(false);
   const [outcome, setOutcome] = useState([-1, -1]);
@@ -135,8 +138,51 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       }
     }
   }, [scrollPositionBottom, editableStatus, status]);
-  return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+
+  const router = useRouter();
+  // fetching data for section 5 when position at 4
+  const scrollPositionNext = useScrollPosition(5);
+
+  useEffect(() => {
+    if (scrollPositionNext === "okSec5") {
+      if (router.query.id !== null && router.query.id !== undefined) {
+        getSectionData(router.query.id);
+        // getGeneralData(router.query.id);
+      }
+    }
+  }, [scrollPositionNext]);
+
+  const [loading, setLoading] = useState(false);
+
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection6 = await getPfrStep(6, params);
+
+      // fetching need,reason
+      setGlobal("need", [getSection6.need[0].need, getSection6.need[1].need]);
+      setGlobal("reason", [
+        getSection6.reason[0].reason,
+        getSection6.reason[1].reason,
+      ]);
+
+      fetchAnswers(getSection6.answers);
+
+      console.log("section 6", JSON.parse(getSection6.answers[0].answer));
+
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+  return loading ? (
+    <LoadingPage />
+  ) : (
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-6"
         className={`sticky top-0 z-10 ${
