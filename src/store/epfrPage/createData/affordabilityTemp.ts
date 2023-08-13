@@ -44,6 +44,56 @@ const initialState: SectionEightTemp = {
       ammount: 0,
     },
   ],
+  summaryOfSRS: [
+    {
+      client: 1,
+      ammount: 0,
+    },
+    {
+      client: 2,
+      ammount: 0,
+    },
+  ],
+  summaryOfCpfOa: [
+    {
+      client: 1,
+      ammount: 0,
+    },
+    {
+      client: 2,
+      ammount: 0,
+    },
+  ],
+  summaryOfCpfSa: [
+    {
+      client: 1,
+      ammount: 0,
+    },
+    {
+      client: 2,
+      ammount: 0,
+    },
+  ],
+  summaryOfCpfMedisave: [
+    {
+      client: 1,
+      ammount: 0,
+    },
+    {
+      client: 2,
+      ammount: 0,
+    },
+  ],
+  summaryOfCpfSaving: [
+    {
+      client: 1,
+      ammount: 0,
+    },
+    {
+      client: 2,
+      ammount: 0,
+    },
+  ]
 };
 
 const affordabilityTemp = create(

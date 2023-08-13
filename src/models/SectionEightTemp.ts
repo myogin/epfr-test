@@ -9,4 +9,9 @@ export interface SectionEightTemp {
   annualExpense: AnnualGeneral[];
   asset: AnnualGeneral[];
   loan: AnnualGeneral[];
+  summaryOfSRS: AnnualGeneral[];
+  summaryOfCpfOa: AnnualGeneral[];
+  summaryOfCpfSa: AnnualGeneral[];
+  summaryOfCpfMedisave: AnnualGeneral[];
+  summaryOfCpfSaving: AnnualGeneral[];
 }
