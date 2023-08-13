@@ -32,8 +32,10 @@ import HeadingSecondaryDynamicGrid from "@/components/Attributes/Sections/Headin
 import RowSingleORDouble from "@/components/Attributes/Rows/Grids/RowSingleORDouble";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import { postPfrSections } from "@/services/pfrService";
+import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import { useRouter } from "next/router";
+import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 interface Props {
   id?: any;
   pfrType: number;
@@ -60,6 +62,7 @@ function checkValidate(data: any, user: any) {
 const RiskProfile = (props: Props) => {
   const [notReviewAll, setNotReviewAll] = useState(false);
 
+  const router = useRouter();
   const scrollPosition = useScrollPosition(5);
 
   const [sectionFive, setSectionFive] = useState<SectionFive>({
@@ -586,8 +589,291 @@ const RiskProfile = (props: Props) => {
       }
     }
   }, [sectionFive.need]);
-  return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+
+  // fetching data for section 5 when position at 4
+  const scrollPositionNext = useScrollPosition(4);
+
+  useEffect(() => {
+    if (scrollPositionNext === "okSec4") {
+      if (router.query.id !== null && router.query.id !== undefined) {
+        getSectionData(router.query.id);
+        // getGeneralData(router.query.id);
+      }
+    }
+  }, [scrollPositionNext]);
+
+  const [loading, setLoading] = useState(false);
+  const getSectionData = async (params: any) => {
+    try {
+      setLoading(true); // Set loading before sending API request
+      let getSection5 = await getPfrStep(5, params);
+
+      // fetching need
+      setSectionFive((prev) => {
+        return {
+          ...prev,
+          need: [getSection5.need[0].need, getSection5.need[1].need],
+        };
+      });
+      // fetching reason
+      setSectionFive((prev) => {
+        return {
+          ...prev,
+          reason: [
+            getSection5.reasons[0].reason,
+            getSection5.reasons[1].reason,
+          ],
+        };
+      });
+
+      // fetching answers, risk attitude, capacity
+      let getAnswers: any = [];
+      let getRiskAttitude: any = [];
+      let getCapacity: any = [];
+      getSection5.answers.forEach((el: any, i: number) => {
+        getAnswers.push([
+          el.answer1,
+          el.answer2,
+          el.answer3,
+          el.answer4,
+          el.answer5,
+          el.answer6,
+          el.answer7,
+          el.answer8,
+          el.answer9,
+        ]);
+        getRiskAttitude.push(el.riskAttitude);
+        getCapacity.push(el.riskCapacity);
+      });
+
+      setSectionFive((prev) => {
+        return {
+          ...prev,
+          answers: getAnswers,
+          riskAttitude: getRiskAttitude,
+          riskCapacity: getCapacity,
+        };
+      });
+
+      // fetching checkbox answer 0 for user 1 & 2
+      let newQ0State = q0State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer1) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ0State = newQ0State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer1) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ0State(newQ0State);
+
+      // fetching checkbox answer 1 for user 1 & 2
+      let newQ1State = q1State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer2) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ1State = newQ1State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer2) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ1State(newQ1State);
+
+      // fetching checkbox answer 2 for user 1 & 2
+      let newQ2State = q2State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer3) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ2State = newQ2State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer3) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ2State(newQ2State);
+
+      // fetching checkbox answer 3 for user 1 & 2
+      let newQ3State = q3State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer4) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ3State = newQ3State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer4) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ3State(newQ3State);
+
+      // fetching checkbox answer 4 for user 1 & 2
+      let newQ4State = q4State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer5) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ4State = newQ4State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer5) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ4State(newQ4State);
+
+      // fetching checkbox answer 5 for user 1 & 2
+      let newQ5State = q5State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer6) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ5State = newQ5State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer6) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ5State(newQ5State);
+
+      // fetching checkbox answer 6 for user 1 & 2
+      let newQ6State = q6State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer7) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ6State = newQ6State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer7) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ6State(newQ6State);
+
+      // fetching checkbox answer 7 for user 1 & 2
+      let newQ7State = q7State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer8) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ7State = newQ7State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer8) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ7State(newQ7State);
+
+      // fetching checkbox answer 8 for user 1 & 2
+      let newQ8State = q8State.map((el: any) => {
+        if (el.score == getSection5.answers[0].answer9) {
+          return {
+            ...el,
+            u1: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      newQ8State = newQ8State.map((el: any) => {
+        if (el.score == getSection5.answers[1].answer9) {
+          return {
+            ...el,
+            u2: true,
+          };
+        } else {
+          return el;
+        }
+      });
+      setQ8State(newQ8State);
+      setLoading(false); // Stop loading
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+  return loading ? (
+    <LoadingPage />
+  ) : (
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-5"
         className={`sticky top-0 z-10 ${
@@ -1123,11 +1409,11 @@ const RiskProfile = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {sectionFive.editableStatus === 2 && sectionFive.status === 1 ? (
+      {/* {sectionFive.editableStatus === 2 && sectionFive.status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 5" />
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };
