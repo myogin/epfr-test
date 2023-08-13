@@ -43,6 +43,56 @@ function validateNeed(drafts: any, pfrType: number) {
   }
 }
 
+class assets {
+  property = {
+    residence: 0,
+    investment: 0,
+  };
+  investments = {
+    bonds: 0,
+    unitTrusts: 0,
+    stockShares: 0,
+    others: 0,
+  };
+  savings = {
+    bankSavingAccount: 0,
+    fixedDeposits: 0,
+  };
+  cpf = {
+    ordinaryAccount: 0,
+    specialAccount: 0,
+    medisave: 0,
+    retirementAccount: 0,
+  };
+  insurance = {
+    cachValue: 0,
+  };
+  srs = {
+    accountBalance: 0,
+  };
+}
+
+class liabilities {
+  housing = 0;
+  vehicle = 0;
+  renovation = 0;
+  education = 0;
+  creditCard = 0;
+  personalLoan = 0;
+  overdraft = 0;
+  getSum() {
+    return (
+      this.housing +
+      this.vehicle +
+      this.renovation +
+      this.education +
+      this.creditCard +
+      this.personalLoan +
+      this.overdraft
+    );
+  }
+}
+
 const initialState: SectionFour = {
   id: 0,
   need: [1, 1],
@@ -53,6 +103,10 @@ const initialState: SectionFour = {
   },
   issues: [],
   status: 1,
+  initData: {
+    assets: [new assets(), new assets()],
+    liabilities: [new liabilities(), new liabilities()],
+  },
   totalCalc: {
     asset: [0, 0],
     liability: [0, 0],
@@ -76,6 +130,7 @@ type Actions = {
   fetchAsset: (fetchData: any) => any;
   fetchLiability: (fetchData: any) => any;
   resetSectionFour: () => any;
+  fetchInitData: (fetchData: any) => any;
 };
 
 const balanceSheet = (set: any, get: any) => ({
@@ -196,6 +251,144 @@ const balanceSheet = (set: any, get: any) => ({
           });
         });
         drafts.others.liability = getLiability;
+      })
+    ),
+  fetchInitData: (fetchData: any) =>
+    set(
+      produce((drafts: any) => {
+        console.log(fetchData);
+        // fetch assets property
+        let properties = fetchData.summaryOfProperty;
+        properties.forEach((property: any) => {
+          let clientId = Number(property.client);
+          let propertyId = Number(property.typeOfProperty);
+          if (propertyId == 0) {
+            drafts.initData.assets[clientId].property.residence = Number(
+              property.sum
+            );
+          } else {
+            drafts.initData.assets[clientId].property.investment = Number(
+              property.sum
+            );
+          }
+        });
+
+        // fetch assets investment
+        let investments = fetchData.summaryOfInvestment;
+        investments.forEach((investment: any) => {
+          let clientId = Number(investment.client);
+          let propertyId = Number(investment.type);
+
+          if (propertyId == 0) {
+            drafts.initData.assets[clientId].investments.bonds = Number(
+              investment.sum
+            );
+          }
+          if (propertyId == 1) {
+            drafts.initData.assets[clientId].investments.unitTrusts = Number(
+              investment.sum
+            );
+          }
+          if (propertyId == 2) {
+            drafts.initData.assets[clientId].investments.stockShares = Number(
+              investment.sum
+            );
+          }
+          if (propertyId == 3) {
+            drafts.initData.assets[clientId].investments.others = Number(
+              investment.sum
+            );
+          }
+        });
+
+        // fetch assets Savings
+        let savings = fetchData.summaryOfSaving;
+        savings.forEach((saving: any) => {
+          let clientId = Number(saving.client);
+          let property = Number(saving.type);
+          switch (property) {
+            case 0:
+              drafts.initData.assets[clientId].savings.bankSavingAccount =
+                Number(saving.sum);
+              break;
+            case 1:
+              drafts.initData.assets[clientId].savings.fixedDeposits = Number(
+                saving.sum
+              );
+              break;
+          }
+        });
+
+        // fetch assets CPF
+        let cpfs = fetchData.summaryOfCPF;
+        cpfs.forEach((cpf: any) => {
+          let clientId = Number(cpf.client);
+          drafts.initData.assets[clientId].cpf.ordinaryAccount = Number(
+            cpf.ordinary
+          );
+          drafts.initData.assets[clientId].cpf.specialAccount = Number(
+            cpf.special
+          );
+          drafts.initData.assets[clientId].cpf.medisave = Number(cpf.medisave);
+          drafts.initData.assets[clientId].cpf.retirementAccount = Number(
+            cpf.retirement
+          );
+        });
+
+        // fetch assets SRS
+        let srss = fetchData.summaryOfSRS;
+        srss.forEach((srs: any) => {
+          let clientId = Number(srs.client);
+          drafts.initData.assets[clientId].srs.accountBalance = Number(srs.sum);
+        });
+
+        // fetch liabilities Loans
+        let loans = fetchData.summaryOfLoans;
+        loans.forEach((loan: any) => {
+          let clientId = Number(loan.client);
+          let type = Number(loan.typeOfLoan);
+          switch (type) {
+            //case 0 : drafts.initData.liabilities[clientId].housing = Number(loan.sum); break;
+            case 1:
+              drafts.initData.liabilities[clientId].vehicle = Number(loan.sum);
+              break;
+            case 2:
+              drafts.initData.liabilities[clientId].renovation = Number(
+                loan.sum
+              );
+              break;
+            case 3:
+              drafts.initData.liabilities[clientId].education = Number(
+                loan.sum
+              );
+              break;
+            case 4:
+              drafts.initData.liabilities[clientId].creditCard = Number(
+                loan.sum
+              );
+              break;
+            case 5:
+              drafts.initData.liabilities[clientId].personalLoan = Number(
+                loan.sum
+              );
+              break;
+            case 6:
+              drafts.initData.liabilities[clientId].overdraft = Number(
+                loan.sum
+              );
+              break;
+          }
+        });
+
+        // fetch liabilities loans hoasing
+        let outstanding = fetchData.summaryOfOutstanding;
+
+        outstanding.forEach((property: any) => {
+          let clientId = Number(property.client);
+          drafts.initData.liabilities[clientId].housing += Number(
+            property["sum"]
+          );
+        });
       })
     ),
   resetSectionFour: () => {

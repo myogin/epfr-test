@@ -42,6 +42,8 @@ const BalanceSheet = (props: Props) => {
     status,
     fetchLiability,
     fetchAsset,
+    initData,
+    fetchInitData,
   } = useBalanceSheet();
   const router = useRouter();
   const [dataS4, setDataS4] = useState(null);
@@ -50,6 +52,25 @@ const BalanceSheet = (props: Props) => {
   const scrollPositionBottom = useScrollPositionBottom(4);
   const scrollPosition3 = useScrollPosition(3);
   const [loading, setLoading] = useState(false);
+
+  const [getAssets, setGetAssets] = useState(null);
+
+  function fetchingAssets(data: any) {
+    // let properties = data["summaryOfProperty"];
+    // properties.forEach((property:any) => {
+    //   let clientId = Number(property["client"]);
+    //   let propertyId = Number(property["typeOfProperty"]);
+    //   if (propertyId == 0) {
+    //     this.pfrData.clients[clientId].property.residence = Number(
+    //       property["sum"]
+    //     );
+    //   } else {
+    //     this.pfrData.clients[clientId].property.investment = Number(
+    //       property["sum"]
+    //     );
+    //   }
+    // });
+  }
 
   const getSectionData = async (params: any) => {
     try {
@@ -65,6 +86,8 @@ const BalanceSheet = (props: Props) => {
       fetchAsset(getSection4.assetOther);
       fetchLiability(getSection4.liabilityOther);
 
+      // fetching assets data
+      fetchInitData(getSection4);
       setLoading(false); // Stop loading
     } catch (error) {
       setLoading(false); // Stop loading in case of error
@@ -169,7 +192,10 @@ const BalanceSheet = (props: Props) => {
   }, [need, props.pfrType]);
 
   return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-4"
         className={`sticky top-0 z-10 ${
