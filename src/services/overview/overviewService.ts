@@ -26,6 +26,20 @@ export const getPfrList = async (query: any) => {
   return res.data;
 };
 
+export const deletePfr = async (pfrId: number | null) => {
+  if (pfrId) {
+    const res = await http.post(
+      `/pfr/delete`,
+      {
+        pfrId: pfrId,
+      },
+      {
+        headers: authHeader(),
+      }
+    );
+    return res.data;
+  }
+};
 export async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
