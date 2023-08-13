@@ -25,12 +25,17 @@ import { getAllPfrData, getPfrStep, postPfrSections } from "@/services/pfrServic
 import { is } from "immutable";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import { useRouter } from "next/router";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 interface Props {
   id?: any;
   pfrType: number;
 }
 
 const PrioritiesNeedAnalysis = (props: Props) => {
+
+  const router = useRouter();
+
   let fillInformation = [
     { id: 0, name: "Nil" },
     { id: 1, name: "Review" },
@@ -267,12 +272,16 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
   // End Rumus Fund Retirement
 
+  // const isChecked = (index: number) => {
+  //   if (section7.typeClient === 2) {
+  //     return section7.answer.need.client[0][index] || section7.answer.need.client[1][index]
+  //   } else {
+  //     return section7.answer.need.client[0][index];
+  //   }
+  // }
+
   const isChecked = (index: number) => {
-    if (section7.typeClient === 2) {
-      return section7.answer.need.client[0][index] || section7.answer.need.client[1][index]
-    } else {
-      return section7.answer.need.client[0][index];
-    }
+    return false
   }
 
 
@@ -918,16 +927,35 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     // });
   }
 
+  let pfrLocal = usePfrData((state) => state.pfr);
+
   useEffect(() => {
     // if (scrollPositionBottomPrev === "Process6" && section7.pfrId === 0) {
     //   const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
     //   setGlobal('pfrId', section1?.state?.id);
     //   getSectionData(section1?.state?.id);
     // }
-    const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-    setGlobal('pfrId', section1?.state?.id);
-    getSectionData(section1?.state?.id);
-    setInit(props.pfrType);
+
+    if (!router.isReady) return;
+    // If edit check the ID
+    if (router.query.id !== null && router.query.id !== undefined) {
+      if (scrollPositionBottomPrev === "Process6") {
+        setGlobal("editableStatus", pfrLocal.editableSection7);
+        setGlobal("pfrId", router.query.id);
+        setGlobal("status", pfrLocal.section7);
+        getSectionData(Number(router.query.id));
+        console.log("Get data Section 3");
+      }
+    }else {
+      if (scrollPositionBottomPrev === "Process6") {
+        const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+        setGlobal("editableStatus", pfrLocal.editableSection7);
+        setGlobal("status", pfrLocal.section7);
+        setGlobal('pfrId', section1?.state?.id);
+        getSectionData(section1?.state?.id);
+      }
+    }
+    
   }, [scrollPositionBottomPrev]);
 
   useEffect(() => {

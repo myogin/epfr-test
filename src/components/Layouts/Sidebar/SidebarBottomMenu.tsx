@@ -12,6 +12,7 @@ import SidebarLink from "./SidebarLink";
 import SidebarLinkIcon from "./SidebarLinkIcon";
 import { signOut, useSession } from "next-auth/react";
 import { useLoginData } from "@/store/login/logindata";
+import UserLineIcon from "remixicon-react/UserLineIcon";
 
 interface Props {
   router?: any;
@@ -48,7 +49,7 @@ const SidebarBottomMenu = (prop: Props) => {
   };
 
   return (
-    <div className="text-sm font-medium flex flex-col flex-1 justify-end">
+    <div className="flex flex-col justify-end flex-1 text-sm font-medium">
       <div className="space-y-2">
         {/* {bottomMenu.map((val, index) => {
           return (
@@ -68,9 +69,9 @@ const SidebarBottomMenu = (prop: Props) => {
           );
         })} */}
         <div>
-          <span className="p-3">Hi {name} ~</span>
+          <div className="flex items-center justify-start w-full gap-4 p-3"><UserLineIcon /> {name}</div>
           <button
-            className="flex w-full justify-start gap-4 p-3 hover:cursor-pointer items-center"
+            className="flex items-center justify-start w-full gap-4 p-3 hover:cursor-pointer"
             onClick={logout}
           >
             <Settings5LineIcon />
