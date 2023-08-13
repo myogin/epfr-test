@@ -20,6 +20,7 @@ import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { useRouter } from "next/router";
+import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
 
 interface Props {
   id?: any;
@@ -42,6 +43,7 @@ const BalanceSheet = (props: Props) => {
     status,
     fetchLiability,
     fetchAsset,
+    fetchInitData,
   } = useBalanceSheet();
   const router = useRouter();
   const [dataS4, setDataS4] = useState(null);
@@ -49,6 +51,8 @@ const BalanceSheet = (props: Props) => {
   const scrollPosition = useScrollPosition(4);
   const scrollPositionBottom = useScrollPositionBottom(4);
   const scrollPosition3 = useScrollPosition(3);
+  const scrollPositionNext = useScrollPosition(3);
+
   const [loading, setLoading] = useState(false);
 
   const getSectionData = async (params: any) => {
@@ -65,6 +69,8 @@ const BalanceSheet = (props: Props) => {
       fetchAsset(getSection4.assetOther);
       fetchLiability(getSection4.liabilityOther);
 
+      // fetching assets data
+      fetchInitData(getSection4);
       setLoading(false); // Stop loading
     } catch (error) {
       setLoading(false); // Stop loading in case of error
@@ -73,31 +79,15 @@ const BalanceSheet = (props: Props) => {
   };
   // load data for section 4 when position at 3
   useEffect(() => {
-    if (router.query.id !== null && router.query.id !== undefined) {
-      getSectionData(router.query.id);
-      // getGeneralData(router.query.id);
+    if (scrollPositionNext === "okSec3") {
+      if (router.query.id !== null && router.query.id !== undefined) {
+        getSectionData(router.query.id);
+        // getGeneralData(router.query.id);
+      }
     }
-  }, []);
+  }, [scrollPositionNext]);
 
   useEffect(() => {
-    // const headers = {
-    //   Authorization:
-    //     "$2y$10$yQoEFyhzHdojmueU8TZZQu4EOZH3pcrYem9iMn5KyIM1qlD0DLd3W",
-    // };
-    // async function getDataS4() {
-    //   await axios
-    //     .get(`http://203.85.37.54:8000/api/pfr/get/s4/11011`, {
-    //       headers: headers,
-    //     })
-    //     .then((res) => {
-    //       setDataS4(res.data);
-    //       // console.log(res.data);
-
-    //       retrieveClientData(res.data);
-    //     });
-    // }
-    // getDataS4();
-
     calcTotal();
   }, [others]);
   // get id from group 1 and paste to grou 2
@@ -154,8 +144,26 @@ const BalanceSheet = (props: Props) => {
       setGlobal("editableStatus", 2);
     }
   }, [others, reason, need]);
-  return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+
+  const [showSection, setShowSection] = useState(false);
+  useEffect(() => {
+    if (props.pfrType == 1) {
+      setShowSection(need[0] == 1 ? true : false);
+    } else {
+      if (need[0] || need[1]) {
+        setShowSection(true);
+      } else {
+        setShowSection(false);
+      }
+    }
+  }, [need, props.pfrType]);
+  return loading ? (
+    <LoadingPage />
+  ) : (
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-4"
         className={`sticky top-0 z-10 ${
@@ -180,7 +188,7 @@ const BalanceSheet = (props: Props) => {
         </HeadingPrimarySection>
       </div>
 
-      {need[0] || need[1] ? (
+      {showSection ? (
         <>
           <div className="grid grid-cols-3 mx-8 mb-10 2xl:mx-60">
             <div className="grid col-span-2">
@@ -310,11 +318,11 @@ const BalanceSheet = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {editableStatus === 2 && status === 1 ? (
+      {/* {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 4" />
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };

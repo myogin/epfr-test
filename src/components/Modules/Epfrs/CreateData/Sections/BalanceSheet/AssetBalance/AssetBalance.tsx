@@ -23,7 +23,7 @@ interface Props {
 }
 const AssetBalance = (props: Props) => {
   // zustand
-  const { others, addAsset, updateAsset, deleteAsset, totalCalc } =
+  const { others, addAsset, updateAsset, deleteAsset, totalCalc, initData } =
     useBalanceSheet();
 
   const [showModal, setShowModal] = useState(false);
@@ -99,27 +99,30 @@ const AssetBalance = (props: Props) => {
             <div>
               <TextSmall className="text-gray-light">Residence</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].property.residence)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
-              <TextSmall className="text-gray-light">Investment</TextSmall>
+              <TextSmall className="text-gray-light">Investment </TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].property.investment)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
         </div>
       </RowDoubleGrid>
@@ -132,53 +135,57 @@ const AssetBalance = (props: Props) => {
             <div>
               <TextSmall className="text-gray-light">Bond</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
-          </RowSingleJointGrid>
-          <RowSingleJointGrid pfrType={props.pfrType}>
-            <div>
-              <TextSmall className="text-gray-light">Investment</TextSmall>
-            </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].investments.bonds)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Unit Trust</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].investments.unitTrusts)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
+          </RowSingleJointGrid>
+          <RowSingleJointGrid pfrType={props.pfrType}>
+            <div>
+              <TextSmall className="text-gray-light">Stock & Shares </TextSmall>
             </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].investments.stockShares)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Other</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].investments.others)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
         </div>
       </RowDoubleGrid>
@@ -191,27 +198,31 @@ const AssetBalance = (props: Props) => {
             <div>
               <TextSmall className="text-gray-light">Saving Account</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(
+                      initData.assets[index].savings.bankSavingAccount
+                    )}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Fixed Deposit</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].savings.fixedDeposits)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
         </div>
       </RowDoubleGrid>
@@ -227,40 +238,43 @@ const AssetBalance = (props: Props) => {
                 Ordinary Account
               </TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].cpf.ordinaryAccount)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Special Account</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].cpf.specialAccount)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
               <TextSmall className="text-gray-light">Medisave</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].cpf.medisave)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
           <RowSingleJointGrid pfrType={props.pfrType}>
             <div>
@@ -268,14 +282,15 @@ const AssetBalance = (props: Props) => {
                 Retirement Account
               </TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].cpf.retirementAccount)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
         </div>
       </RowDoubleGrid>
@@ -289,14 +304,15 @@ const AssetBalance = (props: Props) => {
             <div>
               <TextSmall className="text-gray-light">Account Balance</TextSmall>
             </div>
-            <div className="text-right">
-              <TextSmall>$0.00</TextSmall>
-            </div>
-            {props.pfrType == 2 && (
-              <div className="text-right">
-                <TextSmall>$0.00</TextSmall>
-              </div>
-            )}
+            {getPfrLength.map((e: any, index: any) => (
+              <>
+                <div className="text-right">
+                  <TextSmall>
+                    {usdFormat(initData.assets[index].srs.accountBalance)}
+                  </TextSmall>
+                </div>
+              </>
+            ))}
           </RowSingleJointGrid>
         </div>
       </RowDoubleGrid>
