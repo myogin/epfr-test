@@ -214,8 +214,8 @@ const ClientsAcknowledgment = (props: Props) => {
     ],
   ]);
 
-  const fetchData = async () => {
-    const s12Res: any = await getPfrStep(12, pfrId);
+  const fetchData = async (id: number) => {
+    const s12Res: any = await getPfrStep(12, id);
     // const s10Res: any = await getPfrStep(10, pfrId);
     // const s13Res: any = await getPfrStep(13, pfrId);
 
@@ -536,7 +536,7 @@ const ClientsAcknowledgment = (props: Props) => {
         ...sectionElevenData,
         id: section1?.state?.id,
       });
-      fetchData();
+      fetchData(section1?.state?.id);
     }
   }, [scrollPositionBottomSection10]);
 
@@ -567,7 +567,7 @@ const ClientsAcknowledgment = (props: Props) => {
   };
 
   useEffect(() => {
-    if (scrollPositionNext === "Process12") {
+    if (scrollPositionNext === "okSec12") {
       if (
         (editable === 0 && sectionElevenData.status === 1) ||
         (editable === 2 && sectionElevenData.status === 1)

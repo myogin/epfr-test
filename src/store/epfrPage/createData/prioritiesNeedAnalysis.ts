@@ -568,25 +568,9 @@ initialState.section7.answer.dependantData = new Array(
     netAmountRequired: 0,
   },
 });
-initialState.section7.additionalNote = new Array(14).fill({
-  note: "",
-});
-initialState.section7.answer.need.client = new Array(
-  initialState.section7.typeClient
-)
-  .fill(false)
-  .map(() => {
-    return new Array(14).fill(false);
-  });
-initialState.section7.answer.need.dependant = new Array(
-  initialState.section7.totalDependant
-)
-  .fill(false)
-  .map(() => {
-    return new Array(14).fill(false);
-  });
 
 type Actions = {
+  setInit: (pfrType: number) => any;
   setClient: (
     value: number,
     indexClient: number,
@@ -635,6 +619,28 @@ const prioritiesNeedAnalysis = create(
     persist<SectionSeven & Actions>(
       (set, get) => ({
         ...initialState,
+        setInit: (pfrType) => 
+          set(
+            produce((draft) => {
+              draft.section7.additionalNote = new Array(14).fill({
+                note: "",
+              });
+              draft.section7.answer.need.client = new Array(
+                pfrType
+              )
+                .fill(false)
+                .map(() => {
+                  return new Array(14).fill(false);
+                });
+              draft.section7.answer.need.dependant = new Array(
+                draft.section7.totalDependant
+              )
+                .fill(false)
+                .map(() => {
+                  return new Array(14).fill(false);
+                });
+            })
+          ),
         setClient: (
           value: number,
           indexClient: number,

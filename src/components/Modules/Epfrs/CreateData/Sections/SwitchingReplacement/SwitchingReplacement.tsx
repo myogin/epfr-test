@@ -14,7 +14,7 @@ import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getLength } from "@/libs/helper";
-import { postPfrSections } from "@/services/pfrService";
+import { getAllPfrData, getPfrStep, postPfrSections } from "@/services/pfrService";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
@@ -98,12 +98,14 @@ const SwitchingReplacement = (props: Props) => {
   const [showProductDetailTable, setShowProductDetailTable] = useState(0);
   const [newProduct, setNewProduct] = useState(productData);
   const [newProductErrors, setNewProductErrors] = useState<Array<any>>([]);
+  const [dataRowCompleted, setDataRowCompleted] = useState([false, false]);
   const [sectionTenData, setSectionTenData] = useState({
     id: pfrId,
     need: 0,
     data: [sectionData, sectionData],
-    issues: [],
+    issues: Array<any>(),
     originalProduct: products,
+    originalProductAlias: products,
     status: 0,
   });
 
@@ -277,8 +279,342 @@ const SwitchingReplacement = (props: Props) => {
     }
   };
 
-  const validate = () => {
+  const getStatus = () => {
+    sectionTenData.issues = [];
+
+    // for(let i = 0 ; i < getPfrLength ; i ++ ) {
+    getPfrLength.map((data, i) => {
+      console.log("section: ", sectionTenData.data);
+      console.log("index: ", i);
+      if(sectionTenData.data[i].answer1.a.answer == 1 && (sectionTenData.data[i].answer1.a.reason == '' || sectionTenData.data[i].answer1.a.reason == undefined)) {
+        sectionTenData.issues.push({
+          subsectionId : 1,
+          content : "Need to explain the reason",
+          clientId : i + 1
+        })
+      }
+      if(sectionTenData.data[i].answer1.b == 1 && (sectionTenData.data[i].answer3 == '' || sectionTenData.data[i].answer3 == undefined)) {
+        sectionTenData.issues.push({
+          subsectionId : 3,
+          content : "Need to explain the reason",
+          clientId : i + 1
+        })
+      }
+
+      if(dataRowCompleted[i]) {
+        sectionTenData.issues.push({
+          subsectionId : 3,
+          content : "Need to complete point 2 - 10",
+          clientId : i + 1
+        })
+      }
+    });
+
+    if(sectionTenData.issues.length == 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  const validationPoint = (i:number) => {
+    var dataCount = 0;
+    if(sectionTenData.originalProduct.length > 0){
+      sectionTenData.originalProduct.forEach(function(v, k){
+        if(v.companyName){
+          if(v.companyName == '' || v.companyName == null || v.companyName == undefined){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+
+        if(v.typeMaturity){
+          if(v.typeMaturity == '' || v.typeMaturity == null || v.typeMaturity == undefined || v.typeMaturity == 0){ 
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+
+        if(v.typeOfProduct){
+          if(v.typeOfProduct == '' || v.typeOfProduct == null || v.typeOfProduct == undefined){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+
+        if(v.premium){
+          if(v.premium == '' || v.premium == null || v.premium == undefined){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+
+        if(v.premiumType){
+          if(v.premiumType == '' || v.premiumType == null || v.premiumType == undefined || v.premiumType == 0){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+        
+        if(v.benefit){
+          if(v.benefit == '' || v.benefit == null || v.benefit == undefined || v.benefit == 0){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+      });
+
+      // check if section 4 error
+      if(dataCount > 0){
+
+        // If Joint
+        if(props.pfrType > 1){
+          var dataResI = 0;
+          getPfrLength.map((data, indexType) => {
+            if(sectionTenData.data[indexType].answer1.b == 1){
+              dataResI += 1;
+            }
+          })
+
+          if(dataResI > 1){
+            setDataRowCompleted([true, true]);
+          }
+          // else{
+          //   if(sectionTenData.data[i].answer3){
+          //     this.dataRowCompleated[i] = false;
+          //   }else{
+          //     this.dataRowCompleated[i] = true;
+          //   }
+          // }
+
+        // If Not Joint
+        }else{
+          // if(sectionTenData.data[i].answer3){
+          //   this.dataRowCompleated[i] = false;
+          // }else{
+          //   this.dataRowCompleated[i] = true;
+          // } 
+          let temp = dataRowCompleted;
+          temp[i] = true;
+          setDataRowCompleted(temp);
+        }
+
+      // Else if point 4 not error
+      }else{
+        getPfrLength.map((data, indexType) => {
+          if(sectionTenData.data[indexType].answer1.b == 1){
+            if(sectionTenData.data[indexType].answer3 === '' || sectionTenData.data[indexType].answer3 === null || sectionTenData.data[indexType].answer3 === undefined){
+              console.log('false', indexType)
+              let temp = dataRowCompleted;
+              temp[indexType] = true;
+              setDataRowCompleted(temp);
+            }else{
+              let temp = dataRowCompleted;
+              temp[indexType] = false;
+              setDataRowCompleted(temp);
+            }
+          }
+        });
+      }
+      
+    }else{
+      if(sectionTenData.data[i].answer3){
+        let temp = dataRowCompleted;
+        temp[i] = false;
+        setDataRowCompleted(temp);
+      }else{
+        let temp = dataRowCompleted;
+        temp[i] = true;
+        setDataRowCompleted(temp);
+      }
+    }
+  }
+
+  const fetchData = async () => {
+    if (pfrId == 0) return;
+
+    const res1 = await getAllPfrData(pfrId);
+    setSectionTenData({
+      ...sectionTenData,
+      status: Number(res1['pfr']['status']),
+    })
+
+    const data = await getPfrStep(10, pfrId);
     
+    let answers = data['data'];
+    let originalProducts = data['originalProducts']
+    let need = data['need']
+    if(need != null) {
+      setSectionTenData({
+        ...sectionTenData,
+        need: need['need']
+      });
+    }
+
+    if(answers.length != 0) {
+      sectionTenData.data = []
+      answers.forEach((answer:any, index: number) => {
+        setSectionTenData({
+          ...sectionTenData,
+          data: sectionTenData.data?.map((item, i) => {
+            if (i == index) {
+              return answer
+            } else {
+              return item;
+            }
+          }),
+        })
+        // sectionTenData.data.push(
+        //   new Answer().setData(answer)
+        // )
+      })
+    }
+
+    originalProducts.forEach((product: any) => {
+      let p : any = product;
+
+      const todayDate = new Date()
+      todayDate.setDate(todayDate.getDate() - 1)
+
+      if(p.Inception !== "") {
+        p.InceptionBsDate =  new Date(p.Inception)
+      }else {
+
+        p.InceptionBsDate =  new Date(todayDate.toString())
+      }
+
+      p.MaturityBsDate = new Date(p.Maturity)
+      sectionTenData.originalProduct.push(p)
+
+      let pAlias : any = product;
+
+      if(pAlias.Inception !== "") {
+
+        pAlias.InceptionBsDate =  new Date(pAlias.Inception)
+      }else {
+
+        pAlias.InceptionBsDate =  new Date(todayDate.toString())
+      }
+
+      pAlias.MaturityBsDate = new Date(pAlias.Maturity)
+      sectionTenData.originalProductAlias.push(pAlias)
+    })
+    
+    checkValidation();
+  }
+
+  const checkValidation = async () => {
+    const res = await getAllPfrData(pfrId);
+    var dataCount = 0;
+    var dataResultCount = 0;
+    if(sectionTenData.originalProduct.length > 0){
+      sectionTenData.originalProduct.forEach(function(v, k){
+        if(v.companyName){
+          if(v.companyName == '' || v.companyName == null || v.companyName == undefined){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+        if(v.typeMaturity){
+          if(v.typeMaturity == '' || v.typeMaturity == null || v.typeMaturity == undefined || v.typeMaturity == 0){ 
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+
+        if(v.typeOfProduct){
+          if(v.typeOfProduct == '' || v.typeOfProduct == null || v.typeOfProduct == undefined){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+
+        if(v.premium){
+          if(v.premium == '' || v.premium == null || v.premium == undefined){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+
+        if(v.premiumType){
+          if(v.premiumType == '' || v.premiumType == null || v.premiumType == undefined || v.premiumType == 0){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+        
+        if(v.benefit){
+          if(v.benefit == '' || v.benefit == null || v.benefit == undefined || v.benefit == 0){
+            dataCount += 1;
+          }
+        }else{
+          dataCount += 1;
+        }
+      });
+
+      if(dataCount > 0){
+        if(Number(res['pfr']['type']) > 1){
+          var dataResI = 0;
+          for (let indexType = 0; indexType < Number(res['pfr']['type']); indexType++) {
+            if(sectionTenData.data[indexType].answer1.b == 1){
+              dataResI += 1;
+            }
+          }
+
+          if(dataResI > 1){
+            // this.dataRowCompleated = [true, true];
+            dataResultCount = 2
+          }else{
+            // this.dataRowCompleated[0] = true;
+            dataResultCount = 1
+          }
+        }else{
+          // this.dataRowCompleated[0] = true;  
+          dataResultCount = 1
+        }
+      }else{
+        // this.dataRowCompleated = [false, false];
+        dataResultCount = 0
+      }
+    }
+
+    var dataResult1 = 0;
+    for (let indexType = 0; indexType < Number(res['pfr']['type']); indexType++) {
+      if(sectionTenData.data[indexType].answer1.b == 1){
+        if(sectionTenData.data[indexType].answer3 === '' || sectionTenData.data[indexType].answer3 === null || sectionTenData.data[indexType].answer3 === undefined){
+          dataResult1 += 1
+        }
+      }
+    }
+
+    if(dataResultCount > 1){
+      setDataRowCompleted([true, true]);
+    }else if(dataResultCount == 1){
+      let temp = dataRowCompleted;
+      temp[0] = true;
+      setDataRowCompleted(temp);
+    }else{
+      if(dataResult1 > 1){
+        setDataRowCompleted([true, true]);
+      }else if(dataResult1 == 1){
+        let temp = dataRowCompleted;
+        temp[0] = true;
+        setDataRowCompleted(temp);
+      }else{
+        setDataRowCompleted([false, false]);
+      }
+    }
   }
 
   useEffect(() => {
@@ -290,6 +626,8 @@ const SwitchingReplacement = (props: Props) => {
         id: section1?.state?.id
       });
     }
+
+    fetchData();
   }, [scrollPositionBottomSection9]);
 
   useEffect(() => {
@@ -310,6 +648,13 @@ const SwitchingReplacement = (props: Props) => {
     if (editable === 1 && sectionTenData.status === 1) {
       setEditable(2);
     }
+    const tempStatus = getStatus();
+    if (tempStatus !== sectionTenData.status) {
+      setSectionTenData({
+        ...sectionTenData,
+        status: tempStatus
+      })
+    }
     localStorage.setItem("section10", JSON.stringify({
       ...sectionTenData,
       editableStatus: editable
@@ -324,7 +669,11 @@ const SwitchingReplacement = (props: Props) => {
   }, [editable]);
 
   useEffect(() => {
-    if (scrollPositionNext === "Process11") {
+    if (scrollPositionNext === "okSec11") {
+      // setSectionTenData({
+      //   ...sectionTenData,
+      //   status: getStatus()
+      // })
       if (
         (editable === 0 && sectionTenData.status === 1) ||
         (editable === 2 && sectionTenData.status === 1)
@@ -527,6 +876,7 @@ const SwitchingReplacement = (props: Props) => {
                             }
                           }),
                         });
+                        validationPoint(index);
                       }}
                     />
                   </div>

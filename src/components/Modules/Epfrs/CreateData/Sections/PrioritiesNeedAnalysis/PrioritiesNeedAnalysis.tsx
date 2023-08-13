@@ -58,6 +58,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     fetchClientData,
     fetchDependantData,
     fetchNeed,
+    setInit,
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
