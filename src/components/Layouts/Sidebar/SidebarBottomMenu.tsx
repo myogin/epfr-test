@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Notification3LineIcon from "remixicon-react/Notification3LineIcon";
 import ChatSmile2LineIcon from "remixicon-react/ChatSmile2LineIcon";
 import Settings5LineIcon from "remixicon-react/Settings5LineIcon";
@@ -23,6 +23,14 @@ const SidebarBottomMenu = (prop: Props) => {
   const { delLogin } = useLoginData();
 
   const { name } = useLoginData();
+
+  const [loginName, setLoginName] = useState("")
+
+  useEffect(() => {
+
+    setLoginName(name)
+  }, [name])
+  
   let bottomMenu = [
     {
       url: "/notifications",
@@ -51,25 +59,11 @@ const SidebarBottomMenu = (prop: Props) => {
   return (
     <div className="flex flex-col justify-end flex-1 text-sm font-medium">
       <div className="space-y-2">
-        {/* {bottomMenu.map((val, index) => {
-          return (
-            <div key={"bottom-menu-" + index}>
-              {prop.sidebarIcon ? (
-                <SidebarLinkIcon
-                  val={val}
-                  active={prop.router.pathname == val.url}
-                />
-              ) : (
-                <SidebarLink
-                  val={val}
-                  active={prop.router.pathname == val.url}
-                />
-              )}
-            </div>
-          );
-        })} */}
         <div>
-          <div className="flex items-center justify-start w-full gap-4 p-3"><UserLineIcon /> {name}</div>
+          <span className="flex items-center justify-start w-full gap-4 p-3">
+            <UserLineIcon /> {loginName}
+          </span>
+
           <button
             className="flex items-center justify-start w-full gap-4 p-3 hover:cursor-pointer"
             onClick={logout}
