@@ -15,8 +15,10 @@ import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getLength } from "@/libs/helper";
 import { getAllPfrData, getPfrStep, postPfrSections } from "@/services/pfrService";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { Dialog, Transition } from "@headlessui/react";
+import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
@@ -648,14 +650,46 @@ const SwitchingReplacement = (props: Props) => {
     }
   }
 
+  const router = useRouter();
+  let pfrLocal = usePfrData((state) => state.pfr);
+
   useEffect(() => {
-    if (scrollPositionBottomSection9 === "Process9" && sectionTenData.id === 0) {
-      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-      setPfrId(section1?.state?.id);
-      setSectionTenData({
-        ...sectionTenData,
-        id: section1?.state?.id
-      });
+    // if (scrollPositionBottomSection9 === "Process9" && sectionTenData.id === 0) {
+    //   const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    //   setPfrId(section1?.state?.id);
+    //   setSectionTenData({
+    //     ...sectionTenData,
+    //     id: section1?.state?.id
+    //   });
+    // }
+
+    if (!router.isReady) return;
+    // If edit check the ID
+    if (router.query.id !== null && router.query.id !== undefined) {
+      if (scrollPositionBottomSection9 === "Process9") {
+        setSectionTenData({
+          ...sectionTenData,
+          id: Number(router.query.id),
+          status: pfrLocal.section10
+        });
+        localStorage.setItem('section10', JSON.stringify({
+          ...sectionTenData,
+          editableStatus: pfrLocal.editableSection10
+        }));
+      }
+    }else {
+      if (scrollPositionBottomSection9 === "Process9") {
+        const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+        setSectionTenData({
+          ...sectionTenData,
+          id: Number(section1?.state?.id),
+          status: pfrLocal.section10
+        });
+        localStorage.setItem('section10', JSON.stringify({
+          ...sectionTenData,
+          editableStatus: pfrLocal.editableSection10
+        }));
+      }
     }
 
     fetchData();

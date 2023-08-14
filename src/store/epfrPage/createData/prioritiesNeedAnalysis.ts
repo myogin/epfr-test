@@ -11,7 +11,6 @@ function checkCondition(draft: SectionSeven) {
   }
   for(let i = 0 ; i < 14 ; i ++ ) {
     for(let j = 0 ; j < draft.section7.typeClient ; j ++ ) {
-      console.log("need Client: ", draft.section7.answer.need.client[j][i]);
       result = result || draft.section7.answer.need.client[j][i]
     }
     for(let k = 0 ; k < draft.section7.totalDependant; k ++ ) {

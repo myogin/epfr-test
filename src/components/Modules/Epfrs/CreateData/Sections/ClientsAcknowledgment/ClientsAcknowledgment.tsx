@@ -15,7 +15,9 @@ import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getLength } from "@/libs/helper";
 import { getAllPfrData, postPfrSections } from "@/services/pfrService";
 import { getPfrStep } from "@/services/pfrService";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
@@ -525,6 +527,9 @@ const ClientsAcknowledgment = (props: Props) => {
     );
   }, [editable]);
 
+  const router = useRouter();
+  let pfrLocal = usePfrData((state) => state.pfr);
+
   useEffect(() => {
     if (
       scrollPositionBottomSection10 === "Process10" &&
@@ -536,6 +541,35 @@ const ClientsAcknowledgment = (props: Props) => {
         ...sectionElevenData,
         id: section1?.state?.id,
       });
+
+      if (!router.isReady) return;
+      // If edit check the ID
+      if (router.query.id !== null && router.query.id !== undefined) {
+        if (scrollPositionBottomSection10 === "Process10") {
+          setSectionElevenData({
+            ...sectionElevenData,
+            id: Number(router.query.id),
+            status: pfrLocal.section11
+          });
+          localStorage.setItem('section11', JSON.stringify({
+            ...sectionElevenData,
+            editableStatus: pfrLocal.editableSection11
+          }));
+        }
+      }else {
+        if (scrollPositionBottomSection10 === "Process10") {
+          const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+          setSectionElevenData({
+            ...sectionElevenData,
+            id: Number(section1?.state?.id),
+            status: pfrLocal.section10
+          });
+          localStorage.setItem('section11', JSON.stringify({
+            ...sectionElevenData,
+            editableStatus: pfrLocal.editableSection12
+          }));
+        }
+      }
       fetchData(section1?.state?.id);
     }
   }, [scrollPositionBottomSection10]);
