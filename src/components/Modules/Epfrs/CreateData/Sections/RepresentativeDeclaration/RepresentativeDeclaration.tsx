@@ -14,6 +14,7 @@ import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getPfrStep, postPfr, postPfrSections } from "@/services/pfrService";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
@@ -50,8 +51,8 @@ const RepresentativeDeclaration = (props: Props) => {
     //   section12: JSON.parse(localStorage.getItem('section11')?? '{}'),
     //   section13: JSON.parse(localStorage.getItem('section12')?? '{}'),
     // }
-    const localData = localStorage.getItem("section10")
-      ? localStorage.getItem("section10")
+    const localData = localStorage.getItem("section12")
+      ? localStorage.getItem("section12")
       : "";
 
     let dataFix = {};
@@ -78,14 +79,15 @@ const RepresentativeDeclaration = (props: Props) => {
   const [explain, setExplain] = useState("");
   const [supervisor, setSupervisor] = useState("");
 
-  const fetchData = async () => {
+  const fetchData = async() => {
     // console.log("Fetching ...");
 
     // const s12Res: any = await getPfrStep(12, pfrId);
     const s12Res: any = JSON.parse(
       localStorage.getItem("section11") ?? "false"
     );
-    const s13Res: any = await getPfrStep(13, pfrId);
+    const data = JSON.parse(localStorage.getItem('section12')?? '{}');
+    const s13Res: any = await getPfrStep(13, data.id);
 
     if (s13Res["note"] != null) {
       sectionTwelveData.explain = s13Res["note"]["note"];
@@ -123,20 +125,52 @@ const RepresentativeDeclaration = (props: Props) => {
   };
 
   const scrollPositionBottom = useScrollPositionBottom(11);
+  const router = useRouter();
+  let pfrLocal = usePfrData((state) => state.pfr);
 
   useEffect(() => {
-    if (
-      scrollPositionBottomSection11 === "Process11" &&
-      sectionTwelveData.id === 0
-    ) {
-      const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
-      setPfrId(section1?.state?.id);
-      setSectionTwelveData({
-        ...sectionTwelveData,
-        id: section1?.state?.id,
-      });
-      fetchData();
+    // if (
+    //   scrollPositionBottomSection11 === "Process11" &&
+    //   sectionTwelveData.id === 0
+    // ) {
+    //   const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
+    //   setPfrId(section1?.state?.id);
+    //   setSectionTwelveData({
+    //     ...sectionTwelveData,
+    //     id: section1?.state?.id,
+    //   });
+
+    if (!router.isReady) return;
+    // If edit check the ID
+    if (router.query.id !== null && router.query.id !== undefined) {
+      if (scrollPositionBottomSection11 === "Process11") {
+        setSectionTwelveData({
+          ...sectionTwelveData,
+          id: Number(router.query.id),
+          status: pfrLocal.section12
+        });
+        localStorage.setItem('section12', JSON.stringify({
+          ...sectionTwelveData,
+          editableStatus: pfrLocal.editableSection12
+        }));
+      }
+    }else {
+      if (scrollPositionBottomSection11 === "Process11") {
+        const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+        setSectionTwelveData({
+          ...sectionTwelveData,
+          id: Number(section1?.state?.id),
+          status: pfrLocal.section12
+        });
+        localStorage.setItem('section12', JSON.stringify({
+          ...sectionTwelveData,
+          editableStatus: pfrLocal.editableSection12
+        }));
+      }
     }
+    
+      fetchData();
+    // }
   }, [scrollPositionBottomSection11]);
 
   const [showModal, setShowModal] = useState(false);

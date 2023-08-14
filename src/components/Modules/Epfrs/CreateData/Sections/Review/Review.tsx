@@ -16,8 +16,9 @@ const Review = () => {
 
     const res: any = await getPfr(pfrId);
     // setSigners(res['signers']);
-    const pdfPath = res['pdf_1'];
-    setPdfLink(`${process.env.NEXT_PDF_BASE_URL}/storage/${pdfPath}#toolbar=0`);
+    const pdfPath = res['pfr']['pdf_1'];
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace("/api", "");
+    setPdfLink(`${baseUrl}/storage/${pdfPath}#toolbar=0`);
   }
 
   useEffect(() => {
