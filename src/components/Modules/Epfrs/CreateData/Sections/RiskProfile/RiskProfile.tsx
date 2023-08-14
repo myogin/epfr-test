@@ -138,9 +138,11 @@ const RiskProfile = (props: Props) => {
     sectionFive.reason,
     props.pfrType,
   ]);
-  if (typeof window !== "undefined") {
+  
+  useEffect(() => {
     localStorage.setItem("section5", JSON.stringify(sectionFive));
-  }
+  }, [sectionFive])
+  
   let getPfrLength = getLength(props.pfrType);
   // handle input change / state change
   const handleInputChange = (event: any) => {
