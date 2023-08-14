@@ -131,6 +131,9 @@ const OtherInsurance = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asasd" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][10]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -212,6 +215,9 @@ const OtherInsurance = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asasd" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][10]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -233,6 +239,9 @@ const OtherInsurance = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asasd" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][10]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="date"

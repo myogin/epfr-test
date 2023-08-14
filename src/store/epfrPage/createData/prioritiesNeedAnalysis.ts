@@ -850,6 +850,146 @@ const prioritiesNeedAnalysis = create(
                 draft.section7.editableStatus = 2;
               }
 
+
+              switch(indexSub) {
+                case 0:
+                  draft.section7.answer.clientData[indexClient].incomeProtectionUponDeath = {
+                    annualAmountNeeded: 0,
+                    numberOfYearsNeed: 0,
+                    netRateOfReture: 0,
+                    capitalSumRequired: 0,
+                    finalExpense: 0,
+                    emergencyFund: 0,
+                    mortgage: 0,
+                    personalDebts: 0,
+                    others: 0,
+                    totalCashFlow: 0,
+                    total: 0,
+                    existingInsuranceCoverageOnDeath: 0,
+                    existingResources: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 1:
+                  draft.section7.answer.clientData[indexClient].fundDisabilityIncomeExpense = {
+                    annualAmountNeeded: 0,
+                    numberOfYearsNeed: 0,
+                    netRateOfReture: 0,
+                    capitalSumRequired: 0,
+                    medicalExpense: 0,
+                    mortgage: 0,
+                    loans: 0,
+                    totalCashOutflow: 0,
+                    total: 0,
+                    existingInsuranceCoverageOnDisability: 0,
+                    existingResources: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 2:
+                  draft.section7.answer.clientData[indexClient].fundCriticalIllnessExpense = {
+                    annualAmountNeeded: 0,
+                    numberOfYearsNeed: 0,
+                    netRateOfReture: 0,
+                    capitalSumRequired: 0,
+                    medicalExpense: 0,
+                    mortgage: 0,
+                    loans: 0,
+                    totalCashOutflow: 0,
+                    total: 0,
+                    existingInsuranceCoverageOnCI: 0,
+                    existingResources: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 3:
+                  // 
+                  break;
+                case 4:
+                  draft.section7.answer.clientData[indexClient].fundMediumToLongTerm = {
+                    objective: 0,
+                    goalDescription: 0,
+                    yearsToReachGoal: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 5:
+                  draft.section7.answer.clientData[indexClient].fundRetirementLifeStyle = {
+                    age: 0,
+                    expectedRetirementAge: 0,
+                    yearsToRetirement: 0,
+                    selectedMethod: 0,
+                    annualIncome: 0,
+                    rateOfIncomeIncrement: 0,
+                    incomeAtRetirementAge: 0,
+                    percentOfIncomeRequiredAtRetirement: 0,
+                    incomeRequiredAtRetirement: 0,
+                    retirementExpense: 0,
+                    inflationRate: 0,
+                    expenseATRetirement: 0,
+                    yearsToReceiveRetirementIncome: 0,
+                    netRateOfReture: 0,
+                    amountNeededAtRetirementAge: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 6:
+                  draft.section7.answer.clientData[indexClient].coverForPersonalAccident = {
+                    amountNeeded: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 7:
+                  draft.section7.answer.clientData[indexClient].fundLongTermCare = {
+                    desiredMonthlyCashPayout: 0,
+                    nameOfExistingLongTermCareInsurance: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 8:
+                  draft.section7.answer.clientData[indexClient].fundHospitalExpense = {
+                    disiredChoiceOfHospitalType: 0,
+                    disiredChoiceOfWardClass: 0,
+                    desiredTypeOfCover: 0,
+                    nameOfExistingHospitalizationPlan: 0,
+                    existingTypeOfHospitalCovered: 0,
+                    existingClassOfWardCovered: 0,
+                    existingTypeOfCover: 0,
+                  };
+                  break;
+                case 9:
+                  draft.section7.answer.clientData[indexClient].maternity = {
+                    amountNeeded: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 10:
+                  draft.section7.answer.clientData[indexClient].estatePlaning = {
+                    willWritten: 0,
+                    lastUpdated: 0,
+                    anyProvision: 0,
+                    haveLastingPowerOfAttorney: 0,
+                    doneYourCPFNomination: 0,
+                    anyBenefit: 0,
+                  };
+                  break;
+                case 11:
+                  draft.section7.answer.clientData[indexClient].otherInsures = {
+                    frequencyOfTravel: 0,
+                    typeOfTravelInsuranceCovered: 0,
+                    companyName: 0,
+                    renewalDate: 0,
+                    mortgageInsurance: 0,
+                    groupInsurance: 0,
+                  };
+                  break;
+              }
+
               draft.section7.status = getStatus(draft);
             })
           ),

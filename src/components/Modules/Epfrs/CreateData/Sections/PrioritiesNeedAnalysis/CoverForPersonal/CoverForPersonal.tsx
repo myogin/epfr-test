@@ -176,6 +176,9 @@ const CoverForPersonal = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"7hs" + i} className={``}>
                 <Input
+                  readonly={section7.answer.need.client[i]
+                  ?!section7.answer.need.client[i][6]
+                  : true}
                   formStyle="text-right"
                   className="mb-10"
                   type="text"
@@ -195,6 +198,9 @@ const CoverForPersonal = (props: Props) => {
               return (
                 <td key={"ysd" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][6]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -236,8 +242,10 @@ const CoverForPersonal = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"sdf" + i} className={``}>
                 <Input
-                  readonly={!section7.answer.defaultCheck
-                    .cover_for_personal_accident_benefit}
+                  readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][6] || !section7.answer.defaultCheck
+                    .cover_for_personal_accident_benefit
+                    : true}
                   formStyle="text-right"
                   className="mb-10"
                   type="text"

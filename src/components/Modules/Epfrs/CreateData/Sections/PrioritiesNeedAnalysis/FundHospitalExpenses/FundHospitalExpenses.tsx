@@ -332,7 +332,10 @@ const FundHospitalExpenses = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"tsdys" + i} className={``}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][8]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -351,6 +354,9 @@ const FundHospitalExpenses = (props: Props) => {
               return (
                 <td key={"tsdys" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][8]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"

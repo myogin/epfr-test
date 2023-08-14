@@ -214,6 +214,9 @@ const FundChildrens =(props : Props) => {
               return (
                 <td  key={"asa"+i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][3]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -237,6 +240,9 @@ const FundChildrens =(props : Props) => {
               return (
                 <td  key={"asa"+i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][3]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -260,6 +266,9 @@ const FundChildrens =(props : Props) => {
               return (
                 <td  key={"asa"+i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][3]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -282,6 +291,9 @@ const FundChildrens =(props : Props) => {
               return (
                 <td  key={"asa"+i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][3]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -338,6 +350,9 @@ const FundChildrens =(props : Props) => {
               return (
                 <td  key={"asa"+i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][3]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -360,6 +375,9 @@ const FundChildrens =(props : Props) => {
               return (
                 <td  key={"asa"+i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][3]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -434,6 +452,9 @@ const FundChildrens =(props : Props) => {
               return (
                 <td  key={"asa"+i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][3]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"

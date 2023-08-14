@@ -161,7 +161,10 @@ const EstatePlanning = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"sd" + i} className={``}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][10]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="date"
                   placeholder="date"

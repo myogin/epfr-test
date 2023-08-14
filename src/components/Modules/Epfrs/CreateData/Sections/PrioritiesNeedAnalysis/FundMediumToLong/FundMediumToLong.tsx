@@ -158,6 +158,9 @@ const FundMediumToLong = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"saas" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][4]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -177,6 +180,9 @@ const FundMediumToLong = (props: Props) => {
               return (
                 <td key={"saas" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][4]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -203,6 +209,9 @@ const FundMediumToLong = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"saas" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][4]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -222,6 +231,9 @@ const FundMediumToLong = (props: Props) => {
               return (
                 <td key={"saas" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][4]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -248,6 +260,9 @@ const FundMediumToLong = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"saas" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][4]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -267,6 +282,9 @@ const FundMediumToLong = (props: Props) => {
               return (
                 <td key={"saas" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][4]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -293,6 +311,9 @@ const FundMediumToLong = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"saas" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][4]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -311,6 +332,9 @@ const FundMediumToLong = (props: Props) => {
               return (
                 <td key={"saas" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][4]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"

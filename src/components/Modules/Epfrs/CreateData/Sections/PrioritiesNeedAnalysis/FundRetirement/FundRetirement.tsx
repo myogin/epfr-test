@@ -171,7 +171,10 @@ const FundRetirement = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -190,6 +193,9 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -287,7 +293,10 @@ const FundRetirement = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -306,6 +315,9 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -331,7 +343,10 @@ const FundRetirement = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -350,6 +365,9 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -407,7 +425,10 @@ const FundRetirement = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -426,6 +447,9 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -485,6 +509,9 @@ const FundRetirement = (props: Props) => {
                 .selectedMethod == 1 ? (
                 <td key={"asa" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -508,6 +535,9 @@ const FundRetirement = (props: Props) => {
                 .selectedMethod == 1 ? (
                 <td>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -537,6 +567,9 @@ const FundRetirement = (props: Props) => {
                 .selectedMethod == 1 ? (
                 <td key={"sas" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -560,6 +593,9 @@ const FundRetirement = (props: Props) => {
                 .selectedMethod == 1 ? (
                 <td>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -619,7 +655,10 @@ const FundRetirement = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -638,6 +677,9 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -663,7 +705,10 @@ const FundRetirement = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -682,6 +727,9 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -739,7 +787,10 @@ const FundRetirement = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asa" + i}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -757,6 +808,9 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][5]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"

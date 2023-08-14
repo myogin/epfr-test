@@ -175,7 +175,10 @@ const MaternityPlan = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asda" + i} className={``}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][9]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -191,6 +194,9 @@ const MaternityPlan = (props: Props) => {
               return (
                 <td key={"asda" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][9]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -230,7 +236,9 @@ const MaternityPlan = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"asda" + i} className={``}>
                 <Input
-                  readonly={!section7.answer.defaultCheck.maternity_other}
+                  readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][9] || !section7.answer.defaultCheck.maternity_other
+                    : true}
                   formStyle="text-right"
                   className="mb-10"
                   type="text"
@@ -247,7 +255,9 @@ const MaternityPlan = (props: Props) => {
               return (
                 <td key={"asda" + i} className={``}>
                   <Input
-                    readonly={!section7.answer.defaultCheck.maternity_other}
+                    readonly={section7.answer.need.client[i]
+                      ?!section7.answer.need.client[i][9] || !section7.answer.defaultCheck.maternity_other
+                      : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"

@@ -176,7 +176,10 @@ const FundLongTermCare = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"assda" + i} className={``}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][7]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -195,6 +198,9 @@ const FundLongTermCare = (props: Props) => {
               return (
                 <td key={"assda" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][7]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -220,7 +226,10 @@ const FundLongTermCare = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"assda" + i} className={``}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][7]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -239,6 +248,9 @@ const FundLongTermCare = (props: Props) => {
               return (
                 <td key={"assda" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][7]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -264,7 +276,10 @@ const FundLongTermCare = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"assda" + i} className={``}>
                 <Input
-                  formStyle="text-right"
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][7]
+                    : true}
+                    formStyle="text-right"
                   className="mb-10"
                   type="text"
                   placeholder="1,000,000"
@@ -280,6 +295,9 @@ const FundLongTermCare = (props: Props) => {
               return (
                 <td key={"assda" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][7]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"

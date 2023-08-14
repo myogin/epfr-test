@@ -164,6 +164,9 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -183,6 +186,9 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -208,6 +214,9 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -227,6 +236,9 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -252,6 +264,9 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -271,6 +286,9 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -328,6 +346,9 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -347,6 +368,9 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -388,8 +412,10 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={!section7.answer.defaultCheck
-                      .fund_disability_income_expense_mortgage}
+                    readonly={!section7.answer.need.client[i]
+                      ? !section7.answer.need.client[i][1] || section7.answer.defaultCheck
+                      .fund_disability_income_expense_mortgage
+                      : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -409,8 +435,10 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={!section7.answer.defaultCheck
-                      .fund_disability_income_expense_mortgage}
+                    readonly={section7.answer.need.client[i]
+                      ? !section7.answer.need.client[i][1] || !section7.answer.defaultCheck
+                      .fund_disability_income_expense_mortgage
+                      : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -436,6 +464,9 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -455,6 +486,9 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -560,8 +594,10 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={!section7.answer.defaultCheck
-                      .fund_disability_income_expense_disability}
+                    readonly={section7.answer.need.client[i]
+                      ? !section7.answer.need.client[i][1] || !section7.answer.defaultCheck
+                      .fund_disability_income_expense_disability
+                      : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -581,8 +617,10 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={!section7.answer.defaultCheck
-                      .fund_disability_income_expense_disability}
+                    readonly={section7.answer.need.client[i]
+                      ? !section7.answer.need.client[i][1] || !section7.answer.defaultCheck
+                      .fund_disability_income_expense_disability
+                      : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -609,6 +647,9 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -628,6 +669,9 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={section7.answer.need.client[i]
+                    ?!section7.answer.need.client[i][1]
+                    : true}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
