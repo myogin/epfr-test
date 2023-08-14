@@ -14,6 +14,7 @@ import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { downloadPDF_1, getPfrStep, postPfr, postPfrSections, signProceed } from "@/services/pfrService";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
@@ -30,6 +31,8 @@ const RepresentativeDeclaration = (props: Props) => {
   const [clientSign, setClientSign] = useState(0);
   const [supervisorSign, setSupervisorSign] = useState(0);
   const [directorSign, setDirectorSign] = useState(0);
+
+  let pfrIdSectionOne = usePersonalInformation((state) => state.id);
 
   const { push } = useRouter();
 
@@ -110,40 +113,45 @@ const RepresentativeDeclaration = (props: Props) => {
     const s12Res: any = JSON.parse(
       localStorage.getItem("section11") ?? "false"
     );
+
+    
     const data = JSON.parse(localStorage.getItem('section12')?? '{}');
-    const s13Res: any = await getPfrStep(13, data.id);
 
-    if (s13Res["note"] != null) {
-      sectionTwelveData.explain = s13Res["note"]["note"];
-      sectionTwelveData.jfw = s13Res["note"]["jfw"];
-      sectionTwelveData.spv = s13Res["note"]["spv"];
-      sectionTwelveData.spvOther = s13Res["note"]["spvOther"];
-      var cekData = false;
-      if (s13Res["note"]["nftf"]) {
-        if (s13Res["note"]["nftf"] === true || s13Res["note"]["nftf"] === 1) {
-          cekData = true;
-        } else {
-          cekData = false;
+    if(pfrIdSectionOne && pfrIdSectionOne > 0) {
+      const s13Res: any = await getPfrStep(13, pfrIdSectionOne);
+
+      if (s13Res["note"] != null) {
+        sectionTwelveData.explain = s13Res["note"]["note"];
+        sectionTwelveData.jfw = s13Res["note"]["jfw"];
+        sectionTwelveData.spv = s13Res["note"]["spv"];
+        sectionTwelveData.spvOther = s13Res["note"]["spvOther"];
+        var cekData = false;
+        if (s13Res["note"]["nftf"]) {
+          if (s13Res["note"]["nftf"] === true || s13Res["note"]["nftf"] === 1) {
+            cekData = true;
+          } else {
+            cekData = false;
+          }
         }
+        sectionTwelveData.nftf = cekData;
       }
-      sectionTwelveData.nftf = cekData;
-    }
-    setSupervisor(s13Res["spv"]);
-
-    if (!s12Res) {
-      return;
-    }
-
-    const checkData = s12Res["data"] ?? null;
-
-    if (checkData !== null) {
-      // const data = JSON.parse(checkData);
-      const data = checkData;
-
-      if (data[0][8][0] || data[1][8][0]) {
-        setRequiredNFTF(true);
-      } else {
-        setRequiredNFTF(false);
+      setSupervisor(s13Res["spv"]);
+  
+      if (!s12Res) {
+        return;
+      }
+  
+      const checkData = s12Res["data"] ?? null;
+  
+      if (checkData !== null) {
+        // const data = JSON.parse(checkData);
+        const data = checkData;
+  
+        if (data[0][8][0] || data[1][8][0]) {
+          setRequiredNFTF(true);
+        } else {
+          setRequiredNFTF(false);
+        }
       }
     }
   };

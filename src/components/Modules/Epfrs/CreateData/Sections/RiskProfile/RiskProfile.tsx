@@ -517,6 +517,7 @@ const RiskProfile = (props: Props) => {
 
   // get id from group 1 and paste to grou 2
   let { id } = usePersonalInformation();
+  
   useEffect(() => {
     setSectionFive((el: any) => {
       return { ...el, id: id };
@@ -606,6 +607,7 @@ const RiskProfile = (props: Props) => {
     }
   }, [scrollPositionNext]);
 
+  
   const [loading, setLoading] = useState(false);
   const getSectionData = async (params: any) => {
     try {
