@@ -806,6 +806,7 @@ const SwitchingReplacement = (props: Props) => {
                   {showReason.includes(1) ? (
                     <RowSingleGrid>
                       <TextArea
+                        isDisabled={sectionTenData.data[index]?.answer1?.a?.answer==0}
                         label="Please state reasons:"
                         defaultValue={
                           sectionTenData.data[index]?.answer1?.a?.reason
