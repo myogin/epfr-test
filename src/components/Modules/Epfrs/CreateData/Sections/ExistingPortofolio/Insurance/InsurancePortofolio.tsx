@@ -4,10 +4,20 @@ import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
 import ButtonTransparentMedium from "@/components/Forms/Buttons/ButtonTransparentMedium";
 import Input from "@/components/Forms/Input";
 import Select from "@/components/Forms/Select";
-import { SummaryOfInsurance, SummaryOfInsurance2 } from "@/models/SectionTwo";
+import {
+  checkCountData,
+  getClientCustom,
+  getInsuredCustom,
+} from "@/libs/helper";
+import {
+  SummaryOfInsurance,
+  SummaryOfInsurance2,
+  SummaryOfInsuranceGroup,
+} from "@/models/SectionTwo";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { Transition, Dialog } from "@headlessui/react";
+import { Exo_2 } from "next/font/google";
 import React, { Fragment, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
@@ -15,21 +25,28 @@ import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 const InsurancePortofolio = () => {
   const [showModal, setShowModal] = useState(false);
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [actionDatatId, setActionDataId] = useState(0);
+  const [actionDatatType, setActionDataType] = useState(0);
+  const [saveType, setSaveType] = useState("");
 
-  let { summaryOfInsurance, summaryOfInsurance2, setInsurance, setInsurance2 } =
-    useExistingPortofolio();
+  let {
+    summaryOfInsurance,
+    summaryOfInsurance2,
+    setInsurance,
+    setInsurance2,
+    removeInsurance,
+    removeInsurance2,
+    patchInsurance,
+    patchInsurance2,
+  } = useExistingPortofolio();
   // get client state
   let { clientInfo, dependant } = usePersonalInformation();
 
-  let checkIndex = checkCountData(summaryOfInsurance);
-  let checkIndexTwo = checkCountData(summaryOfInsurance2);
-
-  let initialState: SummaryOfInsurance = {
-    id: checkIndex,
+  let initialState: SummaryOfInsuranceGroup = {
     editting: true,
     client: "",
     insured: "",
-    status: "",
     insurer: "",
     policyType: "",
     policyTypeOther: "",
@@ -39,53 +56,196 @@ const InsurancePortofolio = () => {
     ci: 0,
     earlyCI: 0,
     acc: 0,
-    purchaseYear: 0,
     premiumFrequency: "",
-    premium: 0,
     cash: 0,
-    medisave: 0,
-    sourceOfFund: 0,
-  };
-
-  let initialState2: SummaryOfInsurance2 = {
-    id: checkIndex,
-    editting: true,
-    client: "",
-    insured: "",
-    insurer: "",
-    policyType: "",
-    policyTerm: "",
     existingHosPlan: "",
     typeOfHosCovered: "",
     classOfWardCovered: "",
     purchaseYear: 0,
     premium: 0,
     medisave: 0,
-    frequency: "",
     sourceOfFund: 0,
+    status: "",
   };
 
-  const [newData, setNewData] = useState<SummaryOfInsurance>(initialState);
-
-  const [newData2, setNewData2] = useState<SummaryOfInsurance2>(initialState2);
+  const [newData, setNewData] = useState<SummaryOfInsuranceGroup>(initialState);
 
   let clients: Array<any> = getClientCustom(clientInfo);
-  let insures : Array<any> = getInsuredCustom(clientInfo, dependant)
+  let insures: Array<any> = getInsuredCustom(clientInfo, dependant);
 
   const setData = (params: any) => {
     console.log(params);
   };
 
   const saveData = () => {
-    console.log("Save test");
+    if (newData.policyType === "Hospitalization") {
+      let checkIndex = checkCountData(summaryOfInsurance);
+
+      let checkTotalData2 =
+        summaryOfInsurance2?.length === 0 || summaryOfInsurance2[0].id === 0
+          ? 0
+          : 1;
+      console.log("Ini masuk hospitalization");
+
+      let hosData: SummaryOfInsurance2 = {
+        id: checkIndex,
+        editting: true,
+        client: newData.client,
+        insured: newData.insured,
+        insurer: newData.insurer,
+        policyType: newData.policyType,
+        policyTerm: newData.policyTerm,
+        existingHosPlan: newData.existingHosPlan,
+        typeOfHosCovered: newData.typeOfHosCovered,
+        classOfWardCovered: newData.classOfWardCovered,
+        purchaseYear: newData.purchaseYear,
+        premium: newData.premium,
+        medisave: newData.medisave,
+        frequency: newData.premiumFrequency,
+        sourceOfFund: newData.sourceOfFund,
+      };
+
+      if (saveType === "add") {
+        setInsurance2(checkTotalData2, hosData);
+      } else {
+        patchInsurance2(hosData);
+      }
+    } else {
+      console.log("Ini bukan hospitalization");
+      let checkTotalData =
+        summaryOfInsurance?.length === 0 || summaryOfInsurance[0].id === 0
+          ? 0
+          : 1;
+      let checkIndexTwo = checkCountData(summaryOfInsurance2);
+
+      let hosData: SummaryOfInsurance = {
+        id: checkIndexTwo,
+        editting: true,
+        client: newData.client,
+        insured: newData.insured,
+        insurer: newData.insurer,
+        policyType: newData.policyType,
+        policyTypeOther: newData.policyTypeOther,
+        policyTerm: newData.policyTerm,
+        death: newData.death,
+        tpd: newData.tpd,
+        ci: newData.ci,
+        earlyCI: newData.earlyCI,
+        acc: newData.acc,
+        purchaseYear: newData.purchaseYear,
+        premiumFrequency: newData.premiumFrequency,
+        premium: newData.premium,
+        cash: newData.cash,
+        medisave: newData.medisave,
+        sourceOfFund: newData.sourceOfFund,
+        status: newData.status,
+      };
+
+      if (saveType === "add") {
+        setInsurance(checkTotalData, hosData);
+      } else {
+        patchInsurance(hosData);
+      }
+    }
+    console.log(newData);
+
+    setShowModal(false);
   };
 
   const openModal = () => {
+    setSaveType("add");
+    setNewData(initialState);
     setShowModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const openModalEdit = (type: number, params: any) => {
+    setSaveType("update");
+
+    console.log("cek " + type + " " + params);
+
+    if (type === 1) {
+      let detailDataInsurance = summaryOfInsurance.filter(
+        (obj) => obj.id === params
+      );
+
+      let exisData: SummaryOfInsuranceGroup = {
+        client: detailDataInsurance[0].client,
+        insured: detailDataInsurance[0].insured,
+        insurer: detailDataInsurance[0].insurer,
+        policyType: detailDataInsurance[0].policyType,
+        policyTypeOther: detailDataInsurance[0].policyTypeOther,
+        policyTerm: detailDataInsurance[0].policyTerm,
+        death: detailDataInsurance[0].death,
+        tpd: detailDataInsurance[0].tpd,
+        ci: detailDataInsurance[0].ci,
+        earlyCI: detailDataInsurance[0].earlyCI,
+        acc: detailDataInsurance[0].acc,
+        premiumFrequency: detailDataInsurance[0].premiumFrequency,
+        cash: detailDataInsurance[0].cash,
+        existingHosPlan: "",
+        typeOfHosCovered: "",
+        classOfWardCovered: "",
+        purchaseYear: detailDataInsurance[0].purchaseYear,
+        premium: detailDataInsurance[0].premium,
+        medisave: detailDataInsurance[0].medisave,
+        sourceOfFund: detailDataInsurance[0].sourceOfFund,
+        status: "",
+      };
+
+      console.log("Exis apa");
+      console.log(exisData);
+
+      setNewData(exisData);
+    } else {
+      let detailDataInsurance2 = summaryOfInsurance2.filter(
+        (obj) => obj.id === params
+      );
+
+      let exisData: SummaryOfInsuranceGroup = {
+        client: detailDataInsurance2[0].client,
+        insured: detailDataInsurance2[0].insured,
+        insurer: detailDataInsurance2[0].insurer,
+        policyType: detailDataInsurance2[0].policyType,
+        policyTypeOther: "",
+        policyTerm: detailDataInsurance2[0].policyTerm,
+        death: 0,
+        tpd: 0,
+        ci: 0,
+        earlyCI: 0,
+        acc: 0,
+        premiumFrequency: detailDataInsurance2[0].frequency,
+        cash: 0,
+        existingHosPlan: detailDataInsurance2[0].existingHosPlan,
+        typeOfHosCovered: detailDataInsurance2[0].typeOfHosCovered,
+        classOfWardCovered: detailDataInsurance2[0].classOfWardCovered,
+        purchaseYear: detailDataInsurance2[0].purchaseYear,
+        premium: detailDataInsurance2[0].premium,
+        medisave: detailDataInsurance2[0].medisave,
+        sourceOfFund: detailDataInsurance2[0].sourceOfFund,
+        status: "",
+      };
+
+      setNewData(exisData);
+    }
+
+    console.log(newData);
+
+    setShowModal(true);
+  };
+
+  const modalRemoveData = (type: number, params: any) => {
+    setShowModalRemove(true);
+    setActionDataId(params);
+    setActionDataType(type);
+  };
+
+  const removeDataAction = (type: number, params: any) => {
+    if (type == 1) {
+      removeInsurance(params);
+    } else {
+      removeInsurance2(params);
+    }
+    setShowModalRemove(false);
   };
 
   let policyTypes: Array<any> = [
@@ -99,10 +259,46 @@ const InsurancePortofolio = () => {
     { id: "Others", name: "Others" },
   ];
 
+  let frequencyDatas: Array<any> = [
+    { id: "Monthly", name: "Monthly" },
+    { id: "Quarterly", name: "Quarterly" },
+    { id: "Half-Yearly", name: "Half-Yearly" },
+    { id: "Yearly", name: "Yearly" },
+    { id: "Single", name: "Single" },
+    { id: "Fully Paid", name: "Fully Paid" },
+  ];
+
+  let sourceOfFundDatas: Array<any> = [
+    { id: 0, name: "Cash" },
+    { id: 1, name: "CPF" },
+    { id: 2, name: "SRS" },
+  ];
+
+  let typeOfHospital: Array<any> = [
+    { id: "Private", name: "Private" },
+    { id: "Government", name: "Government" },
+  ];
+
+  let classOfWard: Array<any> = [
+    { id: "A", name: "A" },
+    { id: "B1", name: "B1" },
+    { id: "B2", name: "B2" },
+    { id: "C", name: "C" },
+  ];
+
+  const clientName = (params: any) => {
+    let customName = "-";
+    if (clients.length > 0) {
+      customName = clients[Number(params)].name;
+    }
+    return customName;
+  };
+
   return (
     <SectionCardSingleGrid className="mx-8 2xl:mx-60">
       <div className="flex flex-col w-full">
-        {summaryOfInsurance[0].editting && summaryOfInsurance[0].client === "" ? (
+        {summaryOfInsurance[0].editting &&
+        summaryOfInsurance[0].client === "" ? (
           <span className="mb-2 text-sm text-red">Required</span>
         ) : (
           ""
@@ -112,7 +308,11 @@ const InsurancePortofolio = () => {
         </ButtonBox>
 
         <Transition appear show={showModal} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setShowModal(false)}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -169,6 +369,7 @@ const InsurancePortofolio = () => {
                           <Input
                             className="my-4"
                             label="Insurer"
+                            name="insurer"
                             type="text"
                             value={newData.insurer}
                             handleChange={(event) =>
@@ -181,12 +382,13 @@ const InsurancePortofolio = () => {
                           {newData.policyType !== "" &&
                           newData.policyType !== "-" ? (
                             <>
-                              {newData.policyType === "Hospitalization" ? (
+                              {newData.policyType !== "Hospitalization" ? (
                                 <>
                                   <Input
                                     className="my-4"
                                     label="Policy Term"
                                     type="text"
+                                    name="policyTerm"
                                     value={newData.policyTerm}
                                     handleChange={(event) =>
                                       setNewData({
@@ -200,6 +402,7 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Sum Assured TPD"
                                     type="text"
+                                    name="tpd"
                                     value={newData.tpd}
                                     handleChange={(event) =>
                                       setNewData({
@@ -213,6 +416,7 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Sum Assured Early CI"
                                     type="text"
+                                    name="earlyCI"
                                     value={newData.earlyCI}
                                     handleChange={(event) =>
                                       setNewData({
@@ -226,6 +430,79 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Year Of Purchase"
                                     type="text"
+                                    name="purchaseYear"
+                                    value={newData.purchaseYear}
+                                    handleChange={(event) =>
+                                      setNewData({
+                                        ...newData,
+                                        purchaseYear: Number(
+                                          event.target.value
+                                        ),
+                                      })
+                                    }
+                                  />
+
+                                  <Select
+                                    className="my-4"
+                                    name="client"
+                                    label="Premium Frequency"
+                                    value={newData.premiumFrequency}
+                                    datas={frequencyDatas}
+                                    handleChange={(event) =>
+                                      setNewData({
+                                        ...newData,
+                                        premiumFrequency: event.target.value,
+                                      })
+                                    }
+                                    needValidation={true}
+                                    logic={
+                                      newData.premiumFrequency === "" ||
+                                      newData.premiumFrequency === "-"
+                                        ? false
+                                        : true
+                                    }
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <Input
+                                    className="my-4"
+                                    label="Policy Term"
+                                    type="text"
+                                    name="policyTerm"
+                                    value={newData.policyTerm}
+                                    handleChange={(event) =>
+                                      setNewData({
+                                        ...newData,
+                                        policyTerm: event.target.value,
+                                      })
+                                    }
+                                  />
+                                  <Select
+                                    className="my-4"
+                                    name="typeOfHosCovered"
+                                    label="Type Of Hospital Covered"
+                                    value={newData.typeOfHosCovered}
+                                    datas={typeOfHospital}
+                                    handleChange={(event) =>
+                                      setNewData({
+                                        ...newData,
+                                        typeOfHosCovered: event.target.value,
+                                      })
+                                    }
+                                    needValidation={true}
+                                    logic={
+                                      newData.typeOfHosCovered === "" ||
+                                      newData.typeOfHosCovered === "-"
+                                        ? false
+                                        : true
+                                    }
+                                  />
+                                  <Input
+                                    className="my-4"
+                                    label="Year Of Purchase"
+                                    type="text"
+                                    name="purchaseYear"
                                     value={newData.purchaseYear}
                                     handleChange={(event) =>
                                       setNewData({
@@ -239,68 +516,13 @@ const InsurancePortofolio = () => {
 
                                   <Input
                                     className="my-4"
-                                    label="Premium Frequency"
+                                    label="Premium Medisave"
                                     type="text"
-                                    value={newData.premiumFrequency}
+                                    name="medisave"
+                                    value={newData.medisave}
                                     handleChange={(event) =>
                                       setNewData({
                                         ...newData,
-                                        premiumFrequency: event.target.value,
-                                      })
-                                    }
-                                  />
-                                </>
-                              ) : (
-                                <>
-                                  <Input
-                                    className="my-4"
-                                    label="Policy Term"
-                                    type="text"
-                                    value={newData2.policyTerm}
-                                    handleChange={(event) =>
-                                      setNewData2({
-                                        ...newData2,
-                                        policyTerm: event.target.value,
-                                      })
-                                    }
-                                  />
-
-                                  <Input
-                                    className="my-4"
-                                    label="Type Of Hospital Covered"
-                                    type="text"
-                                    value={newData2.typeOfHosCovered}
-                                    handleChange={(event) =>
-                                      setNewData2({
-                                        ...newData2,
-                                        typeOfHosCovered: event.target.value,
-                                      })
-                                    }
-                                  />
-
-                                  <Input
-                                    className="my-4"
-                                    label="Year Of Purchase"
-                                    type="text"
-                                    value={newData2.purchaseYear}
-                                    handleChange={(event) =>
-                                      setNewData2({
-                                        ...newData2,
-                                        purchaseYear: Number(
-                                          event.target.value
-                                        ),
-                                      })
-                                    }
-                                  />
-
-                                  <Input
-                                    className="my-4"
-                                    label="Premium Medisave"
-                                    type="text"
-                                    value={newData2.medisave}
-                                    handleChange={(event) =>
-                                      setNewData2({
-                                        ...newData2,
                                         medisave: Number(event.target.value),
                                       })
                                     }
@@ -312,7 +534,7 @@ const InsurancePortofolio = () => {
                         </div>
                         {/* End Of Insurance */}
                         <div>
-                        <Select
+                          <Select
                             className="my-4"
                             name="insured"
                             label="Insured"
@@ -326,8 +548,7 @@ const InsurancePortofolio = () => {
                             }
                             needValidation={true}
                             logic={
-                              newData.insured === "" ||
-                              newData.insured === "-"
+                              newData.insured === "" || newData.insured === "-"
                                 ? false
                                 : true
                             }
@@ -352,15 +573,32 @@ const InsurancePortofolio = () => {
                                 : true
                             }
                           />
+                          {newData.policyType === "Others" ? (
+                            <Input
+                              className="my-4"
+                              label="Policy Other"
+                              name="policyTypeOther"
+                              type="text"
+                              value={newData.policyTypeOther}
+                              handleChange={(event) =>
+                                setNewData({
+                                  ...newData,
+                                  policyTypeOther: event.target.value,
+                                })
+                              }
+                            />
+                          ) : null}
+
                           {newData.policyType !== "" &&
                           newData.policyType !== "-" ? (
                             <>
-                              {newData.policyType === "Hospitalization" ? (
+                              {newData.policyType !== "Hospitalization" ? (
                                 <>
                                   <Input
                                     className="my-4"
                                     label="Sum Assured Death"
                                     type="text"
+                                    name="death"
                                     value={newData.death}
                                     handleChange={(event) =>
                                       setNewData({
@@ -373,6 +611,7 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Sum Assured CI"
                                     type="text"
+                                    name="ci"
                                     value={newData.ci}
                                     handleChange={(event) =>
                                       setNewData({
@@ -385,6 +624,7 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Sum Assured Acc"
                                     type="text"
+                                    name="acc"
                                     value={newData.acc}
                                     handleChange={(event) =>
                                       setNewData({
@@ -396,6 +636,7 @@ const InsurancePortofolio = () => {
                                   <Input
                                     className="my-4"
                                     label="Premium"
+                                    name="premium"
                                     type="text"
                                     value={newData.premium}
                                     handleChange={(event) =>
@@ -405,11 +646,12 @@ const InsurancePortofolio = () => {
                                       })
                                     }
                                   />
-                                  <Input
+                                  <Select
                                     className="my-4"
+                                    name="sourceOfFund"
                                     label="Source Of Fund"
-                                    type="text"
                                     value={newData.sourceOfFund}
+                                    datas={sourceOfFundDatas}
                                     handleChange={(event) =>
                                       setNewData({
                                         ...newData,
@@ -417,6 +659,13 @@ const InsurancePortofolio = () => {
                                           event.target.value
                                         ),
                                       })
+                                    }
+                                    needValidation={true}
+                                    logic={
+                                      String(newData.sourceOfFund) === "" ||
+                                      String(newData.sourceOfFund) === "-"
+                                        ? false
+                                        : true
                                     }
                                   />
                                 </>
@@ -426,48 +675,73 @@ const InsurancePortofolio = () => {
                                     className="my-4"
                                     label="Existing Hospitalization Plan (If Any)"
                                     type="text"
-                                    value={newData2.existingHosPlan}
+                                    name="existingHosPlan"
+                                    value={newData.existingHosPlan}
                                     handleChange={(event) =>
-                                      setNewData2({
-                                        ...newData2,
+                                      setNewData({
+                                        ...newData,
                                         existingHosPlan: event.target.value,
                                       })
                                     }
                                   />
-                                  <Input
+
+                                  <Select
                                     className="my-4"
+                                    name="classOfWardCovered"
                                     label="Class Of Ward Covered"
-                                    type="text"
-                                    value={newData2.classOfWardCovered}
+                                    value={newData.classOfWardCovered}
+                                    datas={classOfWard}
                                     handleChange={(event) =>
-                                      setNewData2({
-                                        ...newData2,
-                                        classOfWardCovered: event.target.value,
+                                      setNewData({
+                                        ...newData,
+                                        classOfWardCovered: String(
+                                          event.target.value
+                                        ),
                                       })
+                                    }
+                                    needValidation={true}
+                                    logic={
+                                      newData.classOfWardCovered === "" ||
+                                      newData.classOfWardCovered === "-"
+                                        ? false
+                                        : true
                                     }
                                   />
                                   <Input
                                     className="my-4"
                                     label="Premium Cash"
                                     type="text"
-                                    value={newData2.premium}
+                                    name="premium"
+                                    value={newData.premium}
                                     handleChange={(event) =>
-                                      setNewData2({
-                                        ...newData2,
+                                      setNewData({
+                                        ...newData,
                                         premium: Number(event.target.value),
                                       })
                                     }
                                   />
-                                  <Input
+                                  {/* Hospitalization */}
+
+                                  <Select
                                     className="my-4"
-                                    label="Frequency"
-                                    type="text"
-                                    value={newData2.frequency}
+                                    name="premiumFrequency"
+                                    label="Premium Frequency"
+                                    value={newData.premiumFrequency}
+                                    datas={frequencyDatas}
                                     handleChange={(event) =>
-                                      setNewData2({
-                                        ...newData2,
-                                        frequency: event.target.value,
+                                      setNewData({
+                                        ...newData,
+                                        premiumFrequency: String(
+                                          event.target.value
+                                        ),
                                       })
+                                    }
+                                    needValidation={true}
+                                    logic={
+                                      newData.premiumFrequency === "" ||
+                                      newData.premiumFrequency === "-"
+                                        ? false
+                                        : true
                                     }
                                   />
                                 </>
@@ -482,7 +756,9 @@ const InsurancePortofolio = () => {
                       <ButtonGreenMedium onClick={() => saveData()}>
                         Save
                       </ButtonGreenMedium>
-                      <ButtonTransparentMedium onClick={closeModal}>
+                      <ButtonTransparentMedium
+                        onClick={() => setShowModal(false)}
+                      >
                         Cancel
                       </ButtonTransparentMedium>
                     </div>
@@ -517,33 +793,46 @@ const InsurancePortofolio = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="px-2 py-5">1</td>
-                <td className="px-2 py-5">Client 1</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="w-1/12 px-2 py-5">
-                  <div className="flex w-full gap-2">
-                    <ButtonBox className="text-green-deep">
-                      <PencilLineIcon size={14} />
-                    </ButtonBox>
-                    <ButtonBox className="text-red">
-                      <CloseLineIcon size={14} />
-                    </ButtonBox>
-                  </div>
-                </td>
-              </tr>
+              {summaryOfInsurance?.length &&
+                summaryOfInsurance.map((data, index) => (
+                  <tr key={index}>
+                    <td className="px-2 py-5">{++index}</td>
+                    <td className="px-2 py-5">{clientName(data.client)}</td>
+                    <td className="px-2 py-5">{clientName(data.insured)}</td>
+                    <td className="px-2 py-5">{data.insurer}</td>
+                    <td className="px-2 py-5">{data.policyType}</td>
+                    <td className="px-2 py-5">{data.policyTerm}</td>
+                    <td className="px-2 py-5">{data.death}</td>
+                    <td className="px-2 py-5">{data.tpd}</td>
+                    <td className="px-2 py-5">{data.ci}</td>
+                    <td className="px-2 py-5">{data.earlyCI}</td>
+                    <td className="px-2 py-5">{data.acc}</td>
+                    <td className="px-2 py-5">{data.purchaseYear}</td>
+                    <td className="px-2 py-5">{data.premium}</td>
+                    <td className="px-2 py-5">{data.premiumFrequency}</td>
+                    <td className="px-2 py-5">
+                      {data.sourceOfFund >= 0
+                        ? sourceOfFundDatas[Number(data.sourceOfFund)].name
+                        : ""}
+                    </td>
+                    <td className="w-1/12 px-2 py-5">
+                      <div className="flex w-full gap-2">
+                        <ButtonBox
+                          className="text-green-deep"
+                          onClick={() => openModalEdit(1, data.id)}
+                        >
+                          <PencilLineIcon size={14} />
+                        </ButtonBox>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => modalRemoveData(1, data.id)}
+                        >
+                          <CloseLineIcon size={14} />
+                        </ButtonBox>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -569,35 +858,45 @@ const InsurancePortofolio = () => {
                 <th className="px-2 py-5">Premium Cash</th>
                 <th className="px-2 py-5">Premium Medisave</th>
                 <th className="px-2 py-5">Frequency</th>
+                <th className="px-2 py-5">Source of Fund</th>
                 <th className="px-2 py-5"></th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="px-2 py-5">1</td>
-                <td className="px-2 py-5">Client 1</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="px-2 py-5">$0.0</td>
-                <td className="w-1/12 px-2 py-5">
-                  <div className="flex w-full gap-2">
-                    <ButtonBox className="text-green-deep">
-                      <PencilLineIcon size={14} />
-                    </ButtonBox>
-                    <ButtonBox className="text-red">
-                      <CloseLineIcon size={14} />
-                    </ButtonBox>
-                  </div>
-                </td>
-              </tr>
+              {summaryOfInsurance2?.length &&
+                summaryOfInsurance2.map((data, index) => (
+                  <tr key={index}>
+                    <td className="px-2 py-5">{++index}</td>
+                    <td className="px-2 py-5">{clientName(data.client)}</td>
+                    <td className="px-2 py-5">{data.insured}</td>
+                    <td className="px-2 py-5">{data.insurer}</td>
+                    <td className="px-2 py-5">{data.policyType}</td>
+                    <td className="px-2 py-5">{data.policyTerm}</td>
+                    <td className="px-2 py-5">{data.existingHosPlan}</td>
+                    <td className="px-2 py-5">{data.typeOfHosCovered}</td>
+                    <td className="px-2 py-5">{data.classOfWardCovered}</td>
+                    <td className="px-2 py-5">{data.purchaseYear}</td>
+                    <td className="px-2 py-5">{data.premium}</td>
+                    <td className="px-2 py-5">{data.medisave}</td>
+                    <td className="px-2 py-5">{data.frequency}</td>
+                    <td className="w-1/12 px-2 py-5">
+                      <div className="flex w-full gap-2">
+                        <ButtonBox
+                          className="text-green-deep"
+                          onClick={() => openModalEdit(2, data.id)}
+                        >
+                          <PencilLineIcon size={14} />
+                        </ButtonBox>
+                        <ButtonBox
+                          className="text-red"
+                          onClick={() => modalRemoveData(2, data.id)}
+                        >
+                          <CloseLineIcon size={14} />
+                        </ButtonBox>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -605,51 +904,5 @@ const InsurancePortofolio = () => {
     </SectionCardSingleGrid>
   );
 };
-
-// Additional function
-const getClientCustom = (clients: any) => {
-  let clientCustom: any[] = [];
-
-  if (clients?.length) {
-    clients.map((data: any, index: any) => {
-      clientCustom.push({ id: index, name: data.clientName });
-    });
-  }
-
-  return clientCustom;
-};
-
-const getInsuredCustom = (clients: any, dependents : any) => {
-  let clientCustom: any[] = [];
-
-  if (clients?.length) {
-    clients.map((data: any, indexClient: any) => {
-      clientCustom.push({ id: indexClient, name: data.clientName });
-    });
-  }
-
-  if (dependents?.length) {
-    dependents.map((data: any, indexDependent: any) => {
-      clientCustom.push({ id: indexDependent + clients.length, name: data.name });
-    });
-  }
-
-  return clientCustom;
-};
-
-function checkCountData(datas: any) {
-  let data: number = 0;
-  if (datas?.length) {
-    if (datas[0].client === "") {
-      data = datas.length;
-    } else {
-      data = datas.length + 1;
-    }
-  } else {
-    data = datas.length + 1;
-  }
-
-  return data;
-}
 
 export default InsurancePortofolio;
