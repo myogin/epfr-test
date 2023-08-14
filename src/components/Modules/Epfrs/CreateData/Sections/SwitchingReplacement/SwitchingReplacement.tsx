@@ -666,34 +666,28 @@ const SwitchingReplacement = (props: Props) => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
-      if (scrollPositionBottomSection9 === "Process9") {
+      // if (scrollPositionBottomSection9 === "Process9") {
         setSectionTenData({
           ...sectionTenData,
           id: Number(router.query.id),
           status: pfrLocal.section10
         });
-        localStorage.setItem('section10', JSON.stringify({
-          ...sectionTenData,
-          editableStatus: pfrLocal.editableSection10
-        }));
-      }
+        setEditable(pfrLocal.editableSection10);
+      // }
     }else {
-      if (scrollPositionBottomSection9 === "Process9") {
+      // if (scrollPositionBottomSection9 === "Process9") {
         const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
         setSectionTenData({
           ...sectionTenData,
           id: Number(section1?.state?.id),
           status: pfrLocal.section10
         });
-        localStorage.setItem('section10', JSON.stringify({
-          ...sectionTenData,
-          editableStatus: pfrLocal.editableSection10
-        }));
-      }
+        setEditable(pfrLocal.editableSection10);
+      // }
     }
 
     fetchData();
-  }, [scrollPositionBottomSection9]);
+  }, [scrollPositionBottomSection9, router.isReady, router.query.id]);
 
   useEffect(() => {
     getPfrLength.map((data, index) => {

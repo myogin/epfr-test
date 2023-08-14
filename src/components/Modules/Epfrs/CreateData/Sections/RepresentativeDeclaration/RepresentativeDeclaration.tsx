@@ -13,7 +13,7 @@ import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import { getPfrStep, postPfr, postPfrSections } from "@/services/pfrService";
+import { downloadPDF_1, getPfrStep, postPfr, postPfrSections, signProceed } from "@/services/pfrService";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
@@ -27,6 +27,9 @@ interface Props {
 
 const RepresentativeDeclaration = (props: Props) => {
   const [pfrId, setPfrId] = useState(0);
+  const [clientSign, setClientSign] = useState(0);
+  const [supervisorSign, setSupervisorSign] = useState(0);
+  const [directorSign, setDirectorSign] = useState(0);
 
   const { push } = useRouter();
 
@@ -64,13 +67,34 @@ const RepresentativeDeclaration = (props: Props) => {
     await postPfrSections(12, JSON.stringify(dataFix));
   };
 
-  const finish = async () => {
+  const downloadPDF = async () => {
+    const localData = localStorage.getItem("section12")
+      ? localStorage.getItem("section12")
+      : "";
+
+    let dataFix: any = {};
+    if (localData) {
+      let data = JSON.parse(localData);
+      dataFix = data;
+    }
+
+    await downloadPDF_1(dataFix['id']);
+  };
+
+  const sign = async () => {
     await saveData();
+    await signProceed({
+      'pfrId'           : sectionTwelveData.id,
+      'clientSign'      : clientSign,
+      'supervisorSign'  : supervisorSign,
+      'director'        : directorSign
+    });
     push("/create/finish");
   };
 
   const review = async () => {
     await saveData();
+    await downloadPDF();
     push(`/create/review/${props.pfrType === 1 ? "single" : "joint"}`);
   };
 
@@ -143,35 +167,38 @@ const RepresentativeDeclaration = (props: Props) => {
     if (!router.isReady) return;
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
+      setSectionTwelveData({
+        ...sectionTwelveData,
+        id: Number(router.query.id),
+        status: pfrLocal.section12
+      });
       if (scrollPositionBottomSection11 === "Process11") {
-        setSectionTwelveData({
-          ...sectionTwelveData,
-          id: Number(router.query.id),
-          status: pfrLocal.section12
-        });
-        localStorage.setItem('section12', JSON.stringify({
-          ...sectionTwelveData,
-          editableStatus: pfrLocal.editableSection12
-        }));
+        // setSectionTwelveData({
+        //   ...sectionTwelveData,
+        //   id: Number(router.query.id),
+        //   status: pfrLocal.section12
+        // });
       }
     }else {
-      if (scrollPositionBottomSection11 === "Process11") {
-        const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
         setSectionTwelveData({
           ...sectionTwelveData,
           id: Number(section1?.state?.id),
           status: pfrLocal.section12
-        });
-        localStorage.setItem('section12', JSON.stringify({
-          ...sectionTwelveData,
-          editableStatus: pfrLocal.editableSection12
-        }));
+      });
+      if (scrollPositionBottomSection11 === "Process11") {
+        // const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+        // setSectionTwelveData({
+        //   ...sectionTwelveData,
+        //   id: Number(section1?.state?.id),
+        //   status: pfrLocal.section12
+        // });
       }
     }
     
       fetchData();
     // }
-  }, [scrollPositionBottomSection11]);
+  }, [scrollPositionBottomSection11, router.isReady, router.query.id]);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -459,13 +486,13 @@ const RepresentativeDeclaration = (props: Props) => {
                             name="clientName"
                             className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
                             onChange={(e) => {
-                              console.log(e.target.selectedIndex);
+                              setClientSign(Number(e.target.selectedIndex));
                             }}
                           >
                             <option key="remote" value="0">
                               Remote
                             </option>
-                            <option key="face2face" value="0">
+                            <option key="face2face" value="1">
                               Face to face
                             </option>
                           </select>
@@ -485,13 +512,13 @@ const RepresentativeDeclaration = (props: Props) => {
                             name="clientName"
                             className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
                             onChange={(e) => {
-                              console.log(e.target.selectedIndex);
+                              setSupervisorSign(Number(e.target.selectedIndex));
                             }}
                           >
                             <option key="remote" value="0">
                               Remote
                             </option>
-                            <option key="face2face" value="0">
+                            <option key="face2face" selected={clientSign==1? true: false} value="1">
                               Face to face
                             </option>
                           </select>
@@ -508,7 +535,7 @@ const RepresentativeDeclaration = (props: Props) => {
                       </div>
                     )} */}
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={finish}>
+                      <ButtonGreenMedium onClick={sign}>
                         Sign
                       </ButtonGreenMedium>
                       <ButtonTransparentMedium onClick={closeModal}>

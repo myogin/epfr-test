@@ -216,8 +216,10 @@ const ClientsAcknowledgment = (props: Props) => {
     ],
   ]);
 
-  const fetchData = async (id: number) => {
-    const s12Res: any = await getPfrStep(12, id);
+  const fetchData = async() => {
+    const section11 = JSON.parse(localStorage.getItem('section11')?? '{}');
+
+    const s12Res: any = await getPfrStep(12, section11?.id);
     // const s10Res: any = await getPfrStep(10, pfrId);
     // const s13Res: any = await getPfrStep(13, pfrId);
 
@@ -531,48 +533,41 @@ const ClientsAcknowledgment = (props: Props) => {
   let pfrLocal = usePfrData((state) => state.pfr);
 
   useEffect(() => {
-    if (
-      scrollPositionBottomSection10 === "Process10" &&
-      sectionElevenData.id === 0
-    ) {
-      const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
-      setPfrId(section1?.state?.id);
-      setSectionElevenData({
-        ...sectionElevenData,
-        id: section1?.state?.id,
-      });
+    // if (
+    //   scrollPositionBottomSection10 === "Process10" &&
+    //   sectionElevenData.id === 0
+    // ) {
+    //   const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
+    //   setPfrId(section1?.state?.id);
+    //   setSectionElevenData({
+    //     ...sectionElevenData,
+    //     id: section1?.state?.id,
+    //   });
 
       if (!router.isReady) return;
       // If edit check the ID
-      if (router.query.id !== null && router.query.id !== undefined) {
+      // if (router.query.id !== null && router.query.id !== undefined) {
         if (scrollPositionBottomSection10 === "Process10") {
           setSectionElevenData({
             ...sectionElevenData,
             id: Number(router.query.id),
             status: pfrLocal.section11
           });
-          localStorage.setItem('section11', JSON.stringify({
-            ...sectionElevenData,
-            editableStatus: pfrLocal.editableSection11
-          }));
-        }
+        // }
       }else {
-        if (scrollPositionBottomSection10 === "Process10") {
+        // if (scrollPositionBottomSection10 === "Process10") {
           const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
           setSectionElevenData({
             ...sectionElevenData,
             id: Number(section1?.state?.id),
             status: pfrLocal.section10
           });
-          localStorage.setItem('section11', JSON.stringify({
-            ...sectionElevenData,
-            editableStatus: pfrLocal.editableSection12
-          }));
-        }
+        // }
       }
-      fetchData(section1?.state?.id);
-    }
-  }, [scrollPositionBottomSection10]);
+      setEditable(pfrLocal.editableSection11);
+      fetchData();
+    // }
+  }, [scrollPositionBottomSection10, router.isReady, router.query.id]);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
