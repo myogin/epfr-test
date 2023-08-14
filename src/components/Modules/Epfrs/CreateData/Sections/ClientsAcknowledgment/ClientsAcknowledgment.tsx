@@ -15,6 +15,7 @@ import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getLength } from "@/libs/helper";
 import { getAllPfrData, postPfrSections } from "@/services/pfrService";
 import { getPfrStep } from "@/services/pfrService";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { useRouter } from "next/router";
@@ -217,9 +218,7 @@ const ClientsAcknowledgment = (props: Props) => {
   ]);
 
   const fetchData = async() => {
-    const section11 = JSON.parse(localStorage.getItem('section11')?? '{}');
-
-    const s12Res: any = await getPfrStep(12, section11?.id);
+    const s12Res: any = await getPfrStep(12, pfrIdSectionOne);
     // const s10Res: any = await getPfrStep(10, pfrId);
     // const s13Res: any = await getPfrStep(13, pfrId);
 
@@ -528,6 +527,8 @@ const ClientsAcknowledgment = (props: Props) => {
       })
     );
   }, [editable]);
+
+  let pfrIdSectionOne:any = usePersonalInformation((state) => state.id);
 
   const router = useRouter();
   let pfrLocal = usePfrData((state) => state.pfr);
