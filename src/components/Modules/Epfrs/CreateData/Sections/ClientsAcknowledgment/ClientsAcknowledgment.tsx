@@ -218,6 +218,7 @@ const ClientsAcknowledgment = (props: Props) => {
   ]);
 
   const fetchData = async() => {
+    if(!pfrIdSectionOne && pfrIdSectionOne == 0) return;
     const s12Res: any = await getPfrStep(12, pfrIdSectionOne);
     // const s10Res: any = await getPfrStep(10, pfrId);
     // const s13Res: any = await getPfrStep(13, pfrId);
