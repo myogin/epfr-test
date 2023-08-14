@@ -24,13 +24,6 @@ const SidebarBottomMenu = (prop: Props) => {
 
   const { name } = useLoginData();
 
-  const [loginName, setLoginName] = useState("")
-
-  useEffect(() => {
-
-    setLoginName(name)
-  }, [name])
-  
   let bottomMenu = [
     {
       url: "/notifications",
@@ -61,7 +54,7 @@ const SidebarBottomMenu = (prop: Props) => {
       <div className="space-y-2">
         <div>
           <span className="flex items-center justify-start w-full gap-4 p-3">
-            <UserLineIcon /> {loginName}
+            <UserLineIcon /> {name}
           </span>
 
           <button
