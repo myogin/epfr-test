@@ -1,14 +1,20 @@
-import Head from 'next/head'
-import React, { ReactNode } from 'react'
-import Sidebar from './Sidebar/Sidebar'
-
+import Head from "next/head";
+import React, { ReactNode, useEffect, useState } from "react";
+import Sidebar from "./Sidebar/Sidebar";
 
 interface Props {
-    children?: ReactNode,
-    typeMenu?: any
-  }
+  children?: ReactNode;
+  typeMenu?: any;
+}
 
 const AppSecondaryLayout = (prop: Props) => {
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Wait till Next.js rehydration completes
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   return (
     <>
       <Head>
@@ -17,11 +23,11 @@ const AppSecondaryLayout = (prop: Props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className='flex flex-row w-full min-h-screen font-sans bg-white'>
-        {prop.children}
+      <div className="flex flex-row w-full min-h-screen font-sans bg-white">
+        {isHydrated ? <div>{prop.children}</div> : null}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default AppSecondaryLayout
+export default AppSecondaryLayout;
