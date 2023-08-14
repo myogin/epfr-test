@@ -25,6 +25,7 @@ import { useRouter } from "next/router";
 import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
+import { getLength } from "@/libs/helper";
 
 interface Props {
   id?: any;
@@ -36,7 +37,12 @@ const ExistingPortofolio = (props: Props) => {
   let pfrLocal = usePfrData((state) => state.pfr);
   const router = useRouter();
 
+  let getPfrLength = getLength(props.pfrType);
+
+  let totalNetWorth = useExistingPortofolio((state) => state.totalNetWorth);
+  let networthReason = useExistingPortofolio((state) => state.networthReason);
   let editableStatus = useExistingPortofolio((state) => state.editableStatus);
+  let setNetWorth = useExistingPortofolio((state) => state.setNetWorth);
   let status = useExistingPortofolio((state) => state.status);
   let need = useExistingPortofolio((state) => state.need);
   let reason = useExistingPortofolio((state) => state.reason);
@@ -78,8 +84,6 @@ const ExistingPortofolio = (props: Props) => {
     setToggle(object, clientType, "editting", value);
   };
 
-  const [totalNetWorth, setTotalNetWorth] = useState<any>(0);
-
   const scrollPosition = useScrollPosition(2);
   const scrollPositionNext = useScrollPosition(3);
   const scrollPositionBottom = useScrollPositionBottom(1);
@@ -88,6 +92,13 @@ const ExistingPortofolio = (props: Props) => {
     const { name, value } = event.target;
 
     setGlobal(name, value);
+  };
+
+  const handleNetWorth = (event: any) => {
+    const { name, value } = event.target;
+    const { indexclient } = event.target.dataset;
+
+    setNetWorth(name, indexclient, value);
   };
 
   // Store data
@@ -224,8 +235,8 @@ const ExistingPortofolio = (props: Props) => {
       }
     });
 
-    setAffordabilityTemp("summaryOfSRS", 0, srs[0])
-    setAffordabilityTemp("summaryOfSRS", 1, srs[1])
+    setAffordabilityTemp("summaryOfSRS", 0, srs[0]);
+    setAffordabilityTemp("summaryOfSRS", 1, srs[1]);
     // srs
     summaryOfInvestment.map((data3, index1) => {
       if (Number(data3.client) === 0) {
@@ -247,38 +258,44 @@ const ExistingPortofolio = (props: Props) => {
       }
     });
 
-    setAffordabilityTemp("summaryOfSaving", 0, saving[0])
-    setAffordabilityTemp("summaryOfSaving", 1, saving[1])
+    setAffordabilityTemp("summaryOfSaving", 0, saving[0]);
+    setAffordabilityTemp("summaryOfSaving", 1, saving[1]);
 
     // cpf
     let cpfOa = [0, 0];
     let cpfSa = [0, 0];
     let cpfMedisave = [0, 0];
     summaryOfCPF.map((data5, index1) => {
-      
       if (Number(data5.client) === 0) {
-        
-        let sumCpf = Number(data5.ordinaryAccount) + Number(data5.specialAccount) + Number(data5.medisaveAccount) + Number(data5.retirementAccount)
+        let sumCpf =
+          Number(data5.ordinaryAccount) +
+          Number(data5.specialAccount) +
+          Number(data5.medisaveAccount) +
+          Number(data5.retirementAccount);
         asset[Number(data5.client)] += sumCpf;
         cpfOa[Number(data5.client)] += Number(data5.ordinaryAccount);
         cpfSa[Number(data5.client)] += Number(data5.specialAccount);
         cpfMedisave[Number(data5.client)] += Number(data5.medisaveAccount);
       } else {
-        let sumCpf = Number(data5.ordinaryAccount) + Number(data5.specialAccount) + Number(data5.medisaveAccount) + Number(data5.retirementAccount)
+        let sumCpf =
+          Number(data5.ordinaryAccount) +
+          Number(data5.specialAccount) +
+          Number(data5.medisaveAccount) +
+          Number(data5.retirementAccount);
         asset[Number(data5.client)] += sumCpf;
         cpfOa[Number(data5.client)] += Number(data5.ordinaryAccount);
         cpfSa[Number(data5.client)] += Number(data5.specialAccount);
         cpfMedisave[Number(data5.client)] += Number(data5.medisaveAccount);
       }
     });
-    setAffordabilityTemp("summaryOfCpfOa", 0, cpfOa[0])
-    setAffordabilityTemp("summaryOfCpfOa", 1, cpfOa[1])
+    setAffordabilityTemp("summaryOfCpfOa", 0, cpfOa[0]);
+    setAffordabilityTemp("summaryOfCpfOa", 1, cpfOa[1]);
 
-    setAffordabilityTemp("summaryOfCpfSa", 0, cpfSa[0])
-    setAffordabilityTemp("summaryOfCpfSa", 1, cpfSa[1])
+    setAffordabilityTemp("summaryOfCpfSa", 0, cpfSa[0]);
+    setAffordabilityTemp("summaryOfCpfSa", 1, cpfSa[1]);
 
-    setAffordabilityTemp("summaryOfCpfMedisave", 0, cpfMedisave[0])
-    setAffordabilityTemp("summaryOfCpfMedisave", 1, cpfMedisave[1])
+    setAffordabilityTemp("summaryOfCpfMedisave", 0, cpfMedisave[0]);
+    setAffordabilityTemp("summaryOfCpfMedisave", 1, cpfMedisave[1]);
     // Loan liabilities
     summaryOfLoans.map((data6, index1) => {
       if (Number(data6.client) === 0) {
@@ -296,13 +313,19 @@ const ExistingPortofolio = (props: Props) => {
       }
     });
 
-    setAffordabilityTemp("asset", 0, asset[0])
-    setAffordabilityTemp("asset", 1, asset[1])
+    setAffordabilityTemp("asset", 0, asset[0]);
+    setAffordabilityTemp("asset", 1, asset[1]);
 
-    setAffordabilityTemp("loan", 0, liability[0])
-    setAffordabilityTemp("loan", 1, liability[1])
-    
-  }, [summaryOfCPF, summaryOfSavings, summaryOfInvestment, summaryOfSRS, summaryOfProperty, summaryOfLoans]);
+    setAffordabilityTemp("loan", 0, liability[0]);
+    setAffordabilityTemp("loan", 1, liability[1]);
+  }, [
+    summaryOfCPF,
+    summaryOfSavings,
+    summaryOfInvestment,
+    summaryOfSRS,
+    summaryOfProperty,
+    summaryOfLoans,
+  ]);
 
   // Get data when scroll from section 1
   useEffect(() => {
@@ -504,34 +527,42 @@ const ExistingPortofolio = (props: Props) => {
                 label="The Reason"
                 defaultValue={reason}
                 needValidation={true}
-                logic={!need ? false : true}
+                logic={!need && reason === "" ? false : true}
               />
             </RowSingle>
-            <RowDoubleGrid>
-              <div>
-                <Input
-                  value={totalNetWorth}
-                  handleChange={(event) => setTotalNetWorth(event.target.value)}
-                  label="Total Net Worth"
-                  className="my-4"
-                />
-              </div>
+            {getPfrLength?.length &&
+              getPfrLength.map((data, index) => (
+                <RowDoubleGrid key={"sas" + index}>
+                  <div>
+                    <Input
+                      indexClient={index}
+                      name="totalNetWorth"
+                      value={totalNetWorth[index]}
+                      handleChange={handleNetWorth}
+                      label="Total Net Worth"
+                      className="my-4"
+                    />
+                  </div>
 
-              {totalNetWorth == 0 ? (
-                <div>
-                  <TextArea
-                    className="my-4"
-                    label="Reason is needed if Net Worth ≤ $0"
-                    rows={1}
-                    defaultValue="text the reason"
-                    needValidation={true}
-                    logic={!need ? false : true}
-                  />
-                </div>
-              ) : (
-                ""
-              )}
-            </RowDoubleGrid>
+                  {totalNetWorth[index] == 0 ? (
+                    <div>
+                      <TextArea
+                        className="my-4"
+                        label="Reason is needed if Net Worth ≤ $0"
+                        rows={1}
+                        name="networthReason"
+                        indexClient={index}
+                        defaultValue={networthReason[index]}
+                        needValidation={true}
+                        handleChange={handleNetWorth}
+                        logic={!need && totalNetWorth[index] == 0 && networthReason[index] == "" ? false : true}
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </RowDoubleGrid>
+              ))}
           </>
         ) : (
           ""

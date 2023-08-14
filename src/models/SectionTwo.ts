@@ -77,6 +77,32 @@ export interface SummaryOfInsurance2 {
   sourceOfFund: number;
 }
 
+export interface SummaryOfInsuranceGroup {
+  editting?: boolean;
+  id?: number;
+  client: string; //same
+  insured: string; //same
+  insurer: string; //same
+  policyType: string; // same
+  policyTypeOther: string;
+  policyTerm: string;
+  death: number;
+  tpd: number;
+  ci: number;
+  earlyCI: number;
+  acc: number;
+  premiumFrequency: string;
+  cash: number;
+  existingHosPlan: string;
+  typeOfHosCovered: string;
+  classOfWardCovered: string;
+  purchaseYear: number;
+  premium: number;
+  medisave: number;
+  sourceOfFund: number;
+  status: string;
+}
+
 export interface SummaryOfLoans {
   editting?: boolean;
   id?: number;
@@ -126,8 +152,8 @@ export interface SectionTwo {
   summaryOfCPF: SummaryOfCPF[];
   summaryOfSRS: SummaryOfSRS[];
   issues?: [];
-  totalNetWorth?: Array<any>;
-  networthReason?: Array<any>;
+  totalNetWorth: Array<any>;
+  networthReason: Array<any>;
   status?: number;
   editableStatus?: number;
 }

@@ -57,7 +57,34 @@ export const getClientCustom = (clients: any) => {
 
   if (clients?.length) {
     clients.map((data: any, index: any) => {
-      clientCustom.push({ id: index, name: data.clientName });
+      if (data.clientName !== "") {
+        clientCustom.push({ id: index, name: data.clientName });
+      }
+    });
+  }
+
+  return clientCustom;
+};
+
+export const getInsuredCustom = (clients: any, dependents: any) => {
+  let clientCustom: any[] = [];
+
+  if (clients?.length) {
+    clients.map((data: any, indexClient: any) => {
+      if (data.clientName !== "") {
+        clientCustom.push({ id: indexClient, name: data.clientName });
+      }
+    });
+  }
+
+  if (dependents?.length) {
+    dependents.map((data: any, indexDependent: any) => {
+      if (data.name !== "") {
+        clientCustom.push({
+          id: indexDependent + clients.length,
+          name: data.name,
+        });
+      }
     });
   }
 
@@ -162,7 +189,6 @@ export const localPfrId = () => {
   return dataFix;
 };
 
-
 export const localType = () => {
   let checkData = localStorage.getItem("login")
     ? localStorage.getItem("login")
@@ -183,19 +209,18 @@ export const localType = () => {
 };
 
 export const flushLocalData = () => {
-  
-  localStorage.removeItem('section1')
-  localStorage.removeItem('section2')
-  localStorage.removeItem('section3')
-  localStorage.removeItem('section4')
-  localStorage.removeItem('section5')
-  localStorage.removeItem('section6')
-  localStorage.removeItem('section7')
-  localStorage.removeItem('section8')
-  localStorage.removeItem('section9')
-  localStorage.removeItem('section10')
-  localStorage.removeItem('section11')
-  localStorage.removeItem('section12')
-  localStorage.removeItem('section13')
+  localStorage.removeItem("section1");
+  localStorage.removeItem("section2");
+  localStorage.removeItem("section3");
+  localStorage.removeItem("section4");
+  localStorage.removeItem("section5");
+  localStorage.removeItem("section6");
+  localStorage.removeItem("section7");
+  localStorage.removeItem("section8");
+  localStorage.removeItem("section9");
+  localStorage.removeItem("section10");
+  localStorage.removeItem("section11");
+  localStorage.removeItem("section12");
+  localStorage.removeItem("section13");
   return true;
 };
