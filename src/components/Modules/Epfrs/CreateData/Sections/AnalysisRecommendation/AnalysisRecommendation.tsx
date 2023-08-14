@@ -125,8 +125,6 @@ const AnalysisRecommendation = (props: Props) => {
 
   let pfrId = usePersonalInformation((state) => state.id);
 
-  console.log("Ckech pfr ID section 9" + pfrId);
-
   let { showDetailData } = useNavigationSection();
   const showDetail = (params: any, data: any) => {
     localStorage.setItem("s9_PfrId", "10623");
@@ -671,10 +669,251 @@ const AnalysisRecommendation = (props: Props) => {
         getProductRiderBenefitRisk();
         getGroupRow();
       }
+    }else {
+      console.log("update section 9 scroll position button non edit");
+      if(pfrId && Number(pfrId) > 0) {
+        if (scrollPositionBottom === "Process8") {
+
+          console.log("check masuk sampai sini ggak");
+
+          setParent("editableStatus", pfrLocal.editableSection9);
+          setParent("pfrId", pfrId);
+          setParent("status", pfrLocal.section9);
+          // getSectionData(router.query.id);
+  
+          // Section 9
+          pfrSection(9, pfrId).then((data: any) => {
+            console.log("data section 9", data);
+            setPfr9(data);
+            setRowsGroup(data.rowGroups);
+            var dataType: Array<any> = [];
+            for (var i = 0; i < data.clients.length; i++) {
+              dataType[i] = i;
+            }
+            console.log("dataType", dataType);
+            setClients(dataType);
+  
+            // Res Answer
+            console.log("data", data);
+            var overView1 = "";
+            var overView2 = "";
+            var reasonForBenefit = "";
+            var reasonForRisk = "";
+            var reasonForDeviation = "";
+  
+            if (data.answer) {
+              if (data.answer.overView1) {
+                overView1 = data.answer.overView1;
+              }
+  
+              if (data.answer.overView2) {
+                overView2 = data.answer.overView2;
+              }
+  
+              if (data.answer.reasonForBenefit) {
+                reasonForBenefit = data.answer.reasonForBenefit;
+              }
+  
+              if (data.answer.reasonForRisk) {
+                reasonForRisk = data.answer.reasonForRisk;
+              }
+  
+              if (data.answer.reasonForDeviation) {
+                reasonForDeviation = data.answer.reasonForDeviation;
+              }
+            }
+  
+            setEditor({
+              ...editorData,
+              overView1: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(overView1).contentBlocks,
+                  convertFromHTML(overView1).entityMap
+                )
+              ),
+              overView2: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(overView2).contentBlocks,
+                  convertFromHTML(overView2).entityMap
+                )
+              ),
+              reasonForBenefit: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(reasonForBenefit).contentBlocks,
+                  convertFromHTML(reasonForBenefit).entityMap
+                )
+              ),
+              reasonForRisk: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(reasonForRisk).contentBlocks,
+                  convertFromHTML(reasonForRisk).entityMap
+                )
+              ),
+              reasonForDeviation: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(reasonForDeviation).contentBlocks,
+                  convertFromHTML(reasonForDeviation).entityMap
+                )
+              ),
+            });
+  
+            setParent("overView1", data.answer ? data.answer.overView1 : "");
+            setParent("overView2", data.answer ? data.answer.overView2 : "");
+            setParent(
+              "reasonForBenefit",
+              data.answer ? data.answer.reasonForBenefit : ""
+            );
+            setParent(
+              "reasonForRisk",
+              data.answer ? data.answer.reasonForRisk : ""
+            );
+            setParent(
+              "reasonForDeviation",
+              data.answer ? data.answer.reasonForDeviation : ""
+            );
+            // End Res Answer
+  
+            // Check Client Choice
+            console.log("data.recommendedProduct", data.recommendedProduct);
+            data.recommendedProduct.map((product: any) => {
+              if (product["checked"] == "0") {
+                product["checked"] = false;
+              } else {
+                product["checked"] = true;
+                calcPremiumClientChoice(product, false);
+              }
+  
+              var dataName = getPremiumFrequencyName(product.premiumFrequency);
+              if (dataName != undefined) {
+                dataSubPremium[dataName] = product["premium"];
+  
+                if (product["checked"] == true) {
+                  if (dataResDataTotalPremiumArr[dataName]) {
+                    dataResDataTotalPremiumArr[dataName] += product["totPremium"];
+                  } else {
+                    dataResDataTotalPremiumArr[dataName] = product["totPremium"];
+                  }
+                }
+  
+                product["riders"].map((rider: any) => {
+                  var dataNameRider = getPremiumFrequencyName(
+                    rider.premiumFrequency
+                  );
+                  if (dataNameRider != undefined) {
+                    if (rider["checked"] == "0") {
+                      rider["checked"] = false;
+                    } else {
+                      rider["checked"] = true;
+                    }
+  
+                    //
+                    if (dataSubPremium[dataNameRider]) {
+                      dataSubPremium[dataNameRider] += rider["premium"];
+                    } else {
+                      dataSubPremium[dataNameRider] = rider["premium"];
+                    }
+  
+                    if (dataResDataTotalPremiumArr[dataNameRider]) {
+                      dataResDataTotalPremiumArr[dataNameRider] +=
+                        rider["premium"];
+                    } else {
+                      dataResDataTotalPremiumArr[dataNameRider] =
+                        rider["premium"];
+                    }
+                  }
+                });
+  
+                if (product.riders.length > 0) {
+                  product["subTotal"] = dataSubPremium;
+                } else {
+                  product["subTotal"] = [];
+                }
+              }
+            });
+  
+            data.ILPProduct.map((product: any, index: any) => {
+              if (product["checked"] == "0") {
+                product["checked"] = false;
+              } else {
+                product["checked"] = true;
+              }
+            });
+  
+            data.CISProduct.map((product: any, index: any) => {
+              if (product["checked"] == "0") {
+                product["checked"] = false;
+              } else {
+                product["checked"] = true;
+              }
+            });
+  
+            let checker = 0;
+  
+            data.CISILPProducts.map((product: any) => {
+              if (product["checked"]) {
+                checker++;
+              }
+  
+              if (
+                product["type"] == 1 ||
+                (product["type"] == 0 && product["recommedType"] == 1)
+              ) {
+                calcPremiumForCISClientChoice(product);
+              } else if (product["type"] == 0 && product["recommedType"] == 0) {
+                calcPremiumClientChoice(product, false);
+              }
+            });
+  
+            calcPremiumMatrix(data);
+          });
+  
+          // Section 8
+          const annualPayorBudget: Array<any> = [[], []];
+          const singlePayorBudget: Array<any> = [[], []];
+          const payorBudgetMap: Array<any> = [[], []];
+          pfrSection(8, pfrId).then((data: any) => {
+            console.log("data section 8 ", data);
+            setPfr8(data);
+  
+            let payorBudgets = data["payorBudgets"];
+            payorBudgets.map((budget: any) => {
+              if (budget["selection"] != 0) {
+                let clientId = budget["clientType"];
+                let type = budget["type"];
+                annualPayorBudget[clientId][type] = budget["annual"];
+                singlePayorBudget[clientId][type] = budget["single"];
+                payorBudgetMap[clientId][type] = true;
+              }
+            });
+          });
+          setAnnualPayorBudget(annualPayorBudget);
+          setSinglePayorBudget(singlePayorBudget);
+          setPayorBudgetMap(payorBudgetMap);
+  
+          // get whole context
+          const resOutcome: Array<any> = [];
+          getWholeContext(pfrId).then((dataWhole: any) => {
+            console.log("dataWhole", dataWhole);
+            dataWhole.outcomes.map((outcome: any) => {
+              let clientId = outcome["clientType"] - 1;
+              resOutcome[clientId] = outcome["outcome"];
+            });
+            setOutcome(resOutcome);
+          });
+  
+          console.log(
+            "dataTotalAnnualPremiumChoice",
+            dataTotalAnnualPremiumChoice
+          );
+  
+          getProductRiderBenefitRisk();
+          getGroupRow();
+        }
+      }
     }
 
     console.log("section9Res", section9);
-  }, [section9, router.isReady]);
+  }, [section9, router.isReady,scrollPositionBottom]);
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {
     switch (Number(premiumFrequency)) {

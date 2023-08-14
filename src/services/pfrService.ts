@@ -110,6 +110,31 @@ export const getRecommendationGroup = async (id:any, groupId: any) => {
   return data;
 };
 
+export const signProceed = async (data: any) => {
+  return await http.post(`/pfr/sign`, data, {
+    headers: authHeader(),
+  });
+};
+
+export const downloadPDF_1 = async (pfrId: number) => {
+  const headers = {
+    Authorization:
+      "Bearer $2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i",
+  };
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/pfr/downloadPDF_1/${pfrId}`,
+    {
+      headers: {
+        Authorization:
+          "$2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i",
+      },
+    }
+  );
+  const data = await response.blob();
+
+  return data;
+}
+
 
 export const getPfr = async (id:any) => {
   const headers = {'Authorization': 'Bearer $2y$10$K/BY6MOqyuIRBZKw1Zksa.HjOTOFHlwI5q/OXk31GVtQ84gqJoe4i'};

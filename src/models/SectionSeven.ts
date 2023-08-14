@@ -188,6 +188,7 @@ export interface SectionSeven {
     typeClient: number;
     totalDependant: number;
     additionalNote: AdditionalNote[];
+    dependants: [],
     status: number;
     editableStatus: number;
   };

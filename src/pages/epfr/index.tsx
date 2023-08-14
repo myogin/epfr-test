@@ -70,7 +70,7 @@ const EpfrPage: Page = () => {
   console.log(status);
   useEffect(() => {
     getGeneralData();
-    setLogin(session?.user?.token, session?.user?.id);
+    // setLogin(session?.user?.token, session?.user?.id);
   });
 
   return (

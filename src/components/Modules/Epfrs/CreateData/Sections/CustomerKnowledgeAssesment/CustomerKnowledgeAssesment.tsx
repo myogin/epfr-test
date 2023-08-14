@@ -148,6 +148,10 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
+      } else {
+        if (id && Number(id) > 0) {
+          getSectionData(Number(id));
+        }
       }
     }
   }, [scrollPositionNext]);
@@ -160,15 +164,19 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       let getSection6 = await getPfrStep(6, params);
 
       // fetching need,reason
-      setGlobal("need", [getSection6.need[0].need, getSection6.need[1].need]);
-      setGlobal("reason", [
-        getSection6.reason[0].reason,
-        getSection6.reason[1].reason,
-      ]);
+      if (getSection6.need.length > 0) {
+        setGlobal("need", [getSection6.need[0].need, getSection6.need[1].need]);
+      }
+      if (getSection6.reason.length > 0) {
+        setGlobal("reason", [
+          getSection6.reason[0].reason,
+          getSection6.reason[1].reason,
+        ]);
+      }
 
-      fetchAnswers(getSection6.answers);
-
-      console.log("section 6", JSON.parse(getSection6.answers[0].answer));
+      if (getSection6.reason.length > 0) {
+        fetchAnswers(getSection6.answers);
+      }
 
       setLoading(false); // Stop loading
     } catch (error) {
@@ -176,9 +184,11 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       console.error(error);
     }
   };
-  return loading ? (
-    <LoadingPage />
-  ) : (
+  // return loading ? (
+  //   <LoadingPage />
+  // ) : (
+
+  return (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"

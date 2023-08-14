@@ -236,6 +236,8 @@ const CoverForPersonal = (props: Props) => {
             {getPfrLength.map((data, i) => (
               <td key={"sdf" + i} className={``}>
                 <Input
+                  readonly={!section7.answer.defaultCheck
+                    .cover_for_personal_accident_benefit}
                   formStyle="text-right"
                   className="mb-10"
                   type="text"
@@ -254,6 +256,8 @@ const CoverForPersonal = (props: Props) => {
               return (
                 <td key={"asss" + i} className={``}>
                   <Input
+                    readonly={!section7.answer.defaultCheck
+                      .cover_for_personal_accident_benefit}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"

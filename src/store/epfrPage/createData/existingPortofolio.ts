@@ -39,6 +39,7 @@ type Actions = {
   setGlobal: (name: string, value: any) => any;
   removeData: (attribut: string, params: any) => any;
   resetSectionTwo: () => any;
+  setNetWorth: (object: string, indexData: number, params: any) => any;
 
   setToggle: (
     object: string,
@@ -212,7 +213,7 @@ const existingPortofolio = create(
                 draft.declineToReview[0] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
-                params['editting'] = params.client !== "" ? true : false
+                params["editting"] = params.client !== "" ? true : false;
                 draft.summaryOfProperty.push(params);
               }
 
@@ -359,7 +360,7 @@ const existingPortofolio = create(
                 draft.declineToReview[1] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
-                params['editting'] = params.client !== "" ? true : false
+                params["editting"] = params.client !== "" ? true : false;
                 draft.summaryOfInvestment.push(params);
               }
 
@@ -496,7 +497,7 @@ const existingPortofolio = create(
                 draft.declineToReview[2] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
-                params['editting'] = params.client !== "" ? true : false
+                params["editting"] = params.client !== "" ? true : false;
                 draft.summaryOfSavings.push(params);
               }
 
@@ -624,7 +625,7 @@ const existingPortofolio = create(
                 draft.declineToReview[3] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
-                params['editting'] = params.client !== "" ? true : false
+                params["editting"] = params.client !== "" ? true : false;
                 draft.summaryOfCPF.push(params);
               }
 
@@ -766,7 +767,7 @@ const existingPortofolio = create(
                 draft.declineToReview[4] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
-                params['editting'] = params.client !== "" ? true : false
+                params["editting"] = params.client !== "" ? true : false;
                 draft.summaryOfInsurance.push(params);
               }
 
@@ -789,6 +790,7 @@ const existingPortofolio = create(
                 dataReplace.id = params.id;
                 dataReplace.client = params.client;
                 dataReplace.insured = params.insured;
+                dataReplace.editting = params.editting;
                 dataReplace.status = params.status;
                 dataReplace.insurer = params.insurer;
                 dataReplace.policyType = params.policyType;
@@ -832,6 +834,7 @@ const existingPortofolio = create(
               );
 
               dataPatch.client = params.client;
+              dataPatch.editting = params.editting;
               dataPatch.insured = params.insured;
               dataPatch.status = params.status;
               dataPatch.insurer = params.insurer;
@@ -880,6 +883,7 @@ const existingPortofolio = create(
                 let dataReplace = draft.summaryOfInsurance[0];
                 dataReplace.id = 0;
                 dataReplace.client = "";
+                dataReplace.editting = false;
                 dataReplace.insured = "";
                 dataReplace.status = "";
                 dataReplace.insurer = "";
@@ -940,7 +944,7 @@ const existingPortofolio = create(
                 draft.declineToReview[4] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
-                params['editting'] = params.client !== "" ? true : false
+                params["editting"] = params.client !== "" ? true : false;
                 draft.summaryOfInsurance2.push(params);
               }
 
@@ -962,6 +966,7 @@ const existingPortofolio = create(
                 let dataReplace = draft.summaryOfInsurance2[indexData];
                 dataReplace.id = params.id;
                 dataReplace.client = params.client;
+                dataReplace.editting = params.editting;
                 dataReplace.insured = params.insured;
                 dataReplace.insurer = params.insurer;
                 dataReplace.policyType = params.policyType;
@@ -1001,6 +1006,7 @@ const existingPortofolio = create(
               );
               dataPatch.client = params.client;
               dataPatch.insured = params.insured;
+              dataPatch.editting = params.editting;
               dataPatch.insurer = params.insurer;
               dataPatch.policyType = params.policyType;
               dataPatch.policyTerm = params.policyTerm;
@@ -1043,6 +1049,7 @@ const existingPortofolio = create(
                 let dataReplace = draft.summaryOfInsurance2[0];
                 dataReplace.id = 0;
                 dataReplace.client = "";
+                dataReplace.editting = false;
                 dataReplace.insured = "";
                 dataReplace.insurer = "";
                 dataReplace.policyType = "";
@@ -1086,7 +1093,7 @@ const existingPortofolio = create(
                 draft.declineToReview[5] = params.client !== "" ? 0 : 1;
               } else {
                 params["id"] = ++countData;
-                params['editting'] = params.client !== "" ? true : false
+                params["editting"] = params.client !== "" ? true : false;
                 draft.summaryOfSRS.push(params);
               }
 
@@ -1215,7 +1222,7 @@ const existingPortofolio = create(
                     draft.declineToReview[6] = param.client !== "" ? 0 : 1;
                   } else {
                     param["id"] = ++checkLengthLoan;
-                    param['editting'] = param.client !== "" ? true : false
+                    param["editting"] = param.client !== "" ? true : false;
                     draft.summaryOfLoans.push(param);
                   }
 
@@ -1355,6 +1362,16 @@ const existingPortofolio = create(
             produce((draft) => {
               console.log("masuk sini global section 2");
               draft[name] = value;
+
+              if(!get().need && draft.reason === ""){
+                draft.status = 0
+              }else {
+                draft.status = 1
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
             })
           ),
         setToggle: (
@@ -1501,6 +1518,25 @@ const existingPortofolio = create(
         resetSectionTwo: () => {
           set(initialState);
         },
+        setNetWorth: (object: string, indexData: number, params: any) =>
+          set(
+            produce((draft) => {
+              draft[object][indexData] = params;
+
+              if (
+                draft.totalNetWorth[indexData] === 0 &&
+                draft.networthReason[indexData] === ""
+              ) {
+                draft.status = 0;
+              } else {
+                draft.status = 1;
+              }
+
+              if (get().editableStatus === 1 && get().status === 1) {
+                draft.editableStatus = 2;
+              }
+            })
+          ),
       }),
       {
         name: "section2",

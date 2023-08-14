@@ -15,7 +15,10 @@ import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { getLength } from "@/libs/helper";
 import { getAllPfrData, postPfrSections } from "@/services/pfrService";
 import { getPfrStep } from "@/services/pfrService";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 
@@ -26,7 +29,7 @@ interface Props {
 
 const ClientsAcknowledgment = (props: Props) => {
   const scrollPosition = useScrollPosition(11);
-  const scrollPositionBottom = useScrollPositionBottom(11);
+  const scrollPositionNext = useScrollPosition(12);
   const scrollPositionBottomSection10 = useScrollPositionBottom(10);
   const [pfrId, setPfrId] = useState(0);
   const [editable, setEditable] = useState(0);
@@ -214,8 +217,9 @@ const ClientsAcknowledgment = (props: Props) => {
     ],
   ]);
 
-  const fetchData = async () => {
-    const s12Res: any = await getPfrStep(12, pfrId);
+  const fetchData = async() => {
+    if(!pfrIdSectionOne && pfrIdSectionOne == 0) return;
+    const s12Res: any = await getPfrStep(12, pfrIdSectionOne);
     // const s10Res: any = await getPfrStep(10, pfrId);
     // const s13Res: any = await getPfrStep(13, pfrId);
 
@@ -525,20 +529,47 @@ const ClientsAcknowledgment = (props: Props) => {
     );
   }, [editable]);
 
+  let pfrIdSectionOne:any = usePersonalInformation((state) => state.id);
+
+  const router = useRouter();
+  let pfrLocal = usePfrData((state) => state.pfr);
+
   useEffect(() => {
-    if (
-      scrollPositionBottomSection10 === "Process10" &&
-      sectionElevenData.id === 0
-    ) {
-      const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
-      setPfrId(section1?.state?.id);
-      setSectionElevenData({
-        ...sectionElevenData,
-        id: section1?.state?.id,
-      });
+    // if (
+    //   scrollPositionBottomSection10 === "Process10" &&
+    //   sectionElevenData.id === 0
+    // ) {
+    //   const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
+    //   setPfrId(section1?.state?.id);
+    //   setSectionElevenData({
+    //     ...sectionElevenData,
+    //     id: section1?.state?.id,
+    //   });
+
+      if (!router.isReady) return;
+      // If edit check the ID
+      // if (router.query.id !== null && router.query.id !== undefined) {
+        if (scrollPositionBottomSection10 === "Process10") {
+          setSectionElevenData({
+            ...sectionElevenData,
+            id: Number(router.query.id),
+            status: pfrLocal.section11
+          });
+        // }
+      }else {
+        // if (scrollPositionBottomSection10 === "Process10") {
+          const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+          setSectionElevenData({
+            ...sectionElevenData,
+            id: Number(section1?.state?.id),
+            status: pfrLocal.section10
+          });
+        // }
+      }
+      setEditable(pfrLocal.editableSection11);
       fetchData();
-    }
-  }, [scrollPositionBottomSection10]);
+    // }
+  }, [scrollPositionBottomSection10, router.isReady, router.query.id]);
 
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -567,7 +598,7 @@ const ClientsAcknowledgment = (props: Props) => {
   };
 
   useEffect(() => {
-    if (scrollPositionBottom === "Process11") {
+    if (scrollPositionNext === "okSec12") {
       if (
         (editable === 0 && sectionElevenData.status === 1) ||
         (editable === 2 && sectionElevenData.status === 1)
@@ -579,7 +610,7 @@ const ClientsAcknowledgment = (props: Props) => {
         console.log("Your cannot save data");
       }
     }
-  }, [scrollPositionBottom]);
+  }, [scrollPositionNext]);
 
   return (
     <div

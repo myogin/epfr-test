@@ -55,8 +55,13 @@ type Actions = {
   setGlobal: (name: string, value: any) => any;
   resetSectionEight: () => any;
   setInit: (params: any) => any;
-  setExisting: (object: string, key: number, value: any) => any;
-  setExistingMedisave: (object: string, key: number, value: any) => any;
+  setExisting: (group: string, object: string, key: number, value: any) => any;
+  setExistingMedisave: (
+    group: string,
+    object: string,
+    key: number,
+    value: any
+  ) => any;
 };
 
 const Affordability = create(
@@ -64,66 +69,83 @@ const Affordability = create(
     persist<SectionEight & Actions>(
       (set, get) => ({
         ...initialState,
-        setExisting: (object: string, key: number, value: any) =>
+        setExisting: (group: string, object: string, key: number, value: any) =>
           set(
             produce((draft) => {
-              let dataCheckboxAnnual = get().section8.fromExistingResources[key];
-              console.log("existing " + object + " " + key + " " + value);
-              if(object === "fromExistingResources") {
-                if(dataCheckboxAnnual == false) {
-                  dataCheckboxAnnual = true
-                }else {
-                  dataCheckboxAnnual = false
-                }
+              if (group === "annual") {
+                if (object === "fromExistingResources") {
+                  let dataCheckboxAnnual =
+                    get().section8.fromExistingResources[key];
 
-                draft.section8[object][key] = Boolean(dataCheckboxAnnual);
-              }else {
-                draft.section8[object][key] = value;
+                  if (dataCheckboxAnnual == false) {
+                    dataCheckboxAnnual = true;
+                  } else {
+                    dataCheckboxAnnual = false;
+                  }
+                  draft.section8[object][key] = Boolean(dataCheckboxAnnual);
+                } else {
+                  draft.section8[object][key] = value;
+                }
               }
 
-              let dataCheckboxSingle = get().section8.fromExistingResourcesForSingle[key];
-              if(object === "fromExistingResourcesForSingle") {
-                if(dataCheckboxSingle == false) {
-                  dataCheckboxSingle = true
-                }else {
-                  dataCheckboxSingle = false
-                }
+              if (group === "single") {
+                if (object === "fromExistingResourcesForSingle") {
+                  let dataCheckboxSingle =
+                    get().section8.fromExistingResourcesForSingle[key];
+                  if (dataCheckboxSingle == false) {
+                    dataCheckboxSingle = true;
+                  } else {
+                    dataCheckboxSingle = false;
+                  }
 
-                draft.section8[object][key] = Boolean(dataCheckboxSingle);
-              }else {
-                draft.section8[object][key] = value;
+                  draft.section8[object][key] = Boolean(dataCheckboxSingle);
+                } else {
+                  draft.section8[object][key] = value;
+                }
               }
             })
           ),
-        setExistingMedisave: (object: string, key: number, value: any) =>
+        setExistingMedisave: (
+          group: string,
+          object: string,
+          key: number,
+          value: any
+        ) =>
           set(
             produce((draft) => {
-              let dataCheckboxAnnual = get().section8.medisaveResource.fromExistingResources[key];
-              console.log("existing medisave " + object + " " + key);
+              if (group === "annual") {
+                if (object === "fromExistingResources") {
+                  let dataCheckboxAnnual =
+                    get().section8.medisaveResource.fromExistingResources[key];
+                  if (dataCheckboxAnnual == false) {
+                    dataCheckboxAnnual = true;
+                  } else {
+                    dataCheckboxAnnual = false;
+                  }
 
-              if(object === "fromExistingResources") {
-                if(dataCheckboxAnnual == false) {
-                  dataCheckboxAnnual = true
-                }else {
-                  dataCheckboxAnnual = false
+                  draft.section8.medisaveResource[object][key] =
+                    Boolean(dataCheckboxAnnual);
+                } else {
+                  draft.section8.medisaveResource[object][key] = value;
                 }
-
-                draft.section8.medisaveResource[object][key] = Boolean(dataCheckboxAnnual);
-              }else {
-                draft.section8.medisaveResource[object][key] = value;
               }
 
-              let dataCheckboxSingle = get().section8.medisaveResource.fromExistingResourcesForSingle[key];
-              if(object === "fromExistingResourcesForSingle") {
-                if(dataCheckboxSingle == false) {
-                  dataCheckboxSingle = true
-                }else {
-                  dataCheckboxSingle = false
-                }
+              if (group === "single") {
+                if (object === "fromExistingResourcesForSingle") {
+                  let dataCheckboxSingle =
+                    get().section8.medisaveResource
+                      .fromExistingResourcesForSingle[key];
+                  if (dataCheckboxSingle == false) {
+                    dataCheckboxSingle = true;
+                  } else {
+                    dataCheckboxSingle = false;
+                  }
 
-                draft.section8.medisaveResource[object][key] = Boolean(dataCheckboxSingle);
-              }else {
-                draft.section8.medisaveResource[object][key] = value;
+                  draft.section8.medisaveResource[object][key] =
+                    Boolean(dataCheckboxSingle);
+                } else {
+                  draft.section8.medisaveResource[object][key] = value;
+                }
               }
             })
           ),
@@ -190,7 +212,8 @@ const Affordability = create(
         ) =>
           set(
             produce((draft) => {
-              let dataResSelection = draft.section8.payorBudget[key][index][name];
+              let dataResSelection =
+                draft.section8.payorBudget[key][index][name];
               if (name == "selection") {
                 if (dataResSelection == true) {
                   dataResSelection = false;
@@ -201,6 +224,20 @@ const Affordability = create(
                 dataResSelection = value;
               }
               draft.section8.payorBudget[key][index][name] = dataResSelection;
+
+              let totalAmmount = get().section8.payorBudget[key][index].annual + get().section8.payorBudget[key][index].single
+
+              if(totalAmmount === 0 && get().section8.payorBudget[key][index].sourceOfFund !=="") {
+                draft.section8.payorBudget[key][index].sourceOfFund = ""
+              }
+
+              draft.section8.status = 1;
+
+              if (get().section8.editableStatus === 1 && get().section8.status === 1) {
+                draft.section8.editableStatus = 2;
+              }else {
+                draft.section8.editableStatus = 0;
+              }
             })
           ),
         setSourceOfWealth: (key: number, name: string, value: any) =>

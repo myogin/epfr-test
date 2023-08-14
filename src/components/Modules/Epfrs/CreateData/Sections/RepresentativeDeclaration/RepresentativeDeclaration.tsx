@@ -13,7 +13,9 @@ import Select from "@/components/Forms/Select";
 import TextArea from "@/components/Forms/TextArea";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
-import { getPfrStep, postPfr, postPfrSections } from "@/services/pfrService";
+import { downloadPDF_1, getPfrStep, postPfr, postPfrSections, signProceed } from "@/services/pfrService";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
@@ -26,6 +28,11 @@ interface Props {
 
 const RepresentativeDeclaration = (props: Props) => {
   const [pfrId, setPfrId] = useState(0);
+  const [clientSign, setClientSign] = useState(0);
+  const [supervisorSign, setSupervisorSign] = useState(0);
+  const [directorSign, setDirectorSign] = useState(0);
+
+  let pfrIdSectionOne = usePersonalInformation((state) => state.id);
 
   const { push } = useRouter();
 
@@ -50,8 +57,8 @@ const RepresentativeDeclaration = (props: Props) => {
     //   section12: JSON.parse(localStorage.getItem('section11')?? '{}'),
     //   section13: JSON.parse(localStorage.getItem('section12')?? '{}'),
     // }
-    const localData = localStorage.getItem("section10")
-      ? localStorage.getItem("section10")
+    const localData = localStorage.getItem("section12")
+      ? localStorage.getItem("section12")
       : "";
 
     let dataFix = {};
@@ -63,13 +70,34 @@ const RepresentativeDeclaration = (props: Props) => {
     await postPfrSections(12, JSON.stringify(dataFix));
   };
 
-  const finish = async () => {
+  const downloadPDF = async () => {
+    const localData = localStorage.getItem("section12")
+      ? localStorage.getItem("section12")
+      : "";
+
+    let dataFix: any = {};
+    if (localData) {
+      let data = JSON.parse(localData);
+      dataFix = data;
+    }
+
+    await downloadPDF_1(dataFix['id']);
+  };
+
+  const sign = async () => {
     await saveData();
+    await signProceed({
+      'pfrId'           : sectionTwelveData.id,
+      'clientSign'      : clientSign,
+      'supervisorSign'  : supervisorSign,
+      'director'        : directorSign
+    });
     push("/create/finish");
   };
 
   const review = async () => {
     await saveData();
+    await downloadPDF();
     push(`/create/review/${props.pfrType === 1 ? "single" : "joint"}`);
   };
 
@@ -78,66 +106,107 @@ const RepresentativeDeclaration = (props: Props) => {
   const [explain, setExplain] = useState("");
   const [supervisor, setSupervisor] = useState("");
 
-  const fetchData = async () => {
+  const fetchData = async() => {
     // console.log("Fetching ...");
 
     // const s12Res: any = await getPfrStep(12, pfrId);
     const s12Res: any = JSON.parse(
       localStorage.getItem("section11") ?? "false"
     );
-    const s13Res: any = await getPfrStep(13, pfrId);
 
-    if (s13Res["note"] != null) {
-      sectionTwelveData.explain = s13Res["note"]["note"];
-      sectionTwelveData.jfw = s13Res["note"]["jfw"];
-      sectionTwelveData.spv = s13Res["note"]["spv"];
-      sectionTwelveData.spvOther = s13Res["note"]["spvOther"];
-      var cekData = false;
-      if (s13Res["note"]["nftf"]) {
-        if (s13Res["note"]["nftf"] === true || s13Res["note"]["nftf"] === 1) {
-          cekData = true;
-        } else {
-          cekData = false;
+    
+    const data = JSON.parse(localStorage.getItem('section12')?? '{}');
+
+    if(pfrIdSectionOne && pfrIdSectionOne > 0) {
+      const s13Res: any = await getPfrStep(13, pfrIdSectionOne);
+
+      if (s13Res["note"] != null) {
+        sectionTwelveData.explain = s13Res["note"]["note"];
+        sectionTwelveData.jfw = s13Res["note"]["jfw"];
+        sectionTwelveData.spv = s13Res["note"]["spv"];
+        sectionTwelveData.spvOther = s13Res["note"]["spvOther"];
+        var cekData = false;
+        if (s13Res["note"]["nftf"]) {
+          if (s13Res["note"]["nftf"] === true || s13Res["note"]["nftf"] === 1) {
+            cekData = true;
+          } else {
+            cekData = false;
+          }
         }
+        sectionTwelveData.nftf = cekData;
       }
-      sectionTwelveData.nftf = cekData;
-    }
-    setSupervisor(s13Res["spv"]);
-
-    if (!s12Res) {
-      return;
-    }
-
-    const checkData = s12Res["data"] ?? null;
-
-    if (checkData !== null) {
-      // const data = JSON.parse(checkData);
-      const data = checkData;
-
-      if (data[0][8][0] || data[1][8][0]) {
-        setRequiredNFTF(true);
-      } else {
-        setRequiredNFTF(false);
+      setSupervisor(s13Res["spv"]);
+  
+      if (!s12Res) {
+        return;
+      }
+  
+      const checkData = s12Res["data"] ?? null;
+  
+      if (checkData !== null) {
+        // const data = JSON.parse(checkData);
+        const data = checkData;
+  
+        if (data[0][8][0] || data[1][8][0]) {
+          setRequiredNFTF(true);
+        } else {
+          setRequiredNFTF(false);
+        }
       }
     }
   };
 
   const scrollPositionBottom = useScrollPositionBottom(11);
+  const router = useRouter();
+  let pfrLocal = usePfrData((state) => state.pfr);
 
   useEffect(() => {
-    if (
-      scrollPositionBottomSection11 === "Process11" &&
-      sectionTwelveData.id === 0
-    ) {
-      const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
-      setPfrId(section1?.state?.id);
+    // if (
+    //   scrollPositionBottomSection11 === "Process11" &&
+    //   sectionTwelveData.id === 0
+    // ) {
+    //   const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
+    //   setPfrId(section1?.state?.id);
+    //   setSectionTwelveData({
+    //     ...sectionTwelveData,
+    //     id: section1?.state?.id,
+    //   });
+
+    if (!router.isReady) return;
+    // If edit check the ID
+    if (router.query.id !== null && router.query.id !== undefined) {
       setSectionTwelveData({
         ...sectionTwelveData,
-        id: section1?.state?.id,
+        id: Number(router.query.id),
+        status: pfrLocal.section12
       });
-      fetchData();
+      if (scrollPositionBottomSection11 === "Process11") {
+        // setSectionTwelveData({
+        //   ...sectionTwelveData,
+        //   id: Number(router.query.id),
+        //   status: pfrLocal.section12
+        // });
+      }
+    }else {
+      const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+        setSectionTwelveData({
+          ...sectionTwelveData,
+          id: Number(section1?.state?.id),
+          status: pfrLocal.section12
+      });
+      if (scrollPositionBottomSection11 === "Process11") {
+        // const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+        // setSectionTwelveData({
+        //   ...sectionTwelveData,
+        //   id: Number(section1?.state?.id),
+        //   status: pfrLocal.section12
+        // });
+      }
     }
-  }, [scrollPositionBottomSection11]);
+    
+      fetchData();
+    // }
+  }, [scrollPositionBottomSection11, router.isReady, router.query.id]);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -425,13 +494,13 @@ const RepresentativeDeclaration = (props: Props) => {
                             name="clientName"
                             className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
                             onChange={(e) => {
-                              console.log(e.target.selectedIndex);
+                              setClientSign(Number(e.target.selectedIndex));
                             }}
                           >
                             <option key="remote" value="0">
                               Remote
                             </option>
-                            <option key="face2face" value="0">
+                            <option key="face2face" value="1">
                               Face to face
                             </option>
                           </select>
@@ -451,13 +520,13 @@ const RepresentativeDeclaration = (props: Props) => {
                             name="clientName"
                             className="w-full px-0 py-2 text-sm border-t-0 border-b border-l-0 border-r-0 cursor-pointer text-gray-light border-gray-soft-strong"
                             onChange={(e) => {
-                              console.log(e.target.selectedIndex);
+                              setSupervisorSign(Number(e.target.selectedIndex));
                             }}
                           >
                             <option key="remote" value="0">
                               Remote
                             </option>
-                            <option key="face2face" value="0">
+                            <option key="face2face" selected={clientSign==1? true: false} value="1">
                               Face to face
                             </option>
                           </select>
@@ -474,7 +543,7 @@ const RepresentativeDeclaration = (props: Props) => {
                       </div>
                     )} */}
                     <div className="flex gap-4 mt-4">
-                      <ButtonGreenMedium onClick={finish}>
+                      <ButtonGreenMedium onClick={sign}>
                         Sign
                       </ButtonGreenMedium>
                       <ButtonTransparentMedium onClick={closeModal}>

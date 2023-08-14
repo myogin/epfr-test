@@ -388,6 +388,8 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={!section7.answer.defaultCheck
+                      .fund_disability_income_expense_mortgage}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -407,6 +409,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={!section7.answer.defaultCheck
+                      .fund_disability_income_expense_mortgage}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -556,6 +560,8 @@ const FundDisability = (props: Props) => {
             {getPfrLength.map((data, i) => (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={!section7.answer.defaultCheck
+                      .fund_disability_income_expense_disability}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
@@ -575,6 +581,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
+                    readonly={!section7.answer.defaultCheck
+                      .fund_disability_income_expense_disability}
                     formStyle="text-right"
                     className="mb-10"
                     type="text"
