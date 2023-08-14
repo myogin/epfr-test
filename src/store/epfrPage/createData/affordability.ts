@@ -230,6 +230,14 @@ const Affordability = create(
               if(totalAmmount === 0 && get().section8.payorBudget[key][index].sourceOfFund !=="") {
                 draft.section8.payorBudget[key][index].sourceOfFund = ""
               }
+
+              draft.section8.status = 1;
+
+              if (get().section8.editableStatus === 1 && get().section8.status === 1) {
+                draft.section8.editableStatus = 2;
+              }else {
+                draft.section8.editableStatus = 0;
+              }
             })
           ),
         setSourceOfWealth: (key: number, name: string, value: any) =>
