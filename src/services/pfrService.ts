@@ -47,6 +47,12 @@ export const postSection9Recommendation = async (data: any) => {
   });
 };
 
+export const updateSection9Recommendation = async (data: any) => {
+  return await http.post(`/pfr/update/recommend`, data, {
+    headers: authHeader(),
+  });
+};
+
 export const removeRecommendation = async (pfrId:any, id: any) => {
   return await http.get(`/pfr/delete/recommend/${pfrId}/${id}`, { headers: authHeader() });
 };

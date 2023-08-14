@@ -16,7 +16,7 @@ import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/an
 
 // Model
 import {getAllCompany} from "@/services/companyService";
-import {getWholeContext, pfrSection, getRecommendation, postSection9Recommendation} from "@/services/pfrService";
+import {getWholeContext, pfrSection, getRecommendation, postSection9Recommendation, updateSection9Recommendation} from "@/services/pfrService";
 import {productFindOne} from "@/services/productService";
 // import {getPfrSection} from "@/services/getPfrSection";
 
@@ -263,6 +263,7 @@ const AddPlanRecommendation = () => {
     const resultCateg: Array<any> = []
     const resDataOwner: Array<any> = [];
     getWholeContext(pfrId).then((data) => {
+      console.log('getWholeContext', data)
       setInitWhole(data);
 
       // For Cis If ProductGroupId Exist
@@ -435,6 +436,8 @@ const AddPlanRecommendation = () => {
       }
 
       setCisModelPortofolioRisk(resModelPort)
+
+      showEdit(data)
     });
     
     pfrSection(8, pfrId).then((data) => {
@@ -459,60 +462,277 @@ const AddPlanRecommendation = () => {
     console.log('section9Recommend', section9Recommend)
     setDataSelectedCategoryId(section9Recommend.product.categoryId);
     setCompany(section9Recommend.product.companyId);
-    showEdit()
   }, [section9Recommend]);
 
-  const showEdit = () => {
-    console.log('dataCategory', dataCategory)
-    console.log('dataCompany', dataCompany)
+  const showEdit = (resData:any) => {
     let s9_recommendId = localStorage.getItem("s9_recommendId")
     if(s9_recommendId){
       if(section9Recommend.product.id == 0){
         getRecommendation(s9_recommendId).then((data:any) => {
           console.log('data', data)
-          setSelectedCategory(data.product.categoryId)
-          setSelectedCompany(data.product.companyId)
-          setProductValueSelect(data.product.id)
-          editRecommendationProduct({
-            "section9Recommend": {
-              "groupId": data.groupId,
-              "pfrId": data.pfrId,
-              "riders": data.riders,
-              "product": {
-                "subjectId": data.subjectId,
-                "name": data.name,
-                "id": data.product.id,
-                "categoryId": data.product.categoryId,
-                "companyId": data.product.companyId,
-                "policyTerm": data.policyTerm,
-                "sumAssured": data.sumAssured,
-                "premiumPaymentType": data.premiumPaymentType,
-                "premium": data.premium,
-                "premiumFrequency": data.premiumFrequency,
-                "funds": data.funds ? data.funds : [],
-                "modelPortfolioRiskCategory": data.modelPortfolioRiskCategory,
-                "higherThanRiskProfile": data.higherThanRiskProfile,
-                "nameOfOwner": data.nameOfOwner,
-                "nameOfInsure": data.nameOfInsure,
-                "nameOfInsureOther": data.nameOfInsureOther,
-                "benefit": data.benefit,
-                "risk": data.risk,
-                "portfolio": data.portfolio,
-                "premiumForHospitalization": data.premiumForHospitalization,
+          if(data.type == 0){
+            let resCateg = null;
+            let resComp = null;
+            
+            resData.category.map((vData:any, iData: any) => {
+              if(vData.id == data.product.categoryId){
+                resCateg = iData;
+              }
+            });
+
+            resData.company.map((vD:any, i:any) => {
+              if(vD.products.length > 0){
+                vD.products.map((vP:any) => {
+                  if(vP.id == data.product.id){
+                    resComp = vD.id;
+                  }
+                })
+              }
+            });
+
+            editRecommendationProduct({
+              "section9Recommend": {
                 "groupId": data.groupId,
-                "premiumType": data.premiumType,
-                "feature": data.product.feature,
-                "type": data.type
-              },
-              "extraRiders": []
-            }
-          })
+                "pfrId": data.pfrId,
+                "riders": data.riders,
+                "product": {
+                  "type": 0,
+                  "productType": 0,
+                  "subjectId": data.subjectId,
+                  "name": data.name,
+                  "id": data.product.id,
+                  "categoryId": data.product.categoryId,
+                  "companyId": data.product.companyId,
+                  "policyTerm": data.policyTerm,
+                  "sumAssured": data.sumAssured,
+                  "premiumPaymentType": data.premiumPaymentType,
+                  "premium": data.premium,
+                  "premiumFrequency": data.premiumFrequency,
+                  "funds": data.funds ? data.funds : [],
+                  "modelPortfolioRiskCategory": data.modelPortfolioRiskCategory,
+                  "higherThanRiskProfile": data.higherThanRiskProfile,
+                  "nameOfOwner": data.nameOfOwner,
+                  "nameOfInsure": data.nameOfInsure,
+                  "nameOfInsureOther": data.nameOfInsureOther,
+                  "benefit": data.benefit,
+                  "risk": data.risk,
+                  "portfolio": data.portfolio,
+                  "premiumForHospitalization": data.premiumForHospitalization,
+                  "groupId": data.groupId,
+                  "premiumType": data.premiumType,
+                  "feature": data.product.feature,
+                  "type": data.type,
+                  "fundName": "",
+                  "fundAmount": 0
+                },
+                "extraRiders": []
+              }
+            })
+
+            setSelectedCategory(resCateg)
+            setSelectedCompany(resComp)
+            
+            onEditProvider(resData, resCateg, resComp)
+            setProductValueSelect(data.product.id)
+            changeDataProductName(data.product.id)
+          }else{
+            setCisDataProvider(data.cis.companyId)
+            onEditCis(resData, data.cis.companyId, data.cis.id)
+          }
         });
       }
     }
   }
 
+  // On Edit Cis
+  const onEditCis = (resData: any, companyIds: any, cisIds: any) => {
+    // provider
+    const dataArr: Array<any> = [];
+    setCisDataProvider(companyIds);
+    
+    if(resData.cis.length > 0){
+      resData.cis.map((dataCis: any, indexCis:any) => {
+        // 
+        if((dataOutcomes[section9Recommend.product.nameOfOwner] == 1 || dataCis.platform.mustPassCKA == 0) &&  companyIds == dataCis.platform.companyId &&
+          ((dataCis.maxBudget == 0 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] <= 29999) ||
+          (dataCis.maxBudget == 1 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 29999 && 
+          dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory) ||
+          (dataCis.maxBudget == 2 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 19999 &&
+          dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory))){
+            dataArr.push(dataCis)
+        }
+      })
+      
+      setCisDataProduct(dataArr) 
+    }
+    
+    //     
+    let pfrId = localStorage.getItem("s9_PfrId");
+    var resId = (pfrId != null) ? pfrId.toString() : '0';
+    setParent(resId, 'pfrId', null)
+    
+    setProduct(cisIds, 'portfolio', null)
 
+    if(cisIds == 0) {
+      section9Recommend.product.fundName = ""
+      section9Recommend.product.funds = []
+    }else {
+      let index = resData.cis.findIndex((cis: any) => {
+        if(cis['id'] == cisIds) {
+          return true
+        }
+      })
+
+      var selectedPortfolio = resData.cis[index]
+      setCisDataBenRisk(selectedPortfolio);
+      
+      var dataFundArr: Array<any> = [];
+      
+      benefits = new Array(selectedPortfolio['benefit'].length).fill(false)
+      risks = new Array(selectedPortfolio['risk'].length).fill(false)
+      setPremiumPaymentType(selectedPortfolio['payment']);
+      resData.cis[index]['platform']['funds'].map((fund: any) => {
+        dataFundArr.push({
+          name : fund['fund']['name'],
+          fundCode : fund['fund']['fundCode'],
+          allocation : fund['allocation']
+        })
+      })
+      setProductArr(dataFundArr, 'funds', null)
+    }
+  }
+
+  const onEditProvider = (resInitWhole:any, resCateg: any, resComp: any) => {
+    var selectedProducts: Array<any> = [];
+    // setProduct(value, 'modelPortfolioRiskCategory', null)
+    setSelectedCategory(resCateg)
+    setSelectedCompany("")
+    setProductValueSelect(0);
+    
+    const selectedCategoryType = (resInitWhole.category[resCateg]) ? resInitWhole.category[resCateg]['type'] : null
+    setDataSelectedCategoryType(selectedCategoryType)
+    const selectedCategoryId = (resInitWhole.category[resCateg]) ? resInitWhole.category[resCateg]['id'] : null
+    setDataSelectedCategoryId(selectedCategoryId)
+    // Check Product Company
+    var pushComp: Array<any> = [];
+    // 
+    
+    const pfrId = localStorage.getItem("s9_PfrId");
+    getWholeContext(pfrId).then((data) => {
+      data.company.map((valueComp: any, indexComp:any) => {
+        valueComp['id'] = indexComp;
+        if(valueComp.products.length > 0){
+          var pushProd: Array<any> = [];
+          valueComp.products.map((valueFil: any, indexFil: any) => {
+            if(valueFil.categoryId == selectedCategoryId){
+              pushProd.push(valueFil);
+            }
+          });
+         
+          valueComp.products = pushProd;
+  
+          if(valueComp.products.length > 0){
+            pushComp.push(valueComp);
+          }
+        }
+      });
+      // 
+      setCompany(pushComp)
+    });
+    
+    
+    var products = (resInitWhole.company[getSelectedCompany]) ? resInitWhole.company[getSelectedCompany]['products'] : null
+    if(selectedCategoryType == 1) {  // IF ILP
+      if(section9Recommend.product.premiumType == -1){
+        setProduct('0', 'premiumType', null)
+      }
+      if(products){
+        products.map((product: any, k: any) => {
+          if(product['categoryId'] == selectedCategoryId
+          && product['ilp'] != null
+          && product['ilp']['platform']['fundType'] == section9Recommend.product.premiumType
+          && product['ilp']['riskCategory'] == resInitWhole.section5Result[section9Recommend.product.nameOfOwner]) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }else{
+      setProduct('-1', "premiumType", null)
+      if(products){
+        products.map((product: any, k: any) => {
+          // 
+          if(product['categoryId'] == selectedCategoryId) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }
+
+    if(selectedCategoryType == 1){
+      var modelPortfolioRiskCategory = Number(resInitWhole.section5Result[section9Recommend.product.nameOfOwner])
+      setProduct(modelPortfolioRiskCategory.toString(), 'modelPortfolioRiskCategory', null)
+      const ilpFundsOfCompany = resInitWhole.ilpFunds.filter((fund:any, k:any) => {
+        if(resInitWhole.company[getSelectedCompany]){
+          return fund['companyId'] == resInitWhole.company[getSelectedCompany]['idReal']
+        }
+      })
+      setIlpFundsOfCompany(ilpFundsOfCompany);
+    }
+
+    setSelectProducts(selectedProducts);
+    
+    //
+
+    var selectedProducts: Array<any> = [];
+    setSelectedCompany(resComp)
+    
+    const selectedCategoryType1 = (resInitWhole.category[getSelectedCategory]) ? resInitWhole.category[getSelectedCategory]['type'] : null
+    setDataSelectedCategoryType(selectedCategoryType)
+
+    const selectedCategoryId1 = (resInitWhole.category[getSelectedCategory]) ? resInitWhole.category[getSelectedCategory]['id'] : null
+    var products = (resInitWhole.company[resComp]) ? resInitWhole.company[resComp]['products'] : null
+    if(selectedCategoryType == 1) {  // IF ILP
+      if(section9Recommend.product.premiumType == -1){
+        setProduct('0', 'premiumType', null)
+      }
+
+      if(products){
+        products.map((product: any, k: any) => {
+          if(product['categoryId'] == selectedCategoryId
+          && product['ilp'] != null
+          && product['ilp']['platform']['fundType'] == section9Recommend.product.premiumType
+          && product['ilp']['riskCategory'] == resInitWhole.section5Result[section9Recommend.product.nameOfOwner]) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }else{
+      setProduct('-1', "premiumType", null)
+      if(products){
+        products.map((product: any, k: any) => {
+          // 
+
+          if(product['categoryId'] == selectedCategoryId) {
+            selectedProducts.push(product)
+          }
+        })
+      }
+    }
+
+    if(selectedCategoryType == 1){
+      var modelPortfolioRiskCategory = Number(resInitWhole.section5Result[section9Recommend.product.nameOfOwner])
+      setProduct(modelPortfolioRiskCategory.toString(), 'modelPortfolioRiskCategory', null)
+      const ilpFundsOfCompany = resInitWhole.ilpFunds.filter((fund:any, k:any) => {
+        if(resInitWhole.company[getSelectedCompany]){
+          return fund['companyId'] == resInitWhole.company[getSelectedCompany]['idReal']
+        }
+      })
+      
+      setIlpFundsOfCompany(ilpFundsOfCompany);
+    }
+    
+    setSelectProducts(selectedProducts);
+  }
 
   const onChangePortfolio = () => {
     if(section9Recommend.product.portfolio == 0) {
@@ -742,7 +962,10 @@ const AddPlanRecommendation = () => {
   };
 
   const changeDataProductName = (params: any) => {
-    
+    let pfrId = localStorage.getItem("s9_PfrId");
+    var resId = (pfrId != null) ? pfrId.toString() : '0';
+    setParent(resId, 'pfrId', null)
+
     setProductValueSelect(params);
     // Get One Product
     productFindOne(params).then((data) => {
@@ -883,12 +1106,14 @@ const AddPlanRecommendation = () => {
   }
 
   const checkBenefit = (data: any) => {
+    let result = false;
     if(section9Recommend.product.benefit.length > 0){
       section9Recommend.product.benefit.map((value: any, index: any) => {
         if(data == value.benefitId){
-          return true;
+          result = true;
         }
       })
+      return result;
     }else{
       return false;
     }
@@ -930,12 +1155,15 @@ const AddPlanRecommendation = () => {
   }
 
   const checkRisk = (data: any) => {
+    let result = false;
     if(section9Recommend.product.risk.length > 0){
       section9Recommend.product.risk.map((value: any, index: any) => {
         if(data == value.riskId){
-          return true;
+          result = true;
         }
       })
+
+      return result;
     }else{
       return false;
     }
@@ -1009,12 +1237,15 @@ const AddPlanRecommendation = () => {
   }
 
   const checkRiders = (data: any) => {
+    let result = false;
     if(section9Recommend.riders.length > 0){
       section9Recommend.riders.map((value: any, index: any) => {
         if(parseInt(data) == parseInt(value.subjectId)){
-          return true;
+          result = true;
         }
       })
+
+      return result;
     }else{
       return false;
     }
@@ -1025,12 +1256,14 @@ const AddPlanRecommendation = () => {
       if(name == 'nameOfInsure'){
         return dataOwner[section9Recommend.product.nameOfOwner]['name'];
       }
-
+      let result = "";
       section9Recommend.riders.map((value: any, index: any) => {
         if(parseInt(data) == parseInt(value.subjectId)){
-          return value[name];
+          result = value[name];
         }
       })
+
+      return result;
     }else{
       return "";
     }
@@ -1163,18 +1396,21 @@ const AddPlanRecommendation = () => {
   }
 
   const checkRiderBenefit = (benefitId:any, riderId:any) => {
+    let result = false;
     if(section9Recommend.riders.length > 0){
       section9Recommend.riders.map((value: any, index: any) => {
         if(parseInt(riderId) == parseInt(value.subjectId)){
           if(value.benefit.length > 0){
             value.benefit.map((valueBen:any) => {
-              if(valueBen == benefitId){
-                return true;
+              if(valueBen.benefitId == benefitId){
+                result = true;
               }
             })
           }
         }
       })
+
+      return result
     }else{
       return false;
     }
@@ -1252,18 +1488,21 @@ const AddPlanRecommendation = () => {
   }
 
   const checkRiderRisk = (riskId:any, riderId:any) => {
+    let result = false;
     if(section9Recommend.riders.length > 0){
       section9Recommend.riders.map((value: any, index: any) => {
         if(parseInt(riderId) == parseInt(value.subjectId)){
           if(value.risk.length > 0){
             value.risk.map((valueRisk:any) => {
-              if(valueRisk == riskId){
-                return true;
+              if(valueRisk.riskId == riskId){
+                result = true;
               }
             })
           }
         }
       })
+
+      return result
     }else{
       return false;
     }
@@ -1441,6 +1680,10 @@ const AddPlanRecommendation = () => {
   const changeCISDataProductName = (event: any) => {
     const { name, value } = event.target;
     
+    let pfrId = localStorage.getItem("s9_PfrId");
+    var resId = (pfrId != null) ? pfrId.toString() : '0';
+    setParent(resId, 'pfrId', null)
+    
     setProduct(value, name, null)
 
     if(value == 0) {
@@ -1472,17 +1715,29 @@ const AddPlanRecommendation = () => {
     }
   }
 
+  // Save & Update
   const saveData = async (params:any) => {
     setLoading(true)
     try {
-      let pfrId = localStorage.getItem("s9_PfrId");
-      var resId = (pfrId != null) ? pfrId.toString() : '0';
-      setParent(resId, 'pfrId', null)
-      let storeData = await postSection9Recommendation(JSON.stringify(section9Recommend));
-      if(storeData.status == 200){
-        resetRecommendationProduct()
-        localStorage.setItem("s9_recommendId", storeData.data.resullt);
-        showDetailData(params);
+      if(section9Recommend.pfrId){
+        console.log('section9Recommend', section9Recommend)
+        let storeData = await updateSection9Recommendation(JSON.stringify(section9Recommend));
+        if(storeData.status == 200){
+          resetRecommendationProduct()
+          localStorage.setItem("s9_recommendId", storeData.data.resullt);
+          showDetailData(params);
+        }
+      }else{
+        let pfrId = localStorage.getItem("s9_PfrId");
+        var resId = (pfrId != null) ? pfrId.toString() : '0';
+        setParent(resId, 'pfrId', null)
+        // section9Recommend['pfrId'] = resId;
+        let storeData = await postSection9Recommendation(JSON.stringify(section9Recommend));
+        if(storeData.status == 200){
+          resetRecommendationProduct()
+          localStorage.setItem("s9_recommendId", storeData.data.resullt);
+          showDetailData(params);
+        }
       }
       setLoading(false); // Stop loading in case of error
     } catch (error) {
