@@ -28,6 +28,9 @@ interface Props {
 }
 
 const BalanceSheet = (props: Props) => {
+    // get id from group 1 and paste to grou 2
+    let { id } = usePersonalInformation();
+
   let getPfrLength = getLength(props.pfrType);
   // zustand
   const {
@@ -83,6 +86,10 @@ const BalanceSheet = (props: Props) => {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
+      }else {
+        if(id && Number(id) > 0) {
+          getSectionData(Number(id));
+        }
       }
     }
   }, [scrollPositionNext]);
@@ -90,8 +97,7 @@ const BalanceSheet = (props: Props) => {
   useEffect(() => {
     calcTotal();
   }, [others]);
-  // get id from group 1 and paste to grou 2
-  let { id } = usePersonalInformation();
+
 
   useEffect(() => {
     updateID(id);

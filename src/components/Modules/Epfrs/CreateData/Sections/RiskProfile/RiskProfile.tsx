@@ -598,6 +598,10 @@ const RiskProfile = (props: Props) => {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
+      }else {
+        if(id && Number(id) > 0) {
+          getSectionData(Number(id));
+        }
       }
     }
   }, [scrollPositionNext]);
