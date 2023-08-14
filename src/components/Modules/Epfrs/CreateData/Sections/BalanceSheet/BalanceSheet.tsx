@@ -28,8 +28,8 @@ interface Props {
 }
 
 const BalanceSheet = (props: Props) => {
-    // get id from group 1 and paste to grou 2
-    let { id } = usePersonalInformation();
+  // get id from group 1 and paste to grou 2
+  let { id } = usePersonalInformation();
 
   let getPfrLength = getLength(props.pfrType);
   // zustand
@@ -63,15 +63,22 @@ const BalanceSheet = (props: Props) => {
       setLoading(true); // Set loading before sending API request
       let getSection4 = await getPfrStep(4, params);
 
-      setGlobal("need", [getSection4.needs[0].need, getSection4.needs[1].need]);
-      setGlobal("reason", [
-        getSection4.reasons[0].reason,
-        getSection4.reasons[1].reason,
-      ]);
-
-      fetchAsset(getSection4.assetOther);
-      fetchLiability(getSection4.liabilityOther);
-
+      if (getSection4.needs.length > 0) {
+        setGlobal("need", [
+          getSection4.needs[0].need,
+          getSection4.needs[1].need,
+        ]);
+      }
+      if (getSection4.reasons.length > 0) {
+        setGlobal("reason", [
+          getSection4.reasons[0].reason,
+          getSection4.reasons[1].reason,
+        ]);
+      }
+      if (getSection4.assetOther.length > 0) fetchAsset(getSection4.assetOther);
+      if (getSection4.liabilityOther.length > 0) {
+        fetchLiability(getSection4.liabilityOther);
+      }
       // fetching assets data
       fetchInitData(getSection4);
       setLoading(false); // Stop loading
@@ -86,8 +93,8 @@ const BalanceSheet = (props: Props) => {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
-      }else {
-        if(id && Number(id) > 0) {
+      } else {
+        if (id && Number(id) > 0) {
           getSectionData(Number(id));
         }
       }
@@ -97,7 +104,6 @@ const BalanceSheet = (props: Props) => {
   useEffect(() => {
     calcTotal();
   }, [others]);
-
 
   useEffect(() => {
     updateID(id);
@@ -163,9 +169,11 @@ const BalanceSheet = (props: Props) => {
       }
     }
   }, [need, props.pfrType]);
-  return loading ? (
-    <LoadingPage />
-  ) : (
+  // return loading ? (
+  //   <LoadingPage />
+  // ) : (
+
+  return (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
@@ -324,7 +332,9 @@ const BalanceSheet = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {editableStatus === 2 && status === 1 ? (
+      {scrollPositionNext == "okSec4" &&
+      editableStatus === 2 &&
+      status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 4" />
       ) : (
         ""
