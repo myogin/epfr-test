@@ -10,6 +10,10 @@ export default function Document() {
           content="upgrade-insecure-requests"
         /> */}
         <meta
+          http-equiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
+        <meta
           name="description"
           content={siteConfig.description}
           itemProp="description"
