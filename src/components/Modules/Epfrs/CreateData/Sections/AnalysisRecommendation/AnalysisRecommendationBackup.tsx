@@ -36,8 +36,6 @@ import { useRouter } from "next/router";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
-import { getLength } from "@/libs/helper";
-import { useAffordability } from "@/store/epfrPage/createData/affordability";
 
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
@@ -49,7 +47,7 @@ interface Props {
   pfrType?: number;
 }
 
-const AnalysisRecommendation = (props: Props) => {
+const AnalysisRecommendationBackup = (props: Props) => {
   const router = useRouter();
   let { section9, setParent } = useAnalysisRecommendation();
   const scrollPositionBottom = useScrollPositionBottom(8);
@@ -58,9 +56,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   const currencyFormat = (num: any) => {
     if (num) {
-      let number = Number(num)
-      return "$" + number.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-      // return "$" + num;
+      return "$" + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     } else {
       return 0.0;
     }
@@ -142,9 +138,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   const [getPfr8, setPfr8] = useState<any>({});
   const [getPfr9, setPfr9] = useState<any>({});
-  let getClients = getLength(props.pfrType);
-
-  let payorBudget = useAffordability((state) => state.section8.payorBudget)
+  const [getClients, setClients] = useState<any>([]);
 
   const [dataAnnualPayorBudget, setAnnualPayorBudget] = useState<any>([
     [0, 0, 0, 0, 0],
@@ -449,10 +443,16 @@ const AnalysisRecommendation = (props: Props) => {
 
         // Section 9
         pfrSection(9, pfrId).then((data: any) => {
-          console.log("data section 9", data);
+          console.log("data", data);
           setPfr9(data);
           setRowsGroup(data.rowGroups);
-          
+          var dataType: Array<any> = [];
+          for (var i = 0; i < data.clients.length; i++) {
+            dataType[i] = i;
+          }
+          console.log("dataType", dataType);
+          setClients(dataType);
+
           // Res Answer
           console.log("data", data);
           var overView1 = "";
@@ -632,9 +632,6 @@ const AnalysisRecommendation = (props: Props) => {
         const singlePayorBudget: Array<any> = [[], []];
         const payorBudgetMap: Array<any> = [[], []];
         pfrSection(8, pfrId).then((data: any) => {
-
-          console.log("data section 8");
-          console.log(data);
           setPfr8(data);
 
           let payorBudgets = data["payorBudgets"];
@@ -688,6 +685,12 @@ const AnalysisRecommendation = (props: Props) => {
             console.log("data section 9", data);
             setPfr9(data);
             setRowsGroup(data.rowGroups);
+            var dataType: Array<any> = [];
+            for (var i = 0; i < data.clients.length; i++) {
+              dataType[i] = i;
+            }
+            console.log("dataType", dataType);
+            setClients(dataType);
   
             // Res Answer
             console.log("data", data);
@@ -2213,7 +2216,7 @@ const AnalysisRecommendation = (props: Props) => {
         }`}
       >
         <HeadingPrimarySection
-          className={`z-50 mx-8 2xl:mx-60 ${
+          className={`mx-8 2xl:mx-60 ${
             scrollPosition === "okSec9"
               ? "text-gray-light text-xl font-bold mb-5 mt-5"
               : "text-2xl font-bold mb-10 mt-10"
@@ -2430,34 +2433,34 @@ const AnalysisRecommendation = (props: Props) => {
                   <tr key={"sds" + index}>
                     <td className="px-2 py-5">Client {index + 1}</td>
                     <td className="px-2 py-5 text-center">
-                      {currencyFormat(payorBudget[index][0].annual)}
+                      {currencyFormat(dataAnnualPayorBudget[index][0])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][0].single)}
+                      {currencyFormat(dataSinglePayorBudget[index][0])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][1].annual)}
+                      {currencyFormat(dataAnnualPayorBudget[index][1])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][1].single)}
+                      {currencyFormat(dataSinglePayorBudget[index][1])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][2].annual)}
+                      {currencyFormat(dataAnnualPayorBudget[index][2])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][2].single)}
+                      {currencyFormat(dataSinglePayorBudget[index][2])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][3].annual)}
+                      {currencyFormat(dataAnnualPayorBudget[index][3])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][3].single)}
+                      {currencyFormat(dataSinglePayorBudget[index][3])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][4].annual)}
+                      {currencyFormat(dataAnnualPayorBudget[index][4])}
                     </td>
                     <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][4].single)}
+                      {currencyFormat(dataSinglePayorBudget[index][4])}
                     </td>
                   </tr>
                 ))}
@@ -4131,4 +4134,4 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default AnalysisRecommendation;
+export default AnalysisRecommendationBackup;
