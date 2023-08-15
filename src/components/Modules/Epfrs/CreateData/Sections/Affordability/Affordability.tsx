@@ -1111,7 +1111,7 @@ const Affordability = (props: Props) => {
                   className="my-4"
                   datas={fillInformation}
                   dataType="assetOrSurplus"
-                  value={data.answer}
+                  value={data.answer ? data.answer : "-"}
                   name="answer"
                   handleChange={(event) => handleAssetOrSurplus(event, key)}
                 />

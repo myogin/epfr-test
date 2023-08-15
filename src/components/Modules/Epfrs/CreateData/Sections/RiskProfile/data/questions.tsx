@@ -15,7 +15,7 @@ export const qa: Array<any> = [
     question: "2. What is your age group?",
     answers: [
       { score: 0, answer: "65 and above", u1: false, u2: false },
-      { score: 1, answer: "55 to 54 years", u1: false, u2: false },
+      { score: 1, answer: "55 to 64 years", u1: false, u2: false },
       { score: 2, answer: "36 to 54 years", u1: false, u2: false },
       { score: 3, answer: "35 and below", u1: false, u2: false },
     ],

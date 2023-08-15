@@ -10,7 +10,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
 import More2LineIcon from "remixicon-react/More2LineIcon";
-import { pfrProgress } from "./overviewUtils";
 import LoadingList from "@/components/Attributes/Loader/LoadingList";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
@@ -32,6 +31,7 @@ import Eye2FillIcon from "remixicon-react/Eye2LineIcon";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { pfrProgress } from "@/store/overview/overviewUtils";
 interface Props {}
 
 const PfrTable = (props: Props) => {
@@ -367,7 +367,7 @@ const PfrTable = (props: Props) => {
                             Delete
                           </button>
                           <button
-                            className="bg-gray-soft-thin hover:bg-gray-soft-strong text-white font-bold py-2 px-4 rounded"
+                            className="px-4 py-2 font-bold text-white rounded bg-gray-soft-thin hover:bg-gray-soft-strong"
                             onClick={closeModalDelete}
                           >
                             Cancel
@@ -413,7 +413,7 @@ const PfrTable = (props: Props) => {
                       <Dialog.Panel className="w-full max-w-[350px] p-10 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                         <Dialog.Title
                           as="h3"
-                          className="mb-8 text-xl font-medium leading-6 text-gray-light text-center"
+                          className="mb-8 text-xl font-medium leading-6 text-center text-gray-light"
                         >
                           Duplicate a new PFR
                         </Dialog.Title>
@@ -423,7 +423,7 @@ const PfrTable = (props: Props) => {
                           <div className="font-bold">New PFR Type:</div>
                           <div>
                             <select
-                              className="cursor-pointer rounded"
+                              className="rounded cursor-pointer"
                               defaultValue={newTypePfr}
                               onChange={(e: any) =>
                                 handleChangeTypePfr(e.target.value)
@@ -440,7 +440,7 @@ const PfrTable = (props: Props) => {
                               </div>
                               <div>
                                 <select
-                                  className="cursor-pointer rounded"
+                                  className="rounded cursor-pointer"
                                   defaultValue={targetClient}
                                   onChange={(e: any) =>
                                     setTargetClient(e.target.value)
