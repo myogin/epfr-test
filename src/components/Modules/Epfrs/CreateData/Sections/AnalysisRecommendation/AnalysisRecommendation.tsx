@@ -2270,7 +2270,7 @@ const AnalysisRecommendation = (props: Props) => {
               },
             }}
           />
-
+          {section9.overView1 === "" ? <span className="text-xs text-red">Required</span> : null}
           {/* <TextArea defaultValue="text here" rows={5} /> */}
         </RowSingleGrid>
 
@@ -2313,6 +2313,7 @@ const AnalysisRecommendation = (props: Props) => {
               },
             }}
           />
+          {section9.overView2 === "" ? <span className="text-xs text-red">Required</span> : null}
           {/* <TextArea defaultValue="text here" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>
@@ -2435,52 +2436,52 @@ const AnalysisRecommendation = (props: Props) => {
                     <tr key={"sds" + index}>
                       <td className="px-2 py-5">Client {index + 1}</td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][0].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][0].single)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][1].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][1].single)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][2].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][2].single)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][3].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][3].single)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][4].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 0
                           ? currencyFormat(payorBudget[index][4].single)
                           : 0}
                       </td>
@@ -2654,94 +2655,94 @@ const AnalysisRecommendation = (props: Props) => {
                     <tr key={"ssd" + index}>
                       <td className="px-2 py-5">Client{index + 1}</td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataAnnualPayorBudget[index][0] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][0].annual) -
                             dataTotalAnnualPremiumChoice[index][0]
                         )
                           ? 0
-                          : dataAnnualPayorBudget[index][0] -
-                            dataTotalAnnualPremiumChoice[index][0]}
+                          : Number(payorBudget[index][0].annual) -
+                            dataTotalAnnualPremiumChoice[index][0] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataSinglePayorBudget[index][0] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ?isNaN(
+                          Number(payorBudget[index][0].single) -
                             dataTotalSinglePremiumChoice[index][0]
                         )
                           ? 0
-                          : dataSinglePayorBudget[index][0] -
-                            dataTotalSinglePremiumChoice[index][0]}
+                          : Number(payorBudget[index][0].single) -
+                            dataTotalSinglePremiumChoice[index][0] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataAnnualPayorBudget[index][1] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][1].annual) -
                             dataTotalAnnualPremiumChoice[index][1]
                         )
                           ? 0
-                          : dataAnnualPayorBudget[index][1] -
-                            dataTotalAnnualPremiumChoice[index][1]}
+                          : Number(payorBudget[index][1].annual) -
+                            dataTotalAnnualPremiumChoice[index][1] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataSinglePayorBudget[index][1] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][1].single) -
                             dataTotalSinglePremiumChoice[index][1]
                         )
                           ? 0
-                          : dataSinglePayorBudget[index][1] -
-                            dataTotalSinglePremiumChoice[index][1]}
+                          : Number(payorBudget[index][1].single) -
+                            dataTotalSinglePremiumChoice[index][1] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataAnnualPayorBudget[index][2] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][2].annual) -
                             dataTotalAnnualPremiumChoice[index][2]
                         )
                           ? 0
-                          : dataAnnualPayorBudget[index][2] -
-                            dataTotalAnnualPremiumChoice[index][2]}
+                          : Number(payorBudget[index][2].annual) -
+                            dataTotalAnnualPremiumChoice[index][2] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataSinglePayorBudget[index][2] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][2].single) -
                             dataTotalSinglePremiumChoice[index][2]
                         )
                           ? 0
-                          : dataSinglePayorBudget[index][2] -
-                            dataTotalSinglePremiumChoice[index][2]}
+                          : Number(payorBudget[index][2].single) -
+                            dataTotalSinglePremiumChoice[index][2] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataAnnualPayorBudget[index][3] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][3].annual) -
                             dataTotalAnnualPremiumChoice[index][3]
                         )
                           ? 0
-                          : dataAnnualPayorBudget[index][3] -
-                            dataTotalAnnualPremiumChoice[index][3]}
+                          : Number(payorBudget[index][3].annual) -
+                            dataTotalAnnualPremiumChoice[index][3] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataSinglePayorBudget[index][3] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][3].single) -
                             dataTotalSinglePremiumChoice[index][3]
                         )
                           ? 0
-                          : dataSinglePayorBudget[index][3] -
-                            dataTotalSinglePremiumChoice[index][3]}
+                          : Number(payorBudget[index][3].single) -
+                            dataTotalSinglePremiumChoice[index][3] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataAnnualPayorBudget[index][4] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][4].annual) -
                             dataTotalAnnualPremiumChoice[index][4]
                         )
                           ? 0
-                          : dataAnnualPayorBudget[index][4] -
-                            dataTotalAnnualPremiumChoice[index][4]}
+                          : Number(payorBudget[index][4].annual) -
+                            dataTotalAnnualPremiumChoice[index][4] : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(
-                          dataSinglePayorBudget[index][4] -
+                        {payorBudget.length > 0 && payorBudget[index].length > 0 ? isNaN(
+                          Number(payorBudget[index][4].single) -
                             dataTotalSinglePremiumChoice[index][4]
                         )
                           ? 0
-                          : dataSinglePayorBudget[index][4] -
-                            dataTotalSinglePremiumChoice[index][4]}
+                          : Number(payorBudget[index][4].single) -
+                            dataTotalSinglePremiumChoice[index][4] : 0}
                       </td>
                     </tr>
                   ))}

@@ -148,10 +148,22 @@ const CreatePfrPage: Page = () => {
         <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
           <GlobalCard className="min-h-screen pt-16">
             <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60 mb-14">
-              <Link href="/overview" className="flex text-green-deep">
-                <ArrowLeftSLineIcon /> Back
-              </Link>
-              <TitleMedium>New EPFR Documents</TitleMedium>
+              {switchDisplay &&
+              (sectionCreateEpfrId == 91 || sectionCreateEpfrId == 92) ? (
+                <>
+                  <Link href="/create/" className="flex text-green-deep">
+                    <ArrowLeftSLineIcon /> Back
+                  </Link>
+                  <TitleMedium>Setup Plan Recommendation</TitleMedium>
+                </>
+              ) : (
+                <>
+                  <Link href="/overview" className="flex text-green-deep">
+                    <ArrowLeftSLineIcon /> Back
+                  </Link>
+                  <TitleMedium>New EPFR Documents</TitleMedium>
+                </>
+              )}
             </div>
             <div id="dataPfr">
               {switchDisplay ? (
