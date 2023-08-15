@@ -322,11 +322,11 @@ const CustomerKnowledgeAssesment = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {editableStatus === 2 && status === 1 ? (
+      {/* {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 6" />
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };
