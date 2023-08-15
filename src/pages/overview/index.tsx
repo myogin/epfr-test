@@ -1,24 +1,21 @@
-import React from "react";
+import React, { useCallback } from "react";
 import DashboardLayout from "@/components/Layouts/DashboardLayout";
 import GlobalCard from "@/components/Attributes/Cards/GlobalCard";
 import TitleMedium from "@/components/Attributes/Typography/TitleMedium";
 import SelectFilter from "@/components/Forms/Filters/SelectFilter";
 import Head from "next/head";
-import PfrSummaryDetail from "./_component/PfrSummaryDetail";
 import { useDetailDataEpfr } from "@/store/epfrPage/detailData";
 import PfrTable from "./_component/PfrTable";
 import PfrButtonModal from "./_component/PfrButtonModal";
 import { siteConfig } from "@/libs/config";
 import PfrNavbar from "./_component/PfrNavbar";
 import { useSession } from "next-auth/react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 
 const Overview = () => {
   // const { data: session, status } = useSession();
   // console.log(session);
-
-  let showElement = useDetailDataEpfr(
-    (state: { dataId: number }) => state.dataId
-  );
 
   const setData = (params: any) => {};
 
@@ -38,8 +35,9 @@ const Overview = () => {
   ];
 
   let types: Array<any> = [
-    { id: 1, name: "Single" },
-    { id: 2, name: "Joint" },
+    { id: "types", name: "Types" },
+    { id: "single", name: "Single" },
+    { id: "joint", name: "Joint" },
   ];
 
   let years: Array<any> = [];
@@ -48,6 +46,34 @@ const Overview = () => {
   for (let i: number = currentYear; i >= 2000; i--) {
     years.push({ id: i, name: i });
   }
+
+  // handle filter
+  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+  const router = useRouter();
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const handleTypesFilter = (value: string) => {
+    if (value != "types") {
+      router.push(pathname + "?" + createQueryString("type_like", value));
+    } else {
+      const { type_like, ...newQuery } = router.query;
+      router.replace({
+        query: { ...newQuery },
+      });
+    }
+  };
 
   return (
     <>
@@ -65,35 +91,23 @@ const Overview = () => {
               <PfrNavbar />
             </div>
             <div id="filter" className="flex gap-3 mx-8 my-5">
-              <SelectFilter
+              {/* <SelectFilter
                 datas={months}
                 handleChange={(event) => setData(event.target.value)}
               />
               <SelectFilter
                 datas={years}
                 handleChange={(event) => setData(event.target.value)}
-              />
+              /> */}
               <SelectFilter
                 datas={types}
-                handleChange={(event) => setData(event.target.value)}
+                handleChange={(event) => handleTypesFilter(event.target.value)}
               />
             </div>
             <div id="dataPfr">
               <PfrTable />
             </div>
           </GlobalCard>
-          {showElement > 0 ? (
-            <GlobalCard className="min-h-screen pt-16 bg-white">
-              <div className="flex flex-row items-center justify-between mx-8 my-5">
-                <TitleMedium>Summary Details</TitleMedium>
-              </div>
-              <div id="detailSummary" className="mx-8">
-                <PfrSummaryDetail />
-              </div>
-            </GlobalCard>
-          ) : (
-            ""
-          )}
         </section>
       </main>
     </>
