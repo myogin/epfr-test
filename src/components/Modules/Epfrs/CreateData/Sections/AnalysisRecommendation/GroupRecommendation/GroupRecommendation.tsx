@@ -18,7 +18,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useAnalysisRecommendationGroup } from "@/store/epfrPage/createData/analysisRecommendationGroup";
 
 // Service
-import {getPfr, getRecommendationGroup, pfrSection, removeRecommendation} from "@/services/pfrService";
+import {getPfr, getRecommendationGroup, pfrSection, removeRecommendation, saveGroup} from "@/services/pfrService";
 import {getAllCompany} from "@/services/companyService";
 import {productFindOne} from "@/services/productService";
 // import {getPfrSection} from "@/services/getPfrSection";
@@ -47,10 +47,6 @@ const GroupRecommendation = () => {
   const showDetailAdd = () => {
     localStorage.setItem("s9_recommendId", "")
     showDetailData(92);
-  };
-
-  const saveData = (params: any) => {
-    showDetailData(params);
   };
 
   const currencyFormat = (num:any) => {
@@ -593,6 +589,25 @@ const GroupRecommendation = () => {
   const closeModal = () => {
     setShowModal(false);
   };
+
+  const saveData = async (params: any) => {
+    try{
+      const pfrId = localStorage.getItem("s9_PfrId");
+      let save = await saveGroup({"name": groupName, "pfrId": pfrId});
+      if(save.status == 200){
+        const pfrId = localStorage.setItem("s9_PfrId","0");
+        showDetailData(params);
+      }
+    } catch (error) {
+      console.error('error', error);
+    }
+  };
+
+  const cancelData = (params: any) => {
+    const pfrId = localStorage.setItem("s9_PfrId","0");
+    showDetailData(params)
+
+  }
 
   return (
     <>
@@ -1269,7 +1284,7 @@ const GroupRecommendation = () => {
 
       <SectionCardFooter className="mx-8 2xl:mx-60">
         <ButtonGreenMedium onClick={() => saveData(9)}>Save</ButtonGreenMedium>
-        <ButtonRedMedium>Cancel</ButtonRedMedium>
+        <ButtonRedMedium onClick={() => cancelData(9)}>Cancel</ButtonRedMedium>
       </SectionCardFooter>
     </>
   );
