@@ -49,6 +49,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     setClient,
     setDependant,
     setNeed,
+    setNeedDependant,
     setAnswerDefaultCheck,
     setAdditional,
     setChildFund,
@@ -66,6 +67,12 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   const uncheckAll = (data: boolean, indexSub: number) => {
     if(!data && props.pfrType === 2) {
       setNeed(1, indexSub, data);
+    }
+
+    if (!data && section7.dependants.length > 0) {
+      section7.dependants.map((dependant, index) => {
+        setNeedDependant(index, indexSub, data);
+      });
     }
   }
 
@@ -272,11 +279,19 @@ const PrioritiesNeedAnalysis = (props: Props) => {
   // End Rumus Fund Retirement
 
   const isChecked = (index: number) => {
-    if (section7.answer.need.client.length === 2) {
-      return section7.answer.need.client[0][index] || section7.answer.need.client[1][index]
-    } else {
-      return section7.answer.need.client[0][index];
+    let res = false;
+    if (section7.dependants.length > 0) {
+      section7.answer.need.dependant.map((data, i) => {
+        res = res || section7.answer.need.dependant[i][index];
+      }); 
     }
+
+    if (section7.answer.need.client.length === 2) {
+      res = res || section7.answer.need.client[0][index] || section7.answer.need.client[1][index]
+    } else {
+      res = res || section7.answer.need.client[0][index];
+    }
+    return res;
   }
 
 
@@ -582,13 +597,13 @@ const PrioritiesNeedAnalysis = (props: Props) => {
 
           const resCoverPersonalAccident = v.coverForPersonalAccident;
           const coverNetAmountRequired = resCoverPersonalAccident.amountNeeded - resCoverPersonalAccident.less;
-          setClient(coverNetAmountRequired, k, 'netAmountRequired', 'coverForPersonalAccident');
+          setDependant(coverNetAmountRequired, k, 'netAmountRequired', 'coverForPersonalAccident');
         // End Cover Personal Accident
 
         // Cover Fund Long Term
           const resFundLongTermCare = v.fundLongTermCare;
           const FundNetAmountRequired = resFundLongTermCare.desiredMonthlyCashPayout - resFundLongTermCare.less;
-          setClient(FundNetAmountRequired, k, 'netAmountRequired', 'fundLongTermCare');
+          setDependant(FundNetAmountRequired, k, 'netAmountRequired', 'fundLongTermCare');
         // End Fund Long Term
 
         // Maternity Others

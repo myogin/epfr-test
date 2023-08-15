@@ -9,11 +9,11 @@ export default function Document() {
           httpEquiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
         /> */}
-
+        {/* 
         <meta
           http-equiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
-        />
+        /> */}
         <meta
           name="description"
           content={siteConfig.description}

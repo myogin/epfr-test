@@ -603,7 +603,7 @@ type Actions = {
     groupData: any
   ) => any;
   setNeed: (indexClient: number, indexSub: number, value: boolean) => any;
-  setNeedDependant: (value: number, indexClient: number, name: string) => any;
+  setNeedDependant: (indexClient: number, name: number, value: boolean) => any;
   setAnswerDefaultCheck: (
     value: number,
     indexClient: number,
@@ -690,8 +690,8 @@ const prioritiesNeedAnalysis = create(
                 fundLongTermCare: JSON.parse(data['fundLongTermCare']),
                 fundHospitalExpense: JSON.parse(data['fundHospitalExpense']),
                 estatePlaning: JSON.parse(data['estatePlaning']),
-                otherInsures: JSON.parse(data['otherInsues']),
-                maternity: JSON.parse(data['maternity']),
+                otherInsures: JSON.parse(data['otherInsures']),
+                maternity: JSON.parse(data['maternityPlan']),
               }
             })
           ),
@@ -850,7 +850,6 @@ const prioritiesNeedAnalysis = create(
                 draft.section7.editableStatus = 2;
               }
 
-
               switch(indexSub) {
                 case 0:
                   draft.section7.answer.clientData[indexClient].incomeProtectionUponDeath = {
@@ -993,10 +992,149 @@ const prioritiesNeedAnalysis = create(
               draft.section7.status = getStatus(draft);
             })
           ),
-        setNeedDependant: (value: number, indexClient: number, name: any) =>
+        setNeedDependant: (indexClient: number, name: number, value: boolean) =>
           set(
             produce((draft) => {
               draft.section7.answer.need.dependant[indexClient][name] = value;
+              
+              switch(name) {
+                case 0:
+                  draft.section7.answer.dependantData[indexClient].incomeProtectionUponDeath = {
+                    annualAmountNeeded: 0,
+                    numberOfYearsNeed: 0,
+                    netRateOfReture: 0,
+                    capitalSumRequired: 0,
+                    finalExpense: 0,
+                    emergencyFund: 0,
+                    mortgage: 0,
+                    personalDebts: 0,
+                    others: 0,
+                    totalCashFlow: 0,
+                    total: 0,
+                    existingInsuranceCoverageOnDeath: 0,
+                    existingResources: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 1:
+                  draft.section7.answer.dependantData[indexClient].fundDisabilityIncomeExpense = {
+                    annualAmountNeeded: 0,
+                    numberOfYearsNeed: 0,
+                    netRateOfReture: 0,
+                    capitalSumRequired: 0,
+                    medicalExpense: 0,
+                    mortgage: 0,
+                    loans: 0,
+                    totalCashOutflow: 0,
+                    total: 0,
+                    existingInsuranceCoverageOnDisability: 0,
+                    existingResources: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 2:
+                  draft.section7.answer.dependantData[indexClient].fundCriticalIllnessExpense = {
+                    annualAmountNeeded: 0,
+                    numberOfYearsNeed: 0,
+                    netRateOfReture: 0,
+                    capitalSumRequired: 0,
+                    medicalExpense: 0,
+                    mortgage: 0,
+                    loans: 0,
+                    totalCashOutflow: 0,
+                    total: 0,
+                    existingInsuranceCoverageOnCI: 0,
+                    existingResources: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 3:
+                  // 
+                  break;
+                case 4:
+                  draft.section7.answer.dependantData[indexClient].fundMediumToLongTerm = {
+                    objective: 0,
+                    goalDescription: 0,
+                    yearsToReachGoal: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 5:
+                  draft.section7.answer.dependantData[indexClient].fundRetirementLifeStyle = {
+                    age: 0,
+                    expectedRetirementAge: 0,
+                    yearsToRetirement: 0,
+                    selectedMethod: 0,
+                    annualIncome: 0,
+                    rateOfIncomeIncrement: 0,
+                    incomeAtRetirementAge: 0,
+                    percentOfIncomeRequiredAtRetirement: 0,
+                    incomeRequiredAtRetirement: 0,
+                    retirementExpense: 0,
+                    inflationRate: 0,
+                    expenseATRetirement: 0,
+                    yearsToReceiveRetirementIncome: 0,
+                    netRateOfReture: 0,
+                    amountNeededAtRetirementAge: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 6:
+                  draft.section7.answer.dependantData[indexClient].coverForPersonalAccident = {
+                    amountNeeded: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 7:
+                  draft.section7.answer.dependantData[indexClient].fundLongTermCare = {
+                    desiredMonthlyCashPayout: 0,
+                    nameOfExistingLongTermCareInsurance: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 8:
+                  draft.section7.answer.dependantData[indexClient].fundHospitalExpense = {
+                    disiredChoiceOfHospitalType: 0,
+                    disiredChoiceOfWardClass: 0,
+                    desiredTypeOfCover: 0,
+                    nameOfExistingHospitalizationPlan: 0,
+                    existingTypeOfHospitalCovered: 0,
+                    existingClassOfWardCovered: 0,
+                    existingTypeOfCover: 0,
+                  };
+                  break;
+                case 9:
+                  draft.section7.answer.dependantData[indexClient].maternity = {
+                    amountNeeded: 0,
+                    less: 0,
+                    netAmountRequired: 0,
+                  };
+                  break;
+                case 10:
+                  draft.section7.answer.dependantData[indexClient].estatePlaning = {
+                    willWritten: 0,
+                    lastUpdated: 0,
+                    anyProvision: 0,
+                    haveLastingPowerOfAttorney: 0,
+                    doneYourCPFNomination: 0,
+                    anyBenefit: 0,
+                  };
+                  break;
+                case 11:
+                  draft.section7.answer.dependantData[indexClient].otherInsures = {
+                    frequencyOfTravel: 0,
+                    typeOfTravelInsuranceCovered: 0,
+                    companyName: 0,
+                    renewalDate: 0,
+                    mortgageInsurance: 0,
+                    groupInsurance: 0,
+                  };
+                  break;
+              }
 
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
                 draft.section7.editableStatus = 2;

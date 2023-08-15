@@ -71,12 +71,18 @@ const Affordability = create(
     persist<SectionEight & Actions>(
       (set, get) => ({
         ...initialState,
-        fetchPayorDetail: (params: any) => set(produce((draft) => {
-          draft.section8.payorDetail = params
-        })),
-        fetchPayorBudget: (params: any) => set(produce((draft) => {
-          draft.section8.payorBudget = params
-        })),
+        fetchPayorDetail: (params: any) =>
+          set(
+            produce((draft) => {
+              draft.section8.payorDetail = params;
+            })
+          ),
+        fetchPayorBudget: (params: any) =>
+          set(
+            produce((draft) => {
+              draft.section8.payorBudget = params;
+            })
+          ),
 
         setExisting: (group: string, object: string, key: number, value: any) =>
           set(
@@ -230,7 +236,9 @@ const Affordability = create(
                   dataResSelection = true;
                 }
               } else {
-                dataResSelection = Number(value);
+
+                let valueRiil = name == "single" || name == "annual" ? Number(value) : value
+                dataResSelection = valueRiil;
               }
               draft.section8.payorBudget[key][index][name] = dataResSelection;
 

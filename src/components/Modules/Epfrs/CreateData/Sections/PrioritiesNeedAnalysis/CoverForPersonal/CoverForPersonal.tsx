@@ -198,8 +198,8 @@ const CoverForPersonal = (props: Props) => {
               return (
                 <td key={"ysd" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][6]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][6]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
