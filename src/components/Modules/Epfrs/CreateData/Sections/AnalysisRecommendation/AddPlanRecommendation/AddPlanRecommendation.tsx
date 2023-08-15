@@ -496,7 +496,6 @@ const AddPlanRecommendation = () => {
                 "pfrId": data.pfrId,
                 "riders": data.riders,
                 "product": {
-                  "type": 0,
                   "productType": 0,
                   "subjectId": data.subjectId,
                   "name": data.name,
