@@ -20,7 +20,11 @@ import { getLength } from "@/libs/helper";
 import { useRouter } from "next/router";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
-import { getPfrStep, postPfrSections } from "@/services/pfrService";
+import {
+  getPfrStep,
+  getPfrStepLite,
+  postPfrSections,
+} from "@/services/pfrService";
 import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
@@ -31,6 +35,9 @@ interface Props {
 }
 
 const Affordability = (props: Props) => {
+
+  let typePfr = props.pfrType ? props.pfrType : 0
+
   const router = useRouter();
   let id = usePersonalInformation((state) => state.id);
 
@@ -41,6 +48,8 @@ const Affordability = (props: Props) => {
   let setAssetOrSurplus = useAffordability((state) => state.setAssetOrSurplus);
   let setGlobal = useAffordability((state) => state.setGlobal);
   let setInit = useAffordability((state) => state.setInit);
+  let fetchPayorBudget = useAffordability((state) => state.fetchPayorBudget);
+  let fetchPayorDetail = useAffordability((state) => state.fetchPayorDetail);
 
   let setExisting = useAffordability((state) => state.setExisting);
   let setExistingMedisave = useAffordability(
@@ -353,9 +362,13 @@ const Affordability = (props: Props) => {
   const getSectionData = async (params: any) => {
     try {
       setLoading(true); // Set loading before sending API request
-      let getSection8 = await getPfrStep(8, params);
+      let getSection8 = await getPfrStepLite(8, params);
 
+      console.log("section 8 get data");
       console.log(getSection8);
+
+      fetchPayorDetail(getSection8.payorDetails);
+      fetchPayorBudget(getSection8.payorBudgetsForClients);
 
       setLoading(false); // Stop loading
     } catch (error) {
@@ -409,7 +422,7 @@ const Affordability = (props: Props) => {
         setGlobal("editableStatus", pfrLocal.editableSection8);
         setGlobal("pfrId", router.query.id);
         setGlobal("status", pfrLocal.section8);
-        // getSectionData(router.query.id);
+        getSectionData(router.query.id);
       }
     } else {
       if (scrollPositionBottom === "Process7") {
@@ -458,7 +471,7 @@ const Affordability = (props: Props) => {
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowDoubleGrid>
-          {section8.payorDetail.map((data, key) => (
+          {section8.payorDetail.map((data, key) => key < typePfr ? (
             <div
               className="text-left space-y-11"
               key={"payor-detail-top-" + key}
@@ -479,7 +492,7 @@ const Affordability = (props: Props) => {
                 }
               />
             </div>
-          ))}
+          ) : null)}
         </RowDoubleGrid>
 
         <RowDoubleGrid>
@@ -500,7 +513,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.relationShip}
+                  value={data.relationShip ? data.relationShip : ""}
                 />
                 <Input
                   className="mb-10"
@@ -516,7 +529,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.payorName}
+                  value={data.payorName ? data.payorName : ""}
                 />
                 <Input
                   className="mb-10"
@@ -532,7 +545,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.passportNo}
+                  value={data.passportNo ? data.passportNo : ""}
                 />
                 <Input
                   className="mb-10"
@@ -548,7 +561,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.occupation}
+                  value={data.occupation ? data.occupation : ""}
                 />
                 <Input
                   className="mb-10"
@@ -564,7 +577,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.payorIncome}
+                  value={data.payorIncome ? data.payorIncome : 0}
                 />
               </div>
             ) : (
@@ -594,10 +607,13 @@ const Affordability = (props: Props) => {
         </RowSixGrid>
         {section8.payorBudget.map((data, key) => (
           <RowSixGrid key={"payor-budget-top-data" + key}>
-            <label className="text-sm font-bold" key={"client" + key}>
-              Client {key + 1}
-            </label>
-            {data?.length &&
+            {data.length > 0 ? (
+              <label className="text-sm font-bold" key={"client" + key}>
+                Client {key + 1}
+              </label>
+            ) : null}
+
+            {data.length > 0 &&
               data.map((val, index) => (
                 <div
                   key={"payor-budget-checkbox" + index}
@@ -615,6 +631,7 @@ const Affordability = (props: Props) => {
       </SectionCardSingleGrid>
 
       {section8.payorBudget.map((data, key) => {
+        if(data.length > 0) {
         return (
           <SectionCardSingleGrid
             className="mx-8 border-b 2xl:mx-60 border-gray-soft-strong"
@@ -702,7 +719,7 @@ const Affordability = (props: Props) => {
 
             {data?.length &&
               data.map((val, index) =>
-                val.selection === true ? (
+                val.selection === true || Number(val.selection) === 1 ? (
                   <RowFourthGrid
                     key={"payor-detail-" + key + "-" + index}
                     className="items-center"
@@ -719,7 +736,7 @@ const Affordability = (props: Props) => {
                         type="text"
                         formStyle="text-right"
                         name="annual"
-                        value={val.annual}
+                        value={val.annual ? Number(val.annual) : 0}
                         handleChange={(event) =>
                           checkboxPayorBudget(event, key, index)
                         }
@@ -749,7 +766,7 @@ const Affordability = (props: Props) => {
                             <TextArea
                               dataType="annual"
                               name="reasonForResources"
-                              defaultValue={section8.reasonForResources[key]}
+                              defaultValue={section8.reasonForResources[key] ? section8.reasonForResources[key] : ""}
                               needValidation={true}
                               handleChange={(event) =>
                                 handleExistingCash(event, key, index)
@@ -815,7 +832,9 @@ const Affordability = (props: Props) => {
                               defaultValue={
                                 section8.medisaveResource.reasonForResources[
                                   key
-                                ]
+                                ] ? section8.medisaveResource.reasonForResources[
+                                  key
+                                ] : ""
                               }
                             />
                           ) : null}
@@ -828,7 +847,7 @@ const Affordability = (props: Props) => {
                         type="text"
                         formStyle="text-right"
                         name="single"
-                        value={val.single}
+                        value={val.single ? Number(val.single) : 0}
                         handleChange={(event) =>
                           checkboxPayorBudget(event, key, index)
                         }
@@ -859,7 +878,7 @@ const Affordability = (props: Props) => {
                               dataType="single"
                               name="reasonForResourcesForSingle"
                               defaultValue={
-                                section8.reasonForResourcesForSingle[key]
+                                section8.reasonForResourcesForSingle[key] ? section8.reasonForResourcesForSingle[key] : ""
                               }
                               handleChange={(event) =>
                                 handleExistingCash(event, key, index)
@@ -923,7 +942,8 @@ const Affordability = (props: Props) => {
                               }
                               defaultValue={
                                 section8.medisaveResource
-                                  .reasonForResourcesForSingle[key]
+                                  .reasonForResourcesForSingle[key] ? section8.medisaveResource
+                                  .reasonForResourcesForSingle[key] : ""
                               }
                             />
                           ) : null}
@@ -981,8 +1001,8 @@ const Affordability = (props: Props) => {
                 )
               )}
           </SectionCardSingleGrid>
-        );
-      })}
+        )
+      }})}
 
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         Source of Wealth
@@ -1056,7 +1076,7 @@ const Affordability = (props: Props) => {
                   <TextArea
                     className="my-4"
                     name="otherExplain"
-                    defaultValue={data.otherExplain}
+                    defaultValue={data.otherExplain ? data.otherExplain : ""}
                     handleChange={(e) => handleSourceOfWealth(e, key)}
                     needValidation={true}
                     logic={
@@ -1097,7 +1117,7 @@ const Affordability = (props: Props) => {
                   className="my-4"
                   datas={fillInformation}
                   dataType="assetOrSurplus"
-                  value={data.answer}
+                  value={data.answer ? data.answer : "-"}
                   name="answer"
                   handleChange={(event) => handleAssetOrSurplus(event, key)}
                 />

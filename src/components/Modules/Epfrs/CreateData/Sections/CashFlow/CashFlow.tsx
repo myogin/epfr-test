@@ -58,8 +58,8 @@ const CashFlow = (props: Props) => {
 
   let { id } = usePersonalInformation();
   let { setGlobal } = useCashFlow();
-  let fetchAnnual = useCashFlow((state) => state.fetchAnnual)
-  let fetchExpense = useCashFlow((state) => state.fetchExpense)
+  let fetchAnnual = useCashFlow((state) => state.fetchAnnual);
+  let fetchExpense = useCashFlow((state) => state.fetchExpense);
 
   let checkNeedData = checkAllNeed(need);
 
@@ -137,14 +137,18 @@ const CashFlow = (props: Props) => {
       // Fetch annual
       if (getSection3.annualExpenses.length > 0) {
         getSection3.annualExpenses.map((data: any, index: number) => {
-          fetchExpense(index, data);
+          if (index < props.pfrType) {
+            fetchExpense(index, data);
+          }
         });
       }
 
       // Fetch annual expense
       if (getSection3.annualIncome.length > 0) {
         getSection3.annualIncome.map((data: any, index: number) => {
-          fetchAnnual(index, data);
+          if (index < props.pfrType) {
+            fetchAnnual(index, data);
+          }
         });
       }
 
@@ -185,7 +189,10 @@ const CashFlow = (props: Props) => {
   }, [scrollPositionNext, editableStatus, status]);
 
   return (
-    <div id={props.id} className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong">
+    <div
+      id={props.id}
+      className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
+    >
       <div
         id="section-header-3"
         className={`sticky top-0 z-10 ${

@@ -309,7 +309,7 @@ const Client = (props: Props) => {
                 name="nationality"
                 indexClient={0}
                 value={
-                  clientInfo[0] && Number(clientInfo[0].nationality) >= 0
+                  clientInfo[0] && clientInfo[0].nationality !== ""
                     ? clientInfo[0].nationality
                     : "-"
                 }
@@ -968,8 +968,8 @@ const Client = (props: Props) => {
                 label="Nationality"
                 name="nationality"
                 indexClient={index}
-                value={
-                  clientInfo[index].nationality
+                value={clientInfo[index] &&
+                  clientInfo[index].nationality !== ""
                     ? clientInfo[index].nationality
                     : "-"
                 }

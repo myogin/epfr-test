@@ -8,9 +8,8 @@ import {
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import More2LineIcon from "remixicon-react/More2LineIcon";
-import { pfrProgress } from "./overviewUtils";
 import LoadingList from "@/components/Attributes/Loader/LoadingList";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPortofolio";
@@ -32,6 +31,9 @@ import Eye2FillIcon from "remixicon-react/Eye2LineIcon";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { pfrProgress } from "@/store/overview/overviewUtils";
+import { usePathname, useSearchParams } from "next/navigation";
+
 interface Props {}
 
 const PfrTable = (props: Props) => {
@@ -42,6 +44,11 @@ const PfrTable = (props: Props) => {
     setIsLoading(true);
     let res = await getPfrList(query);
     setPfrList(res.data);
+
+    setPage({
+      currentPage: res.page,
+      lastPage: res.total_pages,
+    });
     setIsLoading(false);
   }
   useEffect(() => {
@@ -146,10 +153,18 @@ const PfrTable = (props: Props) => {
       .then((res) => {
         success("Delete Success");
         getALldata();
+        const { page, ...newQuery } = router.query;
+        router.replace({
+          query: { ...newQuery },
+        });
       })
       .catch((err) => {
         error("Delete error please contact Administrator");
         setIsLoading(false);
+        const { page, ...newQuery } = router.query;
+        router.replace({
+          query: { ...newQuery },
+        });
       });
   };
 
@@ -163,13 +178,53 @@ const PfrTable = (props: Props) => {
       setTargetClient(0);
     }
   };
+
+  // handle pagination
+  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+  const [page, setPage] = useState({
+    currentPage: null,
+    lastPage: null,
+  });
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const pagination = (action: number) => {
+    let newPage = Number(page.currentPage);
+
+    if (!page.currentPage) {
+      return null;
+    } else {
+      // -1 is prev, 0 is next
+      if (action == -1) {
+        newPage = newPage - 1;
+      } else if (action == 0) {
+        newPage = newPage + 1;
+      } else {
+        newPage = action;
+      }
+      router.push(
+        pathname + "?" + createQueryString("page", newPage.toString())
+      );
+    }
+  };
+
   if (isLoading)
     return (
       <>
         <LoadingList />
       </>
     );
-
   return (
     <div className="mt-2">
       <div className="flex flex-row justify-between py-6 mx-8 text-sm font-bold text-gray-light">
@@ -367,7 +422,7 @@ const PfrTable = (props: Props) => {
                             Delete
                           </button>
                           <button
-                            className="bg-gray-soft-thin hover:bg-gray-soft-strong text-white font-bold py-2 px-4 rounded"
+                            className="px-4 py-2 font-bold text-white rounded bg-gray-soft-thin hover:bg-gray-soft-strong"
                             onClick={closeModalDelete}
                           >
                             Cancel
@@ -413,7 +468,7 @@ const PfrTable = (props: Props) => {
                       <Dialog.Panel className="w-full max-w-[350px] p-10 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                         <Dialog.Title
                           as="h3"
-                          className="mb-8 text-xl font-medium leading-6 text-gray-light text-center"
+                          className="mb-8 text-xl font-medium leading-6 text-center text-gray-light"
                         >
                           Duplicate a new PFR
                         </Dialog.Title>
@@ -423,7 +478,7 @@ const PfrTable = (props: Props) => {
                           <div className="font-bold">New PFR Type:</div>
                           <div>
                             <select
-                              className="cursor-pointer rounded"
+                              className="rounded cursor-pointer"
                               defaultValue={newTypePfr}
                               onChange={(e: any) =>
                                 handleChangeTypePfr(e.target.value)
@@ -440,7 +495,7 @@ const PfrTable = (props: Props) => {
                               </div>
                               <div>
                                 <select
-                                  className="cursor-pointer rounded"
+                                  className="rounded cursor-pointer"
                                   defaultValue={targetClient}
                                   onChange={(e: any) =>
                                     setTargetClient(e.target.value)
@@ -480,11 +535,25 @@ const PfrTable = (props: Props) => {
       ))}
       <div className="flex items-center justify-between py-6 mx-8">
         <div>
-          <ButtonBorder>Previous</ButtonBorder>
+          <ButtonBorder
+            onClick={() => {
+              pagination(-1);
+            }}
+            isDisable={page.currentPage == 1 ? true : false}
+          >
+            Previous
+          </ButtonBorder>
         </div>
         <div>Page 1 of 10</div>
         <div>
-          <ButtonBorder>Next</ButtonBorder>
+          <ButtonBorder
+            onClick={() => {
+              pagination(0);
+            }}
+            isDisable={page.currentPage == page.lastPage ? true : false}
+          >
+            Next
+          </ButtonBorder>
         </div>
       </div>
       <ToastContainer

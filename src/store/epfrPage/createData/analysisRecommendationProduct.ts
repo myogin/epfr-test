@@ -58,7 +58,7 @@ const initialState: SectionNineRecommendation = {
 };
 
 type Actions = {
-    setParent: (value: string, name: string, groupData: any) => any;
+    setParent: (value: any, name: string, groupData: any) => any;
     setProduct: (value: string, name: string, groupData: any) => any;
     setProductArr: (value: any, name: string, groupData: any) => any;
     setProductRiderArr: (value: any, name: string, groupData: any) => any;
@@ -66,7 +66,7 @@ type Actions = {
     setProductRiderRiskArr: (value: any, riderId: string) => any;
     setProductHospital: (value: any, name: string) => any;
     resetRecommendationProduct: () => any;
-    editRecommendationProduct: (data:any) => any;
+    editRecommendationProduct: (parent:any) => any;
     
 };
 
@@ -77,7 +77,7 @@ const AnalysisRecommendationProduct = create(
     resetRecommendationProduct: () => {
         set(initialState);
       },
-    setParent: (value: string, name: string, groupData: any) => set(
+    setParent: (value: any, name: string, groupData: any) => set(
         produce((draft) => {
             draft.section9Recommend[name] = value;
         })
@@ -129,12 +129,39 @@ const AnalysisRecommendationProduct = create(
             draft.section9Recommend.product.premiumForHospitalization[name] = value;
         })
     ),
-    editRecommendationProduct: (data: any) => {
-        console.log('initialState', initialState)
-        // set(
-        //     "section9Recommend": data
-        // );
-      },
+    editRecommendationProduct: (parent:any) => {
+        console.log('parent', parent)
+        set(parent)
+            // initialState,
+            // section9Recommend: {
+            //     groupId: parent.groupId,w
+            // }
+            // initialState.section9Recommend.product['subjectId'] = parent.product.subjectId
+            // .subjectId = parent.product.subjectId,
+            // initialState.section9Recommend.product.name = parent.product.name,
+            // initialState.section9Recommend.product.id = parent.product.id,
+            // initialState.section9Recommend.product.categoryId = parent.product.categoryId,
+            // initialState.section9Recommend.product.companyId = parent.product.companyId,
+            // initialState.section9Recommend.product.policyTerm = parent.product.policyTerm,
+            // initialState.section9Recommend.product.sumAssured = parent.product.sumAssured,
+            // initialState.section9Recommend.product.premiumPaymentType = parent.product.premiumPaymentType,
+            // initialState.section9Recommend.product.premium = parent.product.premium,
+            // initialState.section9Recommend.product.premiumFrequency = parent.product.premiumFrequency,
+            // initialState.section9Recommend.product.funds = parent.product.funds,
+            // initialState.section9Recommend.product.modelPortfolioRiskCategory = parent.product.modelPortfolioRiskCategory,
+            // initialState.section9Recommend.product.higherThanRiskProfile = parent.product.higherThanRiskProfile,
+            // initialState.section9Recommend.product.nameOfOwner = parent.product.nameOfOwner,
+            // initialState.section9Recommend.product.nameOfInsure = parent.product.nameOfInsure,
+            // initialState.section9Recommend.product.nameOfInsureOther = parent.product.nameOfInsureOther,
+            // initialState.section9Recommend.product.benefit = parent.product.benefit,
+            // initialState.section9Recommend.product.risk = parent.product.risk,
+            // initialState.section9Recommend.product.portfolio = parent.product.portfolio,
+            // initialState.section9Recommend.product.premiumForHospitalization = parent.product.premiumForHospitalization,
+            // initialState.section9Recommend.product.groupId = parent.product.groupId,
+            // initialState.section9Recommend.product.premiumType = parent.product.premiumType,
+            // initialState.section9Recommend.product.feature = parent.product.feature,
+        // )
+    },
   }))
 
 );
