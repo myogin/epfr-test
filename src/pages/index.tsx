@@ -29,11 +29,20 @@ const LoginPage: Page = () => {
 
   const login = async () => {
     setLoading(true);
+
     await axios
-      .post(`${process.env.NEXT_PUBLIC_BASE_URL}/login`, {
-        email: email,
-        password: password,
-      })
+      .post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/login`,
+        {
+          email: email,
+          password: password,
+        },
+        {
+          httpsAgent: {
+            rejectUnauthorized: false,
+          },
+        }
+      )
       .then((res) => {
         const msg = res.data.result;
         setUserEmail(email);
