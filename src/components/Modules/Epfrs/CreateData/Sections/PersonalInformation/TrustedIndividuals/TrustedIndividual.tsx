@@ -83,7 +83,7 @@ const TrustedIndividual = () => {
           <Select
             className="mb-10"
             label="Language Used"
-            value={trustedIndividuals.languageUsed}
+            value={trustedIndividuals.languageUsed ? trustedIndividuals.languageUsed : "-"}
             name="languageUsed"
             datas={languages}
             handleChange={handleInputChange}
