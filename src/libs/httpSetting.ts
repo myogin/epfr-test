@@ -5,7 +5,4 @@ export default axios.create({
   headers: {
     "Content-type": "application/json",
   },
-  httpsAgent: {
-    rejectUnauthorized: false,
-  }, // (NOTE: this will disable client verification)
 });
