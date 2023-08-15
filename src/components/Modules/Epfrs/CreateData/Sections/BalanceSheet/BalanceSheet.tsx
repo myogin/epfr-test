@@ -293,6 +293,7 @@ const BalanceSheet = (props: Props) => {
                 ""
               )}
               <Checkbox
+                value={need[index]}
                 isChecked={need ? (need[index] == 1 ? false : true) : true}
                 onChange={() => {
                   updateNeed(index, need[index] == 1 ? 0 : 1, props.pfrType);
