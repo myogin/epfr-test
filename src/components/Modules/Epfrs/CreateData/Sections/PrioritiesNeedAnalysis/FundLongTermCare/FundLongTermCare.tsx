@@ -198,8 +198,8 @@ const FundLongTermCare = (props: Props) => {
               return (
                 <td key={"assda" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][7]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][7]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -248,8 +248,8 @@ const FundLongTermCare = (props: Props) => {
               return (
                 <td key={"assda" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][7]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][7]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -295,8 +295,8 @@ const FundLongTermCare = (props: Props) => {
               return (
                 <td key={"assda" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][7]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][7]
                     : true}
                     formStyle="text-right"
                     className="mb-10"

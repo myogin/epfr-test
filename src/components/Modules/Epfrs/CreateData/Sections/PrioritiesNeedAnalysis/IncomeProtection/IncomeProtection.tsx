@@ -236,8 +236,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"d" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? !section7.answer.need.client[i][0]
+                      readonly={section7.answer.need.dependant[i]
+                        ? !section7.answer.need.dependant[i][0]
                         : true}
                       formStyle="text-right"
                       className="mb-10"
@@ -286,8 +286,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"f" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? !section7.answer.need.client[i][0]
+                      readonly={section7.answer.need.dependant[i]
+                        ? !section7.answer.need.dependant[i][0]
                         : true}
                       formStyle="text-right"
                       className="mb-10"
@@ -336,8 +336,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"h" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? !section7.answer.need.client[i][0]
+                      readonly={section7.answer.need.dependant[i]
+                        ? !section7.answer.need.dependant[i][0]
                         : true}
                       formStyle="text-right"
                       className="mb-10"
@@ -418,8 +418,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"l" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? !section7.answer.need.client[i][0]
+                      readonly={section7.answer.need.dependant[i]
+                        ? !section7.answer.need.dependant[i][0]
                         : true}
                       formStyle="text-right"
                       className="mb-10"
@@ -468,8 +468,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"n" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? !section7.answer.need.client[i][0]
+                      readonly={section7.answer.need.dependant[i]
+                        ? !section7.answer.need.dependant[i][0]
                         : true}
                       formStyle="text-right"
                       className="mb-10"
@@ -535,8 +535,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"p" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? (!section7.answer.need.client[i][0] || !section7.answer.defaultCheck
+                      readonly={section7.answer.need.dependant[i]
+                        ? (!section7.answer.need.dependant[i][0] || !section7.answer.defaultCheck
                         .income_protection_upon_death_mortgage)
                         : true}
                       formStyle="text-right"
@@ -603,8 +603,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"r" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? (!section7.answer.need.client[i][0] || !section7.answer.defaultCheck
+                      readonly={section7.answer.need.dependant[i]
+                        ? (!section7.answer.need.dependant[i][0] || !section7.answer.defaultCheck
                         .income_protection_upon_death_debt)
                         : true}
                       formStyle="text-right"
@@ -671,8 +671,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"t" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? (!section7.answer.need.client[i][0] || !section7.answer.defaultCheck
+                      readonly={section7.answer.need.dependant[i]
+                        ? (!section7.answer.need.dependant[i][0] || !section7.answer.defaultCheck
                         .income_protection_upon_death_other)
                         : true}
                       formStyle="text-right"
@@ -801,8 +801,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"z" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? !section7.answer.need.client[i][0]
+                      readonly={section7.answer.need.dependant[i]
+                        ? !section7.answer.need.dependant[i][0]
                         : true}
                       formStyle="text-right"
                       className="mb-10"
@@ -852,8 +852,8 @@ const IncomeProtection = (props: Props) => {
                 return (
                   <td key={"bb" + i}>
                     <Input
-                      readonly={section7.answer.need.client[i]
-                        ? !section7.answer.need.client[i][0]
+                      readonly={section7.answer.need.dependant[i]
+                        ? !section7.answer.need.dependant[i][0]
                         : true}
                       formStyle="text-right"
                       className="mb-10"

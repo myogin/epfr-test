@@ -186,8 +186,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][1]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][1]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -236,8 +236,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][1]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][1]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -286,8 +286,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][1]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][1]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -368,8 +368,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][1]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][1]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -435,8 +435,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                      ? !section7.answer.need.client[i][1] || !section7.answer.defaultCheck
+                    readonly={section7.answer.need.dependant[i]
+                      ? !section7.answer.need.dependant[i][1] || !section7.answer.defaultCheck
                       .fund_disability_income_expense_mortgage
                       : true}
                     formStyle="text-right"
@@ -486,8 +486,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][1]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][1]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -617,8 +617,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                      ? !section7.answer.need.client[i][1] || !section7.answer.defaultCheck
+                    readonly={section7.answer.need.dependant[i]
+                      ? !section7.answer.need.dependant[i][1] || !section7.answer.defaultCheck
                       .fund_disability_income_expense_disability
                       : true}
                     formStyle="text-right"
@@ -669,8 +669,8 @@ const FundDisability = (props: Props) => {
               return (
                 <td key={"asa" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][1]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][1]
                     : true}
                     formStyle="text-right"
                     className="mb-10"

@@ -354,8 +354,8 @@ const FundHospitalExpenses = (props: Props) => {
               return (
                 <td key={"tsdys" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][8]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][8]
                     : true}
                     formStyle="text-right"
                     className="mb-10"

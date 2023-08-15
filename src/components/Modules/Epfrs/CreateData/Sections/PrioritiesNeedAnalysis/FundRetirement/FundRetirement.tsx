@@ -193,8 +193,8 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -315,8 +315,8 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -365,8 +365,8 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -447,8 +447,8 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -535,8 +535,8 @@ const FundRetirement = (props: Props) => {
                 .selectedMethod == 1 ? (
                 <td>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -593,8 +593,8 @@ const FundRetirement = (props: Props) => {
                 .selectedMethod == 1 ? (
                 <td>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -677,8 +677,8 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -727,8 +727,8 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -808,8 +808,8 @@ const FundRetirement = (props: Props) => {
               return (
                 <td key={"asa" + i}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][5]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][5]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
