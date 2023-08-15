@@ -12,13 +12,19 @@ export const getPfrList = async (query: any) => {
   } else {
     ownerId = ``;
   }
+
+  let currentPage = "";
+  if (query?.page == undefined || query?.page == "") {
+    currentPage = "page=1&";
+  }
+  // handle params
   let filter = "";
   if (query) {
     filter = new URLSearchParams(query).toString() + "&";
   }
 
   const res = await http.get(
-    `/pfr/getAll/${ownerId}?${filter}page=1&per_page=10`,
+    `/pfr/getAll/${ownerId}?${filter}${currentPage}per_page=10`,
     {
       headers: authHeader(),
     }
