@@ -153,10 +153,18 @@ const PfrTable = (props: Props) => {
       .then((res) => {
         success("Delete Success");
         getALldata();
+        const { page, ...newQuery } = router.query;
+        router.replace({
+          query: { ...newQuery },
+        });
       })
       .catch((err) => {
         error("Delete error please contact Administrator");
         setIsLoading(false);
+        const { page, ...newQuery } = router.query;
+        router.replace({
+          query: { ...newQuery },
+        });
       });
   };
 
