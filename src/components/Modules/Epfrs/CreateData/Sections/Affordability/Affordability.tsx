@@ -35,6 +35,9 @@ interface Props {
 }
 
 const Affordability = (props: Props) => {
+
+  let typePfr = props.pfrType ? props.pfrType : 0
+
   const router = useRouter();
   let id = usePersonalInformation((state) => state.id);
 
@@ -468,7 +471,7 @@ const Affordability = (props: Props) => {
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowDoubleGrid>
-          {section8.payorDetail.map((data, key) => (
+          {section8.payorDetail.map((data, key) => key < typePfr ? (
             <div
               className="text-left space-y-11"
               key={"payor-detail-top-" + key}
@@ -489,7 +492,7 @@ const Affordability = (props: Props) => {
                 }
               />
             </div>
-          ))}
+          ) : null)}
         </RowDoubleGrid>
 
         <RowDoubleGrid>
@@ -510,7 +513,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.relationShip}
+                  value={data.relationShip ? data.relationShip : ""}
                 />
                 <Input
                   className="mb-10"
@@ -526,7 +529,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.payorName}
+                  value={data.payorName ? data.payorName : ""}
                 />
                 <Input
                   className="mb-10"
@@ -542,7 +545,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.passportNo}
+                  value={data.passportNo ? data.passportNo : ""}
                 />
                 <Input
                   className="mb-10"
@@ -558,7 +561,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.occupation}
+                  value={data.occupation ? data.occupation : ""}
                 />
                 <Input
                   className="mb-10"
@@ -574,7 +577,7 @@ const Affordability = (props: Props) => {
                       ? false
                       : true
                   }
-                  value={data.payorIncome}
+                  value={data.payorIncome ? data.payorIncome : 0}
                 />
               </div>
             ) : (
@@ -733,7 +736,7 @@ const Affordability = (props: Props) => {
                         type="text"
                         formStyle="text-right"
                         name="annual"
-                        value={val.annual}
+                        value={val.annual ? Number(val.annual) : 0}
                         handleChange={(event) =>
                           checkboxPayorBudget(event, key, index)
                         }
@@ -763,7 +766,7 @@ const Affordability = (props: Props) => {
                             <TextArea
                               dataType="annual"
                               name="reasonForResources"
-                              defaultValue={section8.reasonForResources[key]}
+                              defaultValue={section8.reasonForResources[key] ? section8.reasonForResources[key] : ""}
                               needValidation={true}
                               handleChange={(event) =>
                                 handleExistingCash(event, key, index)
@@ -829,7 +832,9 @@ const Affordability = (props: Props) => {
                               defaultValue={
                                 section8.medisaveResource.reasonForResources[
                                   key
-                                ]
+                                ] ? section8.medisaveResource.reasonForResources[
+                                  key
+                                ] : ""
                               }
                             />
                           ) : null}
@@ -842,7 +847,7 @@ const Affordability = (props: Props) => {
                         type="text"
                         formStyle="text-right"
                         name="single"
-                        value={val.single}
+                        value={val.single ? Number(val.single) : 0}
                         handleChange={(event) =>
                           checkboxPayorBudget(event, key, index)
                         }
@@ -873,7 +878,7 @@ const Affordability = (props: Props) => {
                               dataType="single"
                               name="reasonForResourcesForSingle"
                               defaultValue={
-                                section8.reasonForResourcesForSingle[key]
+                                section8.reasonForResourcesForSingle[key] ? section8.reasonForResourcesForSingle[key] : ""
                               }
                               handleChange={(event) =>
                                 handleExistingCash(event, key, index)
@@ -937,7 +942,8 @@ const Affordability = (props: Props) => {
                               }
                               defaultValue={
                                 section8.medisaveResource
-                                  .reasonForResourcesForSingle[key]
+                                  .reasonForResourcesForSingle[key] ? section8.medisaveResource
+                                  .reasonForResourcesForSingle[key] : ""
                               }
                             />
                           ) : null}
@@ -1070,7 +1076,7 @@ const Affordability = (props: Props) => {
                   <TextArea
                     className="my-4"
                     name="otherExplain"
-                    defaultValue={data.otherExplain}
+                    defaultValue={data.otherExplain ? data.otherExplain : ""}
                     handleChange={(e) => handleSourceOfWealth(e, key)}
                     needValidation={true}
                     logic={
