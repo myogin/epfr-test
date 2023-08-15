@@ -53,7 +53,7 @@ const BalanceSheet = (props: Props) => {
   const [saveLoading, setSaveLoading] = useState(false);
   const scrollPosition = useScrollPosition(4);
   const scrollPositionBottom = useScrollPositionBottom(4);
-  const scrollPositionBottom2 = useScrollPositionBottom(2);
+  const scrollPositionBottom3 = useScrollPositionBottom(3);
   const scrollPosition3 = useScrollPosition(3);
   const scrollPositionNext = useScrollPosition(3);
 
@@ -90,7 +90,7 @@ const BalanceSheet = (props: Props) => {
   };
   // load data for section 4 when position at 2 bottom
   useEffect(() => {
-    if (scrollPositionBottom2 == "Process2") {
+    if (scrollPositionBottom3 == "Process3") {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
@@ -100,7 +100,7 @@ const BalanceSheet = (props: Props) => {
         }
       }
     }
-  }, [scrollPositionBottom2]);
+  }, [scrollPositionBottom3]);
 
   useEffect(() => {
     calcTotal();
@@ -333,13 +333,13 @@ const BalanceSheet = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {scrollPositionNext == "okSec4" &&
+      {/* {scrollPositionNext == "okSec4" &&
       editableStatus === 2 &&
       status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 4" />
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };

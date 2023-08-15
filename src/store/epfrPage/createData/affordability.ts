@@ -230,7 +230,7 @@ const Affordability = create(
                   dataResSelection = true;
                 }
               } else {
-                dataResSelection = value;
+                dataResSelection = Number(value);
               }
               draft.section8.payorBudget[key][index][name] = dataResSelection;
 
