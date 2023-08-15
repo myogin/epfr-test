@@ -143,8 +143,9 @@ const CustomerKnowledgeAssesment = (props: Props) => {
   // fetching data for section 5 when position at 4
   const scrollPositionNext = useScrollPosition(5);
 
+  const scrollPositionBottom4 = useScrollPositionBottom(4);
   useEffect(() => {
-    if (scrollPositionNext === "okSec5") {
+    if (scrollPositionBottom4 === "Process4") {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
@@ -154,7 +155,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
         }
       }
     }
-  }, [scrollPositionNext]);
+  }, [scrollPositionBottom4]);
 
   const [loading, setLoading] = useState(false);
 
