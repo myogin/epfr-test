@@ -74,7 +74,7 @@ const CreatePfrPage: Page = () => {
       elementActive = <AddPlanRecommendation />;
       break;
     default:
-      elementActive = <RetrieveClientDataNew />;
+      elementActive = null;
       break;
   }
 
