@@ -28,9 +28,15 @@ import EditLineIcon from "remixicon-react/EditLineIcon";
 import DeleteBin2LineIcon from "remixicon-react/DeleteBin2LineIcon";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import { Transition, Dialog } from "@headlessui/react";
+import { useRouter } from "next/router";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 
 const GroupRecommendation = () => {
+
+  let router = useRouter();
+  let pfrType = usePersonalInformation((state) => state.type);
+
   let {
     section9RecommendGroup
   } = useAnalysisRecommendationGroup();
@@ -596,8 +602,15 @@ const GroupRecommendation = () => {
       const pfrId = localStorage.getItem("s9_PfrId");
       let save = await saveGroup({"name": groupName, "pfrId": pfrId});
       if(save.status == 200){
-        const pfrId = localStorage.setItem("s9_PfrId","0");
+        // const pfrId = localStorage.setItem("s9_PfrId","0");
         showDetailData(params);
+        let typePfrString = pfrType == 1 ? "single" : "joint" 
+        if(Number(pfrId) > 0) {
+          router.push(`/create/${typePfrString}?id=${pfrId}#section-9`)
+        }else {
+          router.push(`/create/${typePfrString}#section-9`)
+        }
+        
       }
     } catch (error) {
       console.error('error', error);
@@ -605,8 +618,16 @@ const GroupRecommendation = () => {
   };
 
   const cancelData = (params: any) => {
-    const pfrId = localStorage.setItem("s9_PfrId","0");
+    // const pfrId = localStorage.setItem("s9_PfrId","0");
+
     showDetailData(params)
+    const pfrId = localStorage.getItem("s9_PfrId");
+    let typePfrString = pfrType == 1 ? "single" : "joint" 
+        if(Number(pfrId) > 0) {
+          router.push(`/create/${typePfrString}?id=${pfrId}#section-9`)
+        }else {
+          router.push(`/create/${typePfrString}#section-9`)
+        }
 
   }
 
@@ -1262,8 +1283,8 @@ const GroupRecommendation = () => {
       </SectionCardSingleGrid>
 
       <SectionCardFooter className="mx-8 2xl:mx-60">
-        <ButtonGreenMedium onClick={() => saveData(9)}>Save</ButtonGreenMedium>
-        <ButtonRedMedium onClick={() => cancelData(9)}>Cancel</ButtonRedMedium>
+        <ButtonGreenMedium onClick={() => saveData(200)}>Save</ButtonGreenMedium>
+        <ButtonRedMedium onClick={() => cancelData(200)}>Cancel</ButtonRedMedium>
       </SectionCardFooter>
     </div>
   );
