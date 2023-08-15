@@ -101,6 +101,11 @@ const Overview = () => {
               /> */}
               <SelectFilter
                 datas={types}
+                value={
+                  searchParams.get("type_like")
+                    ? searchParams.get("type_like")
+                    : "types"
+                }
                 handleChange={(event) => handleTypesFilter(event.target.value)}
               />
             </div>
