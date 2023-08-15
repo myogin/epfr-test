@@ -333,13 +333,13 @@ const BalanceSheet = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {scrollPositionNext == "okSec4" &&
+      {/* {scrollPositionNext == "okSec4" &&
       editableStatus === 2 &&
       status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 4" />
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };
