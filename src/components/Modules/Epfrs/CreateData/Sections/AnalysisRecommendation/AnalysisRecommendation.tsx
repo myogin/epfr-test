@@ -51,6 +51,7 @@ interface Props {
 
 const AnalysisRecommendation = (props: Props) => {
   const router = useRouter();
+
   let { section9, setParent } = useAnalysisRecommendation();
   const scrollPositionBottom = useScrollPositionBottom(8);
   const scrollPositionNext = useScrollPosition(10);
@@ -58,7 +59,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   const currencyFormat = (num: any) => {
     if (num) {
-      let number = Number(num)
+      let number = Number(num);
       return "$" + number.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
       // return "$" + num;
     } else {
@@ -131,6 +132,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   let { showDetailData } = useNavigationSection();
   const showDetail = (params: any, data: any) => {
+    localStorage.setItem("s9_PfrId", "10623");
     localStorage.setItem("s9_dataGroup", "0");
     localStorage.setItem("group_name", params);
 
@@ -142,9 +144,10 @@ const AnalysisRecommendation = (props: Props) => {
 
   const [getPfr8, setPfr8] = useState<any>({});
   const [getPfr9, setPfr9] = useState<any>({});
+
   let getClients = getLength(props.pfrType);
 
-  let payorBudget = useAffordability((state) => state.section8.payorBudget)
+  let payorBudget = useAffordability((state) => state.section8.payorBudget);
 
   const [dataAnnualPayorBudget, setAnnualPayorBudget] = useState<any>([
     [0, 0, 0, 0, 0],
@@ -452,7 +455,7 @@ const AnalysisRecommendation = (props: Props) => {
           console.log("data section 9", data);
           setPfr9(data);
           setRowsGroup(data.rowGroups);
-          
+
           // Res Answer
           console.log("data", data);
           var overView1 = "";
@@ -632,7 +635,6 @@ const AnalysisRecommendation = (props: Props) => {
         const singlePayorBudget: Array<any> = [[], []];
         const payorBudgetMap: Array<any> = [[], []];
         pfrSection(8, pfrId).then((data: any) => {
-
           console.log("data section 8");
           console.log(data);
           setPfr8(data);
@@ -671,24 +673,23 @@ const AnalysisRecommendation = (props: Props) => {
         getProductRiderBenefitRisk();
         getGroupRow();
       }
-    }else {
+    } else {
       console.log("update section 9 scroll position button non edit");
-      if(pfrId && Number(pfrId) > 0) {
+      if (pfrId && Number(pfrId) > 0) {
         if (scrollPositionBottom === "Process8") {
-
           console.log("check masuk sampai sini ggak");
 
           setParent("editableStatus", pfrLocal.editableSection9);
           setParent("pfrId", pfrId);
           setParent("status", pfrLocal.section9);
           // getSectionData(router.query.id);
-  
+
           // Section 9
           pfrSection(9, pfrId).then((data: any) => {
             console.log("data section 9", data);
             setPfr9(data);
             setRowsGroup(data.rowGroups);
-  
+
             // Res Answer
             console.log("data", data);
             var overView1 = "";
@@ -696,29 +697,29 @@ const AnalysisRecommendation = (props: Props) => {
             var reasonForBenefit = "";
             var reasonForRisk = "";
             var reasonForDeviation = "";
-  
+
             if (data.answer) {
               if (data.answer.overView1) {
                 overView1 = data.answer.overView1;
               }
-  
+
               if (data.answer.overView2) {
                 overView2 = data.answer.overView2;
               }
-  
+
               if (data.answer.reasonForBenefit) {
                 reasonForBenefit = data.answer.reasonForBenefit;
               }
-  
+
               if (data.answer.reasonForRisk) {
                 reasonForRisk = data.answer.reasonForRisk;
               }
-  
+
               if (data.answer.reasonForDeviation) {
                 reasonForDeviation = data.answer.reasonForDeviation;
               }
             }
-  
+
             setEditor({
               ...editorData,
               overView1: EditorState.createWithContent(
@@ -752,7 +753,7 @@ const AnalysisRecommendation = (props: Props) => {
                 )
               ),
             });
-  
+
             setParent("overView1", data.answer ? data.answer.overView1 : "");
             setParent("overView2", data.answer ? data.answer.overView2 : "");
             setParent(
@@ -768,7 +769,7 @@ const AnalysisRecommendation = (props: Props) => {
               data.answer ? data.answer.reasonForDeviation : ""
             );
             // End Res Answer
-  
+
             // Check Client Choice
             console.log("data.recommendedProduct", data.recommendedProduct);
             data.recommendedProduct.map((product: any) => {
@@ -778,19 +779,21 @@ const AnalysisRecommendation = (props: Props) => {
                 product["checked"] = true;
                 calcPremiumClientChoice(product, false);
               }
-  
+
               var dataName = getPremiumFrequencyName(product.premiumFrequency);
               if (dataName != undefined) {
                 dataSubPremium[dataName] = product["premium"];
-  
+
                 if (product["checked"] == true) {
                   if (dataResDataTotalPremiumArr[dataName]) {
-                    dataResDataTotalPremiumArr[dataName] += product["totPremium"];
+                    dataResDataTotalPremiumArr[dataName] +=
+                      product["totPremium"];
                   } else {
-                    dataResDataTotalPremiumArr[dataName] = product["totPremium"];
+                    dataResDataTotalPremiumArr[dataName] =
+                      product["totPremium"];
                   }
                 }
-  
+
                 product["riders"].map((rider: any) => {
                   var dataNameRider = getPremiumFrequencyName(
                     rider.premiumFrequency
@@ -801,14 +804,14 @@ const AnalysisRecommendation = (props: Props) => {
                     } else {
                       rider["checked"] = true;
                     }
-  
+
                     //
                     if (dataSubPremium[dataNameRider]) {
                       dataSubPremium[dataNameRider] += rider["premium"];
                     } else {
                       dataSubPremium[dataNameRider] = rider["premium"];
                     }
-  
+
                     if (dataResDataTotalPremiumArr[dataNameRider]) {
                       dataResDataTotalPremiumArr[dataNameRider] +=
                         rider["premium"];
@@ -818,7 +821,7 @@ const AnalysisRecommendation = (props: Props) => {
                     }
                   }
                 });
-  
+
                 if (product.riders.length > 0) {
                   product["subTotal"] = dataSubPremium;
                 } else {
@@ -826,7 +829,7 @@ const AnalysisRecommendation = (props: Props) => {
                 }
               }
             });
-  
+
             data.ILPProduct.map((product: any, index: any) => {
               if (product["checked"] == "0") {
                 product["checked"] = false;
@@ -834,7 +837,7 @@ const AnalysisRecommendation = (props: Props) => {
                 product["checked"] = true;
               }
             });
-  
+
             data.CISProduct.map((product: any, index: any) => {
               if (product["checked"] == "0") {
                 product["checked"] = false;
@@ -842,14 +845,14 @@ const AnalysisRecommendation = (props: Props) => {
                 product["checked"] = true;
               }
             });
-  
+
             let checker = 0;
-  
+
             data.CISILPProducts.map((product: any) => {
               if (product["checked"]) {
                 checker++;
               }
-  
+
               if (
                 product["type"] == 1 ||
                 (product["type"] == 0 && product["recommedType"] == 1)
@@ -859,10 +862,10 @@ const AnalysisRecommendation = (props: Props) => {
                 calcPremiumClientChoice(product, false);
               }
             });
-  
+
             calcPremiumMatrix(data);
           });
-  
+
           // Section 8
           const annualPayorBudget: Array<any> = [[], []];
           const singlePayorBudget: Array<any> = [[], []];
@@ -870,7 +873,7 @@ const AnalysisRecommendation = (props: Props) => {
           pfrSection(8, pfrId).then((data: any) => {
             console.log("data section 8 ", data);
             setPfr8(data);
-  
+
             let payorBudgets = data["payorBudgets"];
             payorBudgets.map((budget: any) => {
               if (budget["selection"] != 0) {
@@ -885,7 +888,7 @@ const AnalysisRecommendation = (props: Props) => {
           setAnnualPayorBudget(annualPayorBudget);
           setSinglePayorBudget(singlePayorBudget);
           setPayorBudgetMap(payorBudgetMap);
-  
+
           // get whole context
           const resOutcome: Array<any> = [];
           getWholeContext(pfrId).then((dataWhole: any) => {
@@ -896,12 +899,12 @@ const AnalysisRecommendation = (props: Props) => {
             });
             setOutcome(resOutcome);
           });
-  
+
           console.log(
             "dataTotalAnnualPremiumChoice",
             dataTotalAnnualPremiumChoice
           );
-  
+
           getProductRiderBenefitRisk();
           getGroupRow();
         }
@@ -909,7 +912,7 @@ const AnalysisRecommendation = (props: Props) => {
     }
 
     console.log("section9Res", section9);
-  }, [section9, router.isReady,scrollPositionBottom]);
+  }, [section9, router.isReady, scrollPositionBottom]);
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {
     switch (Number(premiumFrequency)) {
@@ -2426,41 +2429,62 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getClients.map((resData: any, index: any) => (
-                  <tr key={"sds" + index}>
-                    <td className="px-2 py-5">Client {index + 1}</td>
-                    <td className="px-2 py-5 text-center">
-                      {currencyFormat(payorBudget[index][0].annual)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][0].single)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][1].annual)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][1].single)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][2].annual)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][2].single)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][3].annual)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][3].single)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][4].annual)}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                    {currencyFormat(payorBudget[index][4].single)}
-                    </td>
-                  </tr>
-                ))}
+                {getClients?.length &&
+                  getClients.map((resData: any, index: any) => (
+                    <tr key={"sds" + index}>
+                      <td className="px-2 py-5">Client {index + 1}</td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][0].annual)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][0].single)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][1].annual)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][1].single)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][2].annual)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][2].single)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][3].annual)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][3].single)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][4].annual)
+                          : 0}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {payorBudget.length > 0
+                          ? currencyFormat(payorBudget[index][4].single)
+                          : 0}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -2504,81 +2528,82 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getClients.map((resData: any, index: any) => (
-                  <tr key={"sds" + index}>
-                    <td className="px-2 py-5">Client {index + 1}</td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalAnnualPremiumChoice[index][0])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalAnnualPremiumChoice[index][0]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalSinglePremiumChoice[index][0])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalSinglePremiumChoice[index][0]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalAnnualPremiumChoice[index][1])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalAnnualPremiumChoice[index][1]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalSinglePremiumChoice[index][1])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalSinglePremiumChoice[index][1]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalAnnualPremiumChoice[index][2])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalAnnualPremiumChoice[index][2]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalSinglePremiumChoice[index][2])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalSinglePremiumChoice[index][2]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalAnnualPremiumChoice[index][3])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalAnnualPremiumChoice[index][3]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalSinglePremiumChoice[index][3])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalSinglePremiumChoice[index][3]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalAnnualPremiumChoice[index][4])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalAnnualPremiumChoice[index][4]
-                          )}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(dataTotalSinglePremiumChoice[index][4])
-                        ? 0
-                        : currencyFormat(
-                            dataTotalSinglePremiumChoice[index][4]
-                          )}
-                    </td>
-                  </tr>
-                ))}
+                {getClients?.length &&
+                  getClients.map((resData: any, index: any) => (
+                    <tr key={"sds" + index}>
+                      <td className="px-2 py-5">Client {index + 1}</td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalAnnualPremiumChoice[index][0])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalAnnualPremiumChoice[index][0]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalSinglePremiumChoice[index][0])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalSinglePremiumChoice[index][0]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalAnnualPremiumChoice[index][1])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalAnnualPremiumChoice[index][1]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalSinglePremiumChoice[index][1])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalSinglePremiumChoice[index][1]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalAnnualPremiumChoice[index][2])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalAnnualPremiumChoice[index][2]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalSinglePremiumChoice[index][2])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalSinglePremiumChoice[index][2]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalAnnualPremiumChoice[index][3])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalAnnualPremiumChoice[index][3]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalSinglePremiumChoice[index][3])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalSinglePremiumChoice[index][3]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalAnnualPremiumChoice[index][4])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalAnnualPremiumChoice[index][4]
+                            )}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(dataTotalSinglePremiumChoice[index][4])
+                          ? 0
+                          : currencyFormat(
+                              dataTotalSinglePremiumChoice[index][4]
+                            )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -2623,101 +2648,102 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getClients.map((resData: any, index: any) => (
-                  <tr key={"ssd" + index}>
-                    <td className="px-2 py-5">Client{index + 1}</td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataAnnualPayorBudget[index][0] -
-                          dataTotalAnnualPremiumChoice[index][0]
-                      )
-                        ? 0
-                        : dataAnnualPayorBudget[index][0] -
-                          dataTotalAnnualPremiumChoice[index][0]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataSinglePayorBudget[index][0] -
-                          dataTotalSinglePremiumChoice[index][0]
-                      )
-                        ? 0
-                        : dataSinglePayorBudget[index][0] -
-                          dataTotalSinglePremiumChoice[index][0]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataAnnualPayorBudget[index][1] -
-                          dataTotalAnnualPremiumChoice[index][1]
-                      )
-                        ? 0
-                        : dataAnnualPayorBudget[index][1] -
-                          dataTotalAnnualPremiumChoice[index][1]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataSinglePayorBudget[index][1] -
-                          dataTotalSinglePremiumChoice[index][1]
-                      )
-                        ? 0
-                        : dataSinglePayorBudget[index][1] -
-                          dataTotalSinglePremiumChoice[index][1]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataAnnualPayorBudget[index][2] -
-                          dataTotalAnnualPremiumChoice[index][2]
-                      )
-                        ? 0
-                        : dataAnnualPayorBudget[index][2] -
-                          dataTotalAnnualPremiumChoice[index][2]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataSinglePayorBudget[index][2] -
-                          dataTotalSinglePremiumChoice[index][2]
-                      )
-                        ? 0
-                        : dataSinglePayorBudget[index][2] -
-                          dataTotalSinglePremiumChoice[index][2]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataAnnualPayorBudget[index][3] -
-                          dataTotalAnnualPremiumChoice[index][3]
-                      )
-                        ? 0
-                        : dataAnnualPayorBudget[index][3] -
-                          dataTotalAnnualPremiumChoice[index][3]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataSinglePayorBudget[index][3] -
-                          dataTotalSinglePremiumChoice[index][3]
-                      )
-                        ? 0
-                        : dataSinglePayorBudget[index][3] -
-                          dataTotalSinglePremiumChoice[index][3]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataAnnualPayorBudget[index][4] -
-                          dataTotalAnnualPremiumChoice[index][4]
-                      )
-                        ? 0
-                        : dataAnnualPayorBudget[index][4] -
-                          dataTotalAnnualPremiumChoice[index][4]}
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      {isNaN(
-                        dataSinglePayorBudget[index][4] -
-                          dataTotalSinglePremiumChoice[index][4]
-                      )
-                        ? 0
-                        : dataSinglePayorBudget[index][4] -
-                          dataTotalSinglePremiumChoice[index][4]}
-                    </td>
-                  </tr>
-                ))}
+                {getClients?.length &&
+                  getClients.map((resData: any, index: any) => (
+                    <tr key={"ssd" + index}>
+                      <td className="px-2 py-5">Client{index + 1}</td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataAnnualPayorBudget[index][0] -
+                            dataTotalAnnualPremiumChoice[index][0]
+                        )
+                          ? 0
+                          : dataAnnualPayorBudget[index][0] -
+                            dataTotalAnnualPremiumChoice[index][0]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataSinglePayorBudget[index][0] -
+                            dataTotalSinglePremiumChoice[index][0]
+                        )
+                          ? 0
+                          : dataSinglePayorBudget[index][0] -
+                            dataTotalSinglePremiumChoice[index][0]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataAnnualPayorBudget[index][1] -
+                            dataTotalAnnualPremiumChoice[index][1]
+                        )
+                          ? 0
+                          : dataAnnualPayorBudget[index][1] -
+                            dataTotalAnnualPremiumChoice[index][1]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataSinglePayorBudget[index][1] -
+                            dataTotalSinglePremiumChoice[index][1]
+                        )
+                          ? 0
+                          : dataSinglePayorBudget[index][1] -
+                            dataTotalSinglePremiumChoice[index][1]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataAnnualPayorBudget[index][2] -
+                            dataTotalAnnualPremiumChoice[index][2]
+                        )
+                          ? 0
+                          : dataAnnualPayorBudget[index][2] -
+                            dataTotalAnnualPremiumChoice[index][2]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataSinglePayorBudget[index][2] -
+                            dataTotalSinglePremiumChoice[index][2]
+                        )
+                          ? 0
+                          : dataSinglePayorBudget[index][2] -
+                            dataTotalSinglePremiumChoice[index][2]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataAnnualPayorBudget[index][3] -
+                            dataTotalAnnualPremiumChoice[index][3]
+                        )
+                          ? 0
+                          : dataAnnualPayorBudget[index][3] -
+                            dataTotalAnnualPremiumChoice[index][3]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataSinglePayorBudget[index][3] -
+                            dataTotalSinglePremiumChoice[index][3]
+                        )
+                          ? 0
+                          : dataSinglePayorBudget[index][3] -
+                            dataTotalSinglePremiumChoice[index][3]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataAnnualPayorBudget[index][4] -
+                            dataTotalAnnualPremiumChoice[index][4]
+                        )
+                          ? 0
+                          : dataAnnualPayorBudget[index][4] -
+                            dataTotalAnnualPremiumChoice[index][4]}
+                      </td>
+                      <td className="px-2 py-5 text-center">
+                        {isNaN(
+                          dataSinglePayorBudget[index][4] -
+                            dataTotalSinglePremiumChoice[index][4]
+                        )
+                          ? 0
+                          : dataSinglePayorBudget[index][4] -
+                            dataTotalSinglePremiumChoice[index][4]}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

@@ -53,6 +53,7 @@ const BalanceSheet = (props: Props) => {
   const [saveLoading, setSaveLoading] = useState(false);
   const scrollPosition = useScrollPosition(4);
   const scrollPositionBottom = useScrollPositionBottom(4);
+  const scrollPositionBottom3 = useScrollPositionBottom(3);
   const scrollPosition3 = useScrollPosition(3);
   const scrollPositionNext = useScrollPosition(3);
 
@@ -87,9 +88,9 @@ const BalanceSheet = (props: Props) => {
       console.error(error);
     }
   };
-  // load data for section 4 when position at 3
+  // load data for section 4 when position at 2 bottom
   useEffect(() => {
-    if (scrollPositionNext === "okSec3") {
+    if (scrollPositionBottom3 == "Process3") {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
@@ -99,7 +100,7 @@ const BalanceSheet = (props: Props) => {
         }
       }
     }
-  }, [scrollPositionNext]);
+  }, [scrollPositionBottom3]);
 
   useEffect(() => {
     calcTotal();

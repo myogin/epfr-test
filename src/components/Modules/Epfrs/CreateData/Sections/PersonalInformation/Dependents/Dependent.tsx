@@ -275,7 +275,7 @@ const Dependent = (props: Props) => {
                             label="Relationship"
                             name="relationship"
                             datas={relationships}
-                            value={newData.relationship}
+                            value={newData.relationship ? newData.relationship : "-"}
                             handleChange={(event) =>
                               checkRelationship(event.target.value)
                             }

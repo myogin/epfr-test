@@ -50,7 +50,7 @@ const Accompainment = (props: Props) => {
             <Select
               className="mb-10"
               label="Spoken English Language Proficiency"
-              value={accompaniment[0].english_spoken}
+              value={accompaniment[0].english_spoken ? accompaniment[0].english_spoken : "-"}
               name="english_spoken"
               datas={englishLevel}
               indexData={0}
@@ -69,7 +69,7 @@ const Accompainment = (props: Props) => {
             <Select
               className="mb-10"
               label="Education Level"
-              value={accompaniment[0].education_level}
+              value={accompaniment[0].education_level ? accompaniment[0].education_level : "-"}
               name="education_level"
               datas={educationLevel}
               indexData={0}
@@ -128,7 +128,7 @@ const Accompainment = (props: Props) => {
               className="mb-10"
               label="Spoken English Language Proficiency"
               value={
-                accompaniment[index] ? accompaniment[index].english_spoken : ""
+                accompaniment[index] ? accompaniment[index].english_spoken : "-"
               }
               name="english_spoken"
               datas={englishLevel}
@@ -147,7 +147,7 @@ const Accompainment = (props: Props) => {
               className="mb-10"
               label="Education Level"
               value={
-                accompaniment[index] ? accompaniment[index].education_level : ""
+                accompaniment[index] ? accompaniment[index].education_level : "-"
               }
               name="education_level"
               datas={educationLevel}
@@ -166,7 +166,7 @@ const Accompainment = (props: Props) => {
               className="mb-10"
               label="Written English Language Proficiency"
               value={
-                accompaniment[index] ? accompaniment[index].english_written : ""
+                accompaniment[index] ? accompaniment[index].english_written : "-"
               }
               datas={englishLevel}
               indexData={index}

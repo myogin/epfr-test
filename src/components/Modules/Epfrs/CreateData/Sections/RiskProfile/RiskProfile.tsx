@@ -36,6 +36,7 @@ import { getPfrStep, postPfrSections } from "@/services/pfrService";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { useRouter } from "next/router";
 import LoadingPage from "@/components/Attributes/Loader/LoadingPage";
+import moment from "moment";
 interface Props {
   id?: any;
   pfrType: number;
@@ -138,11 +139,11 @@ const RiskProfile = (props: Props) => {
     sectionFive.reason,
     props.pfrType,
   ]);
-  
+
   useEffect(() => {
     localStorage.setItem("section5", JSON.stringify(sectionFive));
-  }, [sectionFive])
-  
+  }, [sectionFive]);
+
   let getPfrLength = getLength(props.pfrType);
   // handle input change / state change
   const handleInputChange = (event: any) => {
@@ -595,9 +596,9 @@ const RiskProfile = (props: Props) => {
 
   // fetching data for section 5 when position at 4
   const scrollPositionNext = useScrollPosition(4);
-
+  const scrollPositionBottom3 = useScrollPositionBottom(3);
   useEffect(() => {
-    if (scrollPositionNext === "okSec4") {
+    if (scrollPositionBottom3 === "Process3") {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
@@ -607,7 +608,69 @@ const RiskProfile = (props: Props) => {
         }
       }
     }
-  }, [scrollPositionNext]);
+  }, [scrollPositionBottom3]);
+
+  // get DOB on section 1
+  const scrollPositionBottom1 = useScrollPositionBottom(1);
+  const { clientInfo } = usePersonalInformation();
+  useEffect(() => {
+    if (scrollPositionBottom1 === "Process1") {
+      clientInfo.forEach((el, i) => {
+        if (el.dateOfBirth) {
+          let userDob = Number(moment().diff(el.dateOfBirth, "years"));
+          let dob = -100;
+          if (userDob <= 35) {
+            dob = 3;
+          } else if (userDob >= 36 && userDob <= 54) {
+            dob = 2;
+          } else if (userDob >= 55 && userDob <= 64) {
+            dob = 1;
+          } else if (userDob >= 65) {
+            dob = 0;
+          }
+
+          // fetching checkbox answer 1 for user 1 & 2
+          if (i == 0) {
+            let newQ1State = q1State.map((answer: any) => {
+              if (answer.score == dob) {
+                return { ...answer, u1: true };
+              } else {
+                return { ...answer };
+              }
+            });
+            setQ1State(newQ1State);
+            // inject to state
+            let newAnswers = sectionFive.answers;
+            newAnswers[0][1] = dob;
+            setSectionFive((prev) => {
+              return {
+                ...prev,
+                answers: newAnswers,
+              };
+            });
+          } else {
+            let newQ1State = q1State.map((answer: any) => {
+              if (answer.score == dob) {
+                return { ...answer, u2: true };
+              } else {
+                return { ...answer };
+              }
+            });
+            setQ1State(newQ1State);
+            // inject to state
+            let newAnswers = sectionFive.answers;
+            newAnswers[1][1] = dob;
+            setSectionFive((prev) => {
+              return {
+                ...prev,
+                answers: newAnswers,
+              };
+            });
+          }
+        }
+      });
+    }
+  }, [scrollPositionBottom1]);
 
   const [loading, setLoading] = useState(false);
   const getSectionData = async (params: any) => {
