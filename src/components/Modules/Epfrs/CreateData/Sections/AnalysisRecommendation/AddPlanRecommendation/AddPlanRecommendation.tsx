@@ -535,7 +535,67 @@ const AddPlanRecommendation = () => {
             setProductValueSelect(data.product.id)
             changeDataProductName(data.product.id)
           }else{
-            setCisDataProvider(data.cis.companyId)
+            console.log('data.fund', data.fund)
+            editRecommendationProduct({
+              "section9Recommend": {
+                "groupId": data.groupId,
+                "pfrId": data.pfrId,
+                "riders": data.riders,
+                "product": {
+                  "productType": 0,
+                  "subjectId": data.subjectId,
+                  "type": data.type,
+                  "portfolio": data.portfolio,
+                  "name": data.name,
+                  "id": data.cis.id,
+                  "categoryId": 0,
+                  "companyId": data.cis.companyId,
+                  "policyTerm": data.policyTerm,
+                  "sumAssured": data.sumAssured,
+                  "premiumPaymentType": data.premiumPaymentType,
+                  "premium": data.premium,
+                  "premiumFrequency": data.premiumFrequency,
+                  "funds": data.fund,
+                  "modelPortfolioRiskCategory": data.modelPortfolioRiskCategory,
+                  "higherThanRiskProfile": data.higherThanRiskProfile,
+                  "nameOfOwner": data.nameOfOwner,
+                  "nameOfInsure": data.nameOfInsure,
+                  "nameOfInsureOther": data.nameOfInsureOther,
+                  "benefit": data.cis_benefit,
+                  "risk": data.cis_risk,
+                  "premiumForHospitalization": data.premiumForHospitalization,
+                  "groupId": data.groupId,
+                  "premiumType": data.premiumType,
+                  "feature": data.cis.feature,
+                  "fundName": "",
+                  "fundAmount": 0
+                },
+                "extraRiders": []
+              }
+            })
+            // setCisDataProvider(data.cis.companyId)
+            // let index = resData.cis.findIndex((cis: any) => {
+            //   if(cis['id'] == data.cis.id) {
+            //     return true
+            //   }
+            // })
+      
+            // var selectedPortfolio = resData.cis[index]
+            // setCisDataBenRisk(selectedPortfolio);
+            
+            // var dataFundArr: Array<any> = [];
+            
+            // benefits = new Array(selectedPortfolio['benefit'].length).fill(false)
+            // risks = new Array(selectedPortfolio['risk'].length).fill(false)
+            // setPremiumPaymentType(selectedPortfolio['payment']);
+            // resData.cis[index]['platform']['funds'].map((fund: any) => {
+            //   dataFundArr.push({
+            //     name : fund['fund']['name'],
+            //     fundCode : fund['fund']['fundCode'],
+            //     allocation : fund['allocation']
+            //   })
+            // })
+            // setProductArr(dataFundArr, 'funds', null)
             onEditCis(resData, data.cis.companyId, data.cis.id)
           }
         });
@@ -1327,7 +1387,6 @@ const AddPlanRecommendation = () => {
     const { name, value } = event.target;
     var dataBenefit: Array<any> = [];
     var resData = -1;
-    
     
     if(section9Recommend.riders.length > 0){
       section9Recommend.riders.map((vRider: any, resIRider:any) => {
@@ -2278,18 +2337,22 @@ const AddPlanRecommendation = () => {
             
             <RowDoubleGrid>
               <div>
-                <Input label="Premium Payment Type" className="" name="premiumPaymentType" 
+              <Select
+                datas={dataPremiumType}
+                label="Premium Payment Type"
+                className=""
+                name="premiumPaymentType"
                 value={section9Recommend.product.premiumPaymentType} 
-                handleChange={(event) => setProductData(event)} needValidation={true} 
-                logic={section9Recommend.product.premiumPaymentType === null || section9Recommend.product.premiumPaymentType === '' ? false : true}/>
+                handleChange={(event) => setProductData(event)}
+              />
               </div>
               <div>
                 <Select
                   datas={dataCISPremiumType}
                   label="Payment Frequency"
                   className=""
-                  name="premiumPaymentType"
-                  value={section9Recommend.product.premiumPaymentType} 
+                  name="premiumFrequency"
+                  value={section9Recommend.product.premiumFrequency} 
                   handleChange={(event) => setProductData(event)}
                 />
               </div>
