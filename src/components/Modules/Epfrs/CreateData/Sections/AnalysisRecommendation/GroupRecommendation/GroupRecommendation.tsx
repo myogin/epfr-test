@@ -103,9 +103,6 @@ const GroupRecommendation = () => {
   ]
   // END STATE
   useEffect(() => {
-    setPfr8({});
-    setPfr9({});
-
     setAnnualPayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
     setSinglePayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
     setAnnualRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
@@ -143,6 +140,7 @@ const GroupRecommendation = () => {
       setPfr9(data)
       calcReaminingBudgets(data)
     });
+
     getRecommendationGroup(pfrId, pfrGroupId).then((data: any) => {
       console.log('data', data)
       if(data.products){
@@ -218,6 +216,7 @@ const GroupRecommendation = () => {
         expense[1] = Number(expense['sum2'])
       })
     });
+
     setAnnualPayorBudget(annualPayorBudget)
     setSinglePayorBudget(singlePayorBudget)
     setAnnualRemainBudget(annualRemainBudget)
