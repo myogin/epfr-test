@@ -1,15 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  async headers() {
+  async rewrites() {
     return [
       {
         source: "/api/:path*",
-
-        // matching all API routes
-        headers: [
-          { key: "Access-Control-Allow-Origin", value: "*" }, // replace this your actual origin
-        ],
+        destination: "http://203.85.37.54:8000/api/:path*",
       },
     ];
   },
