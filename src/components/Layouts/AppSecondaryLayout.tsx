@@ -23,9 +23,11 @@ const AppSecondaryLayout = (prop: Props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-row w-full min-h-screen font-sans bg-white">
-        {isHydrated ? <div>{prop.children}</div> : null}
-      </div>
+      {isHydrated ? (
+        <div className="flex flex-row w-full min-h-screen font-sans bg-white">
+          {prop.children}
+        </div>
+      ) : null}
     </>
   );
 };
