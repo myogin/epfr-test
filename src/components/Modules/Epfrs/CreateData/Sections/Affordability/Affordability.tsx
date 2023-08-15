@@ -20,7 +20,11 @@ import { getLength } from "@/libs/helper";
 import { useRouter } from "next/router";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
-import { getPfrStep, postPfrSections } from "@/services/pfrService";
+import {
+  getPfrStep,
+  getPfrStepLite,
+  postPfrSections,
+} from "@/services/pfrService";
 import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
@@ -41,6 +45,8 @@ const Affordability = (props: Props) => {
   let setAssetOrSurplus = useAffordability((state) => state.setAssetOrSurplus);
   let setGlobal = useAffordability((state) => state.setGlobal);
   let setInit = useAffordability((state) => state.setInit);
+  let fetchPayorBudget = useAffordability((state) => state.fetchPayorBudget);
+  let fetchPayorDetail = useAffordability((state) => state.fetchPayorDetail);
 
   let setExisting = useAffordability((state) => state.setExisting);
   let setExistingMedisave = useAffordability(
@@ -353,9 +359,13 @@ const Affordability = (props: Props) => {
   const getSectionData = async (params: any) => {
     try {
       setLoading(true); // Set loading before sending API request
-      let getSection8 = await getPfrStep(8, params);
+      let getSection8 = await getPfrStepLite(8, params);
 
+      console.log("section 8 get data");
       console.log(getSection8);
+
+      fetchPayorDetail(getSection8.payorDetails);
+      fetchPayorBudget(getSection8.payorBudgetsForClients);
 
       setLoading(false); // Stop loading
     } catch (error) {
@@ -409,7 +419,7 @@ const Affordability = (props: Props) => {
         setGlobal("editableStatus", pfrLocal.editableSection8);
         setGlobal("pfrId", router.query.id);
         setGlobal("status", pfrLocal.section8);
-        // getSectionData(router.query.id);
+        getSectionData(router.query.id);
       }
     } else {
       if (scrollPositionBottom === "Process7") {
@@ -594,10 +604,13 @@ const Affordability = (props: Props) => {
         </RowSixGrid>
         {section8.payorBudget.map((data, key) => (
           <RowSixGrid key={"payor-budget-top-data" + key}>
-            <label className="text-sm font-bold" key={"client" + key}>
-              Client {key + 1}
-            </label>
-            {data?.length &&
+            {data.length > 0 ? (
+              <label className="text-sm font-bold" key={"client" + key}>
+                Client {key + 1}
+              </label>
+            ) : null}
+
+            {data.length > 0 &&
               data.map((val, index) => (
                 <div
                   key={"payor-budget-checkbox" + index}
@@ -615,6 +628,7 @@ const Affordability = (props: Props) => {
       </SectionCardSingleGrid>
 
       {section8.payorBudget.map((data, key) => {
+        if(data.length > 0) {
         return (
           <SectionCardSingleGrid
             className="mx-8 border-b 2xl:mx-60 border-gray-soft-strong"
@@ -702,7 +716,7 @@ const Affordability = (props: Props) => {
 
             {data?.length &&
               data.map((val, index) =>
-                val.selection === true ? (
+                val.selection === true || Number(val.selection) === 1 ? (
                   <RowFourthGrid
                     key={"payor-detail-" + key + "-" + index}
                     className="items-center"
@@ -981,8 +995,8 @@ const Affordability = (props: Props) => {
                 )
               )}
           </SectionCardSingleGrid>
-        );
-      })}
+        )
+      }})}
 
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         Source of Wealth

@@ -50,6 +50,8 @@ type Actions = {
     value: any
   ) => any;
   setPayorBudget: (key: number, index: any, name: string, value: number) => any;
+  fetchPayorBudget: (params: any) => any;
+  fetchPayorDetail: (params: any) => any;
   setSourceOfWealth: (key: number, name: string, value: any) => any;
   setAssetOrSurplus: (key: number, name: string, value: any) => any;
   setGlobal: (name: string, value: any) => any;
@@ -69,6 +71,13 @@ const Affordability = create(
     persist<SectionEight & Actions>(
       (set, get) => ({
         ...initialState,
+        fetchPayorDetail: (params: any) => set(produce((draft) => {
+          draft.section8.payorDetail = params
+        })),
+        fetchPayorBudget: (params: any) => set(produce((draft) => {
+          draft.section8.payorBudget = params
+        })),
+
         setExisting: (group: string, object: string, key: number, value: any) =>
           set(
             produce((draft) => {
@@ -225,17 +234,25 @@ const Affordability = create(
               }
               draft.section8.payorBudget[key][index][name] = dataResSelection;
 
-              let totalAmmount = get().section8.payorBudget[key][index].annual + get().section8.payorBudget[key][index].single
+              let totalAmmount =
+                get().section8.payorBudget[key][index].annual +
+                get().section8.payorBudget[key][index].single;
 
-              if(totalAmmount === 0 && get().section8.payorBudget[key][index].sourceOfFund !=="") {
-                draft.section8.payorBudget[key][index].sourceOfFund = ""
+              if (
+                totalAmmount === 0 &&
+                get().section8.payorBudget[key][index].sourceOfFund !== ""
+              ) {
+                draft.section8.payorBudget[key][index].sourceOfFund = "";
               }
 
               draft.section8.status = 1;
 
-              if (get().section8.editableStatus === 1 && get().section8.status === 1) {
+              if (
+                get().section8.editableStatus === 1 &&
+                get().section8.status === 1
+              ) {
                 draft.section8.editableStatus = 2;
-              }else {
+              } else {
                 draft.section8.editableStatus = 0;
               }
             })

@@ -16,6 +16,13 @@ export const getPfrStep = async (step: number, pfrId: any) => {
   return res.data;
 };
 
+export const getPfrStepLite = async (step: number, pfrId: any) => {
+  const res = await http.get(`/pfr/get/slite${step}/${pfrId}`, {
+    headers: authHeader(),
+  });
+  return res.data;
+};
+
 export const getPfrShow = async (pfrId: any) => {
   const res = await http.get(`pfr/getShow/${pfrId}`, {
     headers: authHeader(),
