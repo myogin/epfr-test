@@ -105,6 +105,11 @@ const GroupRecommendation = () => {
     'CPF MEDISAVE',
     'SRS'
   ]
+
+  useEffect(() => {
+
+  },[section9RecommendGroup])
+
   // END STATE
   useEffect(() => {
     setAnnualPayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
@@ -226,7 +231,7 @@ const GroupRecommendation = () => {
     setAnnualRemainBudget(annualRemainBudget)
     setSingleRemainBudget(singleRemainBudget)
 
-  }, [section9RecommendGroup, dataLoad]);
+  }, [dataLoad]);
 
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {
@@ -620,7 +625,6 @@ const GroupRecommendation = () => {
 
   const cancelData = (params: any) => {
     // const pfrId = localStorage.setItem("s9_PfrId","0");
-
     showDetailData(params)
     // const pfrId = localStorage.getItem("s9_PfrId");
     let typePfrString = pfrType == 1 ? "single" : "joint" 
@@ -891,10 +895,10 @@ const GroupRecommendation = () => {
                               <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={1 + dataProd.riders.length}>Client {dataProd.nameOfOwner + 1}</td>
                               <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={1 + dataProd.riders.length}>
                                 <ButtonBox className="pr-2 text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                                 
                               </td>
@@ -971,10 +975,10 @@ const GroupRecommendation = () => {
                             </td>
                             <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + dataProd['riders'].length}>
                                 <ButtonBox className="text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                             </td>
                           </tr>
@@ -1080,10 +1084,10 @@ const GroupRecommendation = () => {
                               <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                 <ButtonBox className="pr-2 text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                                 
                               </td>
@@ -1151,10 +1155,10 @@ const GroupRecommendation = () => {
                               <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                 <ButtonBox className="pr-2 text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                                 
                               </td>
@@ -1222,10 +1226,10 @@ const GroupRecommendation = () => {
                               <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                 <ButtonBox className="pr-2 text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                                 
                               </td>

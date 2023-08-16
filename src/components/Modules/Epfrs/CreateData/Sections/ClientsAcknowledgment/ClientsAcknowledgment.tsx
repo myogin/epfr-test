@@ -567,7 +567,7 @@ const ClientsAcknowledgment = (props: Props) => {
         // }
       }
       if (scrollPositionBottomSection10 == 'Process10') {
-        setEditable(pfrLocal.editableSection11);
+        setEditable(pfrLocal.editableSection11??0);
         fetchData();
       }
     // }

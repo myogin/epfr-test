@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
 import { SectionNineRecommendation } from "@/models/SectionNineRecommendation";
 import { group } from "console";
@@ -52,6 +52,7 @@ const initialState: SectionNineRecommendation = {
             premiumType: -1,
             feature: null
         },
+        productId: 0,
         riders: [],
         extraRiders: []
     }
@@ -59,7 +60,7 @@ const initialState: SectionNineRecommendation = {
 
 type Actions = {
     setParent: (value: any, name: string, groupData: any) => any;
-    setProduct: (value: string, name: string, groupData: any) => any;
+    setProduct: (value: any, name: string, groupData: any) => any;
     setProductArr: (value: any, name: string, groupData: any) => any;
     setProductRiderArr: (value: any, name: string, groupData: any) => any;
     setProductRiderBenefitArr: (value: any, riderId: string) => any;
@@ -71,7 +72,7 @@ type Actions = {
 };
 
 const AnalysisRecommendationProduct = create(
-  devtools<SectionNineRecommendation & Actions>((set, get) => ({
+  devtools(persist<SectionNineRecommendation & Actions>((set, get) => ({
     ...initialState,
     // checkData: checkData(),.
     resetRecommendationProduct: () => {
@@ -79,10 +80,11 @@ const AnalysisRecommendationProduct = create(
       },
     setParent: (value: any, name: string, groupData: any) => set(
         produce((draft) => {
+            console.log("section 9 parent " +value + " " + name)
             draft.section9Recommend[name] = value;
         })
     ),
-    setProduct: (value: string, name: string, groupData: any) => set(
+    setProduct: (value: any, name: string, groupData: any) => set(
         produce((draft) => {
             console.log('name', name)
             draft.section9Recommend.product[name] = value;
@@ -162,8 +164,10 @@ const AnalysisRecommendationProduct = create(
             // initialState.section9Recommend.product.feature = parent.product.feature,
         // )
     },
-  }))
-
+  }), {
+    name: "section9Recommend"
+  })
+  )
 );
 
 export const useAnalysisRecommendationProduct = AnalysisRecommendationProduct;

@@ -162,6 +162,12 @@ const SwitchingReplacement = (props: Props) => {
               ...item.answer1,
               b: params,
             },
+            answer5: 1,
+            answer6: 1,
+            answer7: 1,
+            answer8: 1,
+            answer9: 1,
+            answer10: 1,
           };
         } else {
           return item;
@@ -672,7 +678,7 @@ const SwitchingReplacement = (props: Props) => {
           id: Number(router.query.id),
           status: pfrLocal.section10
         });
-        setEditable(pfrLocal.editableSection10);
+        setEditable(pfrLocal.editableSection10??0);
       // }
     }else {
       // if (scrollPositionBottomSection9 === "Process9") {
@@ -682,11 +688,14 @@ const SwitchingReplacement = (props: Props) => {
           id: Number(section1?.state?.id),
           status: pfrLocal.section10
         });
-        setEditable(pfrLocal.editableSection10);
+        setEditable(pfrLocal.editableSection10??0);
       // }
     }
 
-    fetchData();
+    if (scrollPositionBottomSection9 === 'Process9') {
+      fetchData();
+    }
+
   }, [scrollPositionBottomSection9, router.isReady, router.query.id]);
 
   useEffect(() => {
@@ -728,6 +737,7 @@ const SwitchingReplacement = (props: Props) => {
   }, [editable]);
 
   useEffect(() => {
+    console.log("Scroll Pos: ", editable);
     if (scrollPositionNext === "okSec11") {
       // setSectionTenData({
       //   ...sectionTenData,

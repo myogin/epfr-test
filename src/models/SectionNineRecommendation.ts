@@ -54,6 +54,7 @@ export interface SectionNineRecommendation {
         groupId:     number;
         pfrId:       number;
         product:     Product;
+        productId:   any;
         riders:      any[];
         extraRiders: any[];
     }
