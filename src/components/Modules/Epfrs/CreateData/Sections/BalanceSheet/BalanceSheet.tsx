@@ -47,6 +47,7 @@ const BalanceSheet = (props: Props) => {
     fetchLiability,
     fetchAsset,
     fetchInitData,
+    initData,
   } = useBalanceSheet();
   const router = useRouter();
   const [dataS4, setDataS4] = useState(null);
@@ -104,7 +105,7 @@ const BalanceSheet = (props: Props) => {
 
   useEffect(() => {
     calcTotal();
-  }, [others]);
+  }, [others, initData]);
 
   useEffect(() => {
     updateID(id);

@@ -71,6 +71,9 @@ const AddPlanRecommendation = () => {
 
   let pfrId = usePersonalInformation((state) => state.id);
 
+  console.log("Dapat nggak ni pfr ID nya");
+  console.log(pfrId);
+
   let benefits: Array<any> = [
     {
       id: 1,

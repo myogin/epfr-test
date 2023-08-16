@@ -566,8 +566,10 @@ const ClientsAcknowledgment = (props: Props) => {
           });
         // }
       }
-      setEditable(pfrLocal.editableSection11);
-      fetchData();
+      if (scrollPositionBottomSection10 == 'Process10') {
+        setEditable(pfrLocal.editableSection11);
+        fetchData();
+      }
     // }
   }, [scrollPositionBottomSection10, router.isReady, router.query.id]);
 
