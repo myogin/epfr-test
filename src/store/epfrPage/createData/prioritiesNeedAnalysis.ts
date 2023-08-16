@@ -560,7 +560,7 @@ initialState.section7.answer.dependantData = new Array(
     netAmountRequired: 0,
   },
 });
-initialState.section7.additionalNote = new Array(14).fill({
+initialState.section7.additionalNote = new Array(11).fill({
   note: "",
 });
 initialState.section7.answer.need.client = new Array(
