@@ -8,34 +8,50 @@ type Actions = {
   setProperty: (indexData: number, params: any) => any;
   patchProperty: (params: any) => any;
   removeProperty: (params: any) => any;
+  resetProperty: () => any;
+
   fetchInvestment: (indexData: number, params: any) => any;
   setInvestment: (indexData: number, params: any) => any;
   patchInvestment: (params: any) => any;
   removeInvestment: (params: any) => any;
+  resetInvestment: () => any;
+
   fetchSaving: (indexData: number, params: any) => any;
   setSaving: (indexData: number, params: any) => any;
   patchSaving: (params: any) => any;
   removeSaving: (params: any) => any;
+  resetSaving: () => any;
+
   fetchCpf: (indexData: number, params: any) => any;
   setCpf: (indexData: number, params: any) => any;
   patchCpf: (params: any) => any;
   removeCpf: (params: any) => any;
+  resetCpf: () => any;
+
   fetchInsurance: (indexData: number, params: any) => any;
   setInsurance: (indexData: number, params: any) => any;
   patchInsurance: (params: any) => any;
   removeInsurance: (params: any) => any;
+  resetInsurance: () => any;
+
   fetchInsurance2: (indexData: number, params: any) => any;
   setInsurance2: (indexData: number, params: any) => any;
   patchInsurance2: (params: any) => any;
   removeInsurance2: (params: any) => any;
+  resetInsurance2: () => any;
+
   fetchSrs: (indexData: number, params: any) => any;
   setSrs: (indexData: number, params: any) => any;
   patchSrs: (params: any) => any;
   removeSrs: (params: any) => any;
+  resetSrs: () => any;
+
   setLoan: (indexData: number, params: any) => any;
   fetchLoan: (params: any) => any;
   patchLoan: (params: any) => any;
   removeLoan: (params: any) => any;
+  resetLoan: () => any;
+
   setGlobal: (name: string, value: any) => any;
   setNeed: (name: string, value: any) => any;
   removeData: (attribut: string, params: any) => any;
@@ -340,6 +356,25 @@ const existingPortofolio = create(
               }
             })
           ),
+        resetProperty: () =>
+          set(
+            produce((draft) => {
+              draft.summaryOfProperty = new Array(1).fill({
+                id: 0,
+                editting: false,
+                client: "",
+                typeOfProperty: "",
+                yearPurchased: 0,
+                purchasePrice: 0,
+                loanAmount: 0,
+                currentOutstanding: 0,
+                monthlyLoanRepaymentCash: 0,
+                monthlyLoanRepaymentCPF: 0,
+                currentMarketValue: 0,
+                clientPfr: "Manual",
+              });
+            })
+          ),
         fetchInvestment: (indexData: number, params: any) =>
           set(
             produce((draft) => {
@@ -481,6 +516,23 @@ const existingPortofolio = create(
               }
             })
           ),
+        resetInvestment: () =>
+          set(
+            produce((draft) => {
+              draft.summaryOfInvestment = new Array(1).fill({
+                id: 0,
+                editting: false,
+                client: "",
+                typeOfInvestment: "",
+                typeOfInvestmentOther: "",
+                company: "",
+                yearInvested: 0,
+                investmentAmount: 0,
+                currentvalue: 0,
+                sourceOfInvestment: "",
+              });
+            })
+          ),
         fetchSaving: (indexData: number, params: any) =>
           set(
             produce((draft) => {
@@ -606,6 +658,20 @@ const existingPortofolio = create(
               if (get().editableStatus === 1 && get().status === 1) {
                 draft.editableStatus = 2;
               }
+            })
+          ),
+        resetSaving: () =>
+          set(
+            produce((draft) => {
+              draft.summaryOfSavings = new Array(1).fill({
+                id: 0,
+                editting: false,
+                client: "",
+                typeOfDeposit: 0,
+                bank: "",
+                yearDeposit: 0,
+                savingAmount: 0,
+              });
             })
           ),
         fetchCpf: (indexData: number, params: any) =>
@@ -736,6 +802,21 @@ const existingPortofolio = create(
               if (get().editableStatus === 1 && get().status === 1) {
                 draft.editableStatus = 2;
               }
+            })
+          ),
+        resetCpf: () =>
+          set(
+            produce((draft) => {
+              draft.summaryOfCPF = new Array(1).fill({
+                id: 0,
+                editting: false,
+                client: "",
+                ordinaryAccount: 0,
+                specialAccount: 0,
+                medisaveAccount: 0,
+                retirementAccount: 0,
+                clientPfr: "Manual",
+              });
             })
           ),
         fetchInsurance: (indexData: number, params: any) =>
@@ -920,6 +1001,33 @@ const existingPortofolio = create(
               }
             })
           ),
+        resetInsurance: () =>
+          set(
+            produce((draft) => {
+              draft.summaryOfInsurance = new Array(1).fill({
+                id: 0,
+                editting: false,
+                client: "",
+                insured: "",
+                status: "",
+                insurer: "",
+                policyType: "",
+                policyTypeOther: "",
+                policyTerm: "",
+                death: 0,
+                tpd: 0,
+                ci: 0,
+                earlyCI: 0,
+                acc: 0,
+                purchaseYear: 0,
+                premiumFrequency: "",
+                premium: 0,
+                cash: 0,
+                medisave: 0,
+                sourceOfFund: 0,
+              });
+            })
+          ),
         fetchInsurance2: (indexData: number, params: any) =>
           set(
             produce((draft) => {
@@ -1080,6 +1188,28 @@ const existingPortofolio = create(
               }
             })
           ),
+        resetInsurance2: () =>
+          set(
+            produce((draft) => {
+              draft.summaryOfInsurance2 = new Array(1).fill({
+                id: 0,
+                editting: false,
+                client: "",
+                insured: "",
+                insurer: "",
+                policyType: "",
+                policyTerm: "",
+                existingHosPlan: "",
+                typeOfHosCovered: "",
+                classOfWardCovered: "",
+                purchaseYear: 0,
+                premium: 0,
+                medisave: 0,
+                frequency: "",
+                sourceOfFund: 0,
+              });
+            })
+          ),
         fetchSrs: (indexData: number, params: any) =>
           set(
             produce((draft) => {
@@ -1193,6 +1323,17 @@ const existingPortofolio = create(
               if (get().editableStatus === 1 && get().status === 1) {
                 draft.editableStatus = 2;
               }
+            })
+          ),
+        resetSrs: () =>
+          set(
+            produce((draft) => {
+              draft.summaryOfSRS = new Array(1).fill({
+                id: 0,
+                editting: false,
+                client: "",
+                amount: 0,
+              });
             })
           ),
         fetchLoan: (datas: SummaryOfLoans[]) =>
@@ -1320,16 +1461,16 @@ const existingPortofolio = create(
         removeLoan: (params: any) =>
           set(
             produce((draft) => {
-              if (get().summaryOfSRS?.length > 1) {
-                const dataIndex = draft.summaryOfSRS.findIndex(
+              if (get().summaryOfLoans?.length > 1) {
+                const dataIndex = draft.summaryOfLoans.findIndex(
                   (el: any) => el.id === params
                 );
                 console.log("masuk disini");
-                draft.summaryOfSRS.splice(dataIndex, 1);
+                draft.summaryOfLoans.splice(dataIndex, 1);
 
                 // reset index 0 dependent data
               } else {
-                let dataReplace = draft.summaryOfSRS[0];
+                let dataReplace = draft.summaryOfLoans[0];
                 dataReplace.id = 0;
                 dataReplace.client = "";
                 dataReplace.typeOfLoan = "";
@@ -1357,6 +1498,27 @@ const existingPortofolio = create(
               if (get().editableStatus === 1 && get().status === 1) {
                 draft.editableStatus = 2;
               }
+            })
+          ),
+        resetLoan: () =>
+          set(
+            produce((draft) => {
+              draft.summaryOfLoans = new Array(1).fill({
+                id: 0,
+                editting: false,
+                client: "",
+                typeOfLoan: "",
+                loanTerm: "",
+                yearOfLoanTaken: 0,
+                amountBorrowed: 0,
+                loanStatus: "",
+                typeOfVehicle: "",
+                currentOutstandingLoan: 0,
+                lender: "",
+                interestRate: 0,
+                monthlyLoanRepayment: 0,
+                clientPfr: "Manual",
+              });
             })
           ),
         setGlobal: (name: string, value: any) =>

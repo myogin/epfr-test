@@ -73,7 +73,15 @@ const ExistingPortofolio = (props: Props) => {
   let fetchInsurance2 = useExistingPortofolio((state) => state.fetchInsurance2);
   let fetchLoan = useExistingPortofolio((state) => state.fetchLoan);
   let fetchSrs = useExistingPortofolio((state) => state.fetchSrs);
-  let resetSectionTwo = useExistingPortofolio((state) => state.resetSectionTwo);
+
+  let resetProperty = useExistingPortofolio((state) => state.resetProperty);
+  let resetInvestment = useExistingPortofolio((state) => state.resetInvestment);
+  let resetSaving = useExistingPortofolio((state) => state.resetSaving);
+  let resetCpf = useExistingPortofolio((state) => state.resetCpf);
+  let resetInsurance = useExistingPortofolio((state) => state.resetInsurance);
+  let resetInsurance2 = useExistingPortofolio((state) => state.resetInsurance2);
+  let resetSrs = useExistingPortofolio((state) => state.resetSrs);
+  let resetLoan = useExistingPortofolio((state) => state.resetLoan);
 
   let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
   let setAffordabilityTemp = useAffordabilityTemp((state) => state.setGlobal);
@@ -153,7 +161,7 @@ const ExistingPortofolio = (props: Props) => {
       if (getSection2.summaryOfProperty.length > 0) {
         if (getSection2.summaryOfProperty.length > 1) {
           console.log("masuk reset")
-          resetSectionTwo();
+          resetProperty();
         }
         getSection2.summaryOfProperty.map((data: any, index: number) => {
           fetchProperty(index, data);
@@ -162,6 +170,10 @@ const ExistingPortofolio = (props: Props) => {
 
       // Fetch accompaintment
       if (getSection2.summaryOfInvestment.length > 0) {
+        if (getSection2.summaryOfInvestment.length > 1) {
+          console.log("masuk reset")
+          resetInvestment();
+        }
         getSection2.summaryOfInvestment.map((data: any, index: number) => {
           fetchInvestment(index, data);
         });
@@ -169,6 +181,10 @@ const ExistingPortofolio = (props: Props) => {
 
       // Fetch trusted individual
       if (getSection2.summaryOfSaving.length > 0) {
+        if (getSection2.summaryOfSaving.length > 1) {
+          console.log("masuk reset")
+          resetSaving();
+        }
         getSection2.summaryOfSaving.map((data: any, index: number) => {
           fetchSaving(index, data);
         });
@@ -176,6 +192,10 @@ const ExistingPortofolio = (props: Props) => {
 
       // Fetch trusted individual
       if (getSection2.summaryOfCPF.length > 0) {
+        if (getSection2.summaryOfCPF.length > 1) {
+          console.log("masuk reset")
+          resetCpf();
+        }
         getSection2.summaryOfCPF.map((data: any, index: number) => {
           fetchCpf(index, data);
         });
@@ -183,6 +203,10 @@ const ExistingPortofolio = (props: Props) => {
 
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance.length > 0) {
+        if (getSection2.summaryOfInsurance.length > 1) {
+          console.log("masuk reset")
+          resetInsurance();
+        }
         getSection2.summaryOfInsurance.map((data: any, index: number) => {
           fetchInsurance(index, data);
         });
@@ -190,6 +214,10 @@ const ExistingPortofolio = (props: Props) => {
 
       // Fetch trusted individual
       if (getSection2.summaryOfInsurance2.length > 0) {
+        if (getSection2.summaryOfInsurance2.length > 1) {
+          console.log("masuk reset")
+          resetInsurance2();
+        }
         getSection2.summaryOfInsurance2.map((data: any, index: number) => {
           fetchInsurance2(index, data);
         });
@@ -197,11 +225,20 @@ const ExistingPortofolio = (props: Props) => {
 
       // Fetch trusted individual
       if (getSection2.summaryOfLoans.length > 0) {
+        if (getSection2.summaryOfLoans.length > 1) {
+          console.log("masuk reset")
+          resetLoan();
+        }
+        
         fetchLoan(getSection2.summaryOfLoans);
       }
 
       // Fetch trusted individual
       if (getSection2.summaryOfSRS.length > 0) {
+        if (getSection2.summaryOfSRS.length > 1) {
+          console.log("masuk reset")
+          resetSrs();
+        }
         getSection2.summaryOfSRS.map((data: any, index: number) => {
           fetchSrs(index, data);
         });
