@@ -951,7 +951,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottomPrev === "Process6") {
-        setGlobal("editableStatus", pfrLocal.editableSection7);
+        setGlobal("editableStatus", pfrLocal.editableSection7??0);
         setGlobal("pfrId", router.query.id);
         setGlobal("status", pfrLocal.section7);
         getSectionData(Number(router.query.id));
@@ -960,7 +960,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     }else {
       if (scrollPositionBottomPrev === "Process6") {
         const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-        setGlobal("editableStatus", pfrLocal.editableSection7);
+        setGlobal("editableStatus", pfrLocal.editableSection7??0);
         setGlobal("status", pfrLocal.section7);
         setGlobal('pfrId', section1?.state?.id);
         getSectionData(section1?.state?.id);
