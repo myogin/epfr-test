@@ -54,6 +54,7 @@ const PersonalInformation = (props: Props) => {
     (state) => state.fetchAccompainment
   );
   let setGlobal = usePersonalInformation((state) => state.setGlobal);
+  let resetDependent = usePersonalInformation((state) => state.resetDependent);
   let fetchTrustedIndividuals = usePersonalInformation(
     (state) => state.fetchTrustedIndividuals
   );
@@ -142,6 +143,9 @@ const PersonalInformation = (props: Props) => {
 
       // Fetch Dependent
       if (getSection1.dependants.length > 0) {
+        if (getSection1.dependants.length > 1) {
+          resetDependent();
+        }
         fetchDependent(getSection1.dependants);
       }
 
@@ -174,7 +178,7 @@ const PersonalInformation = (props: Props) => {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
 
-        console.log("masuk sini ya lu")
+        console.log("masuk sini ya lu");
       }
     }
   }, [router.isReady, router.query.id, router.query.singpass]);
@@ -194,7 +198,6 @@ const PersonalInformation = (props: Props) => {
   useEffect(() => {
     setCheckTi(trustedActive);
   }, [trustedActive]);
-
 
   // Save data when scrolling
   useEffect(() => {

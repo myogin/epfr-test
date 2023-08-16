@@ -37,6 +37,7 @@ type Actions = {
   patchLoan: (params: any) => any;
   removeLoan: (params: any) => any;
   setGlobal: (name: string, value: any) => any;
+  setNeed: (name: string, value: any) => any;
   removeData: (attribut: string, params: any) => any;
   resetSectionTwo: () => any;
   setNetWorth: (object: string, indexData: number, params: any) => any;
@@ -188,6 +189,7 @@ const existingPortofolio = create(
     persist<SectionTwo & Actions>(
       (set, get) => ({
         ...initialState,
+        // this is only when first render
         fetchProperty: (indexData: number, params: any) =>
           set(
             produce((draft) => {
@@ -1227,14 +1229,14 @@ const existingPortofolio = create(
                   }
 
                   // check when edit data
-                  // if (
-                  //   draft.summaryOfLoans[0].editting === true &&
-                  //   draft.summaryOfLoans[0].client !== ""
-                  // ) {
-                  //   draft.status = 1;
-                  // } else {
-                  //   draft.status = 0;
-                  // }
+                  if (
+                    draft.summaryOfLoans[0].editting === true &&
+                    draft.summaryOfLoans[0].client !== ""
+                  ) {
+                    draft.status = 1;
+                  } else {
+                    draft.status = 0;
+                  }
 
                   // if (get().editableStatus === 1 && get().status === 1) {
                   //   draft.editableStatus = 2;
@@ -1363,10 +1365,27 @@ const existingPortofolio = create(
               console.log("masuk sini global section 2");
               draft[name] = value;
 
-              if(!get().need && draft.reason === ""){
-                draft.status = 0
-              }else {
-                draft.status = 1
+              // if(!get().need && draft.reason === ""){
+              //   draft.status = 0
+              // }else {
+              //   draft.status = 1
+              // }
+
+              // if (get().editableStatus === 1 && get().status === 1) {
+              //   draft.editableStatus = 2;
+              // }
+            })
+          ),
+        setNeed: (name: string, value: any) =>
+          set(
+            produce((draft) => {
+              console.log("set need disini");
+              draft[name] = value;
+
+              if (!get().need && draft.reason === "") {
+                draft.status = 0;
+              } else {
+                draft.status = 1;
               }
 
               if (get().editableStatus === 1 && get().status === 1) {

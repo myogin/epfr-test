@@ -100,6 +100,7 @@ const CreatePfrPage: Page = () => {
 
     let pfrTypeId = router.query.pfrType === "single" ? 1 : 2;
 
+    // Init ID when edit data
     if (router.query.id !== null && router.query.id !== undefined) {
       setGlobal("id", router.query.id);
     }
@@ -111,6 +112,7 @@ const CreatePfrPage: Page = () => {
 
     let type = pfrTypeId ? pfrTypeId : localT;
 
+    // Init Dynamic Section 8
     setInit(pfrTypeId);
 
     setStartingDoc(localOwner, type);
