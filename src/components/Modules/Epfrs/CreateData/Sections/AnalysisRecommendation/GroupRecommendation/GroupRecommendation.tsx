@@ -595,7 +595,7 @@ const GroupRecommendation = () => {
       const pfrId = localStorage.getItem("s9_PfrId");
       let save = await saveGroup({"name": groupName, "pfrId": pfrId});
       if(save.status == 200){
-        const pfrId = localStorage.setItem("s9_PfrId","0");
+        // const pfrId = localStorage.setItem("s9_PfrId","0");
         showDetailData(params);
       }
     } catch (error) {
@@ -604,7 +604,7 @@ const GroupRecommendation = () => {
   };
 
   const cancelData = (params: any) => {
-    const pfrId = localStorage.setItem("s9_PfrId","0");
+    // const pfrId = localStorage.setItem("s9_PfrId","0");
     showDetailData(params)
 
   }

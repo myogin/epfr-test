@@ -374,14 +374,14 @@ const AddPlanRecommendation = () => {
           name: value.categoryName
         })
       })
+      console.log('resultCateg', resultCateg)
       setCategory(resultCateg)
 
       // Section5
       const section5Arr: Array<any> = data.section5Result
-      // data.section5Result.map((outcome:any, i: any) => {
-      //   section5Arr.push(outcome['outcome']);
-      // })
-
+      data.section5Result.map((outcome:any, i: any) => {
+        section5Arr.push(outcome['outcome']);
+      })
       setSection5data(section5Arr)
 
       // Section6
@@ -437,7 +437,7 @@ const AddPlanRecommendation = () => {
 
       setCisModelPortofolioRisk(resModelPort)
 
-      showEdit(data)
+      // showEdit(data)
     });
     
     pfrSection(8, pfrId).then((data) => {
