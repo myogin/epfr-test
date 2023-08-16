@@ -169,7 +169,7 @@ const Affordability = create(
             produce((draft) => {
               if (get().section8.typeClient === 0) {
                 draft.section8.payorDetail = new Array(params).fill({
-                  isSelf: 0,
+                  self: 0,
                   relationShip: null,
                   payorName: null,
                   passportNo: null,

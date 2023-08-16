@@ -18,7 +18,7 @@ interface PayorBudget {
 }
 
 interface PayorDetail {
-  isSelf: number;
+  self: number;
   relationShip: null;
   payorName: null;
   passportNo: null;

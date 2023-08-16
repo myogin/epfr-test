@@ -28,12 +28,15 @@ import { localOwnerId, localType } from "@/libs/helper";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import RetrieveClientDataNew from "@/components/Modules/Epfrs/CreateData/RetrieveSingpass/RetrieveClientDataNew";
 import { siteConfig } from "@/libs/config";
+import { useAffordability } from "@/store/epfrPage/createData/affordability";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
 
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
   let { setGlobal } = usePersonalInformation();
+
+  let setInit = useAffordability((state) => state.setInit);
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -107,6 +110,8 @@ const CreatePfrPage: Page = () => {
     let localT = localType();
 
     let type = pfrTypeId ? pfrTypeId : localT;
+
+    setInit(pfrTypeId);
 
     setStartingDoc(localOwner, type);
   }, [router.isReady, router.query.id, router.query.pfrType]);
