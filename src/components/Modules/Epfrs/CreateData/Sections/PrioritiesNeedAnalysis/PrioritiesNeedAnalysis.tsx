@@ -58,6 +58,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     fetchMaternityOther,
     fetchClientData,
     fetchDependantData,
+    resetDependantData,
     fetchNeed,
   } = usePrioritiesNeedAnalysis();
 
@@ -744,13 +745,12 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     clientDatas.forEach((client:any, i:number) => {
       fetchClientData(client, i);
     });
-
+    if (dependantDatas.length > 0) {
+      resetDependantData();
+    }
     dependantDatas.forEach((dependant:any, i:number) => {
       if (dependant['section7_data'] != null) {
         fetchDependantData(dependant['section7_data'] ,i);
-        // this.pfrData.dependantData[i] = this.retrieveDataFromBackend(
-        //   dependant['section7_data']
-        // );
       }
       // this.pfrData.dependantData[i].dependantId = dependant['id']
     });
