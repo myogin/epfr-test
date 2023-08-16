@@ -105,6 +105,11 @@ const GroupRecommendation = () => {
     'CPF MEDISAVE',
     'SRS'
   ]
+
+  useEffect(() => {
+
+  },[section9RecommendGroup])
+
   // END STATE
   useEffect(() => {
     setAnnualPayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
@@ -226,7 +231,7 @@ const GroupRecommendation = () => {
     setAnnualRemainBudget(annualRemainBudget)
     setSingleRemainBudget(singleRemainBudget)
 
-  }, [section9RecommendGroup, dataLoad]);
+  }, [dataLoad]);
 
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {

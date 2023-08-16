@@ -77,8 +77,6 @@ const AddPlanRecommendation = () => {
 
   let pfrId = usePersonalInformation((state) => state.id);
 
-  console.log("Dapat nggak ni pfr ID nya");
-  console.log(pfrId);
 
   let benefits: Array<any> = [
     {
@@ -264,7 +262,7 @@ const AddPlanRecommendation = () => {
 
   let higherThanRiskProfile: Array<any> = [{ id: 0, name: "No" }];
 
-  // Use Effect FIrst Load
+  // Use Effect Section 9
   useEffect(() => {
     setInitWhole({});
     setCISDataPremiumType([{ id: 4, name: "Single Payment" }]);
@@ -298,17 +296,21 @@ const AddPlanRecommendation = () => {
     const resultCateg: Array<any> = [];
     const resDataOwner: Array<any> = [];
     getWholeContext(pfrId).then((data) => {
-      console.log("getWholeContext", data);
+      console.log('firrst init whole', data)
+
       setInitWhole(data);
+
 
       // For Cis If ProductGroupId Exist
       if (section9Recommend.product.type == 1) {
         var setDataArrs: Array<any> = [];
         const dataArr: Array<any> = [];
+        const dataCompArr: Array<any> = [];
 
         data.company.map((value: any, k: any) => {
           value["idReal"] = value.id;
           value["id"] = k;
+          dataCompArr.push(value);
           if (value.products.length > 0) {
             value.products.map((valueProds: any, indexProds: any) => {
               if (valueProds.rider.length > 0) {
@@ -346,8 +348,8 @@ const AddPlanRecommendation = () => {
           //   }
           // })
         });
-
-        setCompany(data.company);
+        console.log('dataCompArr', dataCompArr)
+        setCompany(dataCompArr);
         // setCisDataProduct(dataArr)
         setRiderArr(setDataArrs);
 
@@ -506,17 +508,90 @@ const AddPlanRecommendation = () => {
     // Set Insurance
 
     // Set Cis
-    console.log("section9Recommend", section9Recommend);
     setDataSelectedCategoryId(section9Recommend.product.categoryId);
-    setCompany(section9Recommend.product.companyId);
+    // setCompany(section9Recommend.product.companyId);
+  }, []);
+
+  // Use Effect FIrst Load
+  useEffect(() => {
+    console.log('second')
+
+    if (section9Recommend.product.type == 1) {
+      var setDataArrs: Array<any> = [];
+      const dataArr: Array<any> = [];
+      if(initWhole.company){
+        initWhole.company.map((value: any, k: any) => {
+          value["idReal"] = value.idReal;
+          value["id"] = value.id;
+          if (value.products.length > 0) {
+            value.products.map((valueProds: any, indexProds: any) => {
+              if (valueProds.rider.length > 0) {
+                valueProds.rider.map((valueRider: any, indexRide: any) => {
+                  if (section9Recommend.riders.length > 0) {
+                    section9Recommend.riders.map(
+                      (valSectRide: any, indexSectRide: any) => {
+                        if (
+                          parseInt(valSectRide.subjectId) ==
+                          parseInt(valueRider.riderId)
+                        ) {
+                          var Arrs: Array<any> = [];
+                          setDataArrs[valueRider.rider.riderName] = true;
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+            });
+          }
+        });
+  
+        setRiderArr(setDataArrs);
+      }
+
+    } else {
+      // Get Company
+      var setDataArrs: Array<any> = [];
+      if(initWhole.company){
+        initWhole.company.map((value: any, k: any) => {
+          value["idReal"] = value.idReal;
+          value["id"] = value.id;
+          if (value.products.length > 0) {
+            value.products.map((valueProds: any, indexProds: any) => {
+              if (valueProds.rider.length > 0) {
+                valueProds.rider.map((valueRider: any, indexRide: any) => {
+                  if (section9Recommend.riders.length > 0) {
+                    section9Recommend.riders.map(
+                      (valSectRide: any, indexSectRide: any) => {
+                        if (
+                          parseInt(valSectRide.subjectId) ==
+                          parseInt(valueRider.riderId)
+                        ) {
+                          var Arrs: Array<any> = [];
+                          setDataArrs[valueRider.rider.riderName] = true;
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+            });
+          }
+          return value;
+        });
+        //
+        setRiderArr(setDataArrs);
+      }
+    }
+    
   }, [section9Recommend]);
+
 
   const showEdit = (resData: any) => {
     let s9_recommendId = localStorage.getItem("s9_recommendId");
     if (s9_recommendId) {
       if (section9Recommend.product.id == 0) {
         getRecommendation(s9_recommendId).then((data: any) => {
-          console.log("data", data);
           if (data.type == 0) {
             let resCateg = null;
             let resComp = null;
@@ -541,7 +616,6 @@ const AddPlanRecommendation = () => {
               section9Recommend: {
                 groupId: data.groupId,
                 pfrId: data.pfrId,
-                riders: data.riders,
                 product: {
                   productType: 0,
                   subjectId: data.subjectId,
@@ -571,6 +645,8 @@ const AddPlanRecommendation = () => {
                   fundName: "",
                   fundAmount: 0,
                 },
+                productId: s9_recommendId,
+                riders: data.riders,
                 extraRiders: [],
               },
             });
@@ -582,7 +658,6 @@ const AddPlanRecommendation = () => {
             setProductValueSelect(data.product.id);
             changeDataProductName(data.product.id);
           } else {
-            console.log("data.fund", data.fund);
             editRecommendationProduct({
               section9Recommend: {
                 groupId: data.groupId,
@@ -617,6 +692,7 @@ const AddPlanRecommendation = () => {
                   fundName: "",
                   fundAmount: 0,
                 },
+                productId: s9_recommendId,
                 extraRiders: [],
               },
             });
@@ -1227,7 +1303,6 @@ const AddPlanRecommendation = () => {
         }
 
         // Set Premium Frequency
-        console.log("dataSelectedCategoryType", dataSelectedCategoryType);
         // if(dataSelectedCategoryType != 1){
         let dataFq: Array<any> = [];
         if (
@@ -1364,12 +1439,11 @@ const AddPlanRecommendation = () => {
     var resIndexRiskVal = -1;
     if (section9Recommend.product.risk.length > 0) {
       section9Recommend.product.risk.map((resProdRisk: any, resIRisk: any) => {
-        if (resProdRisk.riskId != value) {
+        if (resProdRisk.riskId == value.toString()) {
           resIndexRiskVal = resIRisk;
         }
       });
     }
-
     if (resIndexRiskVal >= 0) {
       var resRisk: Array<any> = [];
       section9Recommend.product.risk.map((resProdRisk: any, resIRisk: any) => {
@@ -1381,6 +1455,7 @@ const AddPlanRecommendation = () => {
           });
         }
       });
+      
       setProductArr(resRisk, "risk", null);
     } else {
       var resRisk: Array<any> = [];
@@ -1910,12 +1985,109 @@ const AddPlanRecommendation = () => {
   const [cisDataProvider, setCisDataProvider] = useState<any>(-1);
   const [cisDataBenRisk, setCisDataBenRisk] = useState<any>([{}]);
 
+  // // Use Effect
+  useEffect(() => {
+  }, [cisDataProvider]);
+
+  useEffect(() => {
+    console.log('useEffect', initWhole.company)
+    // if(section9Recommend.product.type == 1){
+    //   var setDataArrs: Array<any> = [];
+    //   const dataArr: Array<any> = [];
+    //   if(initWhole.company){
+    //     //
+    //     var setDataArrs: Array<any> = [];
+    //     const dataArr: Array<any> = [];
+    //     const dataNewComp: Array<any> = [];
+        
+    //     console.log('initWhole.company', initWhole.company)
+
+    //     initWhole.company.map((value: any, k: any) => {
+    //       value["idReal"] = value.idReal;
+    //       value["id"] = value.id;
+    //       dataNewComp.push(value)
+
+    //       if (value.products.length > 0) {
+    //         value.products.map((valueProds: any, indexProds: any) => {
+    //           if (valueProds.rider.length > 0) {
+    //             valueProds.rider.map((valueRider: any, indexRide: any) => {
+    //               if (section9Recommend.riders.length > 0) {
+    //                 section9Recommend.riders.map(
+    //                   (valSectRide: any, indexSectRide: any) => {
+    //                     if (
+    //                       parseInt(valSectRide.subjectId) ==
+    //                       parseInt(valueRider.riderId)
+    //                     ) {
+    //                       var Arrs: Array<any> = [];
+    //                       setDataArrs[valueRider.rider.riderName] = true;
+    //                       // setRiderArr(Arrs);
+    //                     }
+    //                   }
+    //                 );
+    //               }
+    //             });
+    //           }
+    //         });
+    //       }
+
+    //       // Cis Data
+    //       if(initWhole.cis){
+    //         initWhole.cis.map((dataCis: any, indexCis:any) => {
+    //           //
+    //           if((dataOutcomes[section9Recommend.product.nameOfOwner] == 1 || dataCis.platform.mustPassCKA == 0) &&  value == dataCis.platform.companyId &&
+    //             ((dataCis.maxBudget == 0 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] <= 29999) ||
+    //             (dataCis.maxBudget == 1 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 29999 &&
+    //             dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory) ||
+    //             (dataCis.maxBudget == 2 && singlePayorBudget[section9Recommend.product.nameOfOwner][dataCis.payment] > 19999 &&
+    //             dataCis.riskCategory == section9Recommend.product.modelPortfolioRiskCategory))){
+    //               dataArr.push(dataCis)
+    //               return value;
+    //           }
+    //         })
+    //       }
+    //     });
+
+    //     console.log('dataNewComp', dataNewComp)
+    //     setCompany(dataNewComp);
+    //     // setCisDataProduct(dataArr)
+    //     setRiderArr(setDataArrs);
+
+    //     let cisData = initWhole.cis.findIndex((cis: any) => {
+    //       return cis['id'] == section9Recommend.product.portfolio
+    //     });
+
+    //     setCisData(cisData)
+
+    //     if(cisData != -1) {
+    //       var selectedCompany = initWhole.cis[cisData]['platform']['companyId']
+    //       var selectedPortfolio = initWhole.cis[cisData]
+    //       onChangePortfolio()
+    //     }
+    //   }
+    // }
+  },[section9Recommend.product.type])
+
   const changeCisDataProvider = (event: any) => {
     const { name, value } = event.target;
     const dataArr: Array<any> = [];
     setCisDataProvider(value);
+    
+    console.log('section9Recommend.product.modelPortfolioRiskCategory', section9Recommend.product.modelPortfolioRiskCategory)
+    console.log('value', value)
+    console.log('initWhole', initWhole.cis)
+    console.log('dataOutcomes', initWhole.outcomes)
+    console.log('singlePayorBudget', singlePayorBudget)
 
-    if (initWhole.cis.length > 0) {
+
+    const section6Outcome: Array<any> = [];
+    if(initWhole.outcomes){
+      initWhole.outcomes.map((outcome: any, i: any) => {
+        section6Outcome.push(outcome["outcome"]);
+      });
+      setDataOutcomes(section6Outcome);
+    }
+
+    if (initWhole?.cis.length > 0) {
       initWhole.cis.map((dataCis: any, indexCis: any) => {
         //
         if (
@@ -1943,6 +2115,7 @@ const AddPlanRecommendation = () => {
         }
       });
 
+      console.log('dataArr', dataArr)
       setCisDataProduct(dataArr);
     }
   };
@@ -1952,14 +2125,10 @@ const AddPlanRecommendation = () => {
 
     // let pfrId = localStorage.getItem("s9_PfrId");
     // var resId = (pfrId != null) ? pfrId.toString() : '0';
+    console.log('value', value)
     setParent(pfrId, "pfrId", null);
-
     setProduct(value, name, null);
-
-    if (value == 0) {
-      section9Recommend.product.fundName = "";
-      section9Recommend.product.funds = [];
-    } else {
+    if (value != '-' || value != 0) {
       let index = initWhole.cis.findIndex((cis: any) => {
         if (cis["id"] == value) {
           return true;
@@ -1967,21 +2136,23 @@ const AddPlanRecommendation = () => {
       });
 
       var selectedPortfolio = initWhole.cis[index];
-      setCisDataBenRisk(selectedPortfolio);
+      if(selectedPortfolio){
+        setCisDataBenRisk(selectedPortfolio);
 
-      var dataFundArr: Array<any> = [];
+        var dataFundArr: Array<any> = [];
 
-      benefits = new Array(selectedPortfolio["benefit"].length).fill(false);
-      risks = new Array(selectedPortfolio["risk"].length).fill(false);
-      setPremiumPaymentType(selectedPortfolio["payment"]);
-      initWhole.cis[index]["platform"]["funds"].map((fund: any) => {
-        dataFundArr.push({
-          name: fund["fund"]["name"],
-          fundCode: fund["fund"]["fundCode"],
-          allocation: fund["allocation"],
+        benefits = new Array(selectedPortfolio["benefit"].length).fill(false);
+        risks = new Array(selectedPortfolio["risk"].length).fill(false);
+        setPremiumPaymentType(selectedPortfolio["payment"]);
+        initWhole.cis[index]["platform"]["funds"].map((fund: any) => {
+          dataFundArr.push({
+            name: fund["fund"]["name"],
+            fundCode: fund["fund"]["fundCode"],
+            allocation: fund["allocation"],
+          });
         });
-      });
-      setProductArr(dataFundArr, "funds", null);
+        setProductArr(dataFundArr, "funds", null);
+      }
     }
   };
 
@@ -1989,14 +2160,15 @@ const AddPlanRecommendation = () => {
   const saveData = async (params: any) => {
     setLoading(true);
     try {
-      if (section9Recommend.pfrId) {
-        console.log("section9Recommend", section9Recommend);
+      let s9_recommendId = localStorage.getItem("s9_recommendId") ? localStorage.getItem("s9_recommendId") : 0;
+      
+      if (s9_recommendId) {
         let storeData = await updateSection9Recommendation(
           JSON.stringify(section9Recommend)
         );
         if (storeData.status == 200) {
           resetRecommendationProduct();
-          localStorage.setItem("s9_recommendId", storeData.data.resullt);
+          localStorage.setItem("s9_recommendId", "0");
           showDetailData(params);
         }
       } else {
@@ -2009,7 +2181,7 @@ const AddPlanRecommendation = () => {
         );
         if (storeData.status == 200) {
           resetRecommendationProduct();
-          localStorage.setItem("s9_recommendId", storeData.data.resullt);
+          localStorage.setItem("s9_recommendId", "0");
           showDetailData(params);
         }
       }
@@ -2423,6 +2595,9 @@ const AddPlanRecommendation = () => {
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Benefit Details</h2>
                     </div>
+                    {section9Recommend.product.benefit.length == 0 ? <span className="w-full text-xs text-left text-red">
+                      Required Field
+                    </span> : ""}
                     {dataProductSelected.benefits.map(
                       (benefit: any, index: any) => (
                         <div
@@ -2458,6 +2633,7 @@ const AddPlanRecommendation = () => {
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Risk Details</h2>
                     </div>
+                    {section9Recommend.product.risk.length == 0 ? <span className="w-full text-xs text-left text-red">Required Field</span> : ""}
                     {dataProductSelected.risks.map((risk: any, index: any) => (
                       <div
                         className="w-full p-5 border rounded-md border-gray-soft-strong"
@@ -2491,6 +2667,8 @@ const AddPlanRecommendation = () => {
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Rider Details</h2>
                     </div>
+                    {section9Recommend.riders.length == 0 ? <span className="w-full text-xs text-left text-red">Required Field</span> : ""}
+                    
                     {dataProductSelected.riders.map(
                       (value: any, index: any) => (
                         <div
@@ -2910,7 +3088,7 @@ const AddPlanRecommendation = () => {
               </div>
             </RowSingleGrid>
 
-            {cisDataBenRisk.length > 0 ? (
+            {cisDataBenRisk?.length > 0 ? (
               <>
                 <SectionCardSingleGrid className="mx-8 space-y-10 2xl:mx-60">
                   {cisDataBenRisk.benefits?.length > 0 ? (
