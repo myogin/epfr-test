@@ -73,6 +73,7 @@ const ExistingPortofolio = (props: Props) => {
   let fetchInsurance2 = useExistingPortofolio((state) => state.fetchInsurance2);
   let fetchLoan = useExistingPortofolio((state) => state.fetchLoan);
   let fetchSrs = useExistingPortofolio((state) => state.fetchSrs);
+  let resetSectionTwo = useExistingPortofolio((state) => state.resetSectionTwo);
 
   let setGlobalSectionThree = useCashFlow((state) => state.setGlobal);
   let setAffordabilityTemp = useAffordabilityTemp((state) => state.setGlobal);
@@ -150,6 +151,10 @@ const ExistingPortofolio = (props: Props) => {
 
       // Fetch Client
       if (getSection2.summaryOfProperty.length > 0) {
+        if (getSection2.summaryOfProperty.length > 1) {
+          console.log("masuk reset")
+          resetSectionTwo();
+        }
         getSection2.summaryOfProperty.map((data: any, index: number) => {
           fetchProperty(index, data);
         });
@@ -555,7 +560,13 @@ const ExistingPortofolio = (props: Props) => {
                         defaultValue={networthReason[index]}
                         needValidation={true}
                         handleChange={handleNetWorth}
-                        logic={!need && totalNetWorth[index] == 0 && networthReason[index] == "" ? false : true}
+                        logic={
+                          !need &&
+                          totalNetWorth[index] == 0 &&
+                          networthReason[index] == ""
+                            ? false
+                            : true
+                        }
                       />
                     </div>
                   ) : (

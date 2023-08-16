@@ -17,6 +17,7 @@ type Actions = {
   fetchAccompainment: (clientType: number, params: any) => any;
   fetchTrustedIndividuals: (params: any) => any;
   resetSectionOne: () => any;
+  resetDependent: () => any;
 };
 
 const initialState: SectionOne = {
@@ -211,8 +212,7 @@ const personalInformation = create(
                   ? true
                   : false;
               draft.clientInfoSingpass[clientType].gender =
-                params.clientPfr === "Singpass" &&
-                Number(params.gender) >= 0
+                params.clientPfr === "Singpass" && Number(params.gender) >= 0
                   ? true
                   : false;
               draft.clientInfoSingpass[clientType].birthCountryId =
@@ -477,6 +477,26 @@ const personalInformation = create(
                   ? params.clientPfr
                   : "";
               }
+            })
+          ),
+        resetDependent: () =>
+          set(
+            produce((draft) => {
+              draft.dependant = new Array(1).fill({
+                id: 0,
+                name: "",
+                relationship: "",
+                dateOfBirth: "",
+                age: 0,
+                gender: "0",
+                year: "0",
+                certNumber: "",
+                nric: "",
+                sponsored: "",
+                clientPfr: "Manual",
+                client: 0,
+                depId: 0,
+              });
             })
           ),
         setClient: (clientType: number, name: string, value: any) =>
@@ -787,7 +807,7 @@ const personalInformation = create(
               let trustedIndividual = draft.trustedIndividuals;
               trustedIndividual[name] = value;
 
-              console.log("ini isinya apa "+ get().trustedActive)
+              console.log("ini isinya apa " + get().trustedActive);
               if (
                 get().trustedActive &&
                 (draft.trustedIndividuals.trustedEmail === "" ||
