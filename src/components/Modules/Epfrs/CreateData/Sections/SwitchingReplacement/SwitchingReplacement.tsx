@@ -35,6 +35,7 @@ const SwitchingReplacement = (props: Props) => {
   const scrollPositionBottomSection9 = useScrollPositionBottom(9);
   const [pfrId, setPfrId] = useState(0);
   const [editable, setEditable] = useState(0);
+  const [isFetched, setIsFetched] = useState(false);
 
   let getPfrLength = getLength(props.pfrType);
 
@@ -280,6 +281,7 @@ const SwitchingReplacement = (props: Props) => {
       await postPfrSections(10, JSON.stringify(dataFix));
 
       setSaveLoading(false); // Stop loading
+      console.log('stored data editable: ', 1);
       setEditable(1);
     } catch (error) {
       setSaveLoading(false); // Stop loading in case of error
@@ -292,8 +294,6 @@ const SwitchingReplacement = (props: Props) => {
 
     // for(let i = 0 ; i < getPfrLength ; i ++ ) {
     getPfrLength.map((data, i) => {
-      console.log("section: ", sectionTenData.data);
-      console.log("index: ", i);
       if(sectionTenData.data[i]?.answer1.a.answer == 1 && (sectionTenData.data[i]?.answer1.a.reason == '' || sectionTenData.data[i]?.answer1.a.reason == undefined)) {
         sectionTenData.issues.push({
           subsectionId : 1,
@@ -447,7 +447,10 @@ const SwitchingReplacement = (props: Props) => {
   const fetchData = async () => {
     if (pfrId == 0) return;
 
+    setIsFetched(true);
+
     const res1 = await getAllPfrData(pfrId);
+    console.log('fetch data');
     setSectionTenData({
       ...sectionTenData,
       status: Number(res1['pfr']['status']),
@@ -673,23 +676,27 @@ const SwitchingReplacement = (props: Props) => {
     // If edit check the ID
     if (router.query.id !== null && router.query.id !== undefined) {
       // if (scrollPositionBottomSection9 === "Process9") {
+      if (sectionTenData.id != Number(router.query.id)) {
         setSectionTenData({
           ...sectionTenData,
           id: Number(router.query.id),
           status: pfrLocal.section10
         });
+        console.log('query editable: ',pfrLocal.editableSection10);
         setEditable(pfrLocal.editableSection10??0);
-      // }
+      }
     }else {
       // if (scrollPositionBottomSection9 === "Process9") {
         const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+      if (sectionTenData.id != Number(section1?.state?.id)) {
         setSectionTenData({
           ...sectionTenData,
           id: Number(section1?.state?.id),
           status: pfrLocal.section10
         });
+        console.log('section one editable: ', pfrLocal.editableSection10);
         setEditable(pfrLocal.editableSection10??0);
-      // }
+      }
     }
 
     if (scrollPositionBottomSection9 === 'Process9') {
@@ -713,7 +720,8 @@ const SwitchingReplacement = (props: Props) => {
   }, [showReasonTwo]);
 
   useEffect(() => {
-    if (editable === 1 && sectionTenData.status === 1) {
+    if (editable === 1 && sectionTenData.status === 1 && !isFetched) {
+      console.log('editable change2: ', editable);
       setEditable(2);
     }
     const tempStatus = getStatus();
@@ -727,6 +735,7 @@ const SwitchingReplacement = (props: Props) => {
       ...sectionTenData,
       editableStatus: editable
     }));
+    setIsFetched(false);
   }, [sectionTenData]);
 
   useEffect(() => {
@@ -737,7 +746,7 @@ const SwitchingReplacement = (props: Props) => {
   }, [editable]);
 
   useEffect(() => {
-    console.log("Scroll Pos: ", editable);
+    console.log("Scroll Pos editable: ", editable);
     if (scrollPositionNext === "okSec11") {
       // setSectionTenData({
       //   ...sectionTenData,

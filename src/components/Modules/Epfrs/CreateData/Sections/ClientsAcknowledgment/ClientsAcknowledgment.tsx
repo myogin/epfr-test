@@ -33,6 +33,7 @@ const ClientsAcknowledgment = (props: Props) => {
   const scrollPositionBottomSection10 = useScrollPositionBottom(10);
   const [pfrId, setPfrId] = useState(0);
   const [editable, setEditable] = useState(0);
+  const [isFetched, setIsFetched] = useState(false);
 
   let getPfrLength = getLength(props.pfrType);
   let { showDetailData } = useNavigationSection();
@@ -219,6 +220,9 @@ const ClientsAcknowledgment = (props: Props) => {
 
   const fetchData = async() => {
     if(!pfrIdSectionOne && pfrIdSectionOne == 0) return;
+
+    setIsFetched(true);
+    
     const s12Res: any = await getPfrStep(12, pfrIdSectionOne);
     // const s10Res: any = await getPfrStep(10, pfrId);
     // const s13Res: any = await getPfrStep(13, pfrId);
@@ -507,7 +511,7 @@ const ClientsAcknowledgment = (props: Props) => {
   };
 
   useEffect(() => {
-    if (editable === 1 && sectionElevenData.status === 1) {
+    if (editable === 1 && sectionElevenData.status === 1 && !isFetched) {
       setEditable(2);
     }
     localStorage.setItem(
@@ -517,6 +521,7 @@ const ClientsAcknowledgment = (props: Props) => {
         editableStatus: editable,
       })
     );
+    setIsFetched(false);
   }, [sectionElevenData]);
 
   useEffect(() => {
@@ -550,21 +555,23 @@ const ClientsAcknowledgment = (props: Props) => {
       // If edit check the ID
       // if (router.query.id !== null && router.query.id !== undefined) {
         if (scrollPositionBottomSection10 === "Process10") {
+        if (sectionElevenData.id != Number(router.query.id)) {
           setSectionElevenData({
             ...sectionElevenData,
             id: Number(router.query.id),
             status: pfrLocal.section11
           });
-        // }
+        }
       }else {
         // if (scrollPositionBottomSection10 === "Process10") {
           const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+        if (sectionElevenData.id != Number(section1?.state?.id)) {
           setSectionElevenData({
             ...sectionElevenData,
             id: Number(section1?.state?.id),
             status: pfrLocal.section10
           });
-        // }
+        }
       }
       if (scrollPositionBottomSection10 == 'Process10') {
         setEditable(pfrLocal.editableSection11??0);
