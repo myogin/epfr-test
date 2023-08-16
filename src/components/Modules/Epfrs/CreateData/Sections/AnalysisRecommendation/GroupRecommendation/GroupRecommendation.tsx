@@ -36,6 +36,7 @@ const GroupRecommendation = () => {
 
   let router = useRouter();
   let pfrType = usePersonalInformation((state) => state.type);
+  let pfrId = usePersonalInformation((state) => state.id);
 
   let {
     section9RecommendGroup
@@ -126,7 +127,7 @@ const GroupRecommendation = () => {
       {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
     );
 
-    const pfrId = localStorage.getItem("s9_PfrId");
+    // const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
     
     // Find Pfr Section 8
@@ -585,8 +586,8 @@ const GroupRecommendation = () => {
       setShowModal(true)
     }else{
       setShowModal(false)
-      var idpfr = localStorage.getItem("s9_PfrId");
-      let rm = await removeRecommendation(idpfr, dataRemoveId);
+      // var idpfr = localStorage.getItem("s9_PfrId");
+      let rm = await removeRecommendation(pfrId, dataRemoveId);
       if(rm.status == 200){
         // showDetailData(91)
         setLoad(true)
@@ -599,7 +600,7 @@ const GroupRecommendation = () => {
 
   const saveData = async (params: any) => {
     try{
-      const pfrId = localStorage.getItem("s9_PfrId");
+      // const pfrId = localStorage.getItem("s9_PfrId");
       let save = await saveGroup({"name": groupName, "pfrId": pfrId});
       if(save.status == 200){
         // const pfrId = localStorage.setItem("s9_PfrId","0");
@@ -621,7 +622,7 @@ const GroupRecommendation = () => {
     // const pfrId = localStorage.setItem("s9_PfrId","0");
 
     showDetailData(params)
-    const pfrId = localStorage.getItem("s9_PfrId");
+    // const pfrId = localStorage.getItem("s9_PfrId");
     let typePfrString = pfrType == 1 ? "single" : "joint" 
         if(Number(pfrId) > 0) {
           router.push(`/create/${typePfrString}?id=${pfrId}#section-9`)

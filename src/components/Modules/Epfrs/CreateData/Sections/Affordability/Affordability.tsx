@@ -47,7 +47,7 @@ const Affordability = (props: Props) => {
   let setSourceOfWealth = useAffordability((state) => state.setSourceOfWealth);
   let setAssetOrSurplus = useAffordability((state) => state.setAssetOrSurplus);
   let setGlobal = useAffordability((state) => state.setGlobal);
-  let setInit = useAffordability((state) => state.setInit);
+
   let fetchPayorBudget = useAffordability((state) => state.fetchPayorBudget);
   let fetchPayorDetail = useAffordability((state) => state.fetchPayorDetail);
 
@@ -406,12 +406,7 @@ const Affordability = (props: Props) => {
       console.error(error);
     }
   };
-
-  // init section 8
-  useEffect(() => {
-    if (!router.isReady) return;
-    setInit(props.pfrType);
-  }, [router.isReady]);
+  
 
   // Get data when scroll from section 1
   useEffect(() => {
@@ -422,6 +417,7 @@ const Affordability = (props: Props) => {
         setGlobal("editableStatus", pfrLocal.editableSection8);
         setGlobal("pfrId", router.query.id);
         setGlobal("status", pfrLocal.section8);
+        setGlobal("typeClient", props.pfrType);
         getSectionData(router.query.id);
       }
     } else {
@@ -429,6 +425,7 @@ const Affordability = (props: Props) => {
         setGlobal("editableStatus", pfrLocal.editableSection8);
         setGlobal("pfrId", id);
         setGlobal("status", pfrLocal.section8);
+        setGlobal("typeClient", props.pfrType);
         // getSectionData(router.query.id);
       }
     }
@@ -478,15 +475,15 @@ const Affordability = (props: Props) => {
             >
               <Select
                 className="my-4"
-                name="isSelf"
+                name="self"
                 dataType="payorDetail"
                 datas={payorForClient}
-                value={data.isSelf >= 0 ? data.isSelf : "-"}
+                value={data.self >= 0 ? data.self : "-"}
                 handleChange={(event) => handlePayorDetail(event, key)}
                 label={`Payor For Client ${key + 1}`}
                 needValidation={true}
                 logic={
-                  String(data.isSelf) === "" || String(data.isSelf) === "-"
+                  String(data.self) === "" || String(data.self) === "-"
                     ? false
                     : true
                 }
@@ -497,7 +494,7 @@ const Affordability = (props: Props) => {
 
         <RowDoubleGrid>
           {section8.payorDetail.map((data, key) => {
-            return data.isSelf == 1 ? (
+            return data.self == 1 ? (
               <div className="text-left space-y-11" key={"payor-detail-" + key}>
                 <Input
                   className="mb-10"

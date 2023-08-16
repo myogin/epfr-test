@@ -18,6 +18,7 @@ import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/an
 import {getAllCompany} from "@/services/companyService";
 import {getWholeContext, pfrSection, getRecommendation, postSection9Recommendation, updateSection9Recommendation} from "@/services/pfrService";
 import {productFindOne} from "@/services/productService";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 // import {getPfrSection} from "@/services/getPfrSection";
 
 export class RecommendationStruct {
@@ -67,6 +68,11 @@ const AddPlanRecommendation = () => {
     editRecommendationProduct,
     resetRecommendationProduct
   } = useAnalysisRecommendationProduct();
+
+  let pfrId = usePersonalInformation((state) => state.id);
+
+  console.log("Dapat nggak ni pfr ID nya");
+  console.log(pfrId);
 
   let benefits: Array<any> = [
     {
@@ -257,7 +263,7 @@ const AddPlanRecommendation = () => {
       [0, 0, 0, 0, 0]
     ]);
     
-    const pfrId = localStorage.getItem("s9_PfrId");
+    // const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
     const resPfrGroupId = pfrGroupId == '0' ? null : 0
     const resultCateg: Array<any> = []
@@ -626,9 +632,9 @@ const AddPlanRecommendation = () => {
     }
     
     //     
-    let pfrId = localStorage.getItem("s9_PfrId");
-    var resId = (pfrId != null) ? pfrId.toString() : '0';
-    setParent(resId, 'pfrId', null)
+    // let pfrId = localStorage.getItem("s9_PfrId");
+    // var resId = (pfrId != null) ? pfrId.toString() : '0';
+    setParent(pfrId, 'pfrId', null)
     
     setProduct(cisIds, 'portfolio', null)
 
@@ -676,7 +682,7 @@ const AddPlanRecommendation = () => {
     var pushComp: Array<any> = [];
     // 
     
-    const pfrId = localStorage.getItem("s9_PfrId");
+    // const pfrId = localStorage.getItem("s9_PfrId");
     getWholeContext(pfrId).then((data) => {
       data.company.map((valueComp: any, indexComp:any) => {
         valueComp['id'] = indexComp;
@@ -842,7 +848,7 @@ const AddPlanRecommendation = () => {
     var pushComp: Array<any> = [];
     // 
     
-    const pfrId = localStorage.getItem("s9_PfrId");
+    // const pfrId = localStorage.getItem("s9_PfrId");
     getWholeContext(pfrId).then((data) => {
       data.company.map((valueComp: any, indexComp:any) => {
         valueComp['id'] = indexComp;
@@ -1021,9 +1027,9 @@ const AddPlanRecommendation = () => {
   };
 
   const changeDataProductName = (params: any) => {
-    let pfrId = localStorage.getItem("s9_PfrId");
-    var resId = (pfrId != null) ? pfrId.toString() : '0';
-    setParent(resId, 'pfrId', null)
+    // let pfrId = localStorage.getItem("s9_PfrId");
+    // var resId = (pfrId != null) ? pfrId.toString() : '0';
+    setParent(pfrId, 'pfrId', null)
 
     setProductValueSelect(params);
     // Get One Product
@@ -1738,9 +1744,9 @@ const AddPlanRecommendation = () => {
   const changeCISDataProductName = (event: any) => {
     const { name, value } = event.target;
     
-    let pfrId = localStorage.getItem("s9_PfrId");
-    var resId = (pfrId != null) ? pfrId.toString() : '0';
-    setParent(resId, 'pfrId', null)
+    // let pfrId = localStorage.getItem("s9_PfrId");
+    // var resId = (pfrId != null) ? pfrId.toString() : '0';
+    setParent(pfrId, 'pfrId', null)
     
     setProduct(value, name, null)
 
@@ -1786,9 +1792,9 @@ const AddPlanRecommendation = () => {
           showDetailData(params);
         }
       }else{
-        let pfrId = localStorage.getItem("s9_PfrId");
-        var resId = (pfrId != null) ? pfrId.toString() : '0';
-        setParent(resId, 'pfrId', null)
+        // let pfrId = localStorage.getItem("s9_PfrId");
+        // var resId = (pfrId != null) ? pfrId.toString() : '0';
+        setParent(pfrId, 'pfrId', null)
         // section9Recommend['pfrId'] = resId;
         let storeData = await postSection9Recommendation(JSON.stringify(section9Recommend));
         if(storeData.status == 200){

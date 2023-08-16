@@ -112,73 +112,76 @@ const CallbackPage: Page = () => {
   useEffect(() => {
     if (!router.isReady) return;
     let dataSingpass = router.query.dataSingpass as string;
-    let singpassBase = JSON.parse(decodeURIComponent(dataSingpass));
 
-    let clients = singpassBase.clients ? singpassBase.clients : null;
+    if (dataSingpass !== "localNull") {
+      let singpassBase = JSON.parse(decodeURIComponent(dataSingpass));
 
-    let clientType =
-      clients !== null ? (Number(clients.clientType) === 1 ? 0 : 1) : 0;
+      let clients = singpassBase.clients ? singpassBase.clients : null;
 
-    let dataDependant = singpassBase.dataDependant
-      ? singpassBase.dataDependant
-      : null;
+      let clientType =
+        clients !== null ? (Number(clients.clientType) === 1 ? 0 : 1) : 0;
 
-    let dataSpons = singpassBase.dataSpons ? singpassBase.dataSpons : null;
-    let dataAccomp = singpassBase.dataAccomp ? singpassBase.dataAccomp : null;
-    let property = singpassBase.property ? singpassBase.property : null;
-    let cpfs = singpassBase.cpfs ? singpassBase.cpfs : null;
-    let loan = singpassBase.loan ? singpassBase.loan : null;
+      let dataDependant = singpassBase.dataDependant
+        ? singpassBase.dataDependant
+        : null;
 
-    let pfr = singpassBase.pfr ? singpassBase.pfr : null;
+      let dataSpons = singpassBase.dataSpons ? singpassBase.dataSpons : null;
+      let dataAccomp = singpassBase.dataAccomp ? singpassBase.dataAccomp : null;
+      let property = singpassBase.property ? singpassBase.property : null;
+      let cpfs = singpassBase.cpfs ? singpassBase.cpfs : null;
+      let loan = singpassBase.loan ? singpassBase.loan : null;
 
-    let pfrType =
-      pfr !== null
-        ? Number(pfr.pfrType) === 1
-          ? "single"
-          : "joint"
-        : "single";
+      let pfr = singpassBase.pfr ? singpassBase.pfr : null;
 
-    // resetExistingData();
+      let pfrType =
+        pfr !== null
+          ? Number(pfr.pfrType) === 1
+            ? "single"
+            : "joint"
+          : "single";
 
-    if (clients !== null) {
-      storeDataClientToState(clientType, clients);
-    }
+      // resetExistingData();
 
-    if (dataDependant !== null) {
-      storeDataDependentToState(dataDependant);
-    }
+      if (clients !== null) {
+        storeDataClientToState(clientType, clients);
+      }
 
-    if (dataSpons !== null) {
-      storeDataSponsoreChildToState(dataSpons);
-    }
+      if (dataDependant !== null) {
+        storeDataDependentToState(dataDependant);
+      }
 
-    if (dataAccomp !== null) {
-      storeDataAccompainmentToState(clientType, dataAccomp);
-    }
+      if (dataSpons !== null) {
+        storeDataSponsoreChildToState(dataSpons);
+      }
 
-    if (property !== null) {
-      storeDataPropertyToState(property);
-    }
+      if (dataAccomp !== null) {
+        storeDataAccompainmentToState(clientType, dataAccomp);
+      }
 
-    if (loan !== null) {
-      storeDataLoanToState(loan);
-    }
+      if (property !== null) {
+        storeDataPropertyToState(property);
+      }
 
-    if (cpfs !== null) {
-      storeDataCpfToState(cpfs);
-    }
+      if (loan !== null) {
+        storeDataLoanToState(loan);
+      }
 
-    console.log("test masuk apa ini  " + pfr.uuid);
+      if (cpfs !== null) {
+        storeDataCpfToState(cpfs);
+      }
 
-    if (
-      pfr.uuid === "" ||
-      pfr.uuid === null ||
-      pfr.uuid === 0 ||
-      pfr.uuid === undefined
-    ) {
-      router.push(`/create/${pfrType}?singpass=ok`);
+      if (
+        pfr.uuid === "" ||
+        pfr.uuid === null ||
+        pfr.uuid === 0 ||
+        pfr.uuid === undefined
+      ) {
+        router.push(`/create/${pfrType}?singpass=ok`);
+      } else {
+        router.push(`/create/${pfrType}?id=${pfr.uuid}&singpass=ok`);
+      }
     } else {
-      router.push(`/create/${pfrType}?id=${pfr.uuid}&singpass=ok`);
+      router.push(`/overview`);
     }
   }, [router.isReady, router.query]);
   return (

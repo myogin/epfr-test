@@ -33,6 +33,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { pfrProgress } from "@/store/overview/overviewUtils";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 
 interface Props {}
 
@@ -69,6 +70,8 @@ const PfrTable = (props: Props) => {
   let { resetGroupRecommendation } = useAnalysisRecommendationGroup();
   let { resetRecommendationProduct } = useAnalysisRecommendationProduct();
 
+  let { showDetailData } = useNavigationSection();
+
   const goToCreatePfr = (params: string) => {
     resetSectionOne();
     resetSectionTwo();
@@ -81,6 +84,8 @@ const PfrTable = (props: Props) => {
     resetSectionNine();
     resetGroupRecommendation();
     resetRecommendationProduct();
+    showDetailData(0)
+    
     router.push(`create/${params}`);
   };
 

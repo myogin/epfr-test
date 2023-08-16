@@ -1,14 +1,10 @@
-import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
-import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
-import TextArea from "@/components/Forms/TextArea";
 import { Menu, Transition } from "@headlessui/react";
 import React, { useState, useEffect, Fragment } from "react";
 import ArrowDropDownLineIcon from "remixicon-react/ArrowDropDownLineIcon";
-import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
@@ -96,6 +92,8 @@ const AnalysisRecommendation = (props: Props) => {
   const scrollPositionNext = useScrollPosition(10);
   const scrollPosition = useScrollPosition(9);
 
+  let sectionCreateEpfrId = useNavigationSection((state)=> state.sectionCreateEpfrId)
+
   const currencyFormat = (num: any) => {
     if (num) {
       let number = Number(num);
@@ -171,10 +169,11 @@ const AnalysisRecommendation = (props: Props) => {
 
   // Go to recomended product
   let { showDetailData } = useNavigationSection();
+
   const showDetail = (params: any, data: any) => {
-    let resPfrId = pfrId ? "" + pfrId + "" : "0";
-    localStorage.setItem("s9_PfrId", resPfrId);
-    localStorage.setItem("s9_dataGroup", "0");
+    // let resPfrId = pfrId ? "" + pfrId + "" : "0";
+    // localStorage.setItem("s9_PfrId", resPfrId);
+    localStorage.setItem("s9_dataGroup", data);
     localStorage.setItem("group_name", params);
 
     showDetailData(91);
@@ -186,6 +185,9 @@ const AnalysisRecommendation = (props: Props) => {
   const [getPfrNine, setPfrNine] = useState<any>({});
 
   let getClients = getLength(props.pfrType);
+
+  console.log("Ini ada isinya nggak?")
+  console.log(getClients)
 
   let payorBudget = useAffordability((state) => state.section8.payorBudget);
 
@@ -336,6 +338,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   let pfrLocal = usePfrData((state) => state.pfr);
 
+  // Get Init State Here
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -456,21 +459,24 @@ const AnalysisRecommendation = (props: Props) => {
 
     if (
       (router.query.id !== null && router.query.id !== undefined) ||
-      Number(pfrId) > 0
+      Number(pfrId) > 0 || sectionCreateEpfrId === 200
     ) {
       if (scrollPositionBottom === "Process8") {
         let pfrIdRiil = Number(pfrId) > 0 ? Number(pfrId) : router.query.id;
         setParent("editableStatus", pfrLocal.editableSection9);
         setParent("pfrId", pfrIdRiil);
         setParent("status", pfrLocal.section9);
-        // getSectionData(router.query.id);
 
         // Section 9
         pfrSection(9, pfrId).then((data: any) => {
+
+          console.log("Check Section 9 Data")
+          console.log(data)
+
           setPfrNine(data);
           setRowsGroup(data.rowGroups);
 
-          // Res Answer
+          // Setting the answer Section Nine
           let overView1 = "";
           let overView2 = "";
           let reasonForBenefit = "";
@@ -658,7 +664,7 @@ const AnalysisRecommendation = (props: Props) => {
     }
 
     // console.log("section9Res", section9);
-  }, [section9, router.isReady, scrollPositionBottom]);
+  }, [section9, router.isReady, scrollPositionBottom, sectionCreateEpfrId]);
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {
     switch (Number(premiumFrequency)) {
@@ -1659,8 +1665,8 @@ const AnalysisRecommendation = (props: Props) => {
 
     let productNo = 0;
 
-    console.log("get recomendeed here");
-    console.log(getPfrNine.recommendedProduct);
+    // console.log("get recomendeed here");
+    // console.log(getPfrNine.recommendedProduct);
 
     if (getPfrNine.recommendedProduct) {
       getPfrNine.recommendedProduct.map((product: any, i: any) => {
@@ -1834,9 +1840,6 @@ const AnalysisRecommendation = (props: Props) => {
         }
       });
     }
-    console.log("dapet ni product rider?");
-    console.log(productAndRiders);
-
     console.log("dapet ni product rider?");
     console.log(productAndRiders);
 
@@ -2559,7 +2562,7 @@ const AnalysisRecommendation = (props: Props) => {
                         </td>
                         <td className="w-1/12 px-2 py-5">
                           <div className="flex w-full gap-2">
-                            <ButtonBox className="text-green-deep">
+                            <ButtonBox className="text-green-deep" onClick={() => showDetail(dataGroup.name, dataGroup.id)} >
                               <PencilLineIcon size={14} />
                             </ButtonBox>
                             <ButtonBox className="text-red">
@@ -3937,14 +3940,8 @@ const AnalysisRecommendation = (props: Props) => {
               },
             }}
           />
-          {/* <TextArea label="Reason" defaultValue="Test reason" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>
-      {/* <SectionCardFooter>
-        <ButtonGreenMedium onClick={() => saveData(10)}>
-          Continue <ArrowRightLineIcon size={20} />
-        </ButtonGreenMedium>
-      </SectionCardFooter> */}
     </div>
   );
 };
