@@ -52,6 +52,7 @@ const initialState: SectionNineRecommendation = {
             premiumType: -1,
             feature: null
         },
+        productId: 0,
         riders: [],
         extraRiders: []
     }
@@ -59,7 +60,7 @@ const initialState: SectionNineRecommendation = {
 
 type Actions = {
     setParent: (value: any, name: string, groupData: any) => any;
-    setProduct: (value: string, name: string, groupData: any) => any;
+    setProduct: (value: any, name: string, groupData: any) => any;
     setProductArr: (value: any, name: string, groupData: any) => any;
     setProductRiderArr: (value: any, name: string, groupData: any) => any;
     setProductRiderBenefitArr: (value: any, riderId: string) => any;
@@ -83,7 +84,7 @@ const AnalysisRecommendationProduct = create(
             draft.section9Recommend[name] = value;
         })
     ),
-    setProduct: (value: string, name: string, groupData: any) => set(
+    setProduct: (value: any, name: string, groupData: any) => set(
         produce((draft) => {
             console.log('name', name)
             draft.section9Recommend.product[name] = value;
