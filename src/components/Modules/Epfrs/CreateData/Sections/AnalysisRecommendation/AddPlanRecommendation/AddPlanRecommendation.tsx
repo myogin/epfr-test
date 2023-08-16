@@ -2168,7 +2168,7 @@ const AddPlanRecommendation = () => {
         );
         if (storeData.status == 200) {
           resetRecommendationProduct();
-          localStorage.setItem("s9_recommendId", "0");
+          localStorage.setItem("s9_recommendId", null);
           showDetailData(params);
         }
       } else {
@@ -2181,7 +2181,7 @@ const AddPlanRecommendation = () => {
         );
         if (storeData.status == 200) {
           resetRecommendationProduct();
-          localStorage.setItem("s9_recommendId", "0");
+          localStorage.setItem("s9_recommendId", null);
           showDetailData(params);
         }
       }
