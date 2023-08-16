@@ -168,8 +168,6 @@ const CallbackPage: Page = () => {
       storeDataCpfToState(cpfs);
     }
 
-    console.log("test masuk apa ini  " + pfr.uuid);
-
     if (
       pfr.uuid === "" ||
       pfr.uuid === null ||

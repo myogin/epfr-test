@@ -24,6 +24,7 @@ import { useAffordability } from "@/store/epfrPage/createData/affordability";
 import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
 import { useAnalysisRecommendationGroup } from "@/store/epfrPage/createData/analysisRecommendationGroup";
 import { useAnalysisRecommendationProduct } from "@/store/epfrPage/createData/analysisRecommendationProduct";
+import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,6 +45,7 @@ const EpfrPage: Page = () => {
   let { resetGroupRecommendation } = useAnalysisRecommendationGroup();
   let { resetRecommendationProduct } = useAnalysisRecommendationProduct();
   
+  let { showDetailData } = useNavigationSection();
 
   const getGeneralData = async () => {
     if (router.query.edit) {
@@ -63,6 +65,7 @@ const EpfrPage: Page = () => {
     resetSectionNine();
     resetGroupRecommendation();
     resetRecommendationProduct();
+    showDetailData(0)
 
     router.push(`create/${params}`);
   };

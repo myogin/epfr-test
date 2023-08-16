@@ -168,11 +168,13 @@ const PersonalInformation = (props: Props) => {
 
   // Load data first load
   useEffect(() => {
-    if (!router.isReady) setLoading(true);
+    if (!router.isReady) return;
     // If edit check the ID
     if (router.query.singpass === null || router.query.singpass === undefined) {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
+
+        console.log("masuk sini ya lu")
       }
     }
   }, [router.isReady, router.query.id, router.query.singpass]);
