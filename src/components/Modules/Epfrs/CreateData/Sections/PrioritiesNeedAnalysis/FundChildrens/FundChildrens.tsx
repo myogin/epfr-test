@@ -40,7 +40,7 @@ const FundChildrens =(props : Props) => {
   let getPfrLength = getLength(props.pfrType);
 
   // Total Data Client & Deoendants
-    let total = props.pfrType;
+    let total = section7.totalDependant;
     var totalClient = [];
     var totalChildFund = [];
     var totalDependant = [];
@@ -158,7 +158,7 @@ const FundChildrens =(props : Props) => {
               </div>
             </td>
             { 
-              (total > 1) ? 
+              (total > 0) ? 
               totalChildFund.map(function (i) {
                 return (
                   <td key={"asa"+i} className={` align-top`}>
@@ -166,12 +166,12 @@ const FundChildrens =(props : Props) => {
                     <div className="items-center justify-start gap-2 mb-10 text-right" id={`custome-checkbox-${i}`}>
                       <div className='items-start justify-start gap-4'>
                         {
-                          (i != 0) ?
+                          // (i != 0) ?
                             <button className={`px-4 py-3 text-sm text-white rounded-lg bg-red`} onClick={()=>handleRemoveNew(i)}>
                                 Remove
                             </button>
-                          :
-                          ""
+                          // :
+                          // ""
                         }
                       </div>
                     </div>

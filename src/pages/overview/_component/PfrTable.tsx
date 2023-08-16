@@ -8,7 +8,7 @@ import {
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import More2LineIcon from "remixicon-react/More2LineIcon";
 import LoadingList from "@/components/Attributes/Loader/LoadingList";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
@@ -32,6 +32,9 @@ import Eye2FillIcon from "remixicon-react/Eye2LineIcon";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { pfrProgress } from "@/store/overview/overviewUtils";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useNavigationSection } from "@/store/epfrPage/navigationSection";
+
 interface Props {}
 
 const PfrTable = (props: Props) => {
@@ -42,6 +45,11 @@ const PfrTable = (props: Props) => {
     setIsLoading(true);
     let res = await getPfrList(query);
     setPfrList(res.data);
+
+    setPage({
+      currentPage: res.page,
+      lastPage: res.total_pages,
+    });
     setIsLoading(false);
   }
   useEffect(() => {
@@ -62,6 +70,8 @@ const PfrTable = (props: Props) => {
   let { resetGroupRecommendation } = useAnalysisRecommendationGroup();
   let { resetRecommendationProduct } = useAnalysisRecommendationProduct();
 
+  let { showDetailData } = useNavigationSection();
+
   const goToCreatePfr = (params: string) => {
     resetSectionOne();
     resetSectionTwo();
@@ -74,6 +84,8 @@ const PfrTable = (props: Props) => {
     resetSectionNine();
     resetGroupRecommendation();
     resetRecommendationProduct();
+    showDetailData(0)
+    
     router.push(`create/${params}`);
   };
 
@@ -146,10 +158,18 @@ const PfrTable = (props: Props) => {
       .then((res) => {
         success("Delete Success");
         getALldata();
+        const { page, ...newQuery } = router.query;
+        router.replace({
+          query: { ...newQuery },
+        });
       })
       .catch((err) => {
         error("Delete error please contact Administrator");
         setIsLoading(false);
+        const { page, ...newQuery } = router.query;
+        router.replace({
+          query: { ...newQuery },
+        });
       });
   };
 
@@ -163,13 +183,53 @@ const PfrTable = (props: Props) => {
       setTargetClient(0);
     }
   };
+
+  // handle pagination
+  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+  const [page, setPage] = useState({
+    currentPage: null,
+    lastPage: null,
+  });
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const pagination = (action: number) => {
+    let newPage = Number(page.currentPage);
+
+    if (!page.currentPage) {
+      return null;
+    } else {
+      // -1 is prev, 0 is next
+      if (action == -1) {
+        newPage = newPage - 1;
+      } else if (action == 0) {
+        newPage = newPage + 1;
+      } else {
+        newPage = action;
+      }
+      router.push(
+        pathname + "?" + createQueryString("page", newPage.toString())
+      );
+    }
+  };
+
   if (isLoading)
     return (
       <>
         <LoadingList />
       </>
     );
-
   return (
     <div className="mt-2">
       <div className="flex flex-row justify-between py-6 mx-8 text-sm font-bold text-gray-light">
@@ -480,11 +540,25 @@ const PfrTable = (props: Props) => {
       ))}
       <div className="flex items-center justify-between py-6 mx-8">
         <div>
-          <ButtonBorder>Previous</ButtonBorder>
+          <ButtonBorder
+            onClick={() => {
+              pagination(-1);
+            }}
+            isDisable={page.currentPage == 1 ? true : false}
+          >
+            Previous
+          </ButtonBorder>
         </div>
         <div>Page 1 of 10</div>
         <div>
-          <ButtonBorder>Next</ButtonBorder>
+          <ButtonBorder
+            onClick={() => {
+              pagination(0);
+            }}
+            isDisable={page.currentPage == page.lastPage ? true : false}
+          >
+            Next
+          </ButtonBorder>
         </div>
       </div>
       <ToastContainer

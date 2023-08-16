@@ -9,6 +9,7 @@ import { useExistingPortofolio } from "@/store/epfrPage/createData/existingPorto
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { usePrioritiesNeedAnalysis } from "@/store/epfrPage/createData/prioritiesNeedAnalysis";
+import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
@@ -31,6 +32,8 @@ const PfrButtonModal = () => {
   let { resetGroupRecommendation } = useAnalysisRecommendationGroup();
   let { resetRecommendationProduct } = useAnalysisRecommendationProduct();
 
+  let { showDetailData } = useNavigationSection();
+
   const closeModal = () => {
     setShowModal(false);
   };
@@ -51,6 +54,7 @@ const PfrButtonModal = () => {
     resetSectionNine();
     resetGroupRecommendation();
     resetRecommendationProduct();
+    showDetailData(0);
 
     router.push(`create/${params}`);
   };

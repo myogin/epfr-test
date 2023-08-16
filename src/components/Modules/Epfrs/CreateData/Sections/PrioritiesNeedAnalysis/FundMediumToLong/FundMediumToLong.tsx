@@ -180,8 +180,8 @@ const FundMediumToLong = (props: Props) => {
               return (
                 <td key={"saas" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][4]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][4]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -231,8 +231,8 @@ const FundMediumToLong = (props: Props) => {
               return (
                 <td key={"saas" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][4]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][4]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -282,8 +282,8 @@ const FundMediumToLong = (props: Props) => {
               return (
                 <td key={"saas" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][4]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][4]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -332,8 +332,8 @@ const FundMediumToLong = (props: Props) => {
               return (
                 <td key={"saas" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][4]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][4]
                     : true}
                     formStyle="text-right"
                     className="mb-10"

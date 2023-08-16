@@ -1,6 +1,7 @@
 import { useFilterDataEpfr } from "@/store/epfrPage/filterDataEpfr";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { Fragment } from "react";
+import React, { Fragment, useCallback, useState } from "react";
 import Search2LineIcon from "remixicon-react/Search2LineIcon";
 
 const PfrNavbar = () => {
@@ -58,9 +59,41 @@ const PfrNavbar = () => {
       });
     }
   }
+
+  // handle searching
+  // handle filter
+  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const [owner, setOwner] = useState("");
+
+  const handleSearch = () => {
+    if (owner) {
+      router.push(
+        pathname + "?" + createQueryString("ownerDocument_like", owner)
+      );
+    } else {
+      const { ownerDocument_like, ...newQuery } = router.query;
+      router.replace({
+        query: { ...newQuery },
+      });
+    }
+  };
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 mt-4">
-      <div className="flex md:col-span-2">
+      <div className="flex md:col-span-2 items-center">
         {menu.map((val, index) => (
           <Fragment key={index}>
             <div
@@ -79,10 +112,15 @@ const PfrNavbar = () => {
         <div className="flex items-center justify-start float-right gap-4">
           <input
             type="text"
-            className="p-0 border-none"
-            placeholder="Search pfr data"
+            className="p-1 px-2 border-none"
+            placeholder="Search Owner"
+            onChange={(e) => {
+              setOwner(e.target.value);
+            }}
           />
-          <Search2LineIcon />
+          <button onClick={handleSearch}>
+            <Search2LineIcon />
+          </button>
         </div>
       </div>
     </div>

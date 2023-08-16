@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
 import { SectionNineRecommendation } from "@/models/SectionNineRecommendation";
 import { group } from "console";
@@ -71,7 +71,7 @@ type Actions = {
 };
 
 const AnalysisRecommendationProduct = create(
-  devtools<SectionNineRecommendation & Actions>((set, get) => ({
+  devtools(persist<SectionNineRecommendation & Actions>((set, get) => ({
     ...initialState,
     // checkData: checkData(),.
     resetRecommendationProduct: () => {
@@ -79,6 +79,7 @@ const AnalysisRecommendationProduct = create(
       },
     setParent: (value: any, name: string, groupData: any) => set(
         produce((draft) => {
+            console.log("section 9 parent " +value + " " + name)
             draft.section9Recommend[name] = value;
         })
     ),
@@ -162,8 +163,10 @@ const AnalysisRecommendationProduct = create(
             // initialState.section9Recommend.product.feature = parent.product.feature,
         // )
     },
-  }))
-
+  }), {
+    name: "section9Recommend"
+  })
+  )
 );
 
 export const useAnalysisRecommendationProduct = AnalysisRecommendationProduct;

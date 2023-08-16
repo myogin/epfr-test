@@ -5,18 +5,31 @@ export default function Document() {
   return (
     <Html lang="en" suppressHydrationWarning>
       <Head>
-        <meta
+        {/* <meta
           httpEquiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
-        />
+        /> */}
+        {/* 
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        /> */}
         <meta
           name="description"
           content={siteConfig.description}
           itemProp="description"
         />
-        <meta name="keywords" content={siteConfig.keywords} itemProp="keywords" />
+        <meta
+          name="keywords"
+          content={siteConfig.keywords}
+          itemProp="keywords"
+        />
         <meta name="author" content={siteConfig.creator} />
-        <meta name="copyright" content={siteConfig.copyright} itemProp="dateline" />
+        <meta
+          name="copyright"
+          content={siteConfig.copyright}
+          itemProp="dateline"
+        />
         <meta name="thumbnailUrl" content="" itemProp="thumbnailUrl" />
         <meta content="" itemProp="url" />
         <meta property="og:title" content={siteConfig.siteName} />

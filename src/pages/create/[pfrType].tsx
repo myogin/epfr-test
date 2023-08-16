@@ -10,7 +10,7 @@ import { Page } from "@/pages/_app";
 import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ArrowLeftSLineIcon from "remixicon-react/ArrowLeftSLineIcon";
 import CustomerKnowledgeAssesment from "@/components/Modules/Epfrs/CreateData/Sections/CustomerKnowledgeAssesment/CustomerKnowledgeAssesment";
 import Affordability from "@/components/Modules/Epfrs/CreateData/Sections/Affordability/Affordability";
@@ -28,15 +28,15 @@ import { localOwnerId, localType } from "@/libs/helper";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import RetrieveClientDataNew from "@/components/Modules/Epfrs/CreateData/RetrieveSingpass/RetrieveClientDataNew";
 import { siteConfig } from "@/libs/config";
+import { useAffordability } from "@/store/epfrPage/createData/affordability";
 
 const CreatePfrPage: Page = () => {
   const router = useRouter();
-  const { pfrType } = router.query;
-
-  let pfrTypeId = pfrType === "single" ? 1 : 2;
 
   let { showDetailData, sectionCreateEpfrId } = useNavigationSection();
   let { setGlobal } = usePersonalInformation();
+
+  let setInit = useAffordability((state) => state.setInit);
 
   const parentScrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -74,7 +74,7 @@ const CreatePfrPage: Page = () => {
       elementActive = <AddPlanRecommendation />;
       break;
     default:
-      elementActive = <RetrieveClientDataNew />;
+      elementActive = null;
       break;
   }
 
@@ -90,21 +90,31 @@ const CreatePfrPage: Page = () => {
 
   const setStartingDoc = (localOwner: any, localT: any) => {
     setGlobal("ownerId", localOwner);
-    setGlobal("type", localT == null ? pfrTypeId : localT);
+    setGlobal("type", localT);
   };
+
+  const [pfrType, setPfrType] = useState(0)
 
   useEffect(() => {
     if (!router.isReady) return;
+
+    let pfrTypeId = router.query.pfrType === "single" ? 1 : 2;
 
     if (router.query.id !== null && router.query.id !== undefined) {
       setGlobal("id", router.query.id);
     }
 
+    setPfrType(pfrTypeId)
+
     let localOwner = localOwnerId();
     let localT = localType();
 
-    setStartingDoc(localOwner, localT);
-  }, [router.isReady, router.query.id]);
+    let type = pfrTypeId ? pfrTypeId : localT;
+
+    setInit(pfrTypeId);
+
+    setStartingDoc(localOwner, type);
+  }, [router.isReady, router.query.id, router.query.pfrType]);
 
   return (
     <>
@@ -148,10 +158,22 @@ const CreatePfrPage: Page = () => {
         <section className={`grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-1`}>
           <GlobalCard className="min-h-screen pt-16">
             <div className="flex flex-row items-center justify-between mx-8 2xl:mx-60 mb-14">
-              <Link href="/overview" className="flex text-green-deep">
-                <ArrowLeftSLineIcon /> Back
-              </Link>
-              <TitleMedium>New EPFR Documents</TitleMedium>
+              {switchDisplay &&
+              (sectionCreateEpfrId == 91 || sectionCreateEpfrId == 92) ? (
+                <>
+                  <Link href="/create/" className="flex text-green-deep">
+                    <ArrowLeftSLineIcon /> Back
+                  </Link>
+                  <TitleMedium>Setup Plan Recommendation</TitleMedium>
+                </>
+              ) : (
+                <>
+                  <Link href="/overview" className="flex text-green-deep">
+                    <ArrowLeftSLineIcon /> Back
+                  </Link>
+                  <TitleMedium>New EPFR Documents</TitleMedium>
+                </>
+              )}
             </div>
             <div id="dataPfr">
               {switchDisplay ? (
@@ -165,31 +187,31 @@ const CreatePfrPage: Page = () => {
                     scrollThrottle={80}
                     useBoxMethod
                   >
-                    <PersonalInformation pfrType={pfrTypeId} id="section-1" />
-                    <ExistingPortofolio pfrType={pfrTypeId} id="section-2" />
-                    <CashFlow pfrType={pfrTypeId} id="section-3" />
-                    <BalanceSheet pfrType={pfrTypeId} id="section-4" />
-                    <RiskProfile pfrType={pfrTypeId} id="section-5" />
+                    <PersonalInformation pfrType={pfrType} id="section-1" />
+                    <ExistingPortofolio pfrType={pfrType} id="section-2" />
+                    <CashFlow pfrType={pfrType} id="section-3" />
+                    <BalanceSheet pfrType={pfrType} id="section-4" />
+                    <RiskProfile pfrType={pfrType} id="section-5" />
                     <CustomerKnowledgeAssesment
-                      pfrType={pfrTypeId}
+                      pfrType={pfrType}
                       id="section-6"
                     />
                     <PrioritiesNeedAnalysis
-                      pfrType={pfrTypeId}
+                      pfrType={pfrType}
                       id="section-7"
                     />
-                    <Affordability pfrType={pfrTypeId} id="section-8" />
+                    <Affordability pfrType={pfrType} id="section-8" />
                     <AnalysisRecommendation
-                      pfrType={pfrTypeId}
+                      pfrType={pfrType}
                       id="section-9"
                     />
-                    <SwitchingReplacement pfrType={pfrTypeId} id="section-10" />
+                    <SwitchingReplacement pfrType={pfrType} id="section-10" />
                     <ClientsAcknowledgment
-                      pfrType={pfrTypeId}
+                      pfrType={pfrType}
                       id="section-11"
                     />
                     <RepresentativeDeclaration
-                      pfrType={pfrTypeId}
+                      pfrType={pfrType}
                       id="section-12"
                     />
                   </ScrollSpy>

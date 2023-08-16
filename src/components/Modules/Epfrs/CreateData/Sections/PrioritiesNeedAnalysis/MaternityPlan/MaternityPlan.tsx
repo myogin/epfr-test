@@ -194,8 +194,8 @@ const MaternityPlan = (props: Props) => {
               return (
                 <td key={"asda" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                    ?!section7.answer.need.client[i][9]
+                    readonly={section7.answer.need.dependant[i]
+                    ?!section7.answer.need.dependant[i][9]
                     : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -203,8 +203,8 @@ const MaternityPlan = (props: Props) => {
                     placeholder="1,000,000"
                     name="amountNeeded"
                     dataType="maternity"
-                    value={section7.answer.clientData[i].maternity.amountNeeded}
-                    handleChange={(event) => setDataClient(event, i)}
+                    value={section7.answer.dependantData[i].maternity.amountNeeded}
+                    handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
               );
@@ -255,8 +255,8 @@ const MaternityPlan = (props: Props) => {
               return (
                 <td key={"asda" + i} className={``}>
                   <Input
-                    readonly={section7.answer.need.client[i]
-                      ?!section7.answer.need.client[i][9] || !section7.answer.defaultCheck.maternity_other
+                    readonly={section7.answer.need.dependant[i]
+                      ?!section7.answer.need.dependant[i][9] || !section7.answer.defaultCheck.maternity_other
                       : true}
                     formStyle="text-right"
                     className="mb-10"
@@ -264,8 +264,8 @@ const MaternityPlan = (props: Props) => {
                     placeholder="1,000,000"
                     name="less"
                     dataType="maternity"
-                    value={section7.answer.clientData[i].maternity.less}
-                    handleChange={(event) => setDataClient(event, i)}
+                    value={section7.answer.dependantData[i].maternity.less}
+                    handleChange={(event) => setDataDependant(event, i)}
                   />
                 </td>
               );

@@ -1,10 +1,14 @@
+import SectionCardFooter from "@/components/Attributes/Cards/SectionCardFooter";
 import SectionCardSingleGrid from "@/components/Attributes/Cards/SectionCardSingleGrid";
 import RowSingleGrid from "@/components/Attributes/Rows/Grids/RowSingleGrid";
 import HeadingSecondarySection from "@/components/Attributes/Sections/HeadingSecondarySection";
 import TextSmall from "@/components/Attributes/Typography/TextSmall";
+import ButtonGreenMedium from "@/components/Forms/Buttons/ButtonGreenMedium";
+import TextArea from "@/components/Forms/TextArea";
 import { Menu, Transition } from "@headlessui/react";
 import React, { useState, useEffect, Fragment } from "react";
 import ArrowDropDownLineIcon from "remixicon-react/ArrowDropDownLineIcon";
+import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import TextThin from "@/components/Attributes/Typography/TextThin";
 import ButtonBox from "@/components/Forms/Buttons/ButtonBox";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
@@ -32,47 +36,6 @@ import { useRouter } from "next/router";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useScrollPositionBottom } from "@/hooks/useScrollPositionBottom";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
-import { getLength } from "@/libs/helper";
-import { useAffordability } from "@/store/epfrPage/createData/affordability";
-
-interface ProductRider {
-  feature?: string;
-  groupId?: number;
-  name?: string;
-  no: number;
-  rowSpan?: number;
-  typeProductCustom?: string;
-}
-
-interface Benefits {
-  benefitId?: number;
-  content?: string;
-  groupId?: number;
-  id: number;
-  no: number;
-  productId: number;
-  productName: number;
-  recommendId: number;
-  riderId: number;
-  rowSpan: number;
-  title?: string;
-  mainProductName?: string;
-}
-
-interface Risks {
-  content?: string;
-  groupId?: number;
-  id: number;
-  no: number;
-  productId: number;
-  productName: number;
-  recommendId: number;
-  riderId: number;
-  riskId: number;
-  rowSpan: number;
-  title?: string;
-  mainProductName?: string;
-}
 
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
@@ -84,21 +47,16 @@ interface Props {
   pfrType?: number;
 }
 
-const AnalysisRecommendation = (props: Props) => {
+const AnalysisRecommendationBackup = (props: Props) => {
   const router = useRouter();
-
   let { section9, setParent } = useAnalysisRecommendation();
   const scrollPositionBottom = useScrollPositionBottom(8);
   const scrollPositionNext = useScrollPosition(10);
   const scrollPosition = useScrollPosition(9);
 
-  let sectionCreateEpfrId = useNavigationSection((state)=> state.sectionCreateEpfrId)
-
   const currencyFormat = (num: any) => {
     if (num) {
-      let number = Number(num);
-      return "$" + number.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-      // return "$" + num;
+      return "$" + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     } else {
       return 0.0;
     }
@@ -167,13 +125,9 @@ const AnalysisRecommendation = (props: Props) => {
 
   let pfrId = usePersonalInformation((state) => state.id);
 
-  // Go to recomended product
   let { showDetailData } = useNavigationSection();
-
   const showDetail = (params: any, data: any) => {
-    // let resPfrId = pfrId ? "" + pfrId + "" : "0";
-    // localStorage.setItem("s9_PfrId", resPfrId);
-    localStorage.setItem("s9_dataGroup", data);
+    localStorage.setItem("s9_dataGroup", "0");
     localStorage.setItem("group_name", params);
 
     showDetailData(91);
@@ -182,15 +136,22 @@ const AnalysisRecommendation = (props: Props) => {
     showDetailData(params);
   };
 
-  const [getPfrNine, setPfrNine] = useState<any>({});
+  const [getPfr8, setPfr8] = useState<any>({});
+  const [getPfr9, setPfr9] = useState<any>({});
+  const [getClients, setClients] = useState<any>([]);
 
-  let getClients = getLength(props.pfrType);
-
-  console.log("Ini ada isinya nggak?")
-  console.log(getClients)
-
-  let payorBudget = useAffordability((state) => state.section8.payorBudget);
-
+  const [dataAnnualPayorBudget, setAnnualPayorBudget] = useState<any>([
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ]);
+  const [dataSinglePayorBudget, setSinglePayorBudget] = useState<any>([
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ]);
+  const [dataPayorBudgetMap, setPayorBudgetMap] = useState<any>([
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ]);
   const [dataTotalAnnualPremium, setTotalAnnualPremium] = useState<any>([
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -329,22 +290,33 @@ const AnalysisRecommendation = (props: Props) => {
     risk: {},
   });
   const [dataRowsGroup, setRowsGroup] = useState<any>([]);
-  const [dataProductAndRiders, setProductAndRiders] = useState<
-    Array<ProductRider>
-  >([]);
-  const [dataBenefits, setBenefits] = useState<Array<Benefits>>([]);
-  const [dataRisks, setRisks] = useState<Array<Risks>>([]);
+  const [dataProductAndRiders, setProductAndRiders] = useState([{}]);
+  const [dataBenefits, setBenefits] = useState([{}]);
+  const [dataRisks, setRisks] = useState([{}]);
   const [dataOutcome, setOutcome] = useState([0, 0]);
 
   let pfrLocal = usePfrData((state) => state.pfr);
 
-  // Get Init State Here
   useEffect(() => {
     if (!router.isReady) return;
+
+    console.log("id", pfrId);
 
     localStorage.setItem("section9", JSON.stringify(section9));
     // const pfrId = idPfr;
 
+    setAnnualPayorBudget([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setSinglePayorBudget([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setPayorBudgetMap([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
     setTotalAnnualPremium([
       [0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0],
@@ -457,31 +429,37 @@ const AnalysisRecommendation = (props: Props) => {
       risk: {},
     });
 
-    if (
-      (router.query.id !== null && router.query.id !== undefined) ||
-      Number(pfrId) > 0 || sectionCreateEpfrId === 200
-    ) {
+    setProductAndRiders([]);
+    setBenefits([]);
+    setRisks([]);
+    setOutcome([0, 0]);
+
+    if (router.query.id !== null && router.query.id !== undefined) {
       if (scrollPositionBottom === "Process8") {
-        let pfrIdRiil = Number(pfrId) > 0 ? Number(pfrId) : router.query.id;
         setParent("editableStatus", pfrLocal.editableSection9);
-        setParent("pfrId", pfrIdRiil);
+        setParent("pfrId", router.query.id);
         setParent("status", pfrLocal.section9);
+        // getSectionData(router.query.id);
 
         // Section 9
         pfrSection(9, pfrId).then((data: any) => {
-
-          console.log("Check Section 9 Data")
-          console.log(data)
-
-          setPfrNine(data);
+          console.log("data", data);
+          setPfr9(data);
           setRowsGroup(data.rowGroups);
+          var dataType: Array<any> = [];
+          for (var i = 0; i < data.clients.length; i++) {
+            dataType[i] = i;
+          }
+          console.log("dataType", dataType);
+          setClients(dataType);
 
-          // Setting the answer Section Nine
-          let overView1 = "";
-          let overView2 = "";
-          let reasonForBenefit = "";
-          let reasonForRisk = "";
-          let reasonForDeviation = "";
+          // Res Answer
+          console.log("data", data);
+          var overView1 = "";
+          var overView2 = "";
+          var reasonForBenefit = "";
+          var reasonForRisk = "";
+          var reasonForDeviation = "";
 
           if (data.answer) {
             if (data.answer.overView1) {
@@ -556,6 +534,7 @@ const AnalysisRecommendation = (props: Props) => {
           // End Res Answer
 
           // Check Client Choice
+          console.log("data.recommendedProduct", data.recommendedProduct);
           data.recommendedProduct.map((product: any) => {
             if (product["checked"] == "0") {
               product["checked"] = false;
@@ -564,7 +543,7 @@ const AnalysisRecommendation = (props: Props) => {
               calcPremiumClientChoice(product, false);
             }
 
-            let dataName = getPremiumFrequencyName(product.premiumFrequency);
+            var dataName = getPremiumFrequencyName(product.premiumFrequency);
             if (dataName != undefined) {
               dataSubPremium[dataName] = product["premium"];
 
@@ -577,7 +556,7 @@ const AnalysisRecommendation = (props: Props) => {
               }
 
               product["riders"].map((rider: any) => {
-                let dataNameRider = getPremiumFrequencyName(
+                var dataNameRider = getPremiumFrequencyName(
                   rider.premiumFrequency
                 );
                 if (dataNameRider != undefined) {
@@ -648,9 +627,32 @@ const AnalysisRecommendation = (props: Props) => {
           calcPremiumMatrix(data);
         });
 
+        // Section 8
+        const annualPayorBudget: Array<any> = [[], []];
+        const singlePayorBudget: Array<any> = [[], []];
+        const payorBudgetMap: Array<any> = [[], []];
+        pfrSection(8, pfrId).then((data: any) => {
+          setPfr8(data);
+
+          let payorBudgets = data["payorBudgets"];
+          payorBudgets.map((budget: any) => {
+            if (budget["selection"] != 0) {
+              let clientId = budget["clientType"];
+              let type = budget["type"];
+              annualPayorBudget[clientId][type] = budget["annual"];
+              singlePayorBudget[clientId][type] = budget["single"];
+              payorBudgetMap[clientId][type] = true;
+            }
+          });
+        });
+        setAnnualPayorBudget(annualPayorBudget);
+        setSinglePayorBudget(singlePayorBudget);
+        setPayorBudgetMap(payorBudgetMap);
+
         // get whole context
         const resOutcome: Array<any> = [];
         getWholeContext(pfrId).then((dataWhole: any) => {
+          console.log("dataWhole", dataWhole);
           dataWhole.outcomes.map((outcome: any) => {
             let clientId = outcome["clientType"] - 1;
             resOutcome[clientId] = outcome["outcome"];
@@ -658,13 +660,259 @@ const AnalysisRecommendation = (props: Props) => {
           setOutcome(resOutcome);
         });
 
+        console.log(
+          "dataTotalAnnualPremiumChoice",
+          dataTotalAnnualPremiumChoice
+        );
+
         getProductRiderBenefitRisk();
         getGroupRow();
       }
+    }else {
+      console.log("update section 9 scroll position button non edit");
+      if(pfrId && Number(pfrId) > 0) {
+        if (scrollPositionBottom === "Process8") {
+
+          console.log("check masuk sampai sini ggak");
+
+          setParent("editableStatus", pfrLocal.editableSection9);
+          setParent("pfrId", pfrId);
+          setParent("status", pfrLocal.section9);
+          // getSectionData(router.query.id);
+  
+          // Section 9
+          pfrSection(9, pfrId).then((data: any) => {
+            console.log("data section 9", data);
+            setPfr9(data);
+            setRowsGroup(data.rowGroups);
+            var dataType: Array<any> = [];
+            for (var i = 0; i < data.clients.length; i++) {
+              dataType[i] = i;
+            }
+            console.log("dataType", dataType);
+            setClients(dataType);
+  
+            // Res Answer
+            console.log("data", data);
+            var overView1 = "";
+            var overView2 = "";
+            var reasonForBenefit = "";
+            var reasonForRisk = "";
+            var reasonForDeviation = "";
+  
+            if (data.answer) {
+              if (data.answer.overView1) {
+                overView1 = data.answer.overView1;
+              }
+  
+              if (data.answer.overView2) {
+                overView2 = data.answer.overView2;
+              }
+  
+              if (data.answer.reasonForBenefit) {
+                reasonForBenefit = data.answer.reasonForBenefit;
+              }
+  
+              if (data.answer.reasonForRisk) {
+                reasonForRisk = data.answer.reasonForRisk;
+              }
+  
+              if (data.answer.reasonForDeviation) {
+                reasonForDeviation = data.answer.reasonForDeviation;
+              }
+            }
+  
+            setEditor({
+              ...editorData,
+              overView1: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(overView1).contentBlocks,
+                  convertFromHTML(overView1).entityMap
+                )
+              ),
+              overView2: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(overView2).contentBlocks,
+                  convertFromHTML(overView2).entityMap
+                )
+              ),
+              reasonForBenefit: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(reasonForBenefit).contentBlocks,
+                  convertFromHTML(reasonForBenefit).entityMap
+                )
+              ),
+              reasonForRisk: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(reasonForRisk).contentBlocks,
+                  convertFromHTML(reasonForRisk).entityMap
+                )
+              ),
+              reasonForDeviation: EditorState.createWithContent(
+                ContentState.createFromBlockArray(
+                  convertFromHTML(reasonForDeviation).contentBlocks,
+                  convertFromHTML(reasonForDeviation).entityMap
+                )
+              ),
+            });
+  
+            setParent("overView1", data.answer ? data.answer.overView1 : "");
+            setParent("overView2", data.answer ? data.answer.overView2 : "");
+            setParent(
+              "reasonForBenefit",
+              data.answer ? data.answer.reasonForBenefit : ""
+            );
+            setParent(
+              "reasonForRisk",
+              data.answer ? data.answer.reasonForRisk : ""
+            );
+            setParent(
+              "reasonForDeviation",
+              data.answer ? data.answer.reasonForDeviation : ""
+            );
+            // End Res Answer
+  
+            // Check Client Choice
+            console.log("data.recommendedProduct", data.recommendedProduct);
+            data.recommendedProduct.map((product: any) => {
+              if (product["checked"] == "0") {
+                product["checked"] = false;
+              } else {
+                product["checked"] = true;
+                calcPremiumClientChoice(product, false);
+              }
+  
+              var dataName = getPremiumFrequencyName(product.premiumFrequency);
+              if (dataName != undefined) {
+                dataSubPremium[dataName] = product["premium"];
+  
+                if (product["checked"] == true) {
+                  if (dataResDataTotalPremiumArr[dataName]) {
+                    dataResDataTotalPremiumArr[dataName] += product["totPremium"];
+                  } else {
+                    dataResDataTotalPremiumArr[dataName] = product["totPremium"];
+                  }
+                }
+  
+                product["riders"].map((rider: any) => {
+                  var dataNameRider = getPremiumFrequencyName(
+                    rider.premiumFrequency
+                  );
+                  if (dataNameRider != undefined) {
+                    if (rider["checked"] == "0") {
+                      rider["checked"] = false;
+                    } else {
+                      rider["checked"] = true;
+                    }
+  
+                    //
+                    if (dataSubPremium[dataNameRider]) {
+                      dataSubPremium[dataNameRider] += rider["premium"];
+                    } else {
+                      dataSubPremium[dataNameRider] = rider["premium"];
+                    }
+  
+                    if (dataResDataTotalPremiumArr[dataNameRider]) {
+                      dataResDataTotalPremiumArr[dataNameRider] +=
+                        rider["premium"];
+                    } else {
+                      dataResDataTotalPremiumArr[dataNameRider] =
+                        rider["premium"];
+                    }
+                  }
+                });
+  
+                if (product.riders.length > 0) {
+                  product["subTotal"] = dataSubPremium;
+                } else {
+                  product["subTotal"] = [];
+                }
+              }
+            });
+  
+            data.ILPProduct.map((product: any, index: any) => {
+              if (product["checked"] == "0") {
+                product["checked"] = false;
+              } else {
+                product["checked"] = true;
+              }
+            });
+  
+            data.CISProduct.map((product: any, index: any) => {
+              if (product["checked"] == "0") {
+                product["checked"] = false;
+              } else {
+                product["checked"] = true;
+              }
+            });
+  
+            let checker = 0;
+  
+            data.CISILPProducts.map((product: any) => {
+              if (product["checked"]) {
+                checker++;
+              }
+  
+              if (
+                product["type"] == 1 ||
+                (product["type"] == 0 && product["recommedType"] == 1)
+              ) {
+                calcPremiumForCISClientChoice(product);
+              } else if (product["type"] == 0 && product["recommedType"] == 0) {
+                calcPremiumClientChoice(product, false);
+              }
+            });
+  
+            calcPremiumMatrix(data);
+          });
+  
+          // Section 8
+          const annualPayorBudget: Array<any> = [[], []];
+          const singlePayorBudget: Array<any> = [[], []];
+          const payorBudgetMap: Array<any> = [[], []];
+          pfrSection(8, pfrId).then((data: any) => {
+            console.log("data section 8 ", data);
+            setPfr8(data);
+  
+            let payorBudgets = data["payorBudgets"];
+            payorBudgets.map((budget: any) => {
+              if (budget["selection"] != 0) {
+                let clientId = budget["clientType"];
+                let type = budget["type"];
+                annualPayorBudget[clientId][type] = budget["annual"];
+                singlePayorBudget[clientId][type] = budget["single"];
+                payorBudgetMap[clientId][type] = true;
+              }
+            });
+          });
+          setAnnualPayorBudget(annualPayorBudget);
+          setSinglePayorBudget(singlePayorBudget);
+          setPayorBudgetMap(payorBudgetMap);
+  
+          // get whole context
+          const resOutcome: Array<any> = [];
+          getWholeContext(pfrId).then((dataWhole: any) => {
+            console.log("dataWhole", dataWhole);
+            dataWhole.outcomes.map((outcome: any) => {
+              let clientId = outcome["clientType"] - 1;
+              resOutcome[clientId] = outcome["outcome"];
+            });
+            setOutcome(resOutcome);
+          });
+  
+          console.log(
+            "dataTotalAnnualPremiumChoice",
+            dataTotalAnnualPremiumChoice
+          );
+  
+          getProductRiderBenefitRisk();
+          getGroupRow();
+        }
+      }
     }
 
-    // console.log("section9Res", section9);
-  }, [section9, router.isReady, scrollPositionBottom, sectionCreateEpfrId]);
+    console.log("section9Res", section9);
+  }, [section9, router.isReady,scrollPositionBottom]);
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {
     switch (Number(premiumFrequency)) {
@@ -896,6 +1144,7 @@ const AnalysisRecommendation = (props: Props) => {
     // console.log('product', product)
     if (product) {
       if (product["checked"]) {
+        console.log("product", product);
         let frequency = product["premiumFrequency"];
         let clientId = product["nameOfOwner"];
         let premiumType = product["premiumPaymentType"];
@@ -1550,19 +1799,19 @@ const AnalysisRecommendation = (props: Props) => {
     ]);
     let products = getProductsByFilteringGroupId(
       groupId,
-      getPfrNine.recommendedProduct
+      getPfr9.recommendedProduct
     );
     let ILPProducts = getProductsByFilteringGroupId(
       groupId,
-      getPfrNine.ILPProduct
+      getPfr9.ILPProduct
     );
     let CISProducts = getProductsByFilteringGroupId(
       groupId,
-      getPfrNine.CISProduct
+      getPfr9.CISProduct
     );
     let customProducts = getProductsByFilteringGroupId(
       groupId,
-      getPfrNine.CISILPProducts
+      getPfr9.CISILPProducts
     );
 
     products.map((product: any) => {
@@ -1634,9 +1883,9 @@ const AnalysisRecommendation = (props: Props) => {
 
   const getNameFromId = (id: any) => {
     if (id < 2) {
-      return getPfrNine.clients[id]["clientName"];
+      return getPfr9.clients[id]["clientName"];
     } else {
-      return getPfrNine.dependants[id - 2]["name"];
+      return getPfr9.dependants[id - 2]["name"];
     }
   };
 
@@ -1650,7 +1899,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   const getGroupName = (groupId: any) => {
     let name = "";
-    getPfrNine.groups.map((group: any) => {
+    getPfr9.groups.map((group: any) => {
       if (group["id"] == groupId) {
         name = group["name"];
       }
@@ -1665,11 +1914,8 @@ const AnalysisRecommendation = (props: Props) => {
 
     let productNo = 0;
 
-    // console.log("get recomendeed here");
-    // console.log(getPfrNine.recommendedProduct);
-
-    if (getPfrNine.recommendedProduct) {
-      getPfrNine.recommendedProduct.map((product: any, i: any) => {
+    if (getPfr9.recommendedProduct) {
+      getPfr9.recommendedProduct.map((product: any, i: any) => {
         if (product["product"] != undefined) {
           productAndRiders.push({
             no: productNo,
@@ -1739,8 +1985,8 @@ const AnalysisRecommendation = (props: Props) => {
       });
     }
 
-    if (getPfrNine.CISILPProducts) {
-      getPfrNine.CISILPProducts.map((product: any, i: any) => {
+    if (getPfr9.CISILPProducts) {
+      getPfr9.CISILPProducts.map((product: any, i: any) => {
         if (product["type"] == 0 || product["type"] == 2) {
           productAndRiders.push({
             no: productNo,
@@ -1840,8 +2086,6 @@ const AnalysisRecommendation = (props: Props) => {
         }
       });
     }
-    console.log("dapet ni product rider?");
-    console.log(productAndRiders);
 
     setProductAndRiders(productAndRiders);
     setBenefits(benefits);
@@ -1859,8 +2103,8 @@ const AnalysisRecommendation = (props: Props) => {
       risk: {},
     });
     dataRowOfGroupCell["product"]["length"] = 0;
-    if (getPfrNine.recommendedProduct) {
-      getPfrNine.recommendedProduct.map((product: any) => {
+    if (getPfr9.recommendedProduct) {
+      getPfr9.recommendedProduct.map((product: any) => {
         if (dataRowOfGroupCell["product"][product["groupId"]] == undefined) {
           dataRowOfGroupCell["product"][product["groupId"]] =
             1 + product["riders"].length;
@@ -1879,8 +2123,8 @@ const AnalysisRecommendation = (props: Props) => {
       });
     }
 
-    if (getPfrNine.CISILPProducts) {
-      getPfrNine.CISILPProducts.map((product: any) => {
+    if (getPfr9.CISILPProducts) {
+      getPfr9.CISILPProducts.map((product: any) => {
         if (dataRowOfGroupCell["cisilp"][product["groupId"]] == undefined) {
           dataRowOfGroupCell["cisilp"][product["groupId"]] = 0;
         }
@@ -1960,14 +2204,6 @@ const AnalysisRecommendation = (props: Props) => {
     }
   };
 
-  console.log("final result dapet gak.?");
-  console.log(dataProductAndRiders);
-
-  console.log("final benefit dapet gak.?");
-  console.log(dataBenefits);
-
-  console.log("final risk dapet gak.?");
-  console.log(dataRisks);
   return (
     <div
       id={props.id}
@@ -1980,7 +2216,7 @@ const AnalysisRecommendation = (props: Props) => {
         }`}
       >
         <HeadingPrimarySection
-          className={`z-50 mx-8 2xl:mx-60 ${
+          className={`mx-8 2xl:mx-60 ${
             scrollPosition === "okSec9"
               ? "text-gray-light text-xl font-bold mb-5 mt-5"
               : "text-2xl font-bold mb-10 mt-10"
@@ -2033,9 +2269,7 @@ const AnalysisRecommendation = (props: Props) => {
               },
             }}
           />
-          {section9.overView1 === "" ? (
-            <span className="text-xs text-red">Required</span>
-          ) : null}
+
           {/* <TextArea defaultValue="text here" rows={5} /> */}
         </RowSingleGrid>
 
@@ -2078,9 +2312,6 @@ const AnalysisRecommendation = (props: Props) => {
               },
             }}
           />
-          {section9.overView2 === "" ? (
-            <span className="text-xs text-red">Required</span>
-          ) : null}
           {/* <TextArea defaultValue="text here" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>
@@ -2198,62 +2429,41 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getClients?.length &&
-                  getClients.map((resData: any, index: any) => (
-                    <tr key={"sds" + index}>
-                      <td className="px-2 py-5">Client {index + 1}</td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][0].annual)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][0].single)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][1].annual)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][1].single)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][2].annual)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][2].single)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][3].annual)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][3].single)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][4].annual)
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? currencyFormat(payorBudget[index][4].single)
-                          : 0}
-                      </td>
-                    </tr>
-                  ))}
+                {getClients.map((resData: any, index: any) => (
+                  <tr key={"sds" + index}>
+                    <td className="px-2 py-5">Client {index + 1}</td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataAnnualPayorBudget[index][0])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataSinglePayorBudget[index][0])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataAnnualPayorBudget[index][1])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataSinglePayorBudget[index][1])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataAnnualPayorBudget[index][2])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataSinglePayorBudget[index][2])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataAnnualPayorBudget[index][3])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataSinglePayorBudget[index][3])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataAnnualPayorBudget[index][4])}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {currencyFormat(dataSinglePayorBudget[index][4])}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -2297,82 +2507,81 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getClients?.length &&
-                  getClients.map((resData: any, index: any) => (
-                    <tr key={"sds" + index}>
-                      <td className="px-2 py-5">Client {index + 1}</td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalAnnualPremiumChoice[index][0])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalAnnualPremiumChoice[index][0]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalSinglePremiumChoice[index][0])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalSinglePremiumChoice[index][0]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalAnnualPremiumChoice[index][1])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalAnnualPremiumChoice[index][1]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalSinglePremiumChoice[index][1])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalSinglePremiumChoice[index][1]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalAnnualPremiumChoice[index][2])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalAnnualPremiumChoice[index][2]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalSinglePremiumChoice[index][2])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalSinglePremiumChoice[index][2]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalAnnualPremiumChoice[index][3])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalAnnualPremiumChoice[index][3]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalSinglePremiumChoice[index][3])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalSinglePremiumChoice[index][3]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalAnnualPremiumChoice[index][4])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalAnnualPremiumChoice[index][4]
-                            )}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalSinglePremiumChoice[index][4])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalSinglePremiumChoice[index][4]
-                            )}
-                      </td>
-                    </tr>
-                  ))}
+                {getClients.map((resData: any, index: any) => (
+                  <tr key={"sds" + index}>
+                    <td className="px-2 py-5">Client {index + 1}</td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalAnnualPremiumChoice[index][0])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalAnnualPremiumChoice[index][0]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalSinglePremiumChoice[index][0])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalSinglePremiumChoice[index][0]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalAnnualPremiumChoice[index][1])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalAnnualPremiumChoice[index][1]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalSinglePremiumChoice[index][1])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalSinglePremiumChoice[index][1]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalAnnualPremiumChoice[index][2])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalAnnualPremiumChoice[index][2]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalSinglePremiumChoice[index][2])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalSinglePremiumChoice[index][2]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalAnnualPremiumChoice[index][3])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalAnnualPremiumChoice[index][3]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalSinglePremiumChoice[index][3])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalSinglePremiumChoice[index][3]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalAnnualPremiumChoice[index][4])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalAnnualPremiumChoice[index][4]
+                          )}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(dataTotalSinglePremiumChoice[index][4])
+                        ? 0
+                        : currencyFormat(
+                            dataTotalSinglePremiumChoice[index][4]
+                          )}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -2417,122 +2626,101 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getClients?.length &&
-                  getClients.map((resData: any, index: any) => (
-                    <tr key={"ssd" + index}>
-                      <td className="px-2 py-5">Client{index + 1}</td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][0].annual) -
-                                dataTotalAnnualPremiumChoice[index][0]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][0].annual) -
-                              dataTotalAnnualPremiumChoice[index][0]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][0].single) -
-                                dataTotalSinglePremiumChoice[index][0]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][0].single) -
-                              dataTotalSinglePremiumChoice[index][0]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][1].annual) -
-                                dataTotalAnnualPremiumChoice[index][1]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][1].annual) -
-                              dataTotalAnnualPremiumChoice[index][1]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][1].single) -
-                                dataTotalSinglePremiumChoice[index][1]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][1].single) -
-                              dataTotalSinglePremiumChoice[index][1]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][2].annual) -
-                                dataTotalAnnualPremiumChoice[index][2]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][2].annual) -
-                              dataTotalAnnualPremiumChoice[index][2]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][2].single) -
-                                dataTotalSinglePremiumChoice[index][2]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][2].single) -
-                              dataTotalSinglePremiumChoice[index][2]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][3].annual) -
-                                dataTotalAnnualPremiumChoice[index][3]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][3].annual) -
-                              dataTotalAnnualPremiumChoice[index][3]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][3].single) -
-                                dataTotalSinglePremiumChoice[index][3]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][3].single) -
-                              dataTotalSinglePremiumChoice[index][3]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][4].annual) -
-                                dataTotalAnnualPremiumChoice[index][4]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][4].annual) -
-                              dataTotalAnnualPremiumChoice[index][4]
-                          : 0}
-                      </td>
-                      <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
-                          ? isNaN(
-                              Number(payorBudget[index][4].single) -
-                                dataTotalSinglePremiumChoice[index][4]
-                            )
-                            ? 0
-                            : Number(payorBudget[index][4].single) -
-                              dataTotalSinglePremiumChoice[index][4]
-                          : 0}
-                      </td>
-                    </tr>
-                  ))}
+                {getClients.map((resData: any, index: any) => (
+                  <tr key={"ssd" + index}>
+                    <td className="px-2 py-5">Client{index + 1}</td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataAnnualPayorBudget[index][0] -
+                          dataTotalAnnualPremiumChoice[index][0]
+                      )
+                        ? 0
+                        : dataAnnualPayorBudget[index][0] -
+                          dataTotalAnnualPremiumChoice[index][0]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataSinglePayorBudget[index][0] -
+                          dataTotalSinglePremiumChoice[index][0]
+                      )
+                        ? 0
+                        : dataSinglePayorBudget[index][0] -
+                          dataTotalSinglePremiumChoice[index][0]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataAnnualPayorBudget[index][1] -
+                          dataTotalAnnualPremiumChoice[index][1]
+                      )
+                        ? 0
+                        : dataAnnualPayorBudget[index][1] -
+                          dataTotalAnnualPremiumChoice[index][1]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataSinglePayorBudget[index][1] -
+                          dataTotalSinglePremiumChoice[index][1]
+                      )
+                        ? 0
+                        : dataSinglePayorBudget[index][1] -
+                          dataTotalSinglePremiumChoice[index][1]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataAnnualPayorBudget[index][2] -
+                          dataTotalAnnualPremiumChoice[index][2]
+                      )
+                        ? 0
+                        : dataAnnualPayorBudget[index][2] -
+                          dataTotalAnnualPremiumChoice[index][2]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataSinglePayorBudget[index][2] -
+                          dataTotalSinglePremiumChoice[index][2]
+                      )
+                        ? 0
+                        : dataSinglePayorBudget[index][2] -
+                          dataTotalSinglePremiumChoice[index][2]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataAnnualPayorBudget[index][3] -
+                          dataTotalAnnualPremiumChoice[index][3]
+                      )
+                        ? 0
+                        : dataAnnualPayorBudget[index][3] -
+                          dataTotalAnnualPremiumChoice[index][3]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataSinglePayorBudget[index][3] -
+                          dataTotalSinglePremiumChoice[index][3]
+                      )
+                        ? 0
+                        : dataSinglePayorBudget[index][3] -
+                          dataTotalSinglePremiumChoice[index][3]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataAnnualPayorBudget[index][4] -
+                          dataTotalAnnualPremiumChoice[index][4]
+                      )
+                        ? 0
+                        : dataAnnualPayorBudget[index][4] -
+                          dataTotalAnnualPremiumChoice[index][4]}
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      {isNaN(
+                        dataSinglePayorBudget[index][4] -
+                          dataTotalSinglePremiumChoice[index][4]
+                      )
+                        ? 0
+                        : dataSinglePayorBudget[index][4] -
+                          dataTotalSinglePremiumChoice[index][4]}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -2552,8 +2740,8 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getPfrNine?.groups
-                  ? getPfrNine.groups.map((dataGroup: any, index: any) => (
+                {getPfr9?.groups
+                  ? getPfr9.groups.map((dataGroup: any, index: any) => (
                       <tr key={"sas" + index}>
                         <td className="px-2 py-5">{index + 1}</td>
                         <td className="px-2 py-5">{dataGroup.name}</td>
@@ -2562,7 +2750,7 @@ const AnalysisRecommendation = (props: Props) => {
                         </td>
                         <td className="w-1/12 px-2 py-5">
                           <div className="flex w-full gap-2">
-                            <ButtonBox className="text-green-deep" onClick={() => showDetail(dataGroup.name, dataGroup.id)} >
+                            <ButtonBox className="text-green-deep">
                               <PencilLineIcon size={14} />
                             </ButtonBox>
                             <ButtonBox className="text-red">
@@ -2617,402 +2805,387 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getPfrNine?.recommendedProduct
-                  ? getPfrNine.recommendedProduct.map(
-                      (product: any, index: any) =>
-                        product["product"]["categoryId"] != 8 &&
-                        product["product"]["categoryId"] != 5 ? (
-                          <Fragment key={"sas" + index}>
-                            <tr>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={1 + product["riders"].length}
-                              >
-                                {index + 1}
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                <b>{product["name"]}</b>
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                {product["policyTerm"]}
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                {product["sumAssured"]}
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                {premiumTypes[product["premiumPaymentType"]]}
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                {product["premium"]}
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                {getPremiumFrequencyName(
-                                  product["premiumFrequency"]
-                                )}
-                              </td>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={1 + product["riders"].length}
-                              >
-                                {product["nameOfInsure"] == null ||
-                                product["nameOfInsure"] == "-1"
-                                  ? getNameFromId(product["nameOfOwner"])
-                                  : getNameFromId(product["nameOfOwner"]) +
-                                    "/" +
-                                    checkNameOfInsure(
-                                      product["nameOfInsure"],
-                                      product["nameOfInsureOther"]
-                                    )}
-                              </td>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={1 + product["riders"].length}
-                              >
-                                <div
-                                  className="items-center justify-start gap-2 mb-10"
-                                  id={`custome-checkbox-${index}`}
-                                >
-                                  <div className="items-start justify-start gap-4">
-                                    <input
-                                      type="checkbox"
-                                      checked={product.checked}
-                                      className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
-                                    />
-                                    <span></span>
-                                  </div>
-                                </div>
-                              </td>
-                              {index == 0 ||
-                              product["groupId"] !=
-                                getPfrNine.recommendedProduct[index - 1][
-                                  "groupId"
-                                ] ? (
-                                <td
-                                  className="px-2 py-5 border border-gray-soft-strong"
-                                  rowSpan={
-                                    dataRowOfGroupCell["product"][
-                                      product["groupId"]
-                                    ] >= 2
-                                      ? dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ] +
-                                        dataRowsGroup[product["groupId"]].length
-                                      : dataRowOfGroupCell["product"][
-                                          "length"
-                                        ] == 1
-                                      ? dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ]
-                                      : dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ] == 1
-                                      ? dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ] + 1
-                                      : dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ]
-                                  }
-                                >
-                                  {getGroupName(product["groupId"])}
-                                </td>
-                              ) : (
-                                ""
+                {getPfr9?.recommendedProduct
+                  ? getPfr9.recommendedProduct.map((product: any, index: any) =>
+                      product["product"]["categoryId"] != 8 &&
+                      product["product"]["categoryId"] != 5 ? (
+                        <Fragment key={"sas" + index}>
+                          <tr>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={1 + product["riders"].length}
+                            >
+                              {index + 1}
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              <b>{product["name"]}</b>
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {product["policyTerm"]}
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {product["sumAssured"]}
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {premiumTypes[product["premiumPaymentType"]]}
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {product["premium"]}
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {getPremiumFrequencyName(
+                                product["premiumFrequency"]
                               )}
-                            </tr>
-                            {product?.riders
-                              ? product.riders.map(
-                                  (rider: any, indexR: any) => (
-                                    <tr key={"ssa" + indexR}>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        <ul>
-                                          <li>{rider["name"]}</li>
-                                        </ul>
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {rider["policyTerm"]}
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {rider["sumAssured"]}
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {
-                                          premiumTypes[
-                                            rider["premiumPaymentType"]
-                                          ]
-                                        }
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {rider["premium"]}
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {getPremiumFrequencyName(
-                                          rider["premiumFrequency"]
-                                        )}
-                                      </td>
-                                    </tr>
-                                  )
-                                )
-                              : ""}
-                            {getPfrNine?.recommendedProduct ? (
-                              getPfrNine.recommendedProduct.length != 1 ? (
-                                <tr>
-                                  <td
-                                    className="px-2 py-5 border border-gray-soft-strong"
-                                    colSpan={4}
-                                  >
-                                    <b>Subtotal Premium ($)</b>
-                                  </td>
-                                  <td className="px-2 py-5 border border-gray-soft-strong"></td>
-                                  <td className="px-2 py-5 border border-gray-soft-strong">
-                                    {product["premiumFrequency"] == 4 ? (
-                                      <>
-                                        <b>{product["totPremium"]}</b>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <b>{product["totPremium"]}</b>
-                                      </>
-                                    )}
-                                  </td>
-                                  <td className="px-2 py-5 border border-gray-soft-strong">
-                                    {product["premiumFrequency"] == 4 ? (
-                                      <>
-                                        <b>
-                                          {getPremiumFrequencyName(
-                                            product["premiumFrequency"]
-                                          )}
-                                        </b>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <b>Annually</b>
-                                      </>
-                                    )}
-                                  </td>
-                                </tr>
-                              ) : (
-                                ""
-                              )
-                            ) : (
-                              ""
-                            )}
-                          </Fragment>
-                        ) : (
-                          <Fragment key={"sasa" + index}>
-                            <tr>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={2 + product["riders"].length}
+                            </td>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={1 + product["riders"].length}
+                            >
+                              {product["nameOfInsure"] == null ||
+                              product["nameOfInsure"] == "-1"
+                                ? getNameFromId(product["nameOfOwner"])
+                                : getNameFromId(product["nameOfOwner"]) +
+                                  "/" +
+                                  checkNameOfInsure(
+                                    product["nameOfInsure"],
+                                    product["nameOfInsureOther"]
+                                  )}
+                            </td>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={1 + product["riders"].length}
+                            >
+                              <div
+                                className="items-center justify-start gap-2 mb-10"
+                                id={`custome-checkbox-${index}`}
                               >
-                                {index + 1}
-                              </td>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={2}
-                              >
-                                <b>{product["name"]}</b>
-                              </td>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={2}
-                              >
-                                {product["policyTerm"]}
-                              </td>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={2}
-                              >
-                                {product["sumAssured"]}
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                CASH
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                {product["premium_for_hospitalization"] !==
-                                null ? (
-                                  product["premium_for_hospitalization"]["cash"]
-                                ) : (
-                                  <>0</>
-                                )}
-                              </td>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={2}
-                              >
-                                {getPremiumFrequencyName(
-                                  product["premiumFrequency"]
-                                )}
-                              </td>
-
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={2 + product["riders"].length}
-                              >
-                                {product["nameOfInsure"] == null ||
-                                product["nameOfInsure"] == "-1"
-                                  ? getNameFromId(product["nameOfOwner"])
-                                  : getNameFromId(product["nameOfOwner"]) +
-                                    "/" +
-                                    checkNameOfInsure(
-                                      product["nameOfInsure"],
-                                      product["nameOfInsureOther"]
-                                    )}
-                              </td>
-                              <td
-                                className="px-2 py-5 border border-gray-soft-strong"
-                                rowSpan={2 + product["riders"].length}
-                              >
-                                <div
-                                  className="items-center justify-start gap-2 mb-10"
-                                  id={`custome-checkbox-${index}`}
-                                >
-                                  <div className="items-start justify-start gap-4">
-                                    <input
-                                      type="checkbox"
-                                      checked={product.checked}
-                                      className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
-                                    />
-                                    <span></span>
-                                  </div>
+                                <div className="items-start justify-start gap-4">
+                                  <input
+                                    type="checkbox"
+                                    checked={product.checked}
+                                    className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                                  />
+                                  <span></span>
                                 </div>
-                              </td>
-                              {index == 0 ||
-                              product["groupId"] !=
-                                getPfrNine.recommendedProduct[index - 1][
-                                  "groupId"
-                                ] ? (
-                                <td
-                                  className="px-2 py-5 border border-gray-soft-strong"
-                                  rowSpan={
-                                    dataRowOfGroupCell["product"][
-                                      product["groupId"]
-                                    ] > 2
-                                      ? dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ] +
-                                        dataRowsGroup[product["groupId"]].length
-                                      : dataRowOfGroupCell["product"][
-                                          "length"
-                                        ] == 1
-                                      ? dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ]
-                                      : dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ] == 1
-                                      ? dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ] + 1
-                                      : dataRowOfGroupCell["product"][
-                                          product["groupId"]
-                                        ]
-                                  }
-                                >
-                                  {getGroupName(product["groupId"])}
-                                </td>
-                              ) : (
-                                ""
-                              )}
-                            </tr>
-                            <tr>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                CPF MEDISAVE
-                              </td>
-                              <td className="px-2 py-5 border border-gray-soft-strong">
-                                {product["premium_for_hospitalization"] !==
-                                null ? (
-                                  <>
-                                    {
-                                      product["premium_for_hospitalization"][
-                                        "cpfMedisave"
+                              </div>
+                            </td>
+                            {index == 0 ||
+                            product["groupId"] !=
+                              getPfr9.recommendedProduct[index - 1][
+                                "groupId"
+                              ] ? (
+                              <td
+                                className="px-2 py-5 border border-gray-soft-strong"
+                                rowSpan={
+                                  dataRowOfGroupCell["product"][
+                                    product["groupId"]
+                                  ] >= 2
+                                    ? dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ] +
+                                      dataRowsGroup[product["groupId"]].length
+                                    : dataRowOfGroupCell["product"]["length"] ==
+                                      1
+                                    ? dataRowOfGroupCell["product"][
+                                        product["groupId"]
                                       ]
-                                    }
-                                  </>
-                                ) : (
-                                  <>0</>
-                                )}
+                                    : dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ] == 1
+                                    ? dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ] + 1
+                                    : dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ]
+                                }
+                              >
+                                {getGroupName(product["groupId"])}
                               </td>
-                            </tr>
-                            {product?.riders
-                              ? product.riders.map(
-                                  (rider: any, indexSa: any) => (
-                                    <tr key={"sa" + indexSa} aria-rowspan={2}>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        <ul>
-                                          <li>{rider["name"]}</li>
-                                        </ul>
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {rider["policyTerm"]}
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {rider["sumAssured"]}
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {
-                                          premiumTypes[
-                                            rider["premiumPaymentType"]
-                                          ]
-                                        }
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {rider["premium"]}
-                                      </td>
-                                      <td className="px-2 py-5 border border-gray-soft-strong">
-                                        {getPremiumFrequencyName(
-                                          rider["premiumFrequency"]
-                                        )}
-                                      </td>
-                                    </tr>
-                                  )
-                                )
-                              : ""}
-                            {getPfrNine?.recommendedProduct ? (
-                              getPfrNine.recommendedProduct.length != 1 ? (
-                                <tr>
-                                  <td
-                                    className="px-2 py-5 border border-gray-soft-strong"
-                                    colSpan={4}
-                                  >
-                                    <b>Subtotal Premium ($)</b>
-                                  </td>
-                                  <td className="px-2 py-5 border border-gray-soft-strong"></td>
-                                  <td className="px-2 py-5 border border-gray-soft-strong">
-                                    {product["premiumFrequency"] == 4 ? (
-                                      <>
-                                        <b>{product["totPremium"]}</b>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <b>{product["totPremium"]}</b>
-                                      </>
-                                    )}
-                                  </td>
-                                  <td className="px-2 py-5 border border-gray-soft-strong">
-                                    {product["premiumFrequency"] == 4 ? (
-                                      <>
-                                        <b>
-                                          {getPremiumFrequencyName(
-                                            product["premiumFrequency"]
-                                          )}
-                                        </b>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <b>Annually</b>
-                                      </>
-                                    )}
-                                  </td>
-                                </tr>
-                              ) : (
-                                ""
-                              )
                             ) : (
                               ""
                             )}
-                          </Fragment>
-                        )
+                          </tr>
+                          {product?.riders
+                            ? product.riders.map((rider: any, indexR: any) => (
+                                <tr key={"ssa" + indexR}>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    <ul>
+                                      <li>{rider["name"]}</li>
+                                    </ul>
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {rider["policyTerm"]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {rider["sumAssured"]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {premiumTypes[rider["premiumPaymentType"]]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {rider["premium"]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {getPremiumFrequencyName(
+                                      rider["premiumFrequency"]
+                                    )}
+                                  </td>
+                                </tr>
+                              ))
+                            : ""}
+                          {getPfr9?.recommendedProduct ? (
+                            getPfr9.recommendedProduct.length != 1 ? (
+                              <tr>
+                                <td
+                                  className="px-2 py-5 border border-gray-soft-strong"
+                                  colSpan={4}
+                                >
+                                  <b>Subtotal Premium ($)</b>
+                                </td>
+                                <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">
+                                  {product["premiumFrequency"] == 4 ? (
+                                    <>
+                                      <b>{product["totPremium"]}</b>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <b>{product["totPremium"]}</b>
+                                    </>
+                                  )}
+                                </td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">
+                                  {product["premiumFrequency"] == 4 ? (
+                                    <>
+                                      <b>
+                                        {getPremiumFrequencyName(
+                                          product["premiumFrequency"]
+                                        )}
+                                      </b>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <b>Annually</b>
+                                    </>
+                                  )}
+                                </td>
+                              </tr>
+                            ) : (
+                              ""
+                            )
+                          ) : (
+                            ""
+                          )}
+                        </Fragment>
+                      ) : (
+                        <Fragment key={"sasa" + index}>
+                          <tr>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={2 + product["riders"].length}
+                            >
+                              {index + 1}
+                            </td>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={2}
+                            >
+                              <b>{product["name"]}</b>
+                            </td>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={2}
+                            >
+                              {product["policyTerm"]}
+                            </td>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={2}
+                            >
+                              {product["sumAssured"]}
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              CASH
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {product["premium_for_hospitalization"] !==
+                              null ? (
+                                product["premium_for_hospitalization"]["cash"]
+                              ) : (
+                                <>0</>
+                              )}
+                            </td>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={2}
+                            >
+                              {getPremiumFrequencyName(
+                                product["premiumFrequency"]
+                              )}
+                            </td>
+
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={2 + product["riders"].length}
+                            >
+                              {product["nameOfInsure"] == null ||
+                              product["nameOfInsure"] == "-1"
+                                ? getNameFromId(product["nameOfOwner"])
+                                : getNameFromId(product["nameOfOwner"]) +
+                                  "/" +
+                                  checkNameOfInsure(
+                                    product["nameOfInsure"],
+                                    product["nameOfInsureOther"]
+                                  )}
+                            </td>
+                            <td
+                              className="px-2 py-5 border border-gray-soft-strong"
+                              rowSpan={2 + product["riders"].length}
+                            >
+                              <div
+                                className="items-center justify-start gap-2 mb-10"
+                                id={`custome-checkbox-${index}`}
+                              >
+                                <div className="items-start justify-start gap-4">
+                                  <input
+                                    type="checkbox"
+                                    checked={product.checked}
+                                    className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                                  />
+                                  <span></span>
+                                </div>
+                              </div>
+                            </td>
+                            {index == 0 ||
+                            product["groupId"] !=
+                              getPfr9.recommendedProduct[index - 1][
+                                "groupId"
+                              ] ? (
+                              <td
+                                className="px-2 py-5 border border-gray-soft-strong"
+                                rowSpan={
+                                  dataRowOfGroupCell["product"][
+                                    product["groupId"]
+                                  ] > 2
+                                    ? dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ] +
+                                      dataRowsGroup[product["groupId"]].length
+                                    : dataRowOfGroupCell["product"]["length"] ==
+                                      1
+                                    ? dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ]
+                                    : dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ] == 1
+                                    ? dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ] + 1
+                                    : dataRowOfGroupCell["product"][
+                                        product["groupId"]
+                                      ]
+                                }
+                              >
+                                {getGroupName(product["groupId"])}
+                              </td>
+                            ) : (
+                              ""
+                            )}
+                          </tr>
+                          <tr>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              CPF MEDISAVE
+                            </td>
+                            <td className="px-2 py-5 border border-gray-soft-strong">
+                              {product["premium_for_hospitalization"] !==
+                              null ? (
+                                <>
+                                  {
+                                    product["premium_for_hospitalization"][
+                                      "cpfMedisave"
+                                    ]
+                                  }
+                                </>
+                              ) : (
+                                <>0</>
+                              )}
+                            </td>
+                          </tr>
+                          {product?.riders
+                            ? product.riders.map((rider: any, indexSa: any) => (
+                                <tr key={"sa" + indexSa} aria-rowspan={2}>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    <ul>
+                                      <li>{rider["name"]}</li>
+                                    </ul>
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {rider["policyTerm"]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {rider["sumAssured"]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {premiumTypes[rider["premiumPaymentType"]]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {rider["premium"]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {getPremiumFrequencyName(
+                                      rider["premiumFrequency"]
+                                    )}
+                                  </td>
+                                </tr>
+                              ))
+                            : ""}
+                          {getPfr9?.recommendedProduct ? (
+                            getPfr9.recommendedProduct.length != 1 ? (
+                              <tr>
+                                <td
+                                  className="px-2 py-5 border border-gray-soft-strong"
+                                  colSpan={4}
+                                >
+                                  <b>Subtotal Premium ($)</b>
+                                </td>
+                                <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">
+                                  {product["premiumFrequency"] == 4 ? (
+                                    <>
+                                      <b>{product["totPremium"]}</b>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <b>{product["totPremium"]}</b>
+                                    </>
+                                  )}
+                                </td>
+                                <td className="px-2 py-5 border border-gray-soft-strong">
+                                  {product["premiumFrequency"] == 4 ? (
+                                    <>
+                                      <b>
+                                        {getPremiumFrequencyName(
+                                          product["premiumFrequency"]
+                                        )}
+                                      </b>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <b>Annually</b>
+                                    </>
+                                  )}
+                                </td>
+                              </tr>
+                            ) : (
+                              ""
+                            )
+                          ) : (
+                            ""
+                          )}
+                        </Fragment>
+                      )
                     )
                   : ""}
               </tbody>
@@ -3025,8 +3198,8 @@ const AnalysisRecommendation = (props: Props) => {
                     <b>Total By Client Choice ($)</b>
                   </td>
                 </tr>
-                {getPfrNine?.clients
-                  ? getPfrNine?.clients.map((dataClient: any, i: any) => (
+                {getPfr9?.clients
+                  ? getPfr9?.clients.map((dataClient: any, i: any) => (
                       <tr key={"sass" + i}>
                         <td
                           className="px-2 py-5 border border-gray-soft-strong"
@@ -3438,269 +3611,267 @@ const AnalysisRecommendation = (props: Props) => {
         </RowSingleGrid>
 
         {/* Ilp Product */}
-        {getPfrNine.CISILPProducts > 0 ? (
-          <RowSingleGrid>
-            <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-              <table className="w-full text-sm text-left border divide-y rounded-md divide-gray-soft-strong border-gray-soft-strong border-slate-500">
-                <thead className="bg-white-bone">
-                  <tr>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      SN
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Name of ILP Plan / Rider(s)
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Fund Name
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Fund Amount (%)
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Premium Type
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Premium ($)
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Premium Frequency
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Model Portfolio Risk Category
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">{`Is the recommendation of a higher risk than the client's risk profile?`}</th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Name of Owner/Insured
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Client Choice{" "}
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Deviate
-                    </th>
-                    <th className="px-2 py-5 border border-gray-soft-strong">
-                      Group Name
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {getPfrNine?.CISILPProducts
-                    ? getPfrNine.CISILPProducts.map((product: any, i: any) => (
-                        <Fragment key={"sasd" + i}>
-                          <tr>
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1 + product["riders"].length
-                                  : product["fund"].length +
-                                    product["riders"].length
-                              }
-                            >
-                              {getPfrNine.recommendedProduct.length + i + 1}
-                            </td>
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1
-                                  : product["fund"].length
-                              }
-                            >
-                              {product.cis ? product.cis.name : product["name"]}
-                            </td>
-                            {product["fund"].length > 0 ? (
-                              <>
-                                <td className="px-2 py-5 border border-gray-soft-strong">
-                                  {product["fund"][0]["name"]}
-                                </td>
-                                <td className="px-2 py-5 border border-gray-soft-strong">
-                                  {product["fund"][0]["fund"]}
-                                </td>
-                                <td
-                                  className="px-2 py-5 border border-gray-soft-strong"
-                                  rowSpan={
-                                    product["fund"].length == 0
-                                      ? 1
-                                      : product["fund"].length
-                                  }
-                                >
-                                  {premiumTypes[product["premiumPaymentType"]]}
-                                </td>
-                              </>
-                            ) : (
-                              <>
-                                <td className="px-2 py-5 border border-gray-soft-strong"></td>
-                                <td className="px-2 py-5 border border-gray-soft-strong"></td>
-                              </>
-                            )}
-
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1
-                                  : product["fund"].length
-                              }
-                            >
-                              {product["premium"]}
-                            </td>
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1
-                                  : product["fund"].length
-                              }
-                            >
-                              {getPremiumFrequencyName(
-                                product["premiumFrequency"]
-                              )}
-                            </td>
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1
-                                  : product["fund"].length
-                              }
-                            >
-                              {getModelRiskCategoryName(
-                                product["modelPortfolioRiskCategory"]
-                              )}
-                            </td>
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1
-                                  : product["fund"].length
-                              }
-                            >
-                              {getHigherThanProfileName(
-                                product["higherThanRiskProfile"]
-                              )}
-                            </td>
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1 + product["riders"].length
-                                  : product["fund"].length +
-                                    product["riders"].length
-                              }
-                            >
-                              {product["nameOfInsure"] == null ||
-                              product["nameOfInsure"] == "-1"
-                                ? getNameFromId(product["nameOfOwner"])
-                                : getNameFromId(product["nameOfOwner"]) +
-                                  "/" +
-                                  checkNameOfInsure(
-                                    product["nameOfInsure"],
-                                    product["nameOfInsureOther"]
-                                  )}
-                            </td>
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1 + product["riders"].length
-                                  : product["fund"].length +
-                                    product["riders"].length
-                              }
-                            >
-                              <div
-                                className="items-center justify-start gap-2 mb-10"
-                                id={`custome-checkbox2-${i}`}
+        <RowSingleGrid>
+          <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
+            <table className="w-full text-sm text-left border divide-y rounded-md divide-gray-soft-strong border-gray-soft-strong border-slate-500">
+              <thead className="bg-white-bone">
+                <tr>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    SN
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Name of ILP Plan / Rider(s)
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Fund Name
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Fund Amount (%)
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Premium Type
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Premium ($)
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Premium Frequency
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Model Portfolio Risk Category
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">{`Is the recommendation of a higher risk than the client's risk profile?`}</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Name of Owner/Insured
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Client Choice{" "}
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Deviate
+                  </th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">
+                    Group Name
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {getPfr9?.CISILPProducts
+                  ? getPfr9.CISILPProducts.map((product: any, i: any) => (
+                      <Fragment key={"sasd" + i}>
+                        <tr>
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1 + product["riders"].length
+                                : product["fund"].length +
+                                  product["riders"].length
+                            }
+                          >
+                            {getPfr9.recommendedProduct.length + i + 1}
+                          </td>
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1
+                                : product["fund"].length
+                            }
+                          >
+                            {product.cis ? product.cis.name : product["name"]}
+                          </td>
+                          {product["fund"].length > 0 ? (
+                            <>
+                              <td className="px-2 py-5 border border-gray-soft-strong">
+                                {product["fund"][0]["name"]}
+                              </td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">
+                                {product["fund"][0]["fund"]}
+                              </td>
+                              <td
+                                className="px-2 py-5 border border-gray-soft-strong"
+                                rowSpan={
+                                  product["fund"].length == 0
+                                    ? 1
+                                    : product["fund"].length
+                                }
                               >
-                                <div className="items-start justify-start gap-4">
-                                  <input
-                                    type="checkbox"
-                                    checked={product.checked}
-                                    className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
-                                  />
-                                  <span></span>
-                                </div>
-                              </div>
-                            </td>
-                            <td
-                              className="px-2 py-5 border border-gray-soft-strong"
-                              rowSpan={
-                                product["fund"].length == 0
-                                  ? 1 + product["riders"].length
-                                  : product["fund"].length +
-                                    product["riders"].length
-                              }
+                                {premiumTypes[product["premiumPaymentType"]]}
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                            </>
+                          )}
+
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1
+                                : product["fund"].length
+                            }
+                          >
+                            {product["premium"]}
+                          </td>
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1
+                                : product["fund"].length
+                            }
+                          >
+                            {getPremiumFrequencyName(
+                              product["premiumFrequency"]
+                            )}
+                          </td>
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1
+                                : product["fund"].length
+                            }
+                          >
+                            {getModelRiskCategoryName(
+                              product["modelPortfolioRiskCategory"]
+                            )}
+                          </td>
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1
+                                : product["fund"].length
+                            }
+                          >
+                            {getHigherThanProfileName(
+                              product["higherThanRiskProfile"]
+                            )}
+                          </td>
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1 + product["riders"].length
+                                : product["fund"].length +
+                                  product["riders"].length
+                            }
+                          >
+                            {product["nameOfInsure"] == null ||
+                            product["nameOfInsure"] == "-1"
+                              ? getNameFromId(product["nameOfOwner"])
+                              : getNameFromId(product["nameOfOwner"]) +
+                                "/" +
+                                checkNameOfInsure(
+                                  product["nameOfInsure"],
+                                  product["nameOfInsureOther"]
+                                )}
+                          </td>
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1 + product["riders"].length
+                                : product["fund"].length +
+                                  product["riders"].length
+                            }
+                          >
+                            <div
+                              className="items-center justify-start gap-2 mb-10"
+                              id={`custome-checkbox2-${i}`}
                             >
-                              {dataOutcome[product["nameOfOwner"]] == 1 ? (
-                                <>
-                                  <div
-                                    className="items-center justify-start gap-2 mb-10"
-                                    id={`custome-checkbox2-${i}`}
-                                  >
-                                    <div className="items-start justify-start gap-4">
-                                      <input
-                                        type="checkbox"
-                                        checked={product.checked}
-                                        className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
-                                      />
-                                      <span></span>
-                                    </div>
-                                  </div>
-                                </>
-                              ) : (
-                                ""
-                              )}
-                            </td>
-                            {i == 0 ||
-                            product["groupId"] !=
-                              getPfrNine.CISILPProducts[i - 1]["groupId"] ? (
+                              <div className="items-start justify-start gap-4">
+                                <input
+                                  type="checkbox"
+                                  checked={product.checked}
+                                  className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                                />
+                                <span></span>
+                              </div>
+                            </div>
+                          </td>
+                          <td
+                            className="px-2 py-5 border border-gray-soft-strong"
+                            rowSpan={
+                              product["fund"].length == 0
+                                ? 1 + product["riders"].length
+                                : product["fund"].length +
+                                  product["riders"].length
+                            }
+                          >
+                            {dataOutcome[product["nameOfOwner"]] == 1 ? (
                               <>
-                                <td
-                                  className="px-2 py-5 border border-gray-soft-strong"
-                                  rowSpan={
-                                    dataRowOfGroupCell["cisilp"][
-                                      product["groupId"]
-                                    ] > 5
-                                      ? dataRowOfGroupCell["cisilp"][
-                                          product["groupId"]
-                                        ] + 2
-                                      : dataRowOfGroupCell["cisilp"][
-                                          product["groupId"]
-                                        ] + 1
-                                  }
+                                <div
+                                  className="items-center justify-start gap-2 mb-10"
+                                  id={`custome-checkbox2-${i}`}
                                 >
-                                  {getGroupName(product["groupId"])}
-                                </td>
+                                  <div className="items-start justify-start gap-4">
+                                    <input
+                                      type="checkbox"
+                                      checked={product.checked}
+                                      className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                                    />
+                                    <span></span>
+                                  </div>
+                                </div>
                               </>
                             ) : (
                               ""
                             )}
-                          </tr>
-                          {product.fund.length > 0
-                            ? product.fund.map((fund: any, f: any) =>
-                                f != 0 ? (
-                                  <tr key={"sas" + f}>
-                                    <td className="px-2 py-5 border border-gray-soft-strong">
-                                      {fund["name"]}
-                                    </td>
-                                    <td className="px-2 py-5 border border-gray-soft-strong">
-                                      {fund["fund"]}
-                                    </td>
-                                  </tr>
-                                ) : (
-                                  ""
-                                )
+                          </td>
+                          {i == 0 ||
+                          product["groupId"] !=
+                            getPfr9.CISILPProducts[i - 1]["groupId"] ? (
+                            <>
+                              <td
+                                className="px-2 py-5 border border-gray-soft-strong"
+                                rowSpan={
+                                  dataRowOfGroupCell["cisilp"][
+                                    product["groupId"]
+                                  ] > 5
+                                    ? dataRowOfGroupCell["cisilp"][
+                                        product["groupId"]
+                                      ] + 2
+                                    : dataRowOfGroupCell["cisilp"][
+                                        product["groupId"]
+                                      ] + 1
+                                }
+                              >
+                                {getGroupName(product["groupId"])}
+                              </td>
+                            </>
+                          ) : (
+                            ""
+                          )}
+                        </tr>
+                        {product.fund.length > 0
+                          ? product.fund.map((fund: any, f: any) =>
+                              f != 0 ? (
+                                <tr key={"sas" + f}>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {fund["name"]}
+                                  </td>
+                                  <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {fund["fund"]}
+                                  </td>
+                                </tr>
+                              ) : (
+                                ""
                               )
-                            : ""}
-                        </Fragment>
-                      ))
-                    : ""}
-                </tbody>
-              </table>
-            </div>
-          </RowSingleGrid>
-        ) : null}
+                            )
+                          : ""}
+                      </Fragment>
+                    ))
+                  : ""}
+              </tbody>
+            </table>
+          </div>
+        </RowSingleGrid>
 
         <RowSingleGrid>
           <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
@@ -3708,23 +3879,28 @@ const AnalysisRecommendation = (props: Props) => {
               <thead className="bg-white-bone">
                 <tr>
                   <th className="px-2 py-5">SN</th>
-                  <th className="px-2 py-5">{`Product(s)/Rider(s) Name`}</th>
+                  <th className="px-2 py-5">Product(s)/Rider(s) Name</th>
                   <th className="px-2 py-5">Feature</th>
                   <th className="px-2 py-5">Group Name</th>
                 </tr>
               </thead>
               <tbody className="align-top">
-                {dataProductAndRiders?.length &&
-                  dataProductAndRiders.map((data, index) => (
-                    <tr key={"dsd" + index}>
-                      <td className="px-2 py-5">{data.no + 1}</td>
-                      <td className="px-2 py-5">{data.name}</td>
-                      <td className="w-1/2 px-2 py-5">{data.feature}</td>
-                      <td className="px-2 py-5">
-                        {getGroupName(data.groupId)}
-                      </td>
-                    </tr>
-                  ))}
+                <tr>
+                  <td className="px-2 py-5">1</td>
+                  <td className="px-2 py-5">Singlife Savvy Invest</td>
+                  <td className="w-1/2 px-2 py-5">
+                    {`Singlife Savvy Invest is a whole life, regular premium
+                    investment-linked plan (ILP) that provides investment
+                    opportunities as well as protection against death and
+                    terminal illness. This plan offers a welcome bonus to help
+                    boost the policyholder’s initial investment value and it
+                    also rewards the policyholder with a loyalty bonus along the
+                    policy term. At a life stage event, the policyholder can
+                    also make a penalty-free withdrawal from the policy up to a
+                    limit.`}
+                  </td>
+                  <td className="px-2 py-5">Protection</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -3757,21 +3933,21 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody className="align-top">
-                {dataBenefits?.length &&
-                  dataBenefits.map((data, index) => (
-                    <tr key={"sas" + index}>
-                      <td className="px-2 py-5">{data.no + 1}</td>
-                      <td className="px-2 py-5">{data.productName}</td>
-                      <td className="px-2 py-5">{data.title}</td>
-                      <td className="px-2 py-5">{data.content}</td>
-                      <td className="px-2 py-5">
-                        {data.mainProductName ? data.mainProductName : ""}
-                      </td>
-                      <td className="px-2 py-5">
-                        {getGroupName(data.groupId)}
-                      </td>
-                    </tr>
-                  ))}
+                <tr>
+                  <td className="px-2 py-5">1</td>
+                  <td className="px-2 py-5">Singlife Savvy Invest</td>
+                  <td className="px-2 py-5">Minimum Investment Period</td>
+                  <td className="px-2 py-5">
+                    {`There are two variations of minimum investment period
+                    available under this plan: (a) Fixed; and (b) Flexible. Both
+                    the Fixed and Flexible options offer a range of different
+                    durations that the policyholder can choose from, depending
+                    on his/her preferred commitment period. Please refer to the
+                    policy contract for more information.`}
+                  </td>
+                  <td className="px-2 py-5">-</td>
+                  <td className="px-2 py-5">Group One</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -3837,19 +4013,21 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody className="align-top">
-                {dataRisks?.length &&
-                  dataRisks.map((data, index) => (
-                    <tr key={"sas" + index}>
-                      <td className="px-2 py-5">{data.no + 1}</td>
-                      <td className="px-2 py-5">{data.productName}</td>
-                      <td className="px-2 py-5">{data.title}</td>
-                      <td className="px-2 py-5">{data.content}</td>
-                      <td className="px-2 py-5">{data.mainProductName}</td>
-                      <td className="px-2 py-5">
-                        {getGroupName(data.groupId)}
-                      </td>
-                    </tr>
-                  ))}
+                <tr>
+                  <td className="px-2 py-5">1</td>
+                  <td className="px-2 py-5">Singlife Savvy Invest</td>
+                  <td className="px-2 py-5">Minimum Investment Period</td>
+                  <td className="px-2 py-5">
+                    {`There are two variations of minimum investment period
+                    available under this plan: (a) Fixed; and (b) Flexible. Both
+                    the Fixed and Flexible options offer a range of different
+                    durations that the policyholder can choose from, depending
+                    on his/her preferred commitment period. Please refer to the
+                    policy contract for more information.`}
+                  </td>
+                  <td className="px-2 py-5">-</td>
+                  <td className="px-2 py-5">Group One</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -3940,8 +4118,14 @@ const AnalysisRecommendation = (props: Props) => {
               },
             }}
           />
+          {/* <TextArea label="Reason" defaultValue="Test reason" rows={5} /> */}
         </RowSingleGrid>
       </SectionCardSingleGrid>
+      {/* <SectionCardFooter>
+        <ButtonGreenMedium onClick={() => saveData(10)}>
+          Continue <ArrowRightLineIcon size={20} />
+        </ButtonGreenMedium>
+      </SectionCardFooter> */}
     </div>
   );
 };
@@ -3950,4 +4134,4 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default AnalysisRecommendation;
+export default AnalysisRecommendationBackup;

@@ -28,9 +28,16 @@ import EditLineIcon from "remixicon-react/EditLineIcon";
 import DeleteBin2LineIcon from "remixicon-react/DeleteBin2LineIcon";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
 import { Transition, Dialog } from "@headlessui/react";
+import { useRouter } from "next/router";
+import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 
 
 const GroupRecommendation = () => {
+
+  let router = useRouter();
+  let pfrType = usePersonalInformation((state) => state.type);
+  let pfrId = usePersonalInformation((state) => state.id);
+
   let {
     section9RecommendGroup
   } = useAnalysisRecommendationGroup();
@@ -51,7 +58,8 @@ const GroupRecommendation = () => {
 
   const currencyFormat = (num:any) => {
     if(num){
-      return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      let number = Number(num)
+      return '$' + number.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
     }else{
       return 0.00
     }
@@ -119,7 +127,7 @@ const GroupRecommendation = () => {
       {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
     );
 
-    const pfrId = localStorage.getItem("s9_PfrId");
+    // const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
     
     // Find Pfr Section 8
@@ -578,8 +586,8 @@ const GroupRecommendation = () => {
       setShowModal(true)
     }else{
       setShowModal(false)
-      var idpfr = localStorage.getItem("s9_PfrId");
-      let rm = await removeRecommendation(idpfr, dataRemoveId);
+      // var idpfr = localStorage.getItem("s9_PfrId");
+      let rm = await removeRecommendation(pfrId, dataRemoveId);
       if(rm.status == 200){
         // showDetailData(91)
         setLoad(true)
@@ -592,11 +600,18 @@ const GroupRecommendation = () => {
 
   const saveData = async (params: any) => {
     try{
-      const pfrId = localStorage.getItem("s9_PfrId");
+      // const pfrId = localStorage.getItem("s9_PfrId");
       let save = await saveGroup({"name": groupName, "pfrId": pfrId});
       if(save.status == 200){
         // const pfrId = localStorage.setItem("s9_PfrId","0");
         showDetailData(params);
+        let typePfrString = pfrType == 1 ? "single" : "joint" 
+        if(Number(pfrId) > 0) {
+          router.push(`/create/${typePfrString}?id=${pfrId}#section-9`)
+        }else {
+          router.push(`/create/${typePfrString}#section-9`)
+        }
+        
       }
     } catch (error) {
       console.error('error', error);
@@ -606,11 +621,18 @@ const GroupRecommendation = () => {
   const cancelData = (params: any) => {
     // const pfrId = localStorage.setItem("s9_PfrId","0");
     showDetailData(params)
+    // const pfrId = localStorage.getItem("s9_PfrId");
+    let typePfrString = pfrType == 1 ? "single" : "joint" 
+        if(Number(pfrId) > 0) {
+          router.push(`/create/${typePfrString}?id=${pfrId}#section-9`)
+        }else {
+          router.push(`/create/${typePfrString}#section-9`)
+        }
 
   }
 
   return (
-    <>
+    <div className="min-h-screen pb-20 mb-20">
       <Transition appear show={showModal} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
@@ -697,7 +719,6 @@ const GroupRecommendation = () => {
               <tbody>
                 {getPfrData?.clients ? 
                   getPfrData.clients.map((data: any, index:any) => (
-                    <>
                       <tr key={index}>
                         <td className="px-2 py-5">
                           Client {index+1}
@@ -733,7 +754,6 @@ const GroupRecommendation = () => {
                           { currencyFormat(dataSinglePayorBudget[index][4]) }
                         </td>
                       </tr>
-                    </>
                   ))
                 : ''}
               </tbody>
@@ -755,7 +775,6 @@ const GroupRecommendation = () => {
               <tbody>
                 {getPfrData?.clients ? 
                   getPfrData.clients.map((data: any, index:any) => (
-                    <>
                       <tr key={index}>
                         <td className="px-2 py-5">
                           Client {index+1}
@@ -765,7 +784,6 @@ const GroupRecommendation = () => {
                           }
                         </td>
                       </tr>
-                    </>
                   ))
                 : ''}
               </tbody>
@@ -814,8 +832,7 @@ const GroupRecommendation = () => {
               <tbody>
               {getPfrData?.clients ? 
                   getPfrData.clients.map((data: any, index:any) => (
-                    <>
-                      <tr>
+                      <tr key={"sds"+index}>
                         <td className="px-2 py-5">Client {index + 1}</td>
                         <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][0] - dataMaxAnnualPremium[index][0]) ? 0 : currencyFormat(dataAnnualRemainBudget[index][0] - dataMaxAnnualPremium[index][0])}</td>
                         <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][0] - dataMaxSinglePremium[index][0]) ? 0 : currencyFormat(dataSingleRemainBudget[index][0] - dataMaxSinglePremium[index][0])}</td>
@@ -828,7 +845,6 @@ const GroupRecommendation = () => {
                         <td className="px-2 py-5 text-center">{isNaN(dataAnnualRemainBudget[index][4] - dataMaxAnnualPremium[index][4]) ? 0 : currencyFormat(dataAnnualRemainBudget[index][4] - dataMaxAnnualPremium[index][4])}</td>
                         <td className="px-2 py-5 text-center">{isNaN(dataSingleRemainBudget[index][4] - dataMaxSinglePremium[index][4]) ? 0 : currencyFormat(dataSingleRemainBudget[index][4] - dataMaxSinglePremium[index][4])}</td>
                       </tr>
-                    </>
                   ))
               : ''}
               </tbody>
@@ -847,16 +863,16 @@ const GroupRecommendation = () => {
         {/* Recommended Product */}
         <RowSingleGrid>
           <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
-            <table className="w-full text-sm text-left divide-y rounded-md divide-gray-soft-strong border border-gray-soft-strong border-slate-500">
+            <table className="w-full text-sm text-left border divide-y rounded-md divide-gray-soft-strong border-gray-soft-strong border-slate-500">
               <thead className="bg-white-bone">
                 <tr>
-                  <th className="border border-gray-soft-strong px-2 py-5">SN</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Product/Rider Name</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium Type</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium($)</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Premium Frequency</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Owner</th>
-                  <th className="border border-gray-soft-strong px-2 py-5">Action</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">SN</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Product/Rider Name</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium Type</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium($)</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Premium Frequency</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Owner</th>
+                  <th className="px-2 py-5 border border-gray-soft-strong">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -864,45 +880,43 @@ const GroupRecommendation = () => {
                     getRecommendationData.products.map((dataProd: any, index:any) => (
                         dataProd['product']['categoryId'] != 8 && dataProd['product']['categoryId'] != 5 ? 
                         (
-                          <>
+                          <Fragment key={"sd"+index}>
                             <tr>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>{index + 1}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5"><b>{dataProd.name}</b></td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{premiumTypes[dataProd.premiumPaymentType]}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{currencyFormat(dataProd.premium)}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{getPremiumFrequencyName(dataProd.premiumFrequency)}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>Client {dataProd.nameOfOwner + 1}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={1 + dataProd.riders.length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={1 + dataProd.riders.length}>{index + 1}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong"><b>{dataProd.name}</b></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{premiumTypes[dataProd.premiumPaymentType]}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{currencyFormat(dataProd.premium)}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{getPremiumFrequencyName(dataProd.premiumFrequency)}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={1 + dataProd.riders.length}>Client {dataProd.nameOfOwner + 1}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={1 + dataProd.riders.length}>
+                                <ButtonBox className="pr-2 text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                                 
                               </td>
                             </tr>
 
                             {dataProd?.riders ? 
-                              dataProd.riders.map((dataRide: any) => (
-                                <>
-                                  <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                              dataProd.riders.map((dataRide: any, index : any) => (
+                                  <tr key={"sds" +index}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       <ul>
                                         <li>{ dataRide["name"] }</li>
                                       </ul>
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { premiumTypes[dataRide["premiumPaymentType"]] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ dataRide["premium"] }</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ dataRide["premium"] }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       {
                                         getPremiumFrequencyName(dataRide["premiumFrequency"])
                                       }
                                     </td>
                                   </tr>
-                                </>
                               ))
                             : ''}
 
@@ -926,11 +940,11 @@ const GroupRecommendation = () => {
                               </td>
                               <td className="px-2 py-5 border border-gray-soft-strong" colSpan={2}></td>
                             </tr>  
-                          </>
+                          </Fragment>
                           
                         )
                         : 
-                        (<>
+                        (<Fragment key={"Sds"+index}>
                           <tr>
                             <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + dataProd['riders'].length}>
                               { index + 1 }
@@ -956,10 +970,10 @@ const GroupRecommendation = () => {
                             </td>
                             <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={2 + dataProd['riders'].length}>
                                 <ButtonBox className="text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                             </td>
                           </tr>
@@ -975,25 +989,23 @@ const GroupRecommendation = () => {
                           </tr>
 
                           {dataProd?.riders ? 
-                              dataProd.riders.map((dataRide: any) => (
-                                <>
-                                  <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                              dataProd.riders.map((dataRide: any, index:any) => (
+                                  <tr key={"ssd"+index}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       <ul>
                                         <li>{ dataRide["name"] }</li>
                                       </ul>
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { premiumTypes[dataRide["premiumPaymentType"]] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{ dataRide["premium"] }</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{ dataRide["premium"] }</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       {
                                         getPremiumFrequencyName(dataRide["premiumFrequency"])
                                       }
                                     </td>
                                   </tr>
-                                </>
                               ))
                           : ''}
 
@@ -1017,7 +1029,7 @@ const GroupRecommendation = () => {
                             </td>
                             <td className="px-2 py-5 border border-gray-soft-strong" colSpan={2}></td>
                           </tr> 
-                        </>)        
+                        </Fragment>)        
                       
                     ))
                 : ''}
@@ -1047,30 +1059,30 @@ const GroupRecommendation = () => {
               <tbody>
                 {getRecommendationData?.ILP ? 
                     getRecommendationData.ILP.map((dataProd: any, index:any) => (
-                        <>
+                        <Fragment key={"sds"+index}>
                             <tr>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                   {index + 1}
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
                                 {dataProd.name}
                               </b></td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                   Client {dataProd.nameOfOwner + 1}
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                <ButtonBox className="pr-2 text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                                 
                               </td>
@@ -1078,74 +1090,70 @@ const GroupRecommendation = () => {
                             {dataProd?.fund ? 
                               dataProd.fund.map((dataFund:any, indexFund:any) => (
                                 indexFund != 0 ?
-                                <>
-                                  <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.name}</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.fund}</td>
+                                  <tr key={"sds"+indexFund}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{dataFund.name}</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{dataFund.fund}</td>
                                   </tr>
-                                </>
                                 : ''
                               ))
                             : ''}  
 
                             {dataProd?.riders ? 
                               dataProd.riders.map((dataRide:any, indexRide:any) => (
-                                <>
-                                  <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                  <tr key={"Sds"+indexRide}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { dataRide["name"] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { premiumTypes[dataRide["premiumPaymentType"]] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { dataRide["premium"] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
-                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong"></td>
                                   </tr>
-                                </>
                               ))
                             : ''}
                             
                             <tr>
-                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}><b>Subtotal Premium ($)</b></td>
-                              <td className="border border-gray-soft-strong px-2 py-5">
+                              <td className="px-2 py-5 border border-gray-soft-strong" colSpan={3}><b>Subtotal Premium ($)</b></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">
                                 <b>{ currencyFormat(dataProd["premium"]) }</b>
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" colSpan={3}></td>
                             </tr>
-                        </>        
+                        </Fragment>        
                     ))
                 : ''}
 
                 {/* Data Custome Product */}
                 {getRecommendationData?.custom ? 
                     getRecommendationData.custom.map((dataProd: any, index:any) => (
-                        <>
+                        <Fragment key={"sds"+index}>
                             <tr>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                   {index + 1}
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
                                 {dataProd.name}
                               </b></td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                   Client {dataProd.nameOfOwner + 1}
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                <ButtonBox className="pr-2 text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                                 
                               </td>
@@ -1153,74 +1161,70 @@ const GroupRecommendation = () => {
                             {dataProd?.fund ? 
                               dataProd.fund.map((dataFund:any, indexFund:any) => (
                                 indexFund != 0 ?
-                                <>
-                                  <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.name}</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.fund}</td>
+                                  <tr key={"sd"+indexFund}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{dataFund.name}</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{dataFund.fund}</td>
                                   </tr>
-                                </>
                                 : ''
                               ))
                             : ''}  
 
                             {dataProd?.riders ? 
                               dataProd.riders.map((dataRide:any, indexRide:any) => (
-                                <>
-                                  <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                  <tr key={"sds"+indexRide}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { dataRide["name"] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { premiumTypes[dataRide["premiumPaymentType"]] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { dataRide["premium"] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
-                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong"></td>
                                   </tr>
-                                </>
                               ))
                             : ''}
                             
                             <tr>
-                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}><b>Subtotal Premium ($)</b></td>
-                              <td className="border border-gray-soft-strong px-2 py-5">
+                              <td className="px-2 py-5 border border-gray-soft-strong" colSpan={3}><b>Subtotal Premium ($)</b></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">
                                 <b>{ currencyFormat(dataProd["premium"]) }</b>
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" colSpan={3}></td>
                             </tr>
-                        </>        
+                        </Fragment>        
                     ))
                 : ''}
 
                 {/* Data CIS */}
                 {getRecommendationData?.CIS ? 
                     getRecommendationData.CIS.map((dataProd: any, index:any) => (
-                        <>
+                        <Fragment key={"sds"+index}>
                             <tr>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                   {index + 1}
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}><b>
                                 {getPortfolioName(dataProd.cis)}
                               </b></td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
-                              <td className="border border-gray-soft-strong px-2 py-5">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{premiumTypes[dataProd.premiumPaymentType]}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0 ? 1 : dataProd['fund'].length}>{currencyFormat(dataProd.premium)}</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{dataProd.fund.length > 0 ? dataProd.fund[0].name : '' }</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">{dataProd.fund.length > 0 ? dataProd.fund[0].fund : '' }</td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
                                   Client {dataProd.nameOfOwner + 1}
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" rowSpan={dataProd['fund'].length == 0
+                              <td className="px-2 py-5 border border-gray-soft-strong" rowSpan={dataProd['fund'].length == 0
                                 ? 1 + dataProd['riders'].length : dataProd['fund'].length + dataProd['riders'].length}>
-                                <ButtonBox className="text-green-deep pr-2" onClick={(event) => showDetail(dataProd.id)}>
-                                  <EditLineIcon key={index} />
+                                <ButtonBox className="pr-2 text-green-deep" onClick={(event) => showDetail(dataProd.id)}>
+                                  <EditLineIcon size={14} key={index} />
                                 </ButtonBox>
                                 <ButtonBox className="text-amber-600" onClick={(event) => removeData(dataProd.id, true)}>
-                                  <DeleteBin2LineIcon key={index} />
+                                  <DeleteBin2LineIcon size={14} key={index} />
                                 </ButtonBox>
                                 
                               </td>
@@ -1228,44 +1232,40 @@ const GroupRecommendation = () => {
                             {dataProd?.fund ? 
                               dataProd.fund.map((dataFund:any, indexFund:any) => (
                                 indexFund != 0 ?
-                                <>
-                                  <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.name}</td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">{dataFund.fund}</td>
+                                  <tr key={"ss"+indexFund}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{dataFund.name}</td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">{dataFund.fund}</td>
                                   </tr>
-                                </>
                                 : ''
                               ))
                             : ''}  
 
                             {dataProd?.riders ? 
                               dataProd.riders.map((dataRide:any, indexRide:any) => (
-                                <>
-                                  <tr>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                  <tr key={"sds"+indexRide}>
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { dataRide["name"] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { premiumTypes[dataRide["premiumPaymentType"]] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5">
+                                    <td className="px-2 py-5 border border-gray-soft-strong">
                                       { dataRide["premium"] }
                                     </td>
-                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
-                                    <td className="border border-gray-soft-strong px-2 py-5"></td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong"></td>
+                                    <td className="px-2 py-5 border border-gray-soft-strong"></td>
                                   </tr>
-                                </>
                               ))
                             : ''}
                             
                             <tr>
-                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}><b>Subtotal Premium ($)</b></td>
-                              <td className="border border-gray-soft-strong px-2 py-5">
+                              <td className="px-2 py-5 border border-gray-soft-strong" colSpan={3}><b>Subtotal Premium ($)</b></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong">
                                 <b>{ currencyFormat(dataProd["premium"]) }</b>
                               </td>
-                              <td className="border border-gray-soft-strong px-2 py-5" colSpan={3}></td>
+                              <td className="px-2 py-5 border border-gray-soft-strong" colSpan={3}></td>
                             </tr>
-                        </>        
+                        </Fragment>        
                     ))
                 : ''}
               
@@ -1283,10 +1283,10 @@ const GroupRecommendation = () => {
       </SectionCardSingleGrid>
 
       <SectionCardFooter className="mx-8 2xl:mx-60">
-        <ButtonGreenMedium onClick={() => saveData(9)}>Save</ButtonGreenMedium>
-        <ButtonRedMedium onClick={() => cancelData(9)}>Cancel</ButtonRedMedium>
+        <ButtonGreenMedium onClick={() => saveData(200)}>Save</ButtonGreenMedium>
+        <ButtonRedMedium onClick={() => cancelData(200)}>Cancel</ButtonRedMedium>
       </SectionCardFooter>
-    </>
+    </div>
   );
 };
 
