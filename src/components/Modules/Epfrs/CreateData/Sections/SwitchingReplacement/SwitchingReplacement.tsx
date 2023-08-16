@@ -692,7 +692,10 @@ const SwitchingReplacement = (props: Props) => {
       // }
     }
 
-    fetchData();
+    if (scrollPositionBottomSection9 === 'Process9') {
+      fetchData();
+    }
+
   }, [scrollPositionBottomSection9, router.isReady, router.query.id]);
 
   useEffect(() => {
@@ -722,14 +725,14 @@ const SwitchingReplacement = (props: Props) => {
     }
     localStorage.setItem("section10", JSON.stringify({
       ...sectionTenData,
-      editableStatus: editable??0
+      editableStatus: editable
     }));
   }, [sectionTenData]);
 
   useEffect(() => {
     localStorage.setItem('section10', JSON.stringify({
       ...sectionTenData,
-      editableStatus: editable??0
+      editableStatus: editable
     }));
   }, [editable]);
 
