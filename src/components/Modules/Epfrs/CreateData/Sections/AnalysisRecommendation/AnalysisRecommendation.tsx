@@ -27,6 +27,7 @@ import {
   pfrSection,
   getRecommendation,
   getPfr,
+  getPfrStep,
 } from "@/services/pfrService";
 import { useRouter } from "next/router";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
@@ -189,7 +190,8 @@ const AnalysisRecommendation = (props: Props) => {
   console.log("Ini ada isinya nggak?")
   console.log(getClients)
 
-  let payorBudget = useAffordability((state) => state.section8.payorBudget);
+  // let payorBudget = useAffordability((state) => state.section8.payorBudget);
+  const [payorBudget, setPayorBudget] = useState<any>([]);
 
   const [dataTotalAnnualPremium, setTotalAnnualPremium] = useState<any>([
     [0, 0, 0, 0, 0],
@@ -461,11 +463,15 @@ const AnalysisRecommendation = (props: Props) => {
       (router.query.id !== null && router.query.id !== undefined) ||
       Number(pfrId) > 0 || sectionCreateEpfrId === 200
     ) {
-      if (scrollPositionBottom === "Process8") {
+      if (scrollPositionBottom === "Process8" || scrollPosition === "okSec9") {
         let pfrIdRiil = Number(pfrId) > 0 ? Number(pfrId) : router.query.id;
         setParent("editableStatus", pfrLocal.editableSection9);
         setParent("pfrId", pfrIdRiil);
         setParent("status", pfrLocal.section9);
+
+        getPfrStep(8, pfrId).then((data: any) => {
+            setPayorBudget(data["payorBudgetsForClients"]);
+        });
 
         // Section 9
         pfrSection(9, pfrId).then((data: any) => {
@@ -646,6 +652,9 @@ const AnalysisRecommendation = (props: Props) => {
           });
 
           calcPremiumMatrix(data);
+
+          getProductRiderBenefitRisk();
+          getGroupRow();
         });
 
         // get whole context
@@ -657,9 +666,6 @@ const AnalysisRecommendation = (props: Props) => {
           });
           setOutcome(resOutcome);
         });
-
-        getProductRiderBenefitRisk();
-        getGroupRow();
       }
     }
 
@@ -1665,8 +1671,8 @@ const AnalysisRecommendation = (props: Props) => {
 
     let productNo = 0;
 
-    // console.log("get recomendeed here");
-    // console.log(getPfrNine.recommendedProduct);
+    console.log("get recomendeed here");
+    console.log(getPfrNine.recommendedProduct);
 
     if (getPfrNine.recommendedProduct) {
       getPfrNine.recommendedProduct.map((product: any, i: any) => {
@@ -1960,6 +1966,22 @@ const AnalysisRecommendation = (props: Props) => {
     }
   };
 
+  const handleClientChoice = (e:any, index:number) => {
+    setPfrNine({
+      ...getPfrNine,
+      recommendedProduct: getPfrNine.recommendedProduct.map((tmpRecommendProduct: any, tmpIndex: number) => {
+        if (tmpIndex == index) {
+          return {
+            ...tmpRecommendProduct,
+            checked: e.target.checked
+          }
+        } else {
+          return tmpRecommendProduct;
+        }
+      })
+    });
+  };
+
   console.log("final result dapet gak.?");
   console.log(dataProductAndRiders);
 
@@ -2213,42 +2235,42 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 1
                           ? currencyFormat(payorBudget[index][1].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 1
                           ? currencyFormat(payorBudget[index][1].single)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 2
                           ? currencyFormat(payorBudget[index][2].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 2
                           ? currencyFormat(payorBudget[index][2].single)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 3
                           ? currencyFormat(payorBudget[index][3].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 3
                           ? currencyFormat(payorBudget[index][3].single)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 4
                           ? currencyFormat(payorBudget[index][4].annual)
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 4
                           ? currencyFormat(payorBudget[index][4].single)
                           : 0}
                       </td>
@@ -2302,11 +2324,11 @@ const AnalysisRecommendation = (props: Props) => {
                     <tr key={"sds" + index}>
                       <td className="px-2 py-5">Client {index + 1}</td>
                       <td className="px-2 py-5 text-center">
-                        {isNaN(dataTotalAnnualPremiumChoice[index][0])
+                        {getPfrNine.recommendedProduct[index].checked? (isNaN(dataTotalAnnualPremiumChoice[index][0])
                           ? 0
                           : currencyFormat(
                               dataTotalAnnualPremiumChoice[index][0]
-                            )}
+                            )) : (0)}
                       </td>
                       <td className="px-2 py-5 text-center">
                         {isNaN(dataTotalSinglePremiumChoice[index][0])
@@ -2428,8 +2450,15 @@ const AnalysisRecommendation = (props: Props) => {
                                 dataTotalAnnualPremiumChoice[index][0]
                             )
                             ? 0
-                            : Number(payorBudget[index][0].annual) -
-                              dataTotalAnnualPremiumChoice[index][0]
+                            : !getPfrNine.recommendedProduct[index].checked ?
+                              (Number(payorBudget[index][0].annual) -
+                              dataTotalAnnualPremiumChoice[index][0] + (isNaN(dataTotalAnnualPremiumChoice[index][0])
+                                ? 0
+                                : dataTotalAnnualPremiumChoice[index][0]
+                                )
+                              ) : 
+                              (Number(payorBudget[index][0].annual) -
+                              dataTotalAnnualPremiumChoice[index][0])
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
@@ -2444,7 +2473,7 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 1
                           ? isNaN(
                               Number(payorBudget[index][1].annual) -
                                 dataTotalAnnualPremiumChoice[index][1]
@@ -2455,7 +2484,7 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 1
                           ? isNaN(
                               Number(payorBudget[index][1].single) -
                                 dataTotalSinglePremiumChoice[index][1]
@@ -2466,7 +2495,7 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 2
                           ? isNaN(
                               Number(payorBudget[index][2].annual) -
                                 dataTotalAnnualPremiumChoice[index][2]
@@ -2477,7 +2506,7 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 2
                           ? isNaN(
                               Number(payorBudget[index][2].single) -
                                 dataTotalSinglePremiumChoice[index][2]
@@ -2488,7 +2517,7 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 3
                           ? isNaN(
                               Number(payorBudget[index][3].annual) -
                                 dataTotalAnnualPremiumChoice[index][3]
@@ -2499,7 +2528,7 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 3
                           ? isNaN(
                               Number(payorBudget[index][3].single) -
                                 dataTotalSinglePremiumChoice[index][3]
@@ -2510,7 +2539,7 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 4
                           ? isNaN(
                               Number(payorBudget[index][4].annual) -
                                 dataTotalAnnualPremiumChoice[index][4]
@@ -2521,7 +2550,7 @@ const AnalysisRecommendation = (props: Props) => {
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
-                        {payorBudget.length > 0 && payorBudget[index].length > 0
+                        {payorBudget.length > 0 && payorBudget[index].length > 4
                           ? isNaN(
                               Number(payorBudget[index][4].single) -
                                 dataTotalSinglePremiumChoice[index][4]
@@ -2676,6 +2705,7 @@ const AnalysisRecommendation = (props: Props) => {
                                     <input
                                       type="checkbox"
                                       checked={product.checked}
+                                      onChange={(e) => handleClientChoice(e, index)}
                                       className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
                                     />
                                     <span></span>
@@ -3035,7 +3065,7 @@ const AnalysisRecommendation = (props: Props) => {
                           <b>Client {i + 1} </b>
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                          {dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                        {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
                           0 ? (
                             <>
                               <b>
@@ -3045,9 +3075,9 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][0] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
                           0 ? (
                             <>
                               <b>
@@ -3057,9 +3087,9 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
                           0 ? (
                             <>
                               <b>
@@ -3069,9 +3099,9 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][1] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
                           0 ? (
                             <>
                               <b>
@@ -3081,9 +3111,9 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
                           0 ? (
                             <>
                               <b>
@@ -3093,9 +3123,9 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][2] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
                           0 ? (
                             <>
                               <b>
@@ -3105,9 +3135,9 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
                           0 ? (
                             <>
                               <b>
@@ -3117,9 +3147,9 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][3] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
                           0 ? (
                             <>
                               <b>
@@ -3129,9 +3159,9 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
                           0 ? (
                             <>
                               <b>
@@ -3141,8 +3171,8 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
-                          {dataTotalRecomendationSinglePremiumChoice[i][4] >
+                          )) : ("")}
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
                           0 ? (
                             <>
                               <b>
@@ -3152,278 +3182,278 @@ const AnalysisRecommendation = (props: Props) => {
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                          {dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                        {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationAnnualPremiumChoice[
                                     i
                                   ][0]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][0] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationSinglePremiumChoice[
                                     i
                                   ][0]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationAnnualPremiumChoice[
                                     i
                                   ][1]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][1] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationSinglePremiumChoice[
                                     i
                                   ][1]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationAnnualPremiumChoice[
                                     i
                                   ][2]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][2] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationSinglePremiumChoice[
                                     i
                                   ][2]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationAnnualPremiumChoice[
                                     i
                                   ][3]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][3] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationSinglePremiumChoice[
                                     i
                                   ][3]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationAnnualPremiumChoice[
                                     i
                                   ][4]
-                                }
+                                ) : ("")}
                                 <br />
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][4] >
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
                           0 ? (
                             <>
                               <b>
-                                {
+                                {getPfrNine.recommendedProduct[i].checked ? (
                                   dataTotalRecomendationSinglePremiumChoice[
                                     i
                                   ][4]
-                                }
+                                ) : ("")}
                               </b>
                             </>
                           ) : (
                             ""
-                          )}
+                          )) : ("")}
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                          {dataTotalRecomendationAnnualPremiumChoice[i][0] >
-                          0 ? (
-                            <>
-                              <b>
-                                Annually <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Annually <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][0] >
-                          0 ? (
-                            <>
-                              <b>
-                                Single Payment <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Single Payment <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][1] >
-                          0 ? (
-                            <>
-                              <b>
-                                Annually <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Annually <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][1] >
-                          0 ? (
-                            <>
-                              <b>
-                                Single Payment <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Single Payment <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][2] >
-                          0 ? (
-                            <>
-                              <b>
-                                Annually <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Annually <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][2] >
-                          0 ? (
-                            <>
-                              <b>
-                                Single Payment <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Single Payment <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][3] >
-                          0 ? (
-                            <>
-                              <b>
-                                Annually <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Annually <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][3] >
-                          0 ? (
-                            <>
-                              <b>
-                                Single Payment <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Single Payment <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationAnnualPremiumChoice[i][4] >
-                          0 ? (
-                            <>
-                              <b>
-                                Annually <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Annually <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
 
-                          {dataTotalRecomendationSinglePremiumChoice[i][4] >
-                          0 ? (
-                            <>
-                              <b>
-                                Single Payment <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )}
+                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
+                            0 ? (
+                              <>
+                                <b>
+                                  Single Payment <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )) : ("")}
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
                           {getNameFromId(i)}
