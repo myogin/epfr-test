@@ -180,13 +180,13 @@ const RepresentativeDeclaration = (props: Props) => {
         id: Number(router.query.id),
         status: pfrLocal.section12
       });
-      if (scrollPositionBottomSection11 === "Process11") {
+      // if (scrollPositionBottomSection11 === "Process11") {
         // setSectionTwelveData({
         //   ...sectionTwelveData,
         //   id: Number(router.query.id),
         //   status: pfrLocal.section12
         // });
-      }
+      // }
     }else {
       const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
         setSectionTwelveData({
@@ -194,18 +194,18 @@ const RepresentativeDeclaration = (props: Props) => {
           id: Number(section1?.state?.id),
           status: pfrLocal.section12
       });
-      if (scrollPositionBottomSection11 === "Process11") {
+      // if (scrollPositionBottomSection11 === "Process11") {
         // const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
         // setSectionTwelveData({
         //   ...sectionTwelveData,
         //   id: Number(section1?.state?.id),
         //   status: pfrLocal.section12
         // });
-      }
+      // }
     }
-    
+    if (scrollPositionBottomSection11 === "Process11") {
       fetchData();
-    // }
+    }
   }, [scrollPositionBottomSection11, router.isReady, router.query.id]);
 
   const [showModal, setShowModal] = useState(false);
