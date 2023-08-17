@@ -24,6 +24,7 @@ import {
   pfrSection,
   removeRecommendation,
   saveGroup,
+  updateRecommendGroup,
 } from "@/services/pfrService";
 import { getAllCompany } from "@/services/companyService";
 import { productFindOne } from "@/services/productService";
@@ -165,7 +166,7 @@ const GroupRecommendation = () => {
       await pfrSection(8, pfrId).then((data: any) => {
         setPfr8(data);
 
-        console.log("data section 8", data)
+        console.log("data section 8", data);
 
         let payorBudgets = data["payorBudgets"];
         payorBudgets.map((budget: any) => {
@@ -239,8 +240,7 @@ const GroupRecommendation = () => {
 
       // Find Pfr Section 9
       await pfrSection(9, pfrId).then((data: any) => {
-
-        console.log("data section 9", data)
+        console.log("data section 9", data);
 
         setPfr9(data);
         calcReaminingBudgets(data);
@@ -260,7 +260,7 @@ const GroupRecommendation = () => {
     // setSinglePayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
     // setAnnualRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
     // setSingleRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-    
+
     // setTotalAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
     // setTotalSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
     // setMaxAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
@@ -268,13 +268,21 @@ const GroupRecommendation = () => {
 
     // setProductAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
     // setProductSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-    
-    setDataSubPremium(
-      {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
-    );
-    setResDataTotalPremiumArr(
-      {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
-    );
+
+    setDataSubPremium({
+      Monthly: 0,
+      Quarterly: 0,
+      HalfYearly: 0,
+      Annually: 0,
+      SinglePayment: 0,
+    });
+    setResDataTotalPremiumArr({
+      Monthly: 0,
+      Quarterly: 0,
+      HalfYearly: 0,
+      Annually: 0,
+      SinglePayment: 0,
+    });
 
     getGroupRecommendationData(pfrGroupId);
   }, [dataLoad]);
@@ -449,7 +457,6 @@ const GroupRecommendation = () => {
   };
 
   const getTotalPremium = () => {
-
     if (getRecommendationData?.products) {
       getRecommendationData.products.map((product: any) => {
         product["riders"].map((rider: any) => {
@@ -488,8 +495,7 @@ const GroupRecommendation = () => {
   };
 
   const calcPremium = (product: any, isRider: any) => {
-
-    console.log("masuk hitung calc",product)
+    console.log("masuk hitung calc", product);
 
     let frequency = product["premiumFrequency"];
     let clientId = product["nameOfOwner"];
@@ -690,17 +696,38 @@ const GroupRecommendation = () => {
 
   const saveData = async (params: any) => {
     try {
-      // const pfrId = localStorage.getItem("s9_PfrId");
-      let save = await saveGroup({ name: groupName, pfrId: pfrId });
-      if (save.status == 200) {
-        // const pfrId = localStorage.setItem("s9_PfrId","0");
-        const pfrId = localStorage.setItem("s9_dataGroup","0");
-        showDetailData(params);
-        let typePfrString = pfrType == 1 ? "single" : "joint";
-        if (Number(pfrId) > 0) {
-          router.push(`/create/${typePfrString}?id=${pfrId}#section-9`);
-        } else {
-          router.push(`/create/${typePfrString}#section-9`);
+      const groupId = localStorage.getItem("s9_dataGroup");
+
+      if (Number(groupId) === 0) {
+        let save = await saveGroup({ name: groupName, pfrId: pfrId });
+        if (save.status == 200) {
+          // const pfrId = localStorage.setItem("s9_PfrId","0");
+          localStorage.setItem("s9_dataGroup", "0");
+
+          showDetailData(params);
+          let typePfrString = pfrType == 1 ? "single" : "joint";
+          if (Number(pfrId) > 0) {
+            router.push(`/create/${typePfrString}?id=${pfrId}#section-9`);
+          } else {
+            router.push(`/create/${typePfrString}#section-9`);
+          }
+        }
+      } else {
+        let update = await updateRecommendGroup({
+          groupId: groupId,
+          name: groupName,
+          pfrId: pfrId,
+        });
+        if (update.status == 200) {
+          localStorage.setItem("s9_dataGroup", "0");
+
+          showDetailData(params);
+          let typePfrString = pfrType == 1 ? "single" : "joint";
+          if (Number(pfrId) > 0) {
+            router.push(`/create/${typePfrString}?id=${pfrId}#section-9`);
+          } else {
+            router.push(`/create/${typePfrString}#section-9`);
+          }
         }
       }
     } catch (error) {
@@ -709,7 +736,7 @@ const GroupRecommendation = () => {
   };
 
   const cancelData = (params: any) => {
-    const pfrId = localStorage.setItem("s9_dataGroup","0");
+    const pfrId = localStorage.setItem("s9_dataGroup", "0");
     showDetailData(params);
     // const pfrId = localStorage.getItem("s9_PfrId");
     let typePfrString = pfrType == 1 ? "single" : "joint";
@@ -874,11 +901,13 @@ const GroupRecommendation = () => {
                           {getPfr8?.annualIncome
                             ? isNaN(
                                 getPfr8.annualIncome[index].sum -
-                                getPfr8.annualExpense[index].sum1
+                                  getPfr8.annualExpense[index].sum1
                               )
                               ? 0
-                              : currencyFormat(getPfr8.annualIncome[index].sum -
-                              getPfr8.annualExpense[index].sum1)
+                              : currencyFormat(
+                                  getPfr8.annualIncome[index].sum -
+                                    getPfr8.annualExpense[index].sum1
+                                )
                             : 0}
                         </td>
                       </tr>
@@ -1125,7 +1154,7 @@ const GroupRecommendation = () => {
                                 Client {dataProd.nameOfOwner + 1}
                               </td>
                               <td
-                                className="px-2 py-5 border border-gray-soft-strong"
+                                className="px-2 py-5 space-x-2 space-y-2 border border-gray-soft-strong"
                                 rowSpan={1 + dataProd.riders.length}
                               >
                                 <ButtonBox
@@ -1444,7 +1473,7 @@ const GroupRecommendation = () => {
                               Client {dataProd.nameOfOwner + 1}
                             </td>
                             <td
-                              className="px-2 py-5 border border-gray-soft-strong"
+                              className="px-2 py-5 space-x-2 space-y-2 border border-gray-soft-strong"
                               rowSpan={
                                 dataProd["fund"].length == 0
                                   ? 1 + dataProd["riders"].length

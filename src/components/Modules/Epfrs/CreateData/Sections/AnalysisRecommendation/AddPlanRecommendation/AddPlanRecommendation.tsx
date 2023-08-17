@@ -3447,7 +3447,7 @@ const AddPlanRecommendation = () => {
         ""
       )}
       <SectionCardFooter className="mx-8 2xl:mx-60">
-        {section9Recommend.product.benefit.length == 0 || section9Recommend.product.risk.length == 0 ? <ButtonBorderMedium>Save</ButtonBorderMedium> : <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>}
+        {(dataProductSelected.benefits?.length > 0 && section9Recommend.product.benefit.length == 0) || (dataProductSelected.risks?.length > 0 && section9Recommend.product.risk.length == 0) ? <ButtonBorderMedium>Save</ButtonBorderMedium> : <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>}
         
         <ButtonRedMedium onClick={() => cancleData(91)}>Cancel</ButtonRedMedium>
       </SectionCardFooter>

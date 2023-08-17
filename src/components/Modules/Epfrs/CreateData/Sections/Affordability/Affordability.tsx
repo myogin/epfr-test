@@ -28,6 +28,7 @@ import {
 import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisRecommendation";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 
 interface Props {
   id?: any;
@@ -1144,11 +1145,11 @@ const Affordability = (props: Props) => {
           })}
         </div>
       </SectionCardSingleGrid>
-      {/* <SectionCardFooter>
-        <ButtonGreenMedium>
-          Continue <ArrowRightLineIcon size={20} />
-        </ButtonGreenMedium>
-      </SectionCardFooter> */}
+      {editableStatus === 2 && status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 8" />
+      ) : (
+        ""
+      )}
     </div>
   );
 };

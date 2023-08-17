@@ -68,6 +68,9 @@ export const saveGroup = async (data: any) => {
   return await http.post(`/pfr/save/tempRecommend`, data, { headers: authHeader() });
 };
 
+export const updateRecommendGroup = async (data: any) => {
+  return await http.post(`/pfr/update/recommendGroup`, data, {headers: authHeader()})
+}
 
 export const pfrSection = async (section: any, id: any) => {
   const response = await fetch(
