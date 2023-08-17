@@ -463,7 +463,7 @@ const AnalysisRecommendation = (props: Props) => {
       (router.query.id !== null && router.query.id !== undefined) ||
       Number(pfrId) > 0 || sectionCreateEpfrId === 200
     ) {
-      if (scrollPositionBottom === "Process8" || scrollPosition === "okSec9") {
+      if (scrollPositionBottom === "Process8" || scrollPosition === "okSec9" || sectionCreateEpfrId === 200) {
         let pfrIdRiil = Number(pfrId) > 0 ? Number(pfrId) : router.query.id;
         setParent("editableStatus", pfrLocal.editableSection9);
         setParent("pfrId", pfrIdRiil);
