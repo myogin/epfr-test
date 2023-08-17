@@ -326,7 +326,7 @@ const existingPortofolio = create(
                 console.log("masuk disini");
                 draft.summaryOfProperty.splice(dataIndex, 1);
 
-                // reset index 0 dependent data
+                // reset index 0 summaryOfProperty data
               } else {
                 let dataReplace = draft.summaryOfProperty[0];
                 dataReplace.id = 0;

@@ -187,7 +187,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   let getClients = getLength(props.pfrType);
 
-  console.log("Ini ada isinya nggak?")
+  console.log("Ini ada isinya nggak? " + props.pfrType)
   console.log(getClients)
 
   // let payorBudget = useAffordability((state) => state.section8.payorBudget);
@@ -1990,6 +1990,10 @@ const AnalysisRecommendation = (props: Props) => {
 
   console.log("final risk dapet gak.?");
   console.log(dataRisks);
+
+  console.log("cek ada isinya ni getPfr");
+  console.log(getPfrNine)
+  console.log(Object.keys(getPfrNine).length)
   return (
     <div
       id={props.id}
@@ -2324,7 +2328,7 @@ const AnalysisRecommendation = (props: Props) => {
                     <tr key={"sds" + index}>
                       <td className="px-2 py-5">Client {index + 1}</td>
                       <td className="px-2 py-5 text-center">
-                        {getPfrNine.recommendedProduct[index].checked? (isNaN(dataTotalAnnualPremiumChoice[index][0])
+                        {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[index].checked? (isNaN(dataTotalAnnualPremiumChoice[index][0])
                           ? 0
                           : currencyFormat(
                               dataTotalAnnualPremiumChoice[index][0]
@@ -2450,7 +2454,7 @@ const AnalysisRecommendation = (props: Props) => {
                                 dataTotalAnnualPremiumChoice[index][0]
                             )
                             ? 0
-                            : !getPfrNine.recommendedProduct[index].checked ?
+                            : Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && !getPfrNine.recommendedProduct[index].checked ?
                               (Number(payorBudget[index][0].annual) -
                               dataTotalAnnualPremiumChoice[index][0] + (isNaN(dataTotalAnnualPremiumChoice[index][0])
                                 ? 0
@@ -2581,7 +2585,7 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getPfrNine?.groups
+                {Object.keys(getPfrNine).length > 0 && getPfrNine?.groups
                   ? getPfrNine.groups.map((dataGroup: any, index: any) => (
                       <tr key={"sas" + index}>
                         <td className="px-2 py-5">{index + 1}</td>
@@ -2646,7 +2650,7 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {getPfrNine?.recommendedProduct
+                {Object.keys(getPfrNine).length > 0 && getPfrNine?.recommendedProduct
                   ? getPfrNine.recommendedProduct.map(
                       (product: any, index: any) =>
                         product["product"]["categoryId"] != 8 &&
@@ -3065,7 +3069,7 @@ const AnalysisRecommendation = (props: Props) => {
                           <b>Client {i + 1} </b>
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                        {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                        {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
                           0 ? (
                             <>
                               <b>
@@ -3077,7 +3081,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
                           0 ? (
                             <>
                               <b>
@@ -3089,7 +3093,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
                           0 ? (
                             <>
                               <b>
@@ -3101,7 +3105,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
                           0 ? (
                             <>
                               <b>
@@ -3113,7 +3117,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
                           0 ? (
                             <>
                               <b>
@@ -3125,7 +3129,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
                           0 ? (
                             <>
                               <b>
@@ -3137,7 +3141,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
                           0 ? (
                             <>
                               <b>
@@ -3149,7 +3153,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
                           0 ? (
                             <>
                               <b>
@@ -3161,7 +3165,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
                           0 ? (
                             <>
                               <b>
@@ -3172,7 +3176,7 @@ const AnalysisRecommendation = (props: Props) => {
                           ) : (
                             ""
                           )) : ("")}
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
                           0 ? (
                             <>
                               <b>
@@ -3185,7 +3189,7 @@ const AnalysisRecommendation = (props: Props) => {
                           )) : ("")}
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                        {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                        {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
                           0 ? (
                             <>
                               <b>
@@ -3201,7 +3205,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
                           0 ? (
                             <>
                               <b>
@@ -3217,7 +3221,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
                           0 ? (
                             <>
                               <b>
@@ -3233,7 +3237,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
                           0 ? (
                             <>
                               <b>
@@ -3249,7 +3253,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
                           0 ? (
                             <>
                               <b>
@@ -3265,7 +3269,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
                           0 ? (
                             <>
                               <b>
@@ -3281,7 +3285,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
                           0 ? (
                             <>
                               <b>
@@ -3297,7 +3301,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
                           0 ? (
                             <>
                               <b>
@@ -3313,7 +3317,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
                           0 ? (
                             <>
                               <b>
@@ -3329,7 +3333,7 @@ const AnalysisRecommendation = (props: Props) => {
                             ""
                           )) : ("")}
 
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
                           0 ? (
                             <>
                               <b>
@@ -3345,7 +3349,7 @@ const AnalysisRecommendation = (props: Props) => {
                           )) : ("")}
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                          {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
                             0 ? (
                               <>
                                 <b>
@@ -3356,7 +3360,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
                             0 ? (
                               <>
                                 <b>
@@ -3367,7 +3371,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
                             0 ? (
                               <>
                                 <b>
@@ -3378,7 +3382,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
                             0 ? (
                               <>
                                 <b>
@@ -3389,7 +3393,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
                             0 ? (
                               <>
                                 <b>
@@ -3400,7 +3404,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
                             0 ? (
                               <>
                                 <b>
@@ -3411,7 +3415,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
                             0 ? (
                               <>
                                 <b>
@@ -3422,7 +3426,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
                             0 ? (
                               <>
                                 <b>
@@ -3433,7 +3437,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
                             0 ? (
                               <>
                                 <b>
@@ -3444,7 +3448,7 @@ const AnalysisRecommendation = (props: Props) => {
                               ""
                             )) : ("")}
 
-                            {getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
+                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
                             0 ? (
                               <>
                                 <b>
@@ -3468,7 +3472,7 @@ const AnalysisRecommendation = (props: Props) => {
         </RowSingleGrid>
 
         {/* Ilp Product */}
-        {getPfrNine.CISILPProducts > 0 ? (
+        {Object.keys(getPfrNine).length > 0 && getPfrNine.CISILPProducts > 0 ? (
           <RowSingleGrid>
             <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
               <table className="w-full text-sm text-left border divide-y rounded-md divide-gray-soft-strong border-gray-soft-strong border-slate-500">
@@ -3514,7 +3518,7 @@ const AnalysisRecommendation = (props: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {getPfrNine?.CISILPProducts
+                  {Object.keys(getPfrNine).length > 0 && getPfrNine?.CISILPProducts
                     ? getPfrNine.CISILPProducts.map((product: any, i: any) => (
                         <Fragment key={"sasd" + i}>
                           <tr>
