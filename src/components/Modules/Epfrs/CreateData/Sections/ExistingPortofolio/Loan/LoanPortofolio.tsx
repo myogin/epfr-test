@@ -41,7 +41,7 @@ const LoanPortofolio = () => {
     lender: "",
     interestRate: 0,
     monthlyLoanRepayment: 0,
-    clientPfr: "Manual"
+    clientPfr: "Manual",
   };
 
   const [newData, setNewData] = useState(initialState);
@@ -479,14 +479,12 @@ const LoanPortofolio = () => {
                         : ""}
                     </td>
                     <td className="px-2 py-5">{data.loanTerm}</td>
-                    {data.typeOfLoan === "1" ? (
-                      <>
-                        <td className="px-2 py-5">{data.typeOfVehicle}</td>
-                        <td className="px-2 py-5">{data.loanStatus}</td>
-                      </>
-                    ) : (
-                      ""
-                    )}
+                    <td className="px-2 py-5">
+                      {data.typeOfLoan === "1" ? data.typeOfVehicle : ""}
+                    </td>
+                    <td className="px-2 py-5">
+                      {data.typeOfLoan === "1" ? data.loanStatus : ""}
+                    </td>
 
                     <td className="px-2 py-5">{data.yearOfLoanTaken}</td>
                     <td className="px-2 py-5">{data.amountBorrowed}</td>
