@@ -81,6 +81,7 @@ const BalanceSheet = (props: Props) => {
       if (getSection4.liabilityOther.length > 0) {
         fetchLiability(getSection4.liabilityOther);
       }
+      calcTotal();
       // fetching assets data
       fetchInitData(getSection4);
       setLoading(false); // Stop loading
