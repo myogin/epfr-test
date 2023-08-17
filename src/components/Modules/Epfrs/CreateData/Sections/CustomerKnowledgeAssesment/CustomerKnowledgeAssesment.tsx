@@ -88,8 +88,8 @@ const CustomerKnowledgeAssesment = (props: Props) => {
     }
   }, [need, props.pfrType]);
 
-  const scrollPositionBottom = useScrollPositionBottom(6);
 
+  const scrollPositionNext = useScrollPosition(7);
   // get id from group 1 and paste to grou 2
   let { id } = usePersonalInformation();
 
@@ -126,7 +126,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
     }
   };
   useEffect(() => {
-    if (scrollPositionBottom === "Process6") {
+    if (scrollPositionNext === "okSec7") {
       if (
         (editableStatus === 0 && status === 1) ||
         (editableStatus === 2 && status === 1)
@@ -137,15 +137,14 @@ const CustomerKnowledgeAssesment = (props: Props) => {
         console.log("Your data not complete Section 6");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext]);
 
   const router = useRouter();
   // fetching data for section 5 when position at 4
-  const scrollPositionNext = useScrollPosition(5);
 
-  const scrollPositionBottom4 = useScrollPositionBottom(4);
+  const scrollPositionBottom5 = useScrollPositionBottom(5);
   useEffect(() => {
-    if (scrollPositionBottom4 === "Process4") {
+    if (scrollPositionBottom5 === "Process5") {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
@@ -155,7 +154,7 @@ const CustomerKnowledgeAssesment = (props: Props) => {
         }
       }
     }
-  }, [scrollPositionBottom4]);
+  }, [scrollPositionBottom5]);
 
   const [loading, setLoading] = useState(false);
 
@@ -185,11 +184,10 @@ const CustomerKnowledgeAssesment = (props: Props) => {
       console.error(error);
     }
   };
-  // return loading ? (
-  //   <LoadingPage />
-  // ) : (
+  return loading ? (
+    <LoadingPage />
+  ) : (
 
-  return (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
@@ -322,11 +320,11 @@ const CustomerKnowledgeAssesment = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {/* {editableStatus === 2 && status === 1 ? (
+      {editableStatus === 2 && status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 6" />
       ) : (
         ""
-      )} */}
+      )}
     </div>
   );
 };

@@ -128,36 +128,54 @@ const balanceSheet = (set: any, get: any) => ({
     set(
       produce((drafts: any) => {
         drafts.others.asset.push(data);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   deleteAsset: (index: number) =>
     set(
       produce((drafts: any) => {
         drafts.others.asset.splice(index, 1);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   updateAsset: (index: number, data: any) =>
     set(
       produce((drafts: any) => {
         drafts.others.asset[index] = data;
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   addLiability: (data: any) =>
     set(
       produce((drafts: any) => {
         drafts.others.liability.push(data);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   deleteLiability: (index: number) =>
     set(
       produce((drafts: any) => {
         drafts.others.liability.splice(index, 1);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   updateLiability: (index: number, data: any) =>
     set(
       produce((drafts: any) => {
         drafts.others.liability[index] = data;
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   calcTotal: (api?: any) =>
@@ -236,6 +254,9 @@ const balanceSheet = (set: any, get: any) => ({
       produce((drafts: any) => {
         drafts.need[client] = value;
         drafts.status = validate(drafts, pfrType);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     );
   },
@@ -244,6 +265,9 @@ const balanceSheet = (set: any, get: any) => ({
       produce((drafts: any) => {
         drafts.reason[client] = reason;
         drafts.status = validate(drafts, pfrType);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     );
   },
