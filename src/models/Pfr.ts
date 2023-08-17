@@ -41,6 +41,18 @@ export interface PfrShort {
   editableSection10: any;
   editableSection11: any;
   editableSection12: any;
+  gate1: any;
+  gate2: any;
+  gate3: any;
+  gate4: any;
+  gate5: any;
+  gate6: any;
+  gate7: any;
+  gate8: any;
+  gate9: any;
+  gate10: any;
+  gate11: any;
+  gate12: any;
 }
 
 export interface PfrFull {

@@ -15,18 +15,18 @@ const initialState: PfrDataModel = {
     ownerId: 0,
     status: 0,
     editable: 0,
-    section1: undefined,
-    section2: undefined,
-    section3: undefined,
-    section4: undefined,
-    section5: undefined,
-    section6: undefined,
-    section7: undefined,
-    section8: undefined,
-    section9: undefined,
-    section10: undefined,
-    section11: undefined,
-    section12: undefined,
+    section1: 0,
+    section2: 0,
+    section3: 0,
+    section4: 0,
+    section5: 0,
+    section6: 0,
+    section7: 0,
+    section8: 0,
+    section9: 0,
+    section10: 0,
+    section11: 0,
+    section12: 0,
     pdf_1: undefined,
     folder1: undefined,
     folder2: undefined,
@@ -40,18 +40,30 @@ const initialState: PfrDataModel = {
     documentIdOfSubmission2: undefined,
     epfr_uuid: undefined,
     client_reg_type: undefined,
-    editableSection1: undefined,
-    editableSection2: undefined,
-    editableSection3: undefined,
-    editableSection4: undefined,
-    editableSection5: undefined,
-    editableSection6: undefined,
-    editableSection7: undefined,
-    editableSection8: undefined,
-    editableSection9: undefined,
-    editableSection10: undefined,
-    editableSection11: undefined,
-    editableSection12: undefined,
+    editableSection1: 0,
+    editableSection2: 0,
+    editableSection3: 0,
+    editableSection4: 0,
+    editableSection5: 0,
+    editableSection6: 0,
+    editableSection7: 0,
+    editableSection8: 0,
+    editableSection9: 0,
+    editableSection10: 0,
+    editableSection11: 0,
+    editableSection12: 0,
+    gate1: 0,
+    gate2: 0,
+    gate3: 0,
+    gate4: 0,
+    gate5: 0,
+    gate6: 0,
+    gate7: 0,
+    gate8: 0,
+    gate9: 0,
+    gate10: 0,
+    gate11: 0,
+    gate12: 0
   },
 };
 
@@ -105,6 +117,20 @@ const pfrData = create(
               draft.pfr.editableSection10 = params.editableSection10 >= 0 ? params.editableSection10 : 0;
               draft.pfr.editableSection11 = params.editableSection11 >= 0 ? params.editableSection11 : 0;
               draft.pfr.editableSection12 = params.editableSection12 >= 0 ? params.editableSection12 : 0;
+
+              // Gate Setting
+              draft.pfr.gate1 = 0
+              draft.pfr.gate2 = 0
+              draft.pfr.gate3 = 0
+              draft.pfr.gate4 = 0
+              draft.pfr.gate5 = 0
+              draft.pfr.gate6 = 0
+              draft.pfr.gate7 = 0
+              draft.pfr.gate8 = 0
+              draft.pfr.gate9 = 0
+              draft.pfr.gate10 = 0
+              draft.pfr.gate11 = 0
+              draft.pfr.gate12 = 0
             })
           ),
         resetPfr: () => {

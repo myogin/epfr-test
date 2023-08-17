@@ -19,6 +19,7 @@ import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 import { useRouter } from "next/router";
 import { useBalanceSheet } from "@/store/epfrPage/createData/balanceSheet";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
+import LoaderPage from "./components/LoaderPage";
 
 interface Props {
   id?: any;
@@ -122,37 +123,43 @@ const CashFlow = (props: Props) => {
 
   const [loading, setLoading] = useState(false);
 
+  let gate3 = usePfrData((state) => state.pfr.gate3);
+  let setPfr = usePfrData((state) => state.setPfr);
+
   const getSectionData = async (params: any) => {
     try {
-      setLoading(true); // Set loading before sending API request
-      let getSection3 = await getPfrStep(3, params);
+      if (gate3 === 0) {
+        setLoading(true); // Set loading before sending API request
+        let getSection3 = await getPfrStep(3, params);
 
-      console.log(getSection3);
-      console.log(getSection3.annualIncome);
-      console.log(getSection3.annualExpenses);
+        console.log(getSection3);
+        console.log(getSection3.annualIncome);
+        console.log(getSection3.annualExpenses);
 
-      // setGlobal("editableStatus", getSection2.pfr.editableSection1);
-      // setGlobal("status", getSection2.pfr.section1);
+        // setGlobal("editableStatus", getSection2.pfr.editableSection1);
+        // setGlobal("status", getSection2.pfr.section1);
 
-      // Fetch annual
-      if (getSection3.annualExpenses.length > 0) {
-        getSection3.annualExpenses.map((data: any, index: number) => {
-          if (index < props.pfrType) {
-            fetchExpense(index, data);
-          }
-        });
+        // Fetch annual
+        if (getSection3.annualExpenses.length > 0) {
+          getSection3.annualExpenses.map((data: any, index: number) => {
+            if (index < props.pfrType) {
+              fetchExpense(index, data);
+            }
+          });
+        }
+
+        // Fetch annual expense
+        if (getSection3.annualIncome.length > 0) {
+          getSection3.annualIncome.map((data: any, index: number) => {
+            if (index < props.pfrType) {
+              fetchAnnual(index, data);
+            }
+          });
+        }
+
+        setLoading(false); // Stop loading
+        setPfr("gate3", 1);
       }
-
-      // Fetch annual expense
-      if (getSection3.annualIncome.length > 0) {
-        getSection3.annualIncome.map((data: any, index: number) => {
-          if (index < props.pfrType) {
-            fetchAnnual(index, data);
-          }
-        });
-      }
-
-      setLoading(false); // Stop loading
     } catch (error) {
       setLoading(false); // Stop loading in case of error
       console.error(error);
@@ -188,7 +195,9 @@ const CashFlow = (props: Props) => {
     }
   }, [scrollPositionNext, editableStatus, status]);
 
-  return (
+  return loading ? (
+    <LoaderPage />
+  ) : (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"

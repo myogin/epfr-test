@@ -26,6 +26,7 @@ import { useCashFlow } from "@/store/epfrPage/createData/cashFlow";
 import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
 import { getLength } from "@/libs/helper";
+import LoaderPage from "./components/LoaderPage";
 
 interface Props {
   id?: any;
@@ -150,101 +151,108 @@ const ExistingPortofolio = (props: Props) => {
 
   const [loading, setLoading] = useState(false);
 
+  let gate2 = usePfrData((state) => state.pfr.gate2)
+  let setPfr = usePfrData((state) => state.setPfr)
+
   const getSectionData = async (params: any) => {
     try {
-      setLoading(true); // Set loading before sending API request
-      let getSection2 = await getPfrStep(2, params);
-
-      console.log(getSection2);
-
-      // Fetch Client
-      if (getSection2.summaryOfProperty.length > 0) {
-        if (getSection2.summaryOfProperty.length > 1) {
-          console.log("masuk reset")
-          resetProperty();
+      if(gate2 === 0) {
+        setLoading(true); // Set loading before sending API request
+        let getSection2 = await getPfrStep(2, params);
+  
+        console.log(getSection2);
+  
+        // Fetch Client
+        if (getSection2.summaryOfProperty.length > 0) {
+          if (getSection2.summaryOfProperty.length > 1) {
+            console.log("masuk reset")
+            resetProperty();
+          }
+          getSection2.summaryOfProperty.map((data: any, index: number) => {
+            fetchProperty(index, data);
+          });
         }
-        getSection2.summaryOfProperty.map((data: any, index: number) => {
-          fetchProperty(index, data);
-        });
-      }
-
-      // Fetch accompaintment
-      if (getSection2.summaryOfInvestment.length > 0) {
-        if (getSection2.summaryOfInvestment.length > 1) {
-          console.log("masuk reset")
-          resetInvestment();
+  
+        // Fetch accompaintment
+        if (getSection2.summaryOfInvestment.length > 0) {
+          if (getSection2.summaryOfInvestment.length > 1) {
+            console.log("masuk reset")
+            resetInvestment();
+          }
+          getSection2.summaryOfInvestment.map((data: any, index: number) => {
+            fetchInvestment(index, data);
+          });
         }
-        getSection2.summaryOfInvestment.map((data: any, index: number) => {
-          fetchInvestment(index, data);
-        });
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfSaving.length > 0) {
-        if (getSection2.summaryOfSaving.length > 1) {
-          console.log("masuk reset")
-          resetSaving();
+  
+        // Fetch trusted individual
+        if (getSection2.summaryOfSaving.length > 0) {
+          if (getSection2.summaryOfSaving.length > 1) {
+            console.log("masuk reset")
+            resetSaving();
+          }
+          getSection2.summaryOfSaving.map((data: any, index: number) => {
+            fetchSaving(index, data);
+          });
         }
-        getSection2.summaryOfSaving.map((data: any, index: number) => {
-          fetchSaving(index, data);
-        });
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfCPF.length > 0) {
-        if (getSection2.summaryOfCPF.length > 1) {
-          console.log("masuk reset")
-          resetCpf();
+  
+        // Fetch trusted individual
+        if (getSection2.summaryOfCPF.length > 0) {
+          if (getSection2.summaryOfCPF.length > 1) {
+            console.log("masuk reset")
+            resetCpf();
+          }
+          getSection2.summaryOfCPF.map((data: any, index: number) => {
+            fetchCpf(index, data);
+          });
         }
-        getSection2.summaryOfCPF.map((data: any, index: number) => {
-          fetchCpf(index, data);
-        });
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfInsurance.length > 0) {
-        if (getSection2.summaryOfInsurance.length > 1) {
-          console.log("masuk reset")
-          resetInsurance();
+  
+        // Fetch trusted individual
+        if (getSection2.summaryOfInsurance.length > 0) {
+          if (getSection2.summaryOfInsurance.length > 1) {
+            console.log("masuk reset")
+            resetInsurance();
+          }
+          getSection2.summaryOfInsurance.map((data: any, index: number) => {
+            fetchInsurance(index, data);
+          });
         }
-        getSection2.summaryOfInsurance.map((data: any, index: number) => {
-          fetchInsurance(index, data);
-        });
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfInsurance2.length > 0) {
-        if (getSection2.summaryOfInsurance2.length > 1) {
-          console.log("masuk reset")
-          resetInsurance2();
+  
+        // Fetch trusted individual
+        if (getSection2.summaryOfInsurance2.length > 0) {
+          if (getSection2.summaryOfInsurance2.length > 1) {
+            console.log("masuk reset")
+            resetInsurance2();
+          }
+          getSection2.summaryOfInsurance2.map((data: any, index: number) => {
+            fetchInsurance2(index, data);
+          });
         }
-        getSection2.summaryOfInsurance2.map((data: any, index: number) => {
-          fetchInsurance2(index, data);
-        });
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfLoans.length > 0) {
-        if (getSection2.summaryOfLoans.length > 1) {
-          console.log("masuk reset")
-          resetLoan();
+  
+        // Fetch trusted individual
+        if (getSection2.summaryOfLoans.length > 0) {
+          if (getSection2.summaryOfLoans.length > 1) {
+            console.log("masuk reset")
+            resetLoan();
+          }
+          
+          fetchLoan(getSection2.summaryOfLoans);
         }
-        
-        fetchLoan(getSection2.summaryOfLoans);
-      }
-
-      // Fetch trusted individual
-      if (getSection2.summaryOfSRS.length > 0) {
-        if (getSection2.summaryOfSRS.length > 1) {
-          console.log("masuk reset")
-          resetSrs();
+  
+        // Fetch trusted individual
+        if (getSection2.summaryOfSRS.length > 0) {
+          if (getSection2.summaryOfSRS.length > 1) {
+            console.log("masuk reset")
+            resetSrs();
+          }
+          getSection2.summaryOfSRS.map((data: any, index: number) => {
+            fetchSrs(index, data);
+          });
         }
-        getSection2.summaryOfSRS.map((data: any, index: number) => {
-          fetchSrs(index, data);
-        });
+  
+        setLoading(false); // Stop loading
+        setPfr("gate2", 1)
       }
-
-      setLoading(false); // Stop loading
+      
     } catch (error) {
       setLoading(false); // Stop loading in case of error
       console.error(error);
@@ -397,7 +405,9 @@ const ExistingPortofolio = (props: Props) => {
     }
   }, [scrollPositionNext, editableStatus, status]);
 
-  return (
+  return loading ? (
+    <LoaderPage />
+  ) : (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
