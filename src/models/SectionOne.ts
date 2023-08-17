@@ -96,7 +96,7 @@ export interface TrustedIndividual {
 
 export interface SectionOne {
   ownerId?: number;
-  type?: number;
+  type: number;
   id?: number;
   clientInfo: Clientformation[];
   clientInfoSingpass: ClientformationSingpass[];
