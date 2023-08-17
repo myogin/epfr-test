@@ -13,19 +13,24 @@ import Head from "next/head";
 import { siteConfig } from "@/libs/config";
 import { useLoginData } from "@/store/login/logindata";
 import Loading from "@/components/Attributes/Loader/Loading";
+import { resendService } from "@/services/login/loginService";
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
   const { push } = useRouter();
   const error = (text: string) => toast.error(text);
+  const success = (text: string) => toast.success(text);
   const { userEmail, deleteEmail } = useUserData();
   const { data: session, status } = useSession();
   const { setLogin } = useLoginData();
+  const [showResend,setShowResend] = useState(false);
+
   useEffect(() => {
     if (userEmail === "") {
       push("/");
     }
   }, []);
   const verify = async (code: number) => {
+    setShowResend(true)
     setLoading(true);
     await signIn("login", {
       code: code,
@@ -48,6 +53,39 @@ const Verify: Page = () => {
 
     setLoading(false);
   };
+
+  const [resetTime,setResetTime] = useState(180)
+  const [intervalId,setIntervalId] = useState<any>(0)
+  const resend = async()=>{
+    
+   const countInterval= setInterval(()=>{
+      setResetTime(prev=>prev-1)
+
+    }, 1000);
+    setIntervalId(countInterval)
+    setLoading(true);
+        resendService(userEmail)
+        .then((res)=>{
+          success("Please check your email for verification code")
+          setLoading(false);
+
+        })
+        .catch(err=>{
+          error("Please Contact Administrator")
+          setLoading(false);
+
+        })
+      
+  }
+
+  useEffect(()=>{
+    if(resetTime==0){
+      clearInterval(intervalId);
+      setIntervalId(0)
+      setResetTime(180)
+    }
+  },[resetTime])
+
   const inputRef = useRef<any[]>([]);
   const [codeNumber, setCodeNumber] = useState<any[]>(["", "", "", "", "", ""]);
   const [mixInput, setMixInput] = useState(0);
@@ -96,10 +134,10 @@ const Verify: Page = () => {
                   {`We have sent a message to your email regarding the verification code`}
                 </span>
               </div>
-              <div className="mb-10">
+              <div className="mb-8">
                 <div className="flex justify-between w-full gap-2">
                   <input
-                    className="w-12 h-12 font-bold text-center rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md border-green-deep"
                     autoFocus
                     type="text"
                     value={codeNumber[0]}
@@ -114,7 +152,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 h-12 font-bold text-center rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md border-green-deep"
                     type="text"
                     value={codeNumber[1]}
                     onFocus={(e) => {
@@ -128,7 +166,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 h-12 font-bold text-center rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md border-green-deep"
                     type="text"
                     value={codeNumber[2]}
                     onFocus={(e) => {
@@ -142,7 +180,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 h-12 font-bold text-center rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md border-green-deep"
                     type="text"
                     value={codeNumber[3]}
                     onFocus={(e) => {
@@ -156,7 +194,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 h-12 font-bold text-center rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md border-green-deep"
                     type="text"
                     value={codeNumber[4]}
                     onFocus={(e) => {
@@ -170,7 +208,7 @@ const Verify: Page = () => {
                     }}
                   />
                   <input
-                    className="w-12 h-12 font-bold text-center rounded-md"
+                    className="w-12 h-12 font-bold text-center rounded-md border-green-deep"
                     type="text"
                     value={codeNumber[5]}
                     onFocus={(e) => {
@@ -185,6 +223,18 @@ const Verify: Page = () => {
                   />
                 </div>
               </div>
+              {showResend&&<div className="text-center mb-2 cursor-pointer text-green-deep">
+                
+                 {intervalId!=0?(
+                  <>
+                  <span className="text-[#000000]">Resend code in {resetTime}</span>
+                  </>
+                 ):(<>
+                  <button onClick={resend}>
+                  Resend Code
+                </button>
+                 </>)} 
+              </div>}
 
               <ButtonGreenMedium
                 onClick={() => {
