@@ -187,8 +187,8 @@ const AnalysisRecommendation = (props: Props) => {
 
   let getClients = getLength(props.pfrType);
 
-  console.log("Ini ada isinya nggak? " + props.pfrType)
-  console.log(getClients)
+  // console.log("Ini ada isinya nggak? " + props.pfrType)
+  // console.log(getClients)
 
   // let payorBudget = useAffordability((state) => state.section8.payorBudget);
   const [payorBudget, setPayorBudget] = useState<any>([]);
@@ -463,21 +463,20 @@ const AnalysisRecommendation = (props: Props) => {
       (router.query.id !== null && router.query.id !== undefined) ||
       Number(pfrId) > 0 || sectionCreateEpfrId === 200
     ) {
-      if (scrollPositionBottom === "Process8" || scrollPosition === "okSec9") {
+      if (scrollPosition === "okSec9") {
         let pfrIdRiil = Number(pfrId) > 0 ? Number(pfrId) : router.query.id;
         setParent("editableStatus", pfrLocal.editableSection9);
         setParent("pfrId", pfrIdRiil);
         setParent("status", pfrLocal.section9);
 
         getPfrStep(8, pfrId).then((data: any) => {
-            setPayorBudget(data["payorBudgetsForClients"]);
+          setPayorBudget(data["payorBudgetsForClients"]);
         });
 
         // Section 9
         pfrSection(9, pfrId).then((data: any) => {
 
-          console.log("Check Section 9 Data")
-          console.log(data)
+          console.log("Check Section 9 Data: ", data);
 
           setPfrNine(data);
           setRowsGroup(data.rowGroups);
@@ -670,7 +669,7 @@ const AnalysisRecommendation = (props: Props) => {
     }
 
     // console.log("section9Res", section9);
-  }, [section9, router.isReady, scrollPositionBottom, sectionCreateEpfrId]);
+  }, [section9, router.isReady, scrollPositionBottom, scrollPosition, sectionCreateEpfrId]);
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {
     switch (Number(premiumFrequency)) {
@@ -1982,18 +1981,18 @@ const AnalysisRecommendation = (props: Props) => {
     });
   };
 
-  console.log("final result dapet gak.?");
-  console.log(dataProductAndRiders);
+  // console.log("final result dapet gak.?");
+  // console.log(dataProductAndRiders);
 
-  console.log("final benefit dapet gak.?");
-  console.log(dataBenefits);
+  // console.log("final benefit dapet gak.?");
+  // console.log(dataBenefits);
 
-  console.log("final risk dapet gak.?");
-  console.log(dataRisks);
+  // console.log("final risk dapet gak.?");
+  // console.log(dataRisks);
 
-  console.log("cek ada isinya ni getPfr");
-  console.log(getPfrNine)
-  console.log(Object.keys(getPfrNine).length)
+  // console.log("cek ada isinya ni getPfr");
+  // console.log(getPfrNine)
+  // console.log(Object.keys(getPfrNine).length)
   return (
     <div
       id={props.id}
