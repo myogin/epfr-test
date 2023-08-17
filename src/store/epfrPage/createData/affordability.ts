@@ -167,7 +167,7 @@ const Affordability = create(
         setInit: (params: any) =>
           set(
             produce((draft) => {
-              if (get().section8.typeClient === 0) {
+              if ((params == 1 && get().section8.payorDetail.length === 0) || (params == 2 && get().section8.payorDetail.length === 1)) {
                 draft.section8.payorDetail = new Array(params).fill({
                   self: 0,
                   relationShip: null,
@@ -176,7 +176,8 @@ const Affordability = create(
                   occupation: null,
                   payorIncome: 0,
                 });
-
+              }
+              if ((params == 1 && get().section8.payorBudget[0].length === 0) || (params == 2 && get().section8.payorBudget[1].length === 0)) {
                 draft.section8.payorBudget = new Array(params)
                   .fill(false)
                   .map(() => {
@@ -187,7 +188,8 @@ const Affordability = create(
                       sourceOfFund: "",
                     });
                   });
-
+              }
+              if (get().section8.sourceOfWealth.length === 0) {
                 draft.section8.sourceOfWealth = new Array(params).fill({
                   employment: false,
                   investment: false,
@@ -236,8 +238,8 @@ const Affordability = create(
                   dataResSelection = true;
                 }
               } else {
-
-                let valueRiil = name == "single" || name == "annual" ? Number(value) : value
+                let valueRiil =
+                  name == "single" || name == "annual" ? Number(value) : value;
                 dataResSelection = valueRiil;
               }
               draft.section8.payorBudget[key][index][name] = dataResSelection;

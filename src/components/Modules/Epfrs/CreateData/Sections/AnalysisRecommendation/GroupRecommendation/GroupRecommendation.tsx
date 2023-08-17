@@ -151,20 +151,53 @@ const GroupRecommendation = () => {
     try {
       setLoading(true);
 
-      // Find Pfr Section 9
-      await pfrSection(9, pfrId).then((data: any) => {
-        setPfr9(data);
-        calcReaminingBudgets(data);
-      });
-
       // Find Pfr Section 8
       const annualPayorBudget: Array<any> = [[], []];
       const singlePayorBudget: Array<any> = [[], []];
       const annualRemainBudget: Array<any> = [[], []];
       const singleRemainBudget: Array<any> = [[], []];
 
+      // Find Pfr
+      await getPfr(pfrId).then((data: any) => {
+        setPfrData(data);
+      });
+
+      await pfrSection(8, pfrId).then((data: any) => {
+        setPfr8(data);
+
+        console.log("data section 8", data)
+
+        let payorBudgets = data["payorBudgets"];
+        payorBudgets.map((budget: any) => {
+          if (budget["selection"] != 0) {
+            let clientId = budget["clientType"];
+            let type = budget["type"];
+            annualPayorBudget[clientId][type] = budget["annual"];
+            singlePayorBudget[clientId][type] = budget["single"];
+            annualRemainBudget[clientId][type] = budget["annual"];
+            singleRemainBudget[clientId][type] = budget["single"];
+          }
+        });
+
+        const icome: Array<any> = [];
+        data.annualIncome.map((income: any) => {
+          income[Number(income["client"]) - 1] = Number(income["sum"]);
+        });
+
+        const expenses: Array<any> = [];
+        data.annualExpense.map((expense: any) => {
+          expense[0] = Number(expense["sum1"]);
+          expense[1] = Number(expense["sum2"]);
+        });
+      });
+
+      setAnnualPayorBudget(annualPayorBudget);
+      setSinglePayorBudget(singlePayorBudget);
+      setAnnualRemainBudget(annualRemainBudget);
+      setSingleRemainBudget(singleRemainBudget);
+
       await getRecommendationGroup(pfrId, pfrGroupId).then((data: any) => {
-        console.log("data", data);
+        console.log("data group product", data);
         if (data.products) {
           if (data.products.length > 0) {
             data.products.map((product: any) => {
@@ -204,42 +237,14 @@ const GroupRecommendation = () => {
         getTotalPremium();
       });
 
-      // Find Pfr
-      await getPfr(pfrId).then((data: any) => {
-        setPfrData(data);
+      // Find Pfr Section 9
+      await pfrSection(9, pfrId).then((data: any) => {
+
+        console.log("data section 9", data)
+
+        setPfr9(data);
+        calcReaminingBudgets(data);
       });
-
-      await pfrSection(8, pfrId).then((data: any) => {
-        setPfr8(data);
-
-        let payorBudgets = data["payorBudgets"];
-        payorBudgets.map((budget: any) => {
-          if (budget["selection"] != 0) {
-            let clientId = budget["clientType"];
-            let type = budget["type"];
-            annualPayorBudget[clientId][type] = budget["annual"];
-            singlePayorBudget[clientId][type] = budget["single"];
-            annualRemainBudget[clientId][type] = budget["annual"];
-            singleRemainBudget[clientId][type] = budget["single"];
-          }
-        });
-
-        const icome: Array<any> = [];
-        data.annualIncome.map((income: any) => {
-          income[Number(income["client"]) - 1] = Number(income["sum"]);
-        });
-
-        const expenses: Array<any> = [];
-        data.annualExpense.map((expense: any) => {
-          expense[0] = Number(expense["sum1"]);
-          expense[1] = Number(expense["sum2"]);
-        });
-      });
-
-      setAnnualPayorBudget(annualPayorBudget);
-      setSinglePayorBudget(singlePayorBudget);
-      setAnnualRemainBudget(annualRemainBudget);
-      setSingleRemainBudget(singleRemainBudget);
 
       setLoading(false); // Stop loading
     } catch (error) {
@@ -251,6 +256,25 @@ const GroupRecommendation = () => {
   useEffect(() => {
     // const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
+    // setAnnualPayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    // setSinglePayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    // setAnnualRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    // setSingleRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    
+    // setTotalAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    // setTotalSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    // setMaxAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+    // setMaxSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
+
+    // setProductAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    // setProductSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
+    
+    setDataSubPremium(
+      {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
+    );
+    setResDataTotalPremiumArr(
+      {"Monthly": 0,"Quarterly": 0,"HalfYearly": 0,"Annually": 0,"SinglePayment": 0}
+    );
 
     getGroupRecommendationData(pfrGroupId);
   }, [dataLoad]);
@@ -368,7 +392,105 @@ const GroupRecommendation = () => {
     });
   };
 
+  const getProductsByFilteringGroupId = (groupId: any, products: any) => {
+    var result = [];
+    if (products) {
+      if (products.length > 0) {
+        result = products.filter((product: any) => {
+          if (product["groupId"] == groupId) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      }
+    }
+    return result;
+  };
+
+  const calcPremiumForCIS = (product: any) => {
+    let frequency = product["premiumFrequency"];
+    let clientId = product["nameOfOwner"];
+    let premiumType = product["premiumPaymentType"];
+    let premium = 0;
+
+    if (frequency == 4) {
+      premium = product["premium"];
+      dataTotalSinglePremium[clientId][premiumType] += product["premium"];
+      if (dataMaxSinglePremium[clientId][premiumType] < premium) {
+        dataMaxSinglePremium[clientId][premiumType] += premium;
+      }
+    } else if (frequency == 3) {
+      premium = product["premium"];
+      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
+      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] += premium;
+      }
+    } else if (frequency == 2) {
+      premium = product["premium"] * 2;
+      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
+      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] += premium;
+      }
+    } else if (frequency == 1) {
+      premium = product["premium"] * 4;
+      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
+      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] += premium;
+      }
+    } else {
+      premium = product["premium"] * 12;
+      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 12;
+
+      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium;
+      }
+    }
+  };
+
+  const getTotalPremium = () => {
+
+    if (getRecommendationData?.products) {
+      getRecommendationData.products.map((product: any) => {
+        product["riders"].map((rider: any) => {
+          rider["categoryId"] = -1;
+          calcPremium(rider, true);
+        });
+        calcPremium(product, false);
+      });
+    }
+
+    if (getRecommendationData?.ILP) {
+      getRecommendationData.ILP.map((product: any) => {
+        product["riders"].map((rider: any) => {
+          rider["categoryId"] = -1;
+          calcPremium(rider, true);
+        });
+        calcPremium(product, false);
+      });
+    }
+
+    if (getRecommendationData?.custom) {
+      getRecommendationData.custom.map((product: any) => {
+        product["riders"].map((rider: any) => {
+          rider["categoryId"] = -1;
+          calcPremium(rider, true);
+        });
+        calcPremium(product, false);
+      });
+    }
+
+    if (getRecommendationData?.CIS) {
+      getRecommendationData.CIS.map((product: any) => {
+        calcPremiumForCIS(product);
+      });
+    }
+  };
+
   const calcPremium = (product: any, isRider: any) => {
+
+    console.log("masuk hitung calc",product)
+
     let frequency = product["premiumFrequency"];
     let clientId = product["nameOfOwner"];
     let premiumType = product["premiumPaymentType"];
@@ -538,100 +660,6 @@ const GroupRecommendation = () => {
     }
   };
 
-  const getProductsByFilteringGroupId = (groupId: any, products: any) => {
-    var result = [];
-    if (products) {
-      if (products.length > 0) {
-        result = products.filter((product: any) => {
-          if (product["groupId"] == groupId) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-      }
-    }
-    return result;
-  };
-
-  const calcPremiumForCIS = (product: any) => {
-    let frequency = product["premiumFrequency"];
-    let clientId = product["nameOfOwner"];
-    let premiumType = product["premiumPaymentType"];
-    let premium = 0;
-
-    if (frequency == 4) {
-      premium = product["premium"];
-      dataTotalSinglePremium[clientId][premiumType] += product["premium"];
-      if (dataMaxSinglePremium[clientId][premiumType] < premium) {
-        dataMaxSinglePremium[clientId][premiumType] += premium;
-      }
-    } else if (frequency == 3) {
-      premium = product["premium"];
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] += premium;
-      }
-    } else if (frequency == 2) {
-      premium = product["premium"] * 2;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] += premium;
-      }
-    } else if (frequency == 1) {
-      premium = product["premium"] * 4;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] += premium;
-      }
-    } else {
-      premium = product["premium"] * 12;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 12;
-
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] = premium;
-      }
-    }
-  };
-
-  const getTotalPremium = () => {
-    if (getRecommendationData?.products) {
-      getRecommendationData.products.map((product: any) => {
-        product["riders"].map((rider: any) => {
-          rider["categoryId"] = -1;
-          calcPremium(rider, true);
-        });
-        calcPremium(product, false);
-      });
-    }
-
-    if (getRecommendationData?.ILP) {
-      getRecommendationData.ILP.map((product: any) => {
-        product["riders"].map((rider: any) => {
-          rider["categoryId"] = -1;
-          calcPremium(rider, true);
-        });
-        calcPremium(product, false);
-      });
-    }
-
-    if (getRecommendationData?.custom) {
-      getRecommendationData.custom.map((product: any) => {
-        product["riders"].map((rider: any) => {
-          rider["categoryId"] = -1;
-          calcPremium(rider, true);
-        });
-        calcPremium(product, false);
-      });
-    }
-
-    if (getRecommendationData?.CIS) {
-      getRecommendationData.CIS.map((product: any) => {
-        calcPremiumForCIS(product);
-      });
-    }
-  };
-
   const getPortfolioName = (portfolio: any) => {
     if (portfolio == undefined) {
       return "N/A";
@@ -666,6 +694,7 @@ const GroupRecommendation = () => {
       let save = await saveGroup({ name: groupName, pfrId: pfrId });
       if (save.status == 200) {
         // const pfrId = localStorage.setItem("s9_PfrId","0");
+        const pfrId = localStorage.setItem("s9_dataGroup","0");
         showDetailData(params);
         let typePfrString = pfrType == 1 ? "single" : "joint";
         if (Number(pfrId) > 0) {
@@ -680,7 +709,7 @@ const GroupRecommendation = () => {
   };
 
   const cancelData = (params: any) => {
-    // const pfrId = localStorage.setItem("s9_PfrId","0");
+    const pfrId = localStorage.setItem("s9_dataGroup","0");
     showDetailData(params);
     // const pfrId = localStorage.getItem("s9_PfrId");
     let typePfrString = pfrType == 1 ? "single" : "joint";
@@ -848,8 +877,8 @@ const GroupRecommendation = () => {
                                 getPfr8.annualExpense[index].sum1
                               )
                               ? 0
-                              : getPfr8.annualIncome[index].sum -
-                              getPfr8.annualExpense[index].sum1
+                              : currencyFormat(getPfr8.annualIncome[index].sum -
+                              getPfr8.annualExpense[index].sum1)
                             : 0}
                         </td>
                       </tr>

@@ -57,6 +57,8 @@ const LoginPage: Page = () => {
       });
     setLoading(false);
   };
+
+
   return (
     <>
       <Head>
@@ -93,6 +95,7 @@ const LoginPage: Page = () => {
               <ButtonGreenMedium
                 onClick={login}
                 className="justify-center w-full"
+                disabled={email && password != "" ? false: true}
               >
                 Log in
               </ButtonGreenMedium>

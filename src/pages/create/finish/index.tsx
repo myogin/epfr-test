@@ -42,7 +42,6 @@ const EpfrCreateFinish: Page = () => {
 
     const res: any = await getPfrShow(pfrId);
     setSigners(res['signers']);
-    console.log("signers: ", res['signers']);
   }
 
   const toggleEyeIcon = () => {
