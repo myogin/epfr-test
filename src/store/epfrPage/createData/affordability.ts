@@ -167,7 +167,9 @@ const Affordability = create(
         setInit: (params: any) =>
           set(
             produce((draft) => {
-              if ((params == 1 && get().section8.payorDetail.length === 0) || (params == 2 && get().section8.payorDetail.length === 1)) {
+              if (
+                (get().section8.payorDetail.length === 0)
+              ) {
                 draft.section8.payorDetail = new Array(params).fill({
                   self: 0,
                   relationShip: null,
@@ -177,7 +179,9 @@ const Affordability = create(
                   payorIncome: 0,
                 });
               }
-              if ((params == 1 && get().section8.payorBudget[0].length === 0) || (params == 2 && get().section8.payorBudget[1].length === 0)) {
+              if (
+                (get().section8.payorBudget.length === 0)
+              ) {
                 draft.section8.payorBudget = new Array(params)
                   .fill(false)
                   .map(() => {

@@ -223,6 +223,9 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
         drafts.answer[user].education[education][question] =
           !drafts.answer[user].education[education][question];
         drafts.status = validate(drafts, pfrType);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   updateInvestment: (user: number, question: number, pfrType: number) =>
@@ -245,6 +248,9 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
         drafts.answer[user].investment[question] =
           !drafts.answer[user].investment[question];
         drafts.status = validate(drafts, pfrType);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   updateWork: (user: number, question: number, pfrType: number) =>
@@ -265,6 +271,9 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
         drafts.answer[user].work[question] =
           !drafts.answer[user].work[question];
         drafts.status = validate(drafts, pfrType);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     ),
   updateNeed: (client: number, value: boolean, pfrType: number) => {
@@ -272,6 +281,9 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
       produce((drafts: any) => {
         drafts.need[client] = !value;
         drafts.status = validate(drafts, pfrType);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     );
   },
@@ -280,6 +292,9 @@ const customerKnowledgeAssesment = (set: any, get: any) => ({
       produce((drafts: any) => {
         drafts.reason[client] = reason;
         drafts.status = validate(drafts, pfrType);
+        if (get().editableStatus === 1 && get().status === 1) {
+          drafts.editableStatus = 2;
+        }
       })
     );
   },

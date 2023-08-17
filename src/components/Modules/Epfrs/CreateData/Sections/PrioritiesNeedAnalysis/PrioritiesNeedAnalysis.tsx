@@ -955,7 +955,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         setGlobal("pfrId", router.query.id);
         setGlobal("status", pfrLocal.section7);
         getSectionData(Number(router.query.id));
-        console.log("Get data Section 3");
+        console.log("Get data Section 7");
       }
     }else {
       if (scrollPositionBottomPrev === "Process6") {
@@ -964,6 +964,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         setGlobal("status", pfrLocal.section7);
         setGlobal('pfrId', section1?.state?.id);
         getSectionData(section1?.state?.id);
+        console.log("Get data Section 7");
       }
     }
     
@@ -975,11 +976,11 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         ((editableStatus === 0 || editableStatus === null) && status === 1) ||
         (editableStatus === 2 && status === 1)
       ) {
-        console.log("can save now");
+        console.log("can save now 7");
         // setSaveLoading(true);
         storeData();
       } else {
-        console.log("Your cannot save data");
+        console.log("Your cannot save data 7");
       }
     }
   }, [scrollPositionNext, editableStatus, status]);

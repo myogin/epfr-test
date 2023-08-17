@@ -53,11 +53,8 @@ const BalanceSheet = (props: Props) => {
   const [dataS4, setDataS4] = useState(null);
   const [saveLoading, setSaveLoading] = useState(false);
   const scrollPosition = useScrollPosition(4);
-  const scrollPositionBottom = useScrollPositionBottom(4);
   const scrollPositionBottom3 = useScrollPositionBottom(3);
-  const scrollPosition3 = useScrollPosition(3);
-  const scrollPositionNext = useScrollPosition(3);
-
+  const scrollPositionNext = useScrollPosition(5);
   const [loading, setLoading] = useState(false);
 
   const getSectionData = async (params: any) => {
@@ -90,7 +87,7 @@ const BalanceSheet = (props: Props) => {
       console.error(error);
     }
   };
-  // load data for section 4 when position at 2 bottom
+  // load data for section 4 when position at 3 bottom
   useEffect(() => {
     if (scrollPositionBottom3 == "Process3") {
       if (router.query.id !== null && router.query.id !== undefined) {
@@ -140,7 +137,7 @@ const BalanceSheet = (props: Props) => {
     }
   };
   useEffect(() => {
-    if (scrollPositionBottom === "Process4") {
+    if (scrollPositionNext === "okSec5") {
       if (
         (editableStatus === 0 && status === 1) ||
         (editableStatus === 2 && status === 1)
@@ -151,14 +148,8 @@ const BalanceSheet = (props: Props) => {
         console.log("Your data not complete Section 4");
       }
     }
-  }, [scrollPositionBottom, editableStatus, status]);
+  }, [scrollPositionNext]);
 
-  // check if user update some value then can triger save again
-  useEffect(() => {
-    if (status == 1 && editableStatus == 1) {
-      setGlobal("editableStatus", 2);
-    }
-  }, [others, reason, need]);
 
   const [showSection, setShowSection] = useState(false);
   useEffect(() => {
@@ -172,11 +163,10 @@ const BalanceSheet = (props: Props) => {
       }
     }
   }, [need, props.pfrType]);
-  // return loading ? (
-  //   <LoadingPage />
-  // ) : (
+  return loading ? (
+    <LoadingPage />
+  ) : (
 
-  return (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
@@ -336,13 +326,12 @@ const BalanceSheet = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {/* {scrollPositionNext == "okSec4" &&
-      editableStatus === 2 &&
+      {editableStatus === 2 &&
       status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 4" />
       ) : (
         ""
-      )} */}
+      )}
     </div>
   );
 };

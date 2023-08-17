@@ -347,8 +347,6 @@ const Affordability = (props: Props) => {
     }
   };
 
-  console.log(annualLogic);
-
   const handleSourceOfWealth = (event: any, key: any) => {
     const { name, value } = event.target;
     setSourceOfWealth(key, name, value);

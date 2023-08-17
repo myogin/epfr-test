@@ -116,6 +116,7 @@ const GroupRecommendation = () => {
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
   ]);
+
   const [dataProductSinglePremium, setProductSinglePremium] = useState<any>([
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -136,6 +137,31 @@ const GroupRecommendation = () => {
   const [dataExpense, setDataExpense] = useState<any>([]);
   const [dataLoad, setLoad] = useState<any>(false);
 
+  const hitTotalAnnualPremium: Array<any> = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ];
+  const hitTotalSinglePremium: Array<any> = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ];
+  const hitMaxAnnualPremium: Array<any> = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ];
+  const hitMaxSinglePremium: Array<any> = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ];
+  const hitProductAnnualPremium: Array<any> = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ];
+  const hitProductSinglePremium: Array<any> = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ];
+
   const premiumTypes: Array<any> = [
     "CASH",
     "CPFOA",
@@ -144,9 +170,76 @@ const GroupRecommendation = () => {
     "SRS",
   ];
 
-  useEffect(() => {}, [section9RecommendGroup]);
+  // useEffect(() => {}, [section9RecommendGroup]);
 
   const [loading, setLoading] = useState(false);
+
+  // END STATE
+  useEffect(() => {
+    console.log("effect");
+    // const pfrId = localStorage.getItem("s9_PfrId");
+    const pfrGroupId = localStorage.getItem("s9_dataGroup");
+    setAnnualPayorBudget([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setSinglePayorBudget([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setAnnualRemainBudget([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setSingleRemainBudget([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+
+    setTotalAnnualPremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setTotalSinglePremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+
+    setMaxAnnualPremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setMaxSinglePremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+
+    setProductAnnualPremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setProductSinglePremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+
+    setDataSubPremium({
+      Monthly: 0,
+      Quarterly: 0,
+      HalfYearly: 0,
+      Annually: 0,
+      SinglePayment: 0,
+    });
+    setResDataTotalPremiumArr({
+      Monthly: 0,
+      Quarterly: 0,
+      HalfYearly: 0,
+      Annually: 0,
+      SinglePayment: 0,
+    });
+
+    getGroupRecommendationData(pfrGroupId);
+  }, [dataLoad]);
 
   const getGroupRecommendationData = async (pfrGroupId: any) => {
     try {
@@ -164,6 +257,12 @@ const GroupRecommendation = () => {
       });
 
       await pfrSection(8, pfrId).then((data: any) => {
+        console.log("getPfrData", getPfrData);
+
+        if (data.annualExpense.length < data.annualIncome.length) {
+          data.annualExpense.push({ "0": 0, "1": 0, sum1: 0, sum2: 0 });
+        }
+
         setPfr8(data);
 
         console.log("data section 8", data);
@@ -198,7 +297,7 @@ const GroupRecommendation = () => {
       setSingleRemainBudget(singleRemainBudget);
 
       await getRecommendationGroup(pfrId, pfrGroupId).then((data: any) => {
-        console.log("data group product", data);
+        console.log("getRecommendationGroup", data);
         if (data.products) {
           if (data.products.length > 0) {
             data.products.map((product: any) => {
@@ -235,7 +334,7 @@ const GroupRecommendation = () => {
           }
         }
         setRecommendationData(data);
-        getTotalPremium();
+        getTotalPremium(data);
       });
 
       // Find Pfr Section 9
@@ -252,59 +351,32 @@ const GroupRecommendation = () => {
       console.error(error);
     }
   };
-  // END STATE
-  useEffect(() => {
-    // const pfrId = localStorage.getItem("s9_PfrId");
-    const pfrGroupId = localStorage.getItem("s9_dataGroup");
-    // setAnnualPayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-    // setSinglePayorBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-    // setAnnualRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-    // setSingleRemainBudget([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
 
-    // setTotalAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
-    // setTotalSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
-    // setMaxAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
-    // setMaxSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]])
-
-    // setProductAnnualPremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-    // setProductSinglePremium([[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],]);
-
-    setDataSubPremium({
-      Monthly: 0,
-      Quarterly: 0,
-      HalfYearly: 0,
-      Annually: 0,
-      SinglePayment: 0,
-    });
-    setResDataTotalPremiumArr({
-      Monthly: 0,
-      Quarterly: 0,
-      HalfYearly: 0,
-      Annually: 0,
-      SinglePayment: 0,
-    });
-
-    getGroupRecommendationData(pfrGroupId);
-  }, [dataLoad]);
-
-  const getPremiumFrequencyName = (premiumFrequency: any) => {
-    switch (Number(premiumFrequency)) {
-      case 0:
-        return "Monthly";
-      case 1:
-        return "Quarterly";
-      case 2:
-        return "HalfYearly";
-      case 3:
-        return "Annually";
-      case 4:
-        return "SinglePayment";
-    }
-  };
+  // useEffect(() => {
+  //   console.log('setMaxAnnualPremium', dataMaxAnnualPremium)
+  // }, [setMaxAnnualPremium])
 
   // Calc
   const calcReaminingBudgets = (resDta: any) => {
     var groupIdParam = Number(localStorage.getItem("s9_dataGroup"));
+    // console.log('groupIdParam', groupIdParam)
+    setProductAnnualPremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setProductSinglePremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    setMaxSinglePremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+
+    setMaxSinglePremium([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
     resDta.groups.map((group: any) => {
       let groupId = group["id"];
       if (groupId == groupIdParam) {
@@ -329,52 +401,43 @@ const GroupRecommendation = () => {
       );
 
       products.map((product: any) => {
-        setProductAnnualPremium([
-          [0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0],
-        ]);
-        setProductSinglePremium([
-          [0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0],
-        ]);
-
         product["riders"].map((rider: any) => {
           rider["product"] = {
             categoryId: -1,
           };
+
           calcPremium(rider, true);
         });
         calcPremium(product, false);
       });
 
       ILPProducts.map((product: any) => {
-        setProductAnnualPremium([
-          [0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0],
-        ]);
-        setProductSinglePremium([
-          [0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0],
-        ]);
-
+        // setProductAnnualPremium([
+        //   [0, 0, 0, 0, 0],
+        //   [0, 0, 0, 0, 0],
+        // ]);
+        // setProductSinglePremium([
+        //   [0, 0, 0, 0, 0],
+        //   [0, 0, 0, 0, 0],
+        // ]);
         product["riders"].map((rider: any) => {
           rider["product"] = {
             categoryId: -1,
           };
           calcPremium(rider, true);
         });
-        calcPremium(product, false);
+        // calcPremium(product, false);
       });
 
       customProducts.map((product: any) => {
-        setProductAnnualPremium([
-          [0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0],
-        ]);
-        setProductSinglePremium([
-          [0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0],
-        ]);
+        // setProductAnnualPremium([
+        //   [0, 0, 0, 0, 0],
+        //   [0, 0, 0, 0, 0],
+        // ]);
+        // setProductSinglePremium([
+        //   [0, 0, 0, 0, 0],
+        //   [0, 0, 0, 0, 0],
+        // ]);
 
         product["riders"].map((rider: any) => {
           rider["product"] = {
@@ -400,23 +463,40 @@ const GroupRecommendation = () => {
     });
   };
 
+  const getPremiumFrequencyName = (premiumFrequency: any) => {
+    switch (Number(premiumFrequency)) {
+      case 0:
+        return "Monthly";
+      case 1:
+        return "Quarterly";
+      case 2:
+        return "HalfYearly";
+      case 3:
+        return "Annually";
+      case 4:
+        return "SinglePayment";
+    }
+  };
+
   const getProductsByFilteringGroupId = (groupId: any, products: any) => {
     var result = [];
+    // console.log('groupId', groupId)
+    // console.log('getProductsByFilteringGroupId', products)
     if (products) {
       if (products.length > 0) {
         result = products.filter((product: any) => {
           if (product["groupId"] == groupId) {
-            return true;
-          } else {
-            return false;
+            return product;
           }
         });
       }
     }
+    // console.log('result', result)
     return result;
   };
 
   const calcPremiumForCIS = (product: any) => {
+    console.log("check cis");
     let frequency = product["premiumFrequency"];
     let clientId = product["nameOfOwner"];
     let premiumType = product["premiumPaymentType"];
@@ -424,41 +504,47 @@ const GroupRecommendation = () => {
 
     if (frequency == 4) {
       premium = product["premium"];
-      dataTotalSinglePremium[clientId][premiumType] += product["premium"];
-      if (dataMaxSinglePremium[clientId][premiumType] < premium) {
-        dataMaxSinglePremium[clientId][premiumType] += premium;
+      hitTotalSinglePremium[clientId][premiumType] += product["premium"];
+      if (hitMaxSinglePremium[clientId][premiumType] < premium) {
+        hitMaxSinglePremium[clientId][premiumType] += premium;
       }
     } else if (frequency == 3) {
       premium = product["premium"];
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] += premium;
+      hitTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
+      if (hitMaxAnnualPremium[clientId][premiumType] < premium) {
+        hitMaxAnnualPremium[clientId][premiumType] += premium;
       }
     } else if (frequency == 2) {
       premium = product["premium"] * 2;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] += premium;
+      hitTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
+      if (hitMaxAnnualPremium[clientId][premiumType] < premium) {
+        hitMaxAnnualPremium[clientId][premiumType] += premium;
       }
     } else if (frequency == 1) {
       premium = product["premium"] * 4;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] += premium;
+      hitTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
+      if (hitMaxAnnualPremium[clientId][premiumType] < premium) {
+        hitMaxAnnualPremium[clientId][premiumType] += premium;
       }
     } else {
       premium = product["premium"] * 12;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 12;
+      hitTotalAnnualPremium[clientId][premiumType] += product["premium"] * 12;
 
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] = premium;
+      if (hitMaxAnnualPremium[clientId][premiumType] < premium) {
+        hitMaxAnnualPremium[clientId][premiumType] = premium;
       }
     }
+
+    setTotalSinglePremium(hitTotalSinglePremium);
+    setMaxSinglePremium(hitMaxSinglePremium);
+    setTotalAnnualPremium(hitTotalAnnualPremium);
+    setMaxAnnualPremium(hitMaxAnnualPremium);
   };
 
-  const getTotalPremium = () => {
-    if (getRecommendationData?.products) {
-      getRecommendationData.products.map((product: any) => {
+  const getTotalPremium = (resData: any) => {
+    console.log("resData", resData);
+    if (resData?.products) {
+      resData.products.map((product: any) => {
         product["riders"].map((rider: any) => {
           rider["categoryId"] = -1;
           calcPremium(rider, true);
@@ -467,8 +553,8 @@ const GroupRecommendation = () => {
       });
     }
 
-    if (getRecommendationData?.ILP) {
-      getRecommendationData.ILP.map((product: any) => {
+    if (resData?.ILP) {
+      resData.ILP.map((product: any) => {
         product["riders"].map((rider: any) => {
           rider["categoryId"] = -1;
           calcPremium(rider, true);
@@ -477,8 +563,8 @@ const GroupRecommendation = () => {
       });
     }
 
-    if (getRecommendationData?.custom) {
-      getRecommendationData.custom.map((product: any) => {
+    if (resData?.custom) {
+      resData.custom.map((product: any) => {
         product["riders"].map((rider: any) => {
           rider["categoryId"] = -1;
           calcPremium(rider, true);
@@ -487,8 +573,8 @@ const GroupRecommendation = () => {
       });
     }
 
-    if (getRecommendationData?.CIS) {
-      getRecommendationData.CIS.map((product: any) => {
+    if (resData?.CIS) {
+      resData.CIS.map((product: any) => {
         calcPremiumForCIS(product);
       });
     }
@@ -496,7 +582,6 @@ const GroupRecommendation = () => {
 
   const calcPremium = (product: any, isRider: any) => {
     console.log("masuk hitung calc", product);
-
     let frequency = product["premiumFrequency"];
     let clientId = product["nameOfOwner"];
     let premiumType = product["premiumPaymentType"];
@@ -506,164 +591,137 @@ const GroupRecommendation = () => {
     if (categoryId != 8 && categoryId != 5) {
       if (frequency == 4) {
         premium = product["premium"];
-
-        dataTotalSinglePremium[clientId][premiumType] += product["premium"];
-        setTotalSinglePremium(dataTotalSinglePremium);
-
-        dataProductSinglePremium[clientId][premiumType] += premium;
-        setProductSinglePremium(dataProductSinglePremium);
+        hitTotalSinglePremium[clientId][premiumType] += product["premium"];
+        hitProductSinglePremium[clientId][premiumType] += premium;
       } else if (frequency == 3) {
         premium = product["premium"];
-
-        dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][premiumType] += premium;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
+        hitProductAnnualPremium[clientId][premiumType] += premium;
       } else if (frequency == 2) {
         premium = product["premium"] * 2;
-
-        dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][premiumType] += premium;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
+        hitProductAnnualPremium[clientId][premiumType] += premium;
       } else if (frequency == 1) {
         premium = product["premium"] * 4;
-
-        dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][premiumType] += premium;
-        setProductAnnualPremium(dataProductAnnualPremium);
-      } else {
+        hitTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
+        hitProductAnnualPremium[clientId][premiumType] += premium;
+      } else if (frequency == 0) {
         premium = product["premium"] * 12;
-
-        dataTotalAnnualPremium[clientId][premiumType] +=
-          product["premium"] * 12;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][premiumType] += premium;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitTotalAnnualPremium[clientId][premiumType] += premium;
+        hitProductAnnualPremium[clientId][premiumType] += premium;
       }
 
       if (isRider == false) {
         if (
-          dataMaxSinglePremium[clientId][premiumType] <
-          dataProductSinglePremium[clientId][premiumType]
+          hitMaxSinglePremium[clientId][premiumType] <
+          hitProductSinglePremium[clientId][premiumType]
         ) {
-          dataMaxSinglePremium[clientId][premiumType] +=
-            dataProductSinglePremium[clientId][premiumType];
+          hitMaxSinglePremium[clientId][premiumType] +=
+            hitProductSinglePremium[clientId][premiumType];
         }
-
         if (
-          dataMaxAnnualPremium[clientId][premiumType] <
-          dataProductAnnualPremium[clientId][premiumType]
+          hitMaxAnnualPremium[clientId][premiumType] <
+          hitProductAnnualPremium[clientId][premiumType]
         ) {
-          dataMaxAnnualPremium[clientId][premiumType] +=
-            dataProductAnnualPremium[clientId][premiumType];
+          hitMaxAnnualPremium[clientId][premiumType] +=
+            hitProductAnnualPremium[clientId][premiumType];
         }
+        // console.log("hitMaxAnnualPremium[clientId][premiumType]", hitMaxAnnualPremium[clientId][premiumType]+"-"+hitProductAnnualPremium[clientId][premiumType])
+        // setMaxSinglePremium(hitMaxSinglePremium)
+        // setMaxAnnualPremium(hitMaxAnnualPremium)
       }
     } else {
       let cash = product["premium_for_hospitalization"]["cash"];
       let medisave = product["premium_for_hospitalization"]["cpfMedisave"];
       let premium = cash + medisave;
       if (frequency == 4) {
-        dataTotalSinglePremium[clientId][0] += cash;
-        setTotalSinglePremium(dataTotalSinglePremium);
+        hitTotalSinglePremium[clientId][0] += cash;
 
-        dataTotalSinglePremium[clientId][3] += medisave;
-        setTotalSinglePremium(dataTotalSinglePremium);
+        hitTotalSinglePremium[clientId][3] += medisave;
 
-        dataProductSinglePremium[clientId][0] += cash;
-        setProductSinglePremium(dataProductSinglePremium);
+        hitProductSinglePremium[clientId][0] += cash;
 
-        dataProductSinglePremium[clientId][3] += medisave;
-        setProductSinglePremium(dataProductSinglePremium);
+        hitProductSinglePremium[clientId][3] += medisave;
       } else if (frequency == 3) {
-        dataTotalAnnualPremium[clientId][0] += cash;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
+        hitTotalAnnualPremium[clientId][0] += cash;
 
-        dataTotalAnnualPremium[clientId][3] += medisave;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
+        hitTotalAnnualPremium[clientId][3] += medisave;
 
-        dataProductAnnualPremium[clientId][0] += cash;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitProductAnnualPremium[clientId][0] += cash;
 
-        dataProductAnnualPremium[clientId][3] += medisave;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitProductAnnualPremium[clientId][3] += medisave;
       } else if (frequency == 2) {
         premium = premium * 2;
-        dataTotalAnnualPremium[clientId][0] += cash * 2;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
+        hitTotalAnnualPremium[clientId][0] += cash * 2;
 
-        dataTotalAnnualPremium[clientId][3] += medisave * 2;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
+        hitTotalAnnualPremium[clientId][3] += medisave * 2;
 
-        dataProductAnnualPremium[clientId][0] += cash * 2;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitProductAnnualPremium[clientId][0] += cash * 2;
 
-        dataProductAnnualPremium[clientId][3] += medisave * 2;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitProductAnnualPremium[clientId][3] += medisave * 2;
       } else if (frequency == 1) {
         premium = premium * 4;
-        dataTotalAnnualPremium[clientId][0] += cash * 4;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
+        hitTotalAnnualPremium[clientId][0] += cash * 4;
 
-        dataTotalAnnualPremium[clientId][3] += medisave * 4;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
+        hitTotalAnnualPremium[clientId][3] += medisave * 4;
 
-        dataProductAnnualPremium[clientId][0] += cash * 4;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitProductAnnualPremium[clientId][0] += cash * 4;
 
-        dataProductAnnualPremium[clientId][3] += medisave * 4;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitProductAnnualPremium[clientId][3] += medisave * 4;
       } else {
         premium = premium * 12;
-        dataTotalAnnualPremium[clientId][0] += cash * 12;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
+        hitTotalAnnualPremium[clientId][0] += cash * 12;
 
-        dataTotalAnnualPremium[clientId][3] += medisave * 12;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
+        hitTotalAnnualPremium[clientId][3] += medisave * 12;
 
-        dataProductAnnualPremium[clientId][0] += cash * 12;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitProductAnnualPremium[clientId][0] += cash * 12;
 
-        dataProductAnnualPremium[clientId][3] += medisave * 12;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        hitProductAnnualPremium[clientId][3] += medisave * 12;
       }
 
       if (isRider == false) {
         if (
-          dataMaxSinglePremium[clientId][0] <
-          dataProductSinglePremium[clientId][0]
+          hitMaxSinglePremium[clientId][0] <
+          hitProductSinglePremium[clientId][0]
         ) {
-          dataMaxSinglePremium[clientId][0] +=
-            dataProductSinglePremium[clientId][0];
+          hitMaxSinglePremium[clientId][0] +=
+            hitProductSinglePremium[clientId][0];
         }
         if (
-          dataMaxSinglePremium[clientId][3] <
-          dataProductSinglePremium[clientId][3]
+          hitMaxSinglePremium[clientId][3] <
+          hitProductSinglePremium[clientId][3]
         ) {
-          dataMaxSinglePremium[clientId][3] +=
-            dataProductSinglePremium[clientId][3];
+          hitMaxSinglePremium[clientId][3] +=
+            hitProductSinglePremium[clientId][3];
         }
         if (
-          dataMaxAnnualPremium[clientId][0] <
-          dataProductAnnualPremium[clientId][0]
+          hitMaxAnnualPremium[clientId][0] <
+          hitProductAnnualPremium[clientId][0]
         ) {
-          dataMaxAnnualPremium[clientId][0] +=
-            dataProductAnnualPremium[clientId][0];
+          hitMaxAnnualPremium[clientId][0] +=
+            hitProductAnnualPremium[clientId][0];
         }
         if (
-          dataMaxAnnualPremium[clientId][3] <
-          dataProductAnnualPremium[clientId][3]
+          hitMaxAnnualPremium[clientId][3] <
+          hitProductAnnualPremium[clientId][3]
         ) {
-          dataMaxAnnualPremium[clientId][3] +=
-            dataProductAnnualPremium[clientId][3];
+          hitMaxAnnualPremium[clientId][3] +=
+            hitProductAnnualPremium[clientId][3];
         }
       }
     }
+
+    console.log("hitTotalSinglePremium", hitTotalSinglePremium);
+    console.log("hitProductSinglePremium", hitProductSinglePremium);
+    console.log("hitTotalAnnualPremium", hitTotalAnnualPremium);
+    console.log("hitProductAnnualPremium", hitProductAnnualPremium);
+    setTotalSinglePremium(hitTotalSinglePremium);
+    setProductSinglePremium(hitProductSinglePremium);
+    setTotalAnnualPremium(hitTotalAnnualPremium);
+    setProductAnnualPremium(hitProductAnnualPremium);
+
+    setMaxSinglePremium(hitMaxSinglePremium);
+    setMaxAnnualPremium(hitProductAnnualPremium);
   };
 
   const getPortfolioName = (portfolio: any) => {

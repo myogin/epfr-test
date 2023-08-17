@@ -162,6 +162,11 @@ const RiskProfile = (props: Props) => {
     setSectionFive((prevState) => {
       return { ...prevState, ["need"]: prevNeed };
     });
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   const updateReason = (value: any, user: number) => {
@@ -171,6 +176,11 @@ const RiskProfile = (props: Props) => {
     setSectionFive((prevState) => {
       return { ...prevState, ["reason"]: prevReason };
     });
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   function finalAnswer(
@@ -312,6 +322,11 @@ const RiskProfile = (props: Props) => {
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 1);
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   const [q2State, setQ2State] = useState(qa[2].answers);
@@ -341,6 +356,11 @@ const RiskProfile = (props: Props) => {
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 2);
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   const [q3State, setQ3State] = useState(qa[3].answers);
@@ -370,6 +390,11 @@ const RiskProfile = (props: Props) => {
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 3);
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   const [q4State, setQ4State] = useState(qa[4].answers);
@@ -399,6 +424,11 @@ const RiskProfile = (props: Props) => {
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 4);
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   const [q5State, setQ5State] = useState(qa[5].answers);
@@ -428,6 +458,11 @@ const RiskProfile = (props: Props) => {
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 5);
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   const [q6State, setQ6State] = useState(qa[6].answers);
@@ -457,6 +492,11 @@ const RiskProfile = (props: Props) => {
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 6);
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   const [q7State, setQ7State] = useState(qa[7].answers);
@@ -486,6 +526,11 @@ const RiskProfile = (props: Props) => {
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 7);
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
 
   const [q8State, setQ8State] = useState(qa[8].answers);
@@ -515,6 +560,11 @@ const RiskProfile = (props: Props) => {
     let statusQ = event.target.checked;
     let score = parseInt(event.target.value);
     updateAnswersState(statusQ, score, user, 8);
+    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
+      setSectionFive((el) => {
+        return { ...el, editableStatus: 2 };
+      });
+    }
   };
   // end handle q1-9state
 
@@ -527,8 +577,7 @@ const RiskProfile = (props: Props) => {
     });
   }, [id]);
   const [saveLoading, setSaveLoading] = useState(false);
-  const scrollPositionBottom = useScrollPositionBottom(5);
-
+  const scrollPositionNext = useScrollPosition(6);
   // Store data
   const storeData = async () => {
     try {
@@ -560,7 +609,7 @@ const RiskProfile = (props: Props) => {
     }
   };
   useEffect(() => {
-    if (scrollPositionBottom === "Process5") {
+    if (scrollPositionNext === "okSec6") {
       if (
         (sectionFive.editableStatus === 0 && sectionFive.status === 1) ||
         (sectionFive.editableStatus === 2 && sectionFive.status === 1)
@@ -571,15 +620,8 @@ const RiskProfile = (props: Props) => {
         console.log("Your data not complete Section 5");
       }
     }
-  }, [scrollPositionBottom, sectionFive.editableStatus, sectionFive.status]);
-  // check if user update some value then can triger save again
-  useEffect(() => {
-    if (sectionFive.status == 1 && sectionFive.editableStatus == 1) {
-      setSectionFive((el) => {
-        return { ...el, editableStatus: 2 };
-      });
-    }
-  }, [sectionFive.answers, sectionFive.need, sectionFive.reason]);
+  }, [scrollPositionNext]);
+
 
   const [showSection, setShowSection] = useState(false);
   useEffect(() => {
@@ -595,10 +637,9 @@ const RiskProfile = (props: Props) => {
   }, [sectionFive.need]);
 
   // fetching data for section 5 when position at 4
-  const scrollPositionNext = useScrollPosition(4);
-  const scrollPositionBottom3 = useScrollPositionBottom(3);
+  const scrollPositionBottom4 = useScrollPositionBottom(4);
   useEffect(() => {
-    if (scrollPositionBottom3 === "Process3") {
+    if (scrollPositionBottom4 === "Process4") {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
         // getGeneralData(router.query.id);
@@ -608,7 +649,7 @@ const RiskProfile = (props: Props) => {
         }
       }
     }
-  }, [scrollPositionBottom3]);
+  }, [scrollPositionBottom4]);
 
   // get DOB on section 1
   const scrollPositionBottom1 = useScrollPositionBottom(1);
@@ -942,11 +983,10 @@ const RiskProfile = (props: Props) => {
       console.error(error);
     }
   };
-  // return loading ? (
-  //   <LoadingPage />
-  // ) : (
+  return loading ? (
+    <LoadingPage />
+  ) : (
 
-  return (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
@@ -1486,11 +1526,11 @@ const RiskProfile = (props: Props) => {
           ))}
         </RowSingleORDouble>
       </SectionCardSingleGrid>
-      {/* {sectionFive.editableStatus === 2 && sectionFive.status === 1 ? (
+      {sectionFive.editableStatus === 2 && sectionFive.status === 1 ? (
         <ButtonFloating onClick={storeData} title="Save section 5" />
       ) : (
         ""
-      )} */}
+      )}
     </div>
   );
 };
