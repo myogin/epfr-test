@@ -70,7 +70,6 @@ const EpfrPage: Page = () => {
     router.push(`create/${params}`);
   };
 
-  console.log(status);
   useEffect(() => {
     getGeneralData();
     // setLogin(session?.user?.token, session?.user?.id);
