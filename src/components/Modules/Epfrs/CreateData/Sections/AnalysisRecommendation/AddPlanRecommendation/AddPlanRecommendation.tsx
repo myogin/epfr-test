@@ -77,7 +77,6 @@ const AddPlanRecommendation = () => {
 
   let pfrId = usePersonalInformation((state) => state.id);
 
-
   let benefits: Array<any> = [
     {
       id: 1,
@@ -296,10 +295,9 @@ const AddPlanRecommendation = () => {
     const resultCateg: Array<any> = [];
     const resDataOwner: Array<any> = [];
     getWholeContext(pfrId).then((data) => {
-      console.log('firrst init whole', data)
+      console.log("firrst init whole", data);
 
       setInitWhole(data);
-
 
       // For Cis If ProductGroupId Exist
       if (section9Recommend.product.type == 1) {
@@ -348,7 +346,7 @@ const AddPlanRecommendation = () => {
           //   }
           // })
         });
-        console.log('dataCompArr', dataCompArr)
+        console.log("dataCompArr", dataCompArr);
         setCompany(dataCompArr);
         // setCisDataProduct(dataArr)
         setRiderArr(setDataArrs);
@@ -514,12 +512,12 @@ const AddPlanRecommendation = () => {
 
   // Use Effect FIrst Load
   useEffect(() => {
-    console.log('second')
+    console.log("second");
 
     if (section9Recommend.product.type == 1) {
       var setDataArrs: Array<any> = [];
       const dataArr: Array<any> = [];
-      if(initWhole.company){
+      if (initWhole.company) {
         initWhole.company.map((value: any, k: any) => {
           value["idReal"] = value.idReal;
           value["id"] = value.id;
@@ -545,14 +543,13 @@ const AddPlanRecommendation = () => {
             });
           }
         });
-  
+
         setRiderArr(setDataArrs);
       }
-
     } else {
       // Get Company
       var setDataArrs: Array<any> = [];
-      if(initWhole.company){
+      if (initWhole.company) {
         initWhole.company.map((value: any, k: any) => {
           value["idReal"] = value.idReal;
           value["id"] = value.id;
@@ -583,9 +580,7 @@ const AddPlanRecommendation = () => {
         setRiderArr(setDataArrs);
       }
     }
-    
   }, [section9Recommend]);
-
 
   const showEdit = (resData: any) => {
     let s9_recommendId = localStorage.getItem("s9_recommendId");
@@ -1455,7 +1450,7 @@ const AddPlanRecommendation = () => {
           });
         }
       });
-      
+
       setProductArr(resRisk, "risk", null);
     } else {
       var resRisk: Array<any> = [];
@@ -1986,11 +1981,10 @@ const AddPlanRecommendation = () => {
   const [cisDataBenRisk, setCisDataBenRisk] = useState<any>([{}]);
 
   // // Use Effect
-  useEffect(() => {
-  }, [cisDataProvider]);
+  useEffect(() => {}, [cisDataProvider]);
 
   useEffect(() => {
-    console.log('useEffect', initWhole.company)
+    console.log("useEffect", initWhole.company);
     // if(section9Recommend.product.type == 1){
     //   var setDataArrs: Array<any> = [];
     //   const dataArr: Array<any> = [];
@@ -1999,7 +1993,7 @@ const AddPlanRecommendation = () => {
     //     var setDataArrs: Array<any> = [];
     //     const dataArr: Array<any> = [];
     //     const dataNewComp: Array<any> = [];
-        
+
     //     console.log('initWhole.company', initWhole.company)
 
     //     initWhole.company.map((value: any, k: any) => {
@@ -2065,22 +2059,24 @@ const AddPlanRecommendation = () => {
     //     }
     //   }
     // }
-  },[section9Recommend.product.type])
+  }, [section9Recommend.product.type]);
 
   const changeCisDataProvider = (event: any) => {
     const { name, value } = event.target;
     const dataArr: Array<any> = [];
     setCisDataProvider(value);
-    
-    console.log('section9Recommend.product.modelPortfolioRiskCategory', section9Recommend.product.modelPortfolioRiskCategory)
-    console.log('value', value)
-    console.log('initWhole', initWhole.cis)
-    console.log('dataOutcomes', initWhole.outcomes)
-    console.log('singlePayorBudget', singlePayorBudget)
 
+    console.log(
+      "section9Recommend.product.modelPortfolioRiskCategory",
+      section9Recommend.product.modelPortfolioRiskCategory
+    );
+    console.log("value", value);
+    console.log("initWhole", initWhole.cis);
+    console.log("dataOutcomes", initWhole.outcomes);
+    console.log("singlePayorBudget", singlePayorBudget);
 
     const section6Outcome: Array<any> = [];
-    if(initWhole.outcomes){
+    if (initWhole.outcomes) {
       initWhole.outcomes.map((outcome: any, i: any) => {
         section6Outcome.push(outcome["outcome"]);
       });
@@ -2115,7 +2111,7 @@ const AddPlanRecommendation = () => {
         }
       });
 
-      console.log('dataArr', dataArr)
+      console.log("dataArr", dataArr);
       setCisDataProduct(dataArr);
     }
   };
@@ -2125,10 +2121,10 @@ const AddPlanRecommendation = () => {
 
     // let pfrId = localStorage.getItem("s9_PfrId");
     // var resId = (pfrId != null) ? pfrId.toString() : '0';
-    console.log('value', value)
+    console.log("value", value);
     setParent(pfrId, "pfrId", null);
     setProduct(value, name, null);
-    if (value != '-' || value != 0) {
+    if (value != "-" || value != 0) {
       let index = initWhole.cis.findIndex((cis: any) => {
         if (cis["id"] == value) {
           return true;
@@ -2136,7 +2132,7 @@ const AddPlanRecommendation = () => {
       });
 
       var selectedPortfolio = initWhole.cis[index];
-      if(selectedPortfolio){
+      if (selectedPortfolio) {
         setCisDataBenRisk(selectedPortfolio);
 
         var dataFundArr: Array<any> = [];
@@ -2158,17 +2154,19 @@ const AddPlanRecommendation = () => {
 
   // Save & Update
   const saveData = async (params: any) => {
-    setLoading(true);
     try {
-      let s9_recommendId = localStorage.getItem("s9_recommendId") ? localStorage.getItem("s9_recommendId") : 0;
-      
+      setLoading(true);
+      let s9_recommendId = localStorage.getItem("s9_recommendId")
+        ? localStorage.getItem("s9_recommendId")
+        : 0;
+
       if (s9_recommendId) {
         let storeData = await updateSection9Recommendation(
           JSON.stringify(section9Recommend)
         );
         if (storeData.status == 200) {
           resetRecommendationProduct();
-          localStorage.setItem("s9_recommendId", null);
+          localStorage.setItem("s9_recommendId", "");
           showDetailData(params);
         }
       } else {
@@ -2181,7 +2179,7 @@ const AddPlanRecommendation = () => {
         );
         if (storeData.status == 200) {
           resetRecommendationProduct();
-          localStorage.setItem("s9_recommendId", null);
+          localStorage.setItem("s9_recommendId", "");
           showDetailData(params);
         }
       }
@@ -2595,9 +2593,13 @@ const AddPlanRecommendation = () => {
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Benefit Details</h2>
                     </div>
-                    {section9Recommend.product.benefit.length == 0 ? <span className="w-full text-xs text-left text-red">
-                      Required Field
-                    </span> : ""}
+                    {section9Recommend.product.benefit.length == 0 ? (
+                      <span className="w-full text-xs text-left text-red">
+                        Required Field
+                      </span>
+                    ) : (
+                      ""
+                    )}
                     {dataProductSelected.benefits.map(
                       (benefit: any, index: any) => (
                         <div
@@ -2633,7 +2635,13 @@ const AddPlanRecommendation = () => {
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Risk Details</h2>
                     </div>
-                    {section9Recommend.product.risk.length == 0 ? <span className="w-full text-xs text-left text-red">Required Field</span> : ""}
+                    {section9Recommend.product.risk.length == 0 ? (
+                      <span className="w-full text-xs text-left text-red">
+                        Required Field
+                      </span>
+                    ) : (
+                      ""
+                    )}
                     {dataProductSelected.risks.map((risk: any, index: any) => (
                       <div
                         className="w-full p-5 border rounded-md border-gray-soft-strong"
@@ -2667,8 +2675,14 @@ const AddPlanRecommendation = () => {
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Rider Details</h2>
                     </div>
-                    {section9Recommend.riders.length == 0 ? <span className="w-full text-xs text-left text-red">Required Field</span> : ""}
-                    
+                    {section9Recommend.riders.length == 0 ? (
+                      <span className="w-full text-xs text-left text-red">
+                        Required Field
+                      </span>
+                    ) : (
+                      ""
+                    )}
+
                     {dataProductSelected.riders.map(
                       (value: any, index: any) => (
                         <div

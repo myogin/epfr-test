@@ -844,12 +844,12 @@ const GroupRecommendation = () => {
                         <td className="px-2 py-5 text-center">
                           {getPfr8?.annualIncome
                             ? isNaN(
-                                getPfr8.annualIncome[index] -
-                                  getPfr8.annualExpense[index]
+                                getPfr8.annualIncome[index].sum -
+                                getPfr8.annualExpense[index].sum1
                               )
                               ? 0
-                              : getPfr8.annualIncome[index] -
-                                getPfr8.annualExpense[index]
+                              : getPfr8.annualIncome[index].sum -
+                              getPfr8.annualExpense[index].sum1
                             : 0}
                         </td>
                       </tr>
