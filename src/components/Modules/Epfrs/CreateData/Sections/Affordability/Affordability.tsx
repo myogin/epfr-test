@@ -50,6 +50,7 @@ const Affordability = (props: Props) => {
 
   let fetchPayorBudget = useAffordability((state) => state.fetchPayorBudget);
   let fetchPayorDetail = useAffordability((state) => state.fetchPayorDetail);
+  let setInit = useAffordability((state) => state.setInit);
 
   let setExisting = useAffordability((state) => state.setExisting);
   let setExistingMedisave = useAffordability(
@@ -367,8 +368,14 @@ const Affordability = (props: Props) => {
       console.log("section 8 get data");
       console.log(getSection8);
 
-      fetchPayorDetail(getSection8.payorDetails);
-      fetchPayorBudget(getSection8.payorBudgetsForClients);
+      if(getSection8.payorBudgets.length === 0) {
+
+        console.log("masuk set init ini nggak" + props.pfrType);
+        setInit(props.pfrType);
+      }else {
+        fetchPayorDetail(getSection8.payorDetails);
+        fetchPayorBudget(getSection8.payorBudgetsForClients);
+      }
 
       setLoading(false); // Stop loading
     } catch (error) {
