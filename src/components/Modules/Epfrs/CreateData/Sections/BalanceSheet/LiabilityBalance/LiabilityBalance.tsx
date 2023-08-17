@@ -63,7 +63,6 @@ const LiabilityBalance = (props: Props) => {
   };
 
   const openEditModal = (id: number) => {
-    console.log(others.liability[id]);
 
     setAsset(others.liability[id]);
     setShowModal(true);
