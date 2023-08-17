@@ -25,6 +25,7 @@ import {
 } from "@/services/pfrService";
 import { productFindOne } from "@/services/productService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
+import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
 // import {getPfrSection} from "@/services/getPfrSection";
 
 export class RecommendationStruct {
@@ -291,7 +292,10 @@ const AddPlanRecommendation = () => {
 
     // const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
-    const resPfrGroupId = pfrGroupId == "0" ? null : 0;
+
+    console.log("dapet group gak", pfrGroupId)
+    
+    // const resPfrGroupId = pfrGroupId == "0" ? null : 0;
     const resultCateg: Array<any> = [];
     const resDataOwner: Array<any> = [];
     getWholeContext(pfrId).then((data) => {
@@ -2675,13 +2679,13 @@ const AddPlanRecommendation = () => {
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-bold">Rider Details</h2>
                     </div>
-                    {section9Recommend.riders.length == 0 ? (
+                    {/* {section9Recommend.riders.length == 0 ? (
                       <span className="w-full text-xs text-left text-red">
                         Required Field
                       </span>
                     ) : (
                       ""
-                    )}
+                    )} */}
 
                     {dataProductSelected.riders.map(
                       (value: any, index: any) => (
@@ -3443,7 +3447,8 @@ const AddPlanRecommendation = () => {
         ""
       )}
       <SectionCardFooter className="mx-8 2xl:mx-60">
-        <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>
+        {section9Recommend.product.benefit.length == 0 || section9Recommend.product.risk.length == 0 ? <ButtonBorderMedium>Save</ButtonBorderMedium> : <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>}
+        
         <ButtonRedMedium onClick={() => cancleData(91)}>Cancel</ButtonRedMedium>
       </SectionCardFooter>
     </>

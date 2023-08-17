@@ -187,9 +187,6 @@ const AnalysisRecommendation = (props: Props) => {
 
   let getClients = getLength(props.pfrType);
 
-  console.log("Ini ada isinya nggak? " + props.pfrType)
-  console.log(getClients)
-
   // let payorBudget = useAffordability((state) => state.section8.payorBudget);
   const [payorBudget, setPayorBudget] = useState<any>([]);
 
@@ -463,7 +460,7 @@ const AnalysisRecommendation = (props: Props) => {
       (router.query.id !== null && router.query.id !== undefined) ||
       Number(pfrId) > 0 || sectionCreateEpfrId === 200
     ) {
-      if (scrollPositionBottom === "Process8" || scrollPosition === "okSec9") {
+      if (scrollPositionBottom === "Process8" || scrollPosition === "okSec9" || sectionCreateEpfrId === 200) {
         let pfrIdRiil = Number(pfrId) > 0 ? Number(pfrId) : router.query.id;
         setParent("editableStatus", pfrLocal.editableSection9);
         setParent("pfrId", pfrIdRiil);
@@ -1982,18 +1979,6 @@ const AnalysisRecommendation = (props: Props) => {
     });
   };
 
-  console.log("final result dapet gak.?");
-  console.log(dataProductAndRiders);
-
-  console.log("final benefit dapet gak.?");
-  console.log(dataBenefits);
-
-  console.log("final risk dapet gak.?");
-  console.log(dataRisks);
-
-  console.log("cek ada isinya ni getPfr");
-  console.log(getPfrNine)
-  console.log(Object.keys(getPfrNine).length)
   return (
     <div
       id={props.id}
