@@ -21,6 +21,7 @@ import { useNavigationSection } from "@/store/epfrPage/navigationSection";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
+import LoaderPage from "./components/LoaderPage";
 
 interface Props {
   id?: any;
@@ -218,10 +219,16 @@ const ClientsAcknowledgment = (props: Props) => {
     ],
   ]);
 
+  const [loading, setLoading] = useState(false);
+
   const fetchData = async() => {
     if(!pfrIdSectionOne && pfrIdSectionOne == 0) return;
 
-    setIsFetched(true);
+    try {
+
+      setLoading(true); // Set loading before sending API request
+
+      setIsFetched(true);
     
     const s12Res: any = await getPfrStep(12, pfrIdSectionOne);
     // const s10Res: any = await getPfrStep(10, pfrId);
@@ -413,6 +420,13 @@ const ClientsAcknowledgment = (props: Props) => {
     //   }
     //   setNftf(cekData);
     // }
+    setLoading(false); // Set loading before sending API request
+    } catch (error) {
+      setLoading(false); // Set loading before sending API request
+      console.error(error);
+    }
+
+    
   };
 
   const onCheckMatirx = (
@@ -621,7 +635,9 @@ const ClientsAcknowledgment = (props: Props) => {
     }
   }, [scrollPositionNext]);
 
-  return (
+  return loading ? (
+    <LoaderPage />
+  ) : (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
