@@ -23,6 +23,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import AddLineIcon from "remixicon-react/AddLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
+import LoaderPage from "./components/LoaderPage";
 
 interface Props {
   id?: any;
@@ -444,10 +445,14 @@ const SwitchingReplacement = (props: Props) => {
     }
   }
 
+  const [loading, setLoading] = useState(false);
+
   const fetchData = async () => {
     if (pfrId == 0) return;
 
-    setIsFetched(true);
+    try {
+      setLoading(true); // Set loading before sending API request
+      setIsFetched(true);
 
     const res1 = await getAllPfrData(pfrId);
     console.log('fetch data');
@@ -549,6 +554,13 @@ const SwitchingReplacement = (props: Props) => {
     })
     
     checkValidation();
+    setLoading(false); // Set loading before sending API request
+    } catch (error) {
+      setLoading(false); // Set loading before sending API request
+      console.error(error);
+    }
+
+    
   }
 
   const checkValidation = async () => {
@@ -765,7 +777,9 @@ const SwitchingReplacement = (props: Props) => {
     }
   }, [scrollPositionNext]);
 
-  return (
+  return loading ? (
+    <LoaderPage />
+  ) : (
     <div id={props.id}>
       <div
         id="section-header-10"
