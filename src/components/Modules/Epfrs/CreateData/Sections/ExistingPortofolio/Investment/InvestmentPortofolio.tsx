@@ -402,8 +402,7 @@ const InvestmentPortofolio = () => {
                     <td className="px-2 py-5">{data.currentvalue}</td>
                     <td className="px-2 py-5">
                       {data.sourceOfInvestment
-                        ? sourceOfInvestments[Number(data.sourceOfInvestment)]
-                            .name
+                        ? data.sourceOfInvestment
                         : ""}
                     </td>
                     <td className="w-1/12 px-2 py-5">
