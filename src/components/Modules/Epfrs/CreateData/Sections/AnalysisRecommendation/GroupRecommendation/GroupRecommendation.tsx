@@ -176,7 +176,6 @@ const GroupRecommendation = () => {
 
   // END STATE
   useEffect(() => {
-    console.log("effect");
     // const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
     setAnnualPayorBudget([
@@ -257,15 +256,12 @@ const GroupRecommendation = () => {
       });
 
       await pfrSection(8, pfrId).then((data: any) => {
-        console.log("getPfrData", getPfrData);
 
         if (data.annualExpense.length < data.annualIncome.length) {
           data.annualExpense.push({ "0": 0, "1": 0, sum1: 0, sum2: 0 });
         }
 
         setPfr8(data);
-
-        console.log("data section 8", data);
 
         let payorBudgets = data["payorBudgets"];
         payorBudgets.map((budget: any) => {
@@ -297,7 +293,6 @@ const GroupRecommendation = () => {
       setSingleRemainBudget(singleRemainBudget);
 
       await getRecommendationGroup(pfrId, pfrGroupId).then((data: any) => {
-        console.log("getRecommendationGroup", data);
         if (data.products) {
           if (data.products.length > 0) {
             data.products.map((product: any) => {
@@ -339,7 +334,6 @@ const GroupRecommendation = () => {
 
       // Find Pfr Section 9
       await pfrSection(9, pfrId).then((data: any) => {
-        console.log("data section 9", data);
 
         setPfr9(data);
         calcReaminingBudgets(data);
@@ -359,7 +353,6 @@ const GroupRecommendation = () => {
   // Calc
   const calcReaminingBudgets = (resDta: any) => {
     var groupIdParam = Number(localStorage.getItem("s9_dataGroup"));
-    // console.log('groupIdParam', groupIdParam)
     setProductAnnualPremium([
       [0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0],
@@ -496,7 +489,6 @@ const GroupRecommendation = () => {
   };
 
   const calcPremiumForCIS = (product: any) => {
-    console.log("check cis");
     let frequency = product["premiumFrequency"];
     let clientId = product["nameOfOwner"];
     let premiumType = product["premiumPaymentType"];
@@ -542,7 +534,6 @@ const GroupRecommendation = () => {
   };
 
   const getTotalPremium = (resData: any) => {
-    console.log("resData", resData);
     if (resData?.products) {
       resData.products.map((product: any) => {
         product["riders"].map((rider: any) => {
@@ -581,7 +572,6 @@ const GroupRecommendation = () => {
   };
 
   const calcPremium = (product: any, isRider: any) => {
-    console.log("masuk hitung calc", product);
     let frequency = product["premiumFrequency"];
     let clientId = product["nameOfOwner"];
     let premiumType = product["premiumPaymentType"];
@@ -626,9 +616,6 @@ const GroupRecommendation = () => {
           hitMaxAnnualPremium[clientId][premiumType] +=
             hitProductAnnualPremium[clientId][premiumType];
         }
-        // console.log("hitMaxAnnualPremium[clientId][premiumType]", hitMaxAnnualPremium[clientId][premiumType]+"-"+hitProductAnnualPremium[clientId][premiumType])
-        // setMaxSinglePremium(hitMaxSinglePremium)
-        // setMaxAnnualPremium(hitMaxAnnualPremium)
       }
     } else {
       let cash = product["premium_for_hospitalization"]["cash"];
@@ -711,10 +698,6 @@ const GroupRecommendation = () => {
       }
     }
 
-    console.log("hitTotalSinglePremium", hitTotalSinglePremium);
-    console.log("hitProductSinglePremium", hitProductSinglePremium);
-    console.log("hitTotalAnnualPremium", hitTotalAnnualPremium);
-    console.log("hitProductAnnualPremium", hitProductAnnualPremium);
     setTotalSinglePremium(hitTotalSinglePremium);
     setProductSinglePremium(hitProductSinglePremium);
     setTotalAnnualPremium(hitTotalAnnualPremium);

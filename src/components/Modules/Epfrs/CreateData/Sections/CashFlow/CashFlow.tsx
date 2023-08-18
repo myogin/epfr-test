@@ -132,13 +132,6 @@ const CashFlow = (props: Props) => {
         setLoading(true); // Set loading before sending API request
         let getSection3 = await getPfrStep(3, params);
 
-        console.log(getSection3);
-        console.log(getSection3.annualIncome);
-        console.log(getSection3.annualExpenses);
-
-        // setGlobal("editableStatus", getSection2.pfr.editableSection1);
-        // setGlobal("status", getSection2.pfr.section1);
-
         // Fetch annual
         if (getSection3.annualExpenses.length > 0) {
           getSection3.annualExpenses.map((data: any, index: number) => {
@@ -176,7 +169,6 @@ const CashFlow = (props: Props) => {
         setGlobal("id", router.query.id);
         setGlobal("status", pfrLocal.section3);
         getSectionData(router.query.id);
-        console.log("Get data Section 3");
       }
     }
   }, [scrollPositionBottom, router.isReady, router.query.id]);
@@ -190,7 +182,7 @@ const CashFlow = (props: Props) => {
         console.log("can save now");
         storeData();
       } else {
-        console.log("Your data not complete Section 3");
+        console.log("Your data not complete at Section 3");
       }
     }
   }, [scrollPositionNext, editableStatus, status]);

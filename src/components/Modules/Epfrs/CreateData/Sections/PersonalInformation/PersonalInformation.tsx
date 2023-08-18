@@ -125,8 +125,6 @@ const PersonalInformation = (props: Props) => {
       setLoading(true); // Set loading before sending API request
       let getSection1 = await getPfrStep(1, params);
 
-      console.log(getSection1);
-
       setGlobal("reviewDate", getSection1.pfr.reviewDate);
       setGlobal("editableStatus", getSection1.pfr.editableSection1);
       setGlobal("status", getSection1.pfr.section1);
@@ -177,8 +175,6 @@ const PersonalInformation = (props: Props) => {
     if (router.query.singpass === null || router.query.singpass === undefined) {
       if (router.query.id !== null && router.query.id !== undefined) {
         getSectionData(router.query.id);
-
-        console.log("masuk sini ya lu");
       }
     }
   }, [router.isReady, router.query.id, router.query.singpass]);
@@ -210,7 +206,7 @@ const PersonalInformation = (props: Props) => {
         // setSaveLoading(true);
         storeData();
       } else {
-        console.log("Your cannot save data");
+        console.log("You cannot save Section 1");
       }
     }
   }, [scrollPositionNext, editableStatus, status]);

@@ -26,6 +26,7 @@ import {
 import { productFindOne } from "@/services/productService";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import ButtonBorderMedium from "@/components/Forms/Buttons/ButtonBorderMedium";
+import LoaderPage from "./components/LoaderPage";
 // import {getPfrSection} from "@/services/getPfrSection";
 
 export class RecommendationStruct {
@@ -78,112 +79,11 @@ const AddPlanRecommendation = () => {
 
   let pfrId = usePersonalInformation((state) => state.id);
 
-  let benefits: Array<any> = [
-    {
-      id: 1,
-      name: "Protection",
-      description:
-        "Provides coverage against death and terminal illness.Guaranteed Issuance",
-    },
-    {
-      id: 2,
-      name: "Guaranted Issuance",
-      description:
-        "No medical underwriting required.Guaranteed Retirement Income Benefit",
-    },
-    {
-      id: 3,
-      name: "Guaranted Retirement Income Benefit",
-      description:
-        "At the selected Retirement Age (i.e. at the end of the accumulation period), as part of the Retirement Income Benefit, the monthly Guaranteed Retirement Income Benefit will be paid for a period of 10 years. Payments of the monthly Guaranteed Retirement Income Benefit will start one month following the selected Retirement Age. At the end of the Retirement Income Period, while the Policy is in force and upon survival of the Life Assured, the Maturity Payout, which consists of the non-guaranteed Reversionary Bonus accrued over the Policy Term, together with the Terminal Bonus (if any), will also be payable.Withdrawal of Reinvested Retirement Income Benefit",
-    },
-  ];
-
-  let riders: Array<any> = [
-    {
-      id: 1,
-      name: "Easy Term",
-      checked: false,
-      description:
-        "EasyTerm is a non-participating Supplementary Benefit that offers protection against Death, Terminal Illness and Total and Permanent Disability (TPD) during the period of the benefit term. This benefit does not have any cash value. Premium rates relating to this Supplementary Benefit are level and guaranteed within premium payment term.",
-    },
-    {
-      id: 2,
-      name: "Free Look",
-      checked: false,
-      description:
-        "If You decide that this Policy is not suitable for Your needs, a full refund of the premiums less any expenses incurred will be made to You upon receipt of Your written notification of cancellation to the Insurer within 14 days from the date You receive Your Policy. If this Policy was sent to You by post, You are considered to have received it 7 days after posting.",
-    },
-  ];
-
-  let riderBenefits: Array<any> = [
-    {
-      id: 1,
-      name: "Exclusions",
-      description:
-        "There are certain conditions under which no benefits will be payable. Please refer to the product summary / policy contract for the full list of exclusions.Free Look",
-    },
-    {
-      id: 2,
-      name: "Exclusions 2",
-      description:
-        "There are certain conditions under which no benefits will be payable. Please refer to the product summary / policy contract for the full list of exclusions.Free Look 2",
-    },
-  ];
-
-  let riderRisks: Array<any> = [
-    {
-      id: 1,
-      name: "Risk One",
-      description:
-        "EasyTerm is a non-participating Supplementary Benefit that offers protection against Death, Terminal Illness and Total and Permanent Disability (TPD) during the period of the benefit term. This benefit does not have any cash value. Premium rates relating to this Supplementary Benefit are level and guaranteed within premium payment term.",
-    },
-    {
-      id: 2,
-      name: "Risk Two",
-      description:
-        "If You decide that this Policy is not suitable for Your needs, a full refund of the premiums less any expenses incurred will be made to You upon receipt of Your written notification of cancellation to the Insurer within 14 days from the date You receive Your Policy. If this Policy was sent to You by post, You are considered to have received it 7 days after posting.",
-    },
-  ];
-
-  let risks: Array<any> = [
-    {
-      id: 1,
-      name: "Early Surrender",
-      description:
-        "An early surrender of the policy usually involves high costs and the surrender value may be less than the total premiums paid.Exclusions",
-    },
-    {
-      id: 2,
-      name: "Exclusions",
-      description:
-        "There are certain conditions under which no benefits will be payable. Please refer to the product summary / policy contract for the full list of exclusions.Free Look",
-    },
-    {
-      id: 3,
-      name: "Free Look",
-      description:
-        "If You decide that this Policy is not suitable for Your needs, a full refund of the premiums less any expenses incurred will be made to You upon receipt of Your written notification of cancellation to the Insurer within 14 days from the date You receive Your Policy. If this Policy was sent to You by post, You are considered to have received it 7 days after posting.",
-    },
-  ];
-
   const changeData = (params: any) => {};
-
-  let dataProductName: Array<any> = [
-    { id: 0, name: "Select Product" },
-    { id: 1, name: "Product One" },
-    { id: 2, name: "Product Two" },
-  ];
 
   let recomendationType: Array<any> = [
     { id: 0, name: "Insurance" },
     { id: 1, name: "CIS" },
-  ];
-
-  let dataProvider: Array<any> = [
-    { id: 1, name: "Singlife" },
-    { id: 2, name: "AXA" },
-    { id: 3, name: "Hoxing" },
   ];
 
   let dataCurrency: Array<any> = [
@@ -293,14 +193,26 @@ const AddPlanRecommendation = () => {
     // const pfrId = localStorage.getItem("s9_PfrId");
     const pfrGroupId = localStorage.getItem("s9_dataGroup");
 
-    console.log("dapet group gak", pfrGroupId)
-    
-    // const resPfrGroupId = pfrGroupId == "0" ? null : 0;
-    const resultCateg: Array<any> = [];
-    const resDataOwner: Array<any> = [];
-    getWholeContext(pfrId).then((data) => {
-      console.log("firrst init whole", data);
+    getFirstLoadData();
+    // Set Pfr Id
+    setParent(pfrId, "pfrId", null);
+    setParent(pfrGroupId, "groupId", null);
 
+    // Set Insurance
+
+    // Set Cis
+    setDataSelectedCategoryId(section9Recommend.product.categoryId);
+  }, []);
+
+  const [loadingPage, setLoadingPage] = useState(false);
+
+  const getFirstLoadData = async () => {
+
+    try {
+      setLoadingPage(true);
+      const resultCateg: Array<any> = [];
+    const resDataOwner: Array<any> = [];
+    await getWholeContext(pfrId).then((data) => {
       setInitWhole(data);
 
       // For Cis If ProductGroupId Exist
@@ -488,7 +400,7 @@ const AddPlanRecommendation = () => {
       showEdit(data);
     });
 
-    getPfrStep(8, pfrId).then((data) => {
+    await getPfrStep(8, pfrId).then((data) => {
       let payorBudgets = data["payorBudgets"];
       payorBudgets.map((budget: any) => {
         if (budget["selection"] != 0) {
@@ -503,21 +415,16 @@ const AddPlanRecommendation = () => {
       });
     });
 
-    // Set Pfr Id
-    setParent(pfrId, "pfrId", null);
-    setParent(pfrGroupId, "groupId", null);
+    setLoadingPage(false)
+    } catch (error) {
+      setLoadingPage(false); // Stop loading in case of error
+      console.error(error);
+    }
 
-    // Set Insurance
-
-    // Set Cis
-    setDataSelectedCategoryId(section9Recommend.product.categoryId);
-    // setCompany(section9Recommend.product.companyId);
-  }, []);
+  };
 
   // Use Effect FIrst Load
   useEffect(() => {
-    console.log("second");
-
     if (section9Recommend.product.type == 1) {
       var setDataArrs: Array<any> = [];
       const dataArr: Array<any> = [];
@@ -784,8 +691,8 @@ const AddPlanRecommendation = () => {
 
       var dataFundArr: Array<any> = [];
 
-      benefits = new Array(selectedPortfolio["benefit"].length).fill(false);
-      risks = new Array(selectedPortfolio["risk"].length).fill(false);
+      let benefits = new Array(selectedPortfolio["benefit"].length).fill(false);
+      let risks = new Array(selectedPortfolio["risk"].length).fill(false);
       setPremiumPaymentType(selectedPortfolio["payment"]);
       resData.cis[index]["platform"]["funds"].map((fund: any) => {
         dataFundArr.push({
@@ -987,8 +894,8 @@ const AddPlanRecommendation = () => {
       var selectedPortfolio = initWhole.cis[index];
       var dataFundArr: Array<any> = [];
 
-      benefits = new Array(selectedPortfolio["benefit"].length).fill(false);
-      risks = new Array(selectedPortfolio["risk"].length).fill(false);
+      let benefits = new Array(selectedPortfolio["benefit"].length).fill(false);
+      let risks = new Array(selectedPortfolio["risk"].length).fill(false);
       setPremiumPaymentType(selectedPortfolio["payment"]);
       initWhole.cis[index]["platform"]["funds"].map((fund: any) => {
         dataFundArr.push({
@@ -2070,15 +1977,6 @@ const AddPlanRecommendation = () => {
     const dataArr: Array<any> = [];
     setCisDataProvider(value);
 
-    console.log(
-      "section9Recommend.product.modelPortfolioRiskCategory",
-      section9Recommend.product.modelPortfolioRiskCategory
-    );
-    console.log("value", value);
-    console.log("initWhole", initWhole.cis);
-    console.log("dataOutcomes", initWhole.outcomes);
-    console.log("singlePayorBudget", singlePayorBudget);
-
     const section6Outcome: Array<any> = [];
     if (initWhole.outcomes) {
       initWhole.outcomes.map((outcome: any, i: any) => {
@@ -2141,8 +2039,8 @@ const AddPlanRecommendation = () => {
 
         var dataFundArr: Array<any> = [];
 
-        benefits = new Array(selectedPortfolio["benefit"].length).fill(false);
-        risks = new Array(selectedPortfolio["risk"].length).fill(false);
+        let benefits = new Array(selectedPortfolio["benefit"].length).fill(false);
+        let risks = new Array(selectedPortfolio["risk"].length).fill(false);
         setPremiumPaymentType(selectedPortfolio["payment"]);
         initWhole.cis[index]["platform"]["funds"].map((fund: any) => {
           dataFundArr.push({
@@ -2199,7 +2097,9 @@ const AddPlanRecommendation = () => {
     showDetailData(params);
   };
 
-  return (
+  return loadingPage ? (
+    <LoaderPage />
+  ) : (
     <>
       {dataLoading == true ? (
         <>
@@ -3447,8 +3347,17 @@ const AddPlanRecommendation = () => {
         ""
       )}
       <SectionCardFooter className="mx-8 2xl:mx-60">
-        {(dataProductSelected.benefits?.length > 0 && section9Recommend.product.benefit.length == 0) || (dataProductSelected.risks?.length > 0 && section9Recommend.product.risk.length == 0) ? <ButtonBorderMedium>Save</ButtonBorderMedium> : <ButtonGreenMedium onClick={() => saveData(91)}>Save</ButtonGreenMedium>}
-        
+        {(dataProductSelected.benefits?.length > 0 &&
+          section9Recommend.product.benefit.length == 0) ||
+        (dataProductSelected.risks?.length > 0 &&
+          section9Recommend.product.risk.length == 0) ? (
+          <ButtonBorderMedium>Save</ButtonBorderMedium>
+        ) : (
+          <ButtonGreenMedium onClick={() => saveData(91)}>
+            Save
+          </ButtonGreenMedium>
+        )}
+
         <ButtonRedMedium onClick={() => cancleData(91)}>Cancel</ButtonRedMedium>
       </SectionCardFooter>
     </>

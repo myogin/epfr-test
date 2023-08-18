@@ -29,6 +29,7 @@ import { useAnalysisRecommendation } from "@/store/epfrPage/createData/analysisR
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
 import { useAffordabilityTemp } from "@/store/epfrPage/createData/affordabilityTemp";
 import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
+import LoaderPage from "./components/LoaderPage";
 
 interface Props {
   id?: any;
@@ -36,8 +37,7 @@ interface Props {
 }
 
 const Affordability = (props: Props) => {
-
-  let typePfr = props.pfrType ? props.pfrType : 0
+  let typePfr = props.pfrType ? props.pfrType : 0;
 
   const router = useRouter();
   let id = usePersonalInformation((state) => state.id);
@@ -187,7 +187,6 @@ const Affordability = (props: Props) => {
 
   const checkboxPayorBudget = (event: any, key: any, index: any) => {
     const { name, value } = event.target;
-    console.log("value", value);
     setPayorBudget(key, index, name, value);
 
     if (name === "annual") {
@@ -358,25 +357,25 @@ const Affordability = (props: Props) => {
   };
 
   const [loading, setLoading] = useState(false);
+  let gate8 = usePfrData((state) => state.pfr.gate8);
+  let setPfr = usePfrData((state) => state.setPfr);
 
   const getSectionData = async (params: any) => {
     try {
-      setLoading(true); // Set loading before sending API request
-      let getSection8 = await getPfrStepLite(8, params);
+      if (gate8 === 0) {
+        setLoading(true); // Set loading before sending API request
+        let getSection8 = await getPfrStepLite(8, params);
 
-      console.log("section 8 get data");
-      console.log(getSection8);
+        if (getSection8.payorBudgets.length === 0) {
+          setInit(props.pfrType);
+        } else {
+          fetchPayorDetail(getSection8.payorDetails);
+          fetchPayorBudget(getSection8.payorBudgetsForClients);
+        }
 
-      if(getSection8.payorBudgets.length === 0) {
-
-        console.log("masuk set init ini nggak" + props.pfrType);
-        setInit(props.pfrType);
-      }else {
-        fetchPayorDetail(getSection8.payorDetails);
-        fetchPayorBudget(getSection8.payorBudgetsForClients);
+        setLoading(false); // Stop loading
+        setPfr("gate8", 1);
       }
-
-      setLoading(false); // Stop loading
     } catch (error) {
       setLoading(false); // Stop loading in case of error
       console.error(error);
@@ -412,7 +411,6 @@ const Affordability = (props: Props) => {
       console.error(error);
     }
   };
-  
 
   // Get data when scroll from section 1
   useEffect(() => {
@@ -451,7 +449,9 @@ const Affordability = (props: Props) => {
     }
   }, [scrollPositionNext, editableStatus, status]);
 
-  return (
+  return loading ? (
+    <LoaderPage />
+  ) : (
     <div
       id={props.id}
       className="min-h-screen pb-20 mb-20 border-b border-gray-soft-strong"
@@ -474,28 +474,30 @@ const Affordability = (props: Props) => {
       </div>
       <SectionCardSingleGrid className="mx-8 2xl:mx-60">
         <RowDoubleGrid>
-          {section8.payorDetail.map((data, key) => key < typePfr ? (
-            <div
-              className="text-left space-y-11"
-              key={"payor-detail-top-" + key}
-            >
-              <Select
-                className="my-4"
-                name="self"
-                dataType="payorDetail"
-                datas={payorForClient}
-                value={data.self >= 0 ? data.self : "-"}
-                handleChange={(event) => handlePayorDetail(event, key)}
-                label={`Payor For Client ${key + 1}`}
-                needValidation={true}
-                logic={
-                  String(data.self) === "" || String(data.self) === "-"
-                    ? false
-                    : true
-                }
-              />
-            </div>
-          ) : null)}
+          {section8.payorDetail.map((data, key) =>
+            key < typePfr ? (
+              <div
+                className="text-left space-y-11"
+                key={"payor-detail-top-" + key}
+              >
+                <Select
+                  className="my-4"
+                  name="self"
+                  dataType="payorDetail"
+                  datas={payorForClient}
+                  value={data.self >= 0 ? data.self : "-"}
+                  handleChange={(event) => handlePayorDetail(event, key)}
+                  label={`Payor For Client ${key + 1}`}
+                  needValidation={true}
+                  logic={
+                    String(data.self) === "" || String(data.self) === "-"
+                      ? false
+                      : true
+                  }
+                />
+              </div>
+            ) : null
+          )}
         </RowDoubleGrid>
 
         <RowDoubleGrid>
@@ -634,378 +636,398 @@ const Affordability = (props: Props) => {
       </SectionCardSingleGrid>
 
       {section8.payorBudget.map((data, key) => {
-        if(data.length > 0) {
-        return (
-          <SectionCardSingleGrid
-            className="mx-8 border-b 2xl:mx-60 border-gray-soft-strong"
-            key={"payor-" + key}
-          >
-            <RowSingleGrid key={"reference" + key}>
-              <h4 className="text-sm font-bold mb-9">
-                References From Previous Sections Client {key + 1}
-              </h4>
-            </RowSingleGrid>
-            <RowTripleGrid className="mb-16" key={"total-annual" + key}>
-              <div className="space-y-8 text-center">
-                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
-                  Total Annual Income ($)
-                </div>
-                <div className="text-sm font-normal">
-                  {annualIncomeTemp[key].ammount}
-                </div>
-              </div>
-              <div className="space-y-8 text-center">
-                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
-                  Total Annual Expense ($)
-                </div>
-                <div className="text-sm font-normal">
-                  {annualExpenseTemp[key].ammount}
-                </div>
-              </div>
-              <div className="space-y-8 text-center">
-                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
-                  Annual Surplus / Shortfall ($)
-                </div>
-                <div className="text-sm font-normal">
-                  {annualIncomeTemp[key].ammount -
-                    annualExpenseTemp[key].ammount}
-                </div>
-              </div>
-            </RowTripleGrid>
-            <RowTripleGrid key={"total-asset" + key}>
-              <div className="space-y-8 text-center">
-                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
-                  Total Asset($)
-                </div>
-                <div className="text-sm font-normal">
-                  {assetTemp[key].ammount}
-                </div>
-              </div>
-              <div className="space-y-8 text-center">
-                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
-                  Total Liabilities($)
-                </div>
-                <div className="text-sm font-normal">
-                  {loanTemp[key].ammount}
-                </div>
-              </div>
-              <div className="space-y-8 text-center">
-                <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
-                  Net Worth ($)
-                </div>
-                <div className="text-sm font-normal">
-                  {assetTemp[key].ammount - loanTemp[key].ammount}
-                </div>
-              </div>
-            </RowTripleGrid>
-
-            {/* Payor Details */}
-            {data.length > 0 ? (
-              <>
-                <RowSingleGrid>
-                  <RowSingleGrid>
-                    <HeadingSecondarySection>
-                      Payor Details
-                    </HeadingSecondarySection>
-                  </RowSingleGrid>
-                </RowSingleGrid>
-                <RowFourthGrid>
-                  <div></div>
-                  <div className="text-sm font-bold text-right">Annual ($)</div>
-                  <div className="text-sm font-bold text-right">Single ($)</div>
-                  <div className="text-sm font-bold text-right">
-                    Source of Fund
+        if (data.length > 0) {
+          return (
+            <SectionCardSingleGrid
+              className="mx-8 border-b 2xl:mx-60 border-gray-soft-strong"
+              key={"payor-" + key}
+            >
+              <RowSingleGrid key={"reference" + key}>
+                <h4 className="text-sm font-bold mb-9">
+                  References From Previous Sections Client {key + 1}
+                </h4>
+              </RowSingleGrid>
+              <RowTripleGrid className="mb-16" key={"total-annual" + key}>
+                <div className="space-y-8 text-center">
+                  <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                    Total Annual Income ($)
                   </div>
-                </RowFourthGrid>
-              </>
-            ) : null}
+                  <div className="text-sm font-normal">
+                    {annualIncomeTemp[key].ammount}
+                  </div>
+                </div>
+                <div className="space-y-8 text-center">
+                  <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                    Total Annual Expense ($)
+                  </div>
+                  <div className="text-sm font-normal">
+                    {annualExpenseTemp[key].ammount}
+                  </div>
+                </div>
+                <div className="space-y-8 text-center">
+                  <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                    Annual Surplus / Shortfall ($)
+                  </div>
+                  <div className="text-sm font-normal">
+                    {annualIncomeTemp[key].ammount -
+                      annualExpenseTemp[key].ammount}
+                  </div>
+                </div>
+              </RowTripleGrid>
+              <RowTripleGrid key={"total-asset" + key}>
+                <div className="space-y-8 text-center">
+                  <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                    Total Asset($)
+                  </div>
+                  <div className="text-sm font-normal">
+                    {assetTemp[key].ammount}
+                  </div>
+                </div>
+                <div className="space-y-8 text-center">
+                  <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                    Total Liabilities($)
+                  </div>
+                  <div className="text-sm font-normal">
+                    {loanTemp[key].ammount}
+                  </div>
+                </div>
+                <div className="space-y-8 text-center">
+                  <div className="p-5 text-sm font-bold bg-gray-soft-white-soft">
+                    Net Worth ($)
+                  </div>
+                  <div className="text-sm font-normal">
+                    {assetTemp[key].ammount - loanTemp[key].ammount}
+                  </div>
+                </div>
+              </RowTripleGrid>
 
-            {data?.length &&
-              data.map((val, index) =>
-                val.selection === true || Number(val.selection) === 1 ? (
-                  <RowFourthGrid
-                    key={"payor-detail-" + key + "-" + index}
-                    className="items-center"
-                  >
-                    <div key={`dataPayorDetail` + index}>
-                      <TextSmall className="text-gray-light">
-                        {dataPayorDetail(index)}
-                      </TextSmall>
+              {/* Payor Details */}
+              {data.length > 0 ? (
+                <>
+                  <RowSingleGrid>
+                    <RowSingleGrid>
+                      <HeadingSecondarySection>
+                        Payor Details
+                      </HeadingSecondarySection>
+                    </RowSingleGrid>
+                  </RowSingleGrid>
+                  <RowFourthGrid>
+                    <div></div>
+                    <div className="text-sm font-bold text-right">
+                      Annual ($)
                     </div>
-                    <div>
-                      <Input
-                        readonly={index === 1 || index === 2 ? true : false}
-                        className="my-4"
-                        type="text"
-                        formStyle="text-right"
-                        name="annual"
-                        value={val.annual ? Number(val.annual) : 0}
-                        handleChange={(event) =>
-                          checkboxPayorBudget(event, key, index)
-                        }
-                        needValidation={true}
-                        logic={annualLogic[key].validate[index].validation}
-                        textError={annualLogic[key].validate[index].error}
-                      />
-
-                      {/* CASH ANNUAL */}
-                      {index === 0 ? (
-                        <>
-                          <Checkbox
-                            className="mb-4"
-                            dataType="annual"
-                            value={Boolean(section8.fromExistingResources[key])}
-                            isChecked={Boolean(
-                              section8.fromExistingResources[key]
-                            )}
-                            lableStyle="text-xs"
-                            label="Funding From Existing Resources"
-                            name="fromExistingResources"
-                            onChange={(event) =>
-                              handleExistingCash(event, key, index)
-                            }
-                          />
-                          {section8.fromExistingResources[key] == true ? (
-                            <TextArea
-                              dataType="annual"
-                              name="reasonForResources"
-                              defaultValue={section8.reasonForResources[key] ? section8.reasonForResources[key] : ""}
-                              needValidation={true}
-                              handleChange={(event) =>
-                                handleExistingCash(event, key, index)
-                              }
-                              logic={
-                                section8.fromExistingResources[key] == true &&
-                                (section8.reasonForResources[key] === null ||
-                                  section8.reasonForResources[key] === "")
-                                  ? false
-                                  : true
-                              }
-                            />
-                          ) : null}
-                        </>
-                      ) : null}
-
-                      {/* MEDISAVE ANNUAL */}
-                      {index === 3 ? (
-                        <>
-                          <Checkbox
-                            className="mb-4"
-                            dataType="annual"
-                            lableStyle="text-xs"
-                            value={
-                              section8.medisaveResource.fromExistingResources[
-                                key
-                              ]
-                            }
-                            isChecked={
-                              section8.medisaveResource.fromExistingResources[
-                                key
-                              ]
-                            }
-                            label="Funding From Existing Resources"
-                            name="fromExistingResources"
-                            onChange={(event) =>
-                              handleExistingMedisave(event, key, index)
-                            }
-                          />
-                          {section8.medisaveResource.fromExistingResources[
-                            key
-                          ] == true ? (
-                            <TextArea
-                              dataType="annual"
-                              name="reasonForResources"
-                              needValidation={true}
-                              handleChange={(event) =>
-                                handleExistingMedisave(event, key, index)
-                              }
-                              logic={
-                                section8.medisaveResource.fromExistingResources[
-                                  key
-                                ] == true &&
-                                (section8.medisaveResource.reasonForResources[
-                                  key
-                                ] === null ||
-                                  section8.medisaveResource.reasonForResources[
-                                    key
-                                  ] === "")
-                                  ? false
-                                  : true
-                              }
-                              defaultValue={
-                                section8.medisaveResource.reasonForResources[
-                                  key
-                                ] ? section8.medisaveResource.reasonForResources[
-                                  key
-                                ] : ""
-                              }
-                            />
-                          ) : null}
-                        </>
-                      ) : null}
+                    <div className="text-sm font-bold text-right">
+                      Single ($)
                     </div>
-                    <div>
-                      <Input
-                        className="my-4"
-                        type="text"
-                        formStyle="text-right"
-                        name="single"
-                        value={val.single ? Number(val.single) : 0}
-                        handleChange={(event) =>
-                          checkboxPayorBudget(event, key, index)
-                        }
-                        needValidation={true}
-                        logic={singleLogic[key].validate[index].validation}
-                        textError={singleLogic[key].validate[index].error}
-                      />
-                      {/* CASH SINGLE */}
-                      {index === 0 ? (
-                        <>
-                          <Checkbox
-                            className="mb-4"
-                            dataType="single"
-                            value={section8.fromExistingResourcesForSingle[key]}
-                            lableStyle="text-xs"
-                            isChecked={
-                              section8.fromExistingResourcesForSingle[key]
-                            }
-                            label="Funding From Existing Resources"
-                            name="fromExistingResourcesForSingle"
-                            onChange={(event) =>
-                              handleExistingCash(event, key, index)
-                            }
-                          />
-                          {section8.fromExistingResourcesForSingle[key] ==
-                          true ? (
-                            <TextArea
-                              dataType="single"
-                              name="reasonForResourcesForSingle"
-                              defaultValue={
-                                section8.reasonForResourcesForSingle[key] ? section8.reasonForResourcesForSingle[key] : ""
-                              }
-                              handleChange={(event) =>
-                                handleExistingCash(event, key, index)
-                              }
-                              needValidation={true}
-                              logic={
-                                section8.fromExistingResourcesForSingle[key] ==
-                                  true &&
-                                (section8.reasonForResourcesForSingle[key] ===
-                                  null ||
-                                  section8.reasonForResourcesForSingle[key] ===
-                                    "")
-                                  ? false
-                                  : true
-                              }
-                            />
-                          ) : null}
-                        </>
-                      ) : null}
-
-                      {/* MEDISAVE SINGLE */}
-                      {index === 3 ? (
-                        <>
-                          <Checkbox
-                            className="mb-4"
-                            dataType="single"
-                            lableStyle="text-xs"
-                            value={
-                              section8.medisaveResource
-                                .fromExistingResourcesForSingle[key]
-                            }
-                            isChecked={
-                              section8.medisaveResource
-                                .fromExistingResourcesForSingle[key]
-                            }
-                            label="Funding From Existing Resources"
-                            name="fromExistingResourcesForSingle"
-                            onChange={(event) =>
-                              handleExistingMedisave(event, key, index)
-                            }
-                          />
-                          {section8.medisaveResource
-                            .fromExistingResourcesForSingle[key] == true ? (
-                            <TextArea
-                              dataType="single"
-                              name="reasonForResourcesForSingle"
-                              needValidation={true}
-                              handleChange={(event) =>
-                                handleExistingMedisave(event, key, index)
-                              }
-                              logic={
-                                section8.medisaveResource
-                                  .fromExistingResourcesForSingle[key] ==
-                                  true &&
-                                (section8.medisaveResource
-                                  .reasonForResourcesForSingle[key] === null ||
-                                  section8.medisaveResource
-                                    .reasonForResourcesForSingle[key] === "")
-                                  ? false
-                                  : true
-                              }
-                              defaultValue={
-                                section8.medisaveResource
-                                  .reasonForResourcesForSingle[key] ? section8.medisaveResource
-                                  .reasonForResourcesForSingle[key] : ""
-                              }
-                            />
-                          ) : null}
-                        </>
-                      ) : null}
-                    </div>
-                    <div>
-                      <div className="mb-2">
-                        <Checkbox
-                          lableStyle="text-sm font-normal"
-                          label="Past / Current Employment"
-                          name="sourceOfFund"
-                          onChange={(event) =>
-                            checkboxPayorBudget(event, key, index)
-                          }
-                          isChecked={
-                            val.sourceOfFund == "Past / Current Employment"
-                          }
-                          value="Past / Current Employment"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <Checkbox
-                          lableStyle="text-sm font-normal"
-                          label="Investment"
-                          name="sourceOfFund"
-                          onChange={(event) =>
-                            checkboxPayorBudget(event, key, index)
-                          }
-                          isChecked={val.sourceOfFund == "Investment"}
-                          value="Investment"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <Checkbox
-                          lableStyle="text-sm font-normal"
-                          label="Inheritance"
-                          name="sourceOfFund"
-                          onChange={(event) =>
-                            checkboxPayorBudget(event, key, index)
-                          }
-                          isChecked={val.sourceOfFund == "Inheritance"}
-                          value="Inheritance"
-                        />
-                      </div>
-                      {val.annual + val.single > 0 && val.sourceOfFund == "" ? (
-                        <span className="text-xs text-red">Required</span>
-                      ) : (
-                        ""
-                      )}
+                    <div className="text-sm font-bold text-right">
+                      Source of Fund
                     </div>
                   </RowFourthGrid>
-                ) : (
-                  ""
-                )
-              )}
-          </SectionCardSingleGrid>
-        )
-      }})}
+                </>
+              ) : null}
+
+              {data?.length &&
+                data.map((val, index) =>
+                  val.selection === true || Number(val.selection) === 1 ? (
+                    <RowFourthGrid
+                      key={"payor-detail-" + key + "-" + index}
+                      className="items-center"
+                    >
+                      <div key={`dataPayorDetail` + index}>
+                        <TextSmall className="text-gray-light">
+                          {dataPayorDetail(index)}
+                        </TextSmall>
+                      </div>
+                      <div>
+                        <Input
+                          readonly={index === 1 || index === 2 ? true : false}
+                          className="my-4"
+                          type="text"
+                          formStyle="text-right"
+                          name="annual"
+                          value={val.annual ? Number(val.annual) : 0}
+                          handleChange={(event) =>
+                            checkboxPayorBudget(event, key, index)
+                          }
+                          needValidation={true}
+                          logic={annualLogic[key].validate[index].validation}
+                          textError={annualLogic[key].validate[index].error}
+                        />
+
+                        {/* CASH ANNUAL */}
+                        {index === 0 ? (
+                          <>
+                            <Checkbox
+                              className="mb-4"
+                              dataType="annual"
+                              value={Boolean(
+                                section8.fromExistingResources[key]
+                              )}
+                              isChecked={Boolean(
+                                section8.fromExistingResources[key]
+                              )}
+                              lableStyle="text-xs"
+                              label="Funding From Existing Resources"
+                              name="fromExistingResources"
+                              onChange={(event) =>
+                                handleExistingCash(event, key, index)
+                              }
+                            />
+                            {section8.fromExistingResources[key] == true ? (
+                              <TextArea
+                                dataType="annual"
+                                name="reasonForResources"
+                                defaultValue={
+                                  section8.reasonForResources[key]
+                                    ? section8.reasonForResources[key]
+                                    : ""
+                                }
+                                needValidation={true}
+                                handleChange={(event) =>
+                                  handleExistingCash(event, key, index)
+                                }
+                                logic={
+                                  section8.fromExistingResources[key] == true &&
+                                  (section8.reasonForResources[key] === null ||
+                                    section8.reasonForResources[key] === "")
+                                    ? false
+                                    : true
+                                }
+                              />
+                            ) : null}
+                          </>
+                        ) : null}
+
+                        {/* MEDISAVE ANNUAL */}
+                        {index === 3 ? (
+                          <>
+                            <Checkbox
+                              className="mb-4"
+                              dataType="annual"
+                              lableStyle="text-xs"
+                              value={
+                                section8.medisaveResource.fromExistingResources[
+                                  key
+                                ]
+                              }
+                              isChecked={
+                                section8.medisaveResource.fromExistingResources[
+                                  key
+                                ]
+                              }
+                              label="Funding From Existing Resources"
+                              name="fromExistingResources"
+                              onChange={(event) =>
+                                handleExistingMedisave(event, key, index)
+                              }
+                            />
+                            {section8.medisaveResource.fromExistingResources[
+                              key
+                            ] == true ? (
+                              <TextArea
+                                dataType="annual"
+                                name="reasonForResources"
+                                needValidation={true}
+                                handleChange={(event) =>
+                                  handleExistingMedisave(event, key, index)
+                                }
+                                logic={
+                                  section8.medisaveResource
+                                    .fromExistingResources[key] == true &&
+                                  (section8.medisaveResource.reasonForResources[
+                                    key
+                                  ] === null ||
+                                    section8.medisaveResource
+                                      .reasonForResources[key] === "")
+                                    ? false
+                                    : true
+                                }
+                                defaultValue={
+                                  section8.medisaveResource.reasonForResources[
+                                    key
+                                  ]
+                                    ? section8.medisaveResource
+                                        .reasonForResources[key]
+                                    : ""
+                                }
+                              />
+                            ) : null}
+                          </>
+                        ) : null}
+                      </div>
+                      <div>
+                        <Input
+                          className="my-4"
+                          type="text"
+                          formStyle="text-right"
+                          name="single"
+                          value={val.single ? Number(val.single) : 0}
+                          handleChange={(event) =>
+                            checkboxPayorBudget(event, key, index)
+                          }
+                          needValidation={true}
+                          logic={singleLogic[key].validate[index].validation}
+                          textError={singleLogic[key].validate[index].error}
+                        />
+                        {/* CASH SINGLE */}
+                        {index === 0 ? (
+                          <>
+                            <Checkbox
+                              className="mb-4"
+                              dataType="single"
+                              value={
+                                section8.fromExistingResourcesForSingle[key]
+                              }
+                              lableStyle="text-xs"
+                              isChecked={
+                                section8.fromExistingResourcesForSingle[key]
+                              }
+                              label="Funding From Existing Resources"
+                              name="fromExistingResourcesForSingle"
+                              onChange={(event) =>
+                                handleExistingCash(event, key, index)
+                              }
+                            />
+                            {section8.fromExistingResourcesForSingle[key] ==
+                            true ? (
+                              <TextArea
+                                dataType="single"
+                                name="reasonForResourcesForSingle"
+                                defaultValue={
+                                  section8.reasonForResourcesForSingle[key]
+                                    ? section8.reasonForResourcesForSingle[key]
+                                    : ""
+                                }
+                                handleChange={(event) =>
+                                  handleExistingCash(event, key, index)
+                                }
+                                needValidation={true}
+                                logic={
+                                  section8.fromExistingResourcesForSingle[
+                                    key
+                                  ] == true &&
+                                  (section8.reasonForResourcesForSingle[key] ===
+                                    null ||
+                                    section8.reasonForResourcesForSingle[
+                                      key
+                                    ] === "")
+                                    ? false
+                                    : true
+                                }
+                              />
+                            ) : null}
+                          </>
+                        ) : null}
+
+                        {/* MEDISAVE SINGLE */}
+                        {index === 3 ? (
+                          <>
+                            <Checkbox
+                              className="mb-4"
+                              dataType="single"
+                              lableStyle="text-xs"
+                              value={
+                                section8.medisaveResource
+                                  .fromExistingResourcesForSingle[key]
+                              }
+                              isChecked={
+                                section8.medisaveResource
+                                  .fromExistingResourcesForSingle[key]
+                              }
+                              label="Funding From Existing Resources"
+                              name="fromExistingResourcesForSingle"
+                              onChange={(event) =>
+                                handleExistingMedisave(event, key, index)
+                              }
+                            />
+                            {section8.medisaveResource
+                              .fromExistingResourcesForSingle[key] == true ? (
+                              <TextArea
+                                dataType="single"
+                                name="reasonForResourcesForSingle"
+                                needValidation={true}
+                                handleChange={(event) =>
+                                  handleExistingMedisave(event, key, index)
+                                }
+                                logic={
+                                  section8.medisaveResource
+                                    .fromExistingResourcesForSingle[key] ==
+                                    true &&
+                                  (section8.medisaveResource
+                                    .reasonForResourcesForSingle[key] ===
+                                    null ||
+                                    section8.medisaveResource
+                                      .reasonForResourcesForSingle[key] === "")
+                                    ? false
+                                    : true
+                                }
+                                defaultValue={
+                                  section8.medisaveResource
+                                    .reasonForResourcesForSingle[key]
+                                    ? section8.medisaveResource
+                                        .reasonForResourcesForSingle[key]
+                                    : ""
+                                }
+                              />
+                            ) : null}
+                          </>
+                        ) : null}
+                      </div>
+                      <div>
+                        <div className="mb-2">
+                          <Checkbox
+                            lableStyle="text-sm font-normal"
+                            label="Past / Current Employment"
+                            name="sourceOfFund"
+                            onChange={(event) =>
+                              checkboxPayorBudget(event, key, index)
+                            }
+                            isChecked={
+                              val.sourceOfFund == "Past / Current Employment"
+                            }
+                            value="Past / Current Employment"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <Checkbox
+                            lableStyle="text-sm font-normal"
+                            label="Investment"
+                            name="sourceOfFund"
+                            onChange={(event) =>
+                              checkboxPayorBudget(event, key, index)
+                            }
+                            isChecked={val.sourceOfFund == "Investment"}
+                            value="Investment"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <Checkbox
+                            lableStyle="text-sm font-normal"
+                            label="Inheritance"
+                            name="sourceOfFund"
+                            onChange={(event) =>
+                              checkboxPayorBudget(event, key, index)
+                            }
+                            isChecked={val.sourceOfFund == "Inheritance"}
+                            value="Inheritance"
+                          />
+                        </div>
+                        {val.annual + val.single > 0 &&
+                        val.sourceOfFund == "" ? (
+                          <span className="text-xs text-red">Required</span>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </RowFourthGrid>
+                  ) : (
+                    ""
+                  )
+                )}
+            </SectionCardSingleGrid>
+          );
+        }
+      })}
 
       <HeadingSecondarySection className="mx-8 2xl:mx-60">
         Source of Wealth

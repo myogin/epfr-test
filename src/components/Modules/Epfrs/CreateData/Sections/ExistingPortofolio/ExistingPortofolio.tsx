@@ -160,12 +160,9 @@ const ExistingPortofolio = (props: Props) => {
         setLoading(true); // Set loading before sending API request
         let getSection2 = await getPfrStep(2, params);
   
-        console.log(getSection2);
-  
         // Fetch Client
         if (getSection2.summaryOfProperty.length > 0) {
           if (getSection2.summaryOfProperty.length > 1) {
-            console.log("masuk reset")
             resetProperty();
           }
           getSection2.summaryOfProperty.map((data: any, index: number) => {
@@ -176,7 +173,6 @@ const ExistingPortofolio = (props: Props) => {
         // Fetch accompaintment
         if (getSection2.summaryOfInvestment.length > 0) {
           if (getSection2.summaryOfInvestment.length > 1) {
-            console.log("masuk reset")
             resetInvestment();
           }
           getSection2.summaryOfInvestment.map((data: any, index: number) => {
@@ -187,7 +183,6 @@ const ExistingPortofolio = (props: Props) => {
         // Fetch trusted individual
         if (getSection2.summaryOfSaving.length > 0) {
           if (getSection2.summaryOfSaving.length > 1) {
-            console.log("masuk reset")
             resetSaving();
           }
           getSection2.summaryOfSaving.map((data: any, index: number) => {
@@ -198,7 +193,6 @@ const ExistingPortofolio = (props: Props) => {
         // Fetch trusted individual
         if (getSection2.summaryOfCPF.length > 0) {
           if (getSection2.summaryOfCPF.length > 1) {
-            console.log("masuk reset")
             resetCpf();
           }
           getSection2.summaryOfCPF.map((data: any, index: number) => {
@@ -209,7 +203,6 @@ const ExistingPortofolio = (props: Props) => {
         // Fetch trusted individual
         if (getSection2.summaryOfInsurance.length > 0) {
           if (getSection2.summaryOfInsurance.length > 1) {
-            console.log("masuk reset")
             resetInsurance();
           }
           getSection2.summaryOfInsurance.map((data: any, index: number) => {
@@ -220,7 +213,6 @@ const ExistingPortofolio = (props: Props) => {
         // Fetch trusted individual
         if (getSection2.summaryOfInsurance2.length > 0) {
           if (getSection2.summaryOfInsurance2.length > 1) {
-            console.log("masuk reset")
             resetInsurance2();
           }
           getSection2.summaryOfInsurance2.map((data: any, index: number) => {
@@ -231,7 +223,6 @@ const ExistingPortofolio = (props: Props) => {
         // Fetch trusted individual
         if (getSection2.summaryOfLoans.length > 0) {
           if (getSection2.summaryOfLoans.length > 1) {
-            console.log("masuk reset")
             resetLoan();
           }
           
@@ -241,7 +232,6 @@ const ExistingPortofolio = (props: Props) => {
         // Fetch trusted individual
         if (getSection2.summaryOfSRS.length > 0) {
           if (getSection2.summaryOfSRS.length > 1) {
-            console.log("masuk reset")
             resetSrs();
           }
           getSection2.summaryOfSRS.map((data: any, index: number) => {
