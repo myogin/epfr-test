@@ -48,7 +48,7 @@ const Verify: Page = () => {
           session?.user?.fullName
         );
         deleteEmail();
-        // push("/overview");
+        push("/overview");
       }
     });
 
