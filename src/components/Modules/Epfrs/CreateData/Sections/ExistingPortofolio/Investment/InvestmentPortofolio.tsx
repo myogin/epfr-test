@@ -52,9 +52,9 @@ const InvestmentPortofolio = () => {
   ];
 
   let sourceOfInvestments: Array<any> = [
-    { id: "0", name: "Cash" },
-    { id: "1", name: "CPF" },
-    { id: "2", name: "SRS" },
+    { id: "Cash", name: "Cash" },
+    { id: "CPF", name: "CPF" },
+    { id: "SRS", name: "SRS" },
   ];
 
   // inject initial state to useState
@@ -393,7 +393,7 @@ const InvestmentPortofolio = () => {
                     <td className="px-2 py-5">{clientName(data.client)}</td>
                     <td className="px-2 py-5">
                       {data.typeOfInvestment
-                        ? typeOfInvestments[Number(data.typeOfInvestment)].name
+                        ? data.typeOfInvestment
                         : ""}
                     </td>
                     <td className="px-2 py-5">{data.company}</td>
