@@ -14,6 +14,7 @@ import { siteConfig } from "@/libs/config";
 import { useLoginData } from "@/store/login/logindata";
 import Loading from "@/components/Attributes/Loader/Loading";
 import { resendService } from "@/services/login/loginService";
+import axios from "axios";
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
   const { push } = useRouter();
@@ -47,12 +48,22 @@ const Verify: Page = () => {
           session?.user?.fullName
         );
         deleteEmail();
-        push("/overview");
+        // push("/overview");
       }
     });
 
     setLoading(false);
   };
+
+  const testVerify = async(code:number)=>{
+    await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/verify`,{
+      email:userEmail,
+      code:code
+    }).then(res=>{
+      console.log(res);
+      
+    })
+  }
 
   const [resetTime,setResetTime] = useState(180)
   const [intervalId,setIntervalId] = useState<any>(0)
@@ -250,6 +261,14 @@ const Verify: Page = () => {
                 className="justify-center w-full"
               >
                 Verify
+              </ButtonGreenMedium>
+              <ButtonGreenMedium
+                onClick={() => {
+                  testVerify(mixInput);
+                }}
+                className="justify-center w-full"
+              >
+                TEST Verify
               </ButtonGreenMedium>
             </div>
           </div>
