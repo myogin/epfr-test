@@ -97,6 +97,7 @@ const AnalysisRecommendation = (props: Props) => {
   let sectionCreateEpfrId = useNavigationSection((state)=> state.sectionCreateEpfrId)
 
   const currencyFormat = (num: any) => {
+    console.log("Number: ", num);
     if (num) {
       let number = Number(num);
       return "$" + number.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -699,218 +700,382 @@ const AnalysisRecommendation = (props: Props) => {
   };
 
   const calcPremium = (product: any, isRider = false) => {
-    let frequency = product["premiumFrequency"];
-    let clientId = product["nameOfOwner"];
-    let premiumType = product["premiumPaymentType"];
-    let premium = 0;
-    let categoryId = product["categoryId"];
-    if (categoryId != 8 && categoryId != 5) {
+    if (product) {
+      if (product["checked"]) {
+          let frequency = product["premiumFrequency"];
+          let clientId = product["nameOfOwner"];
+          let premiumType = product["premiumPaymentType"];
+          let premium = 0;
+          let categoryId = product["categoryId"];
+          if (categoryId != 8 && categoryId != 5) {
+            if (frequency == 4) {
+              premium = product["premium"];
+              dataTotalSinglePremium[clientId][premiumType] += product["premium"];
+              setTotalSinglePremium(dataTotalSinglePremium);
+
+              dataProductSinglePremium[clientId][premiumType] += premium;
+              setProductSinglePremium(dataProductSinglePremium);
+            } else if (frequency == 3) {
+              premium = product["premium"];
+              dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+
+              dataProductAnnualPremium[clientId][premiumType] += premium;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else if (frequency == 2) {
+              premium = product["premium"] * 2;
+              dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+
+              dataProductAnnualPremium[clientId][premiumType] += premium;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else if (frequency == 1) {
+              premium = product["premium"] * 4;
+              dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+
+              dataProductAnnualPremium[clientId][premiumType] += premium;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else {
+              premium = product["premium"] * 12;
+              dataTotalAnnualPremium[clientId][premiumType] +=
+                product["premium"] * 12;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+
+              dataProductAnnualPremium[clientId][premiumType] += premium;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            }
+
+            if (isRider == false) {
+              if (
+                dataMaxSinglePremium[clientId][premiumType] <
+                dataProductSinglePremium[clientId][premiumType]
+              ) {
+                dataMaxSinglePremium[clientId][premiumType] =
+                  dataProductSinglePremium[clientId][premiumType];
+              }
+              if (
+                dataMaxAnnualPremium[clientId][premiumType] <
+                dataProductAnnualPremium[clientId][premiumType]
+              ) {
+                dataMaxAnnualPremium[clientId][premiumType] =
+                  dataProductAnnualPremium[clientId][premiumType];
+              }
+            }
+          } else {
+            let cash =
+              product["premium_for_hospitalization"] !== null
+                ? product["premium_for_hospitalization"]["cash"]
+                : 0;
+            let medisave =
+              product["premium_for_hospitalization"] !== null
+                ? product["premium_for_hospitalization"]["cpfMedisave"]
+                : 0;
+            let premium = cash + medisave;
+            if (frequency == 4) {
+              dataTotalSinglePremium[clientId][0] += cash;
+              setTotalSinglePremium(dataTotalSinglePremium);
+              dataTotalSinglePremium[clientId][3] += medisave;
+              setTotalSinglePremium(dataTotalSinglePremium);
+
+              dataProductSinglePremium[clientId][0] += cash;
+              setProductSinglePremium(dataProductSinglePremium);
+              dataProductSinglePremium[clientId][3] += medisave;
+              setProductSinglePremium(dataProductSinglePremium);
+            } else if (frequency == 3) {
+              dataTotalAnnualPremium[clientId][0] += cash;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+              dataTotalAnnualPremium[clientId][3] += medisave;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+
+              dataProductAnnualPremium[clientId][0] += cash;
+              setProductAnnualPremium(dataProductAnnualPremium);
+              dataProductAnnualPremium[clientId][3] += medisave;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else if (frequency == 2) {
+              premium = premium * 2;
+              dataTotalAnnualPremium[clientId][0] += cash * 2;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+              dataTotalAnnualPremium[clientId][3] += medisave * 2;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+
+              dataProductAnnualPremium[clientId][0] += cash * 2;
+              setProductAnnualPremium(dataProductAnnualPremium);
+              dataProductAnnualPremium[clientId][3] += medisave * 2;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else if (frequency == 1) {
+              premium = premium * 4;
+              dataTotalAnnualPremium[clientId][0] += cash * 4;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+              dataTotalAnnualPremium[clientId][3] += medisave * 4;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+
+              dataProductAnnualPremium[clientId][0] += cash * 4;
+              setProductAnnualPremium(dataProductAnnualPremium);
+              dataProductAnnualPremium[clientId][3] += medisave * 4;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else {
+              premium = premium * 12;
+              dataTotalAnnualPremium[clientId][0] += cash * 12;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+              dataTotalAnnualPremium[clientId][3] += medisave * 12;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+
+              dataProductAnnualPremium[clientId][0] += cash * 12;
+              setProductAnnualPremium(dataProductAnnualPremium);
+              dataProductAnnualPremium[clientId][3] += medisave * 12;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            }
+
+            if (isRider == false) {
+              if (
+                dataMaxSinglePremium[clientId][0] <
+                dataProductSinglePremium[clientId][0]
+              ) {
+                dataMaxSinglePremium[clientId][0] =
+                  dataProductSinglePremium[clientId][0];
+                setMaxSinglePremium(dataMaxSinglePremium);
+              }
+              if (
+                dataMaxSinglePremium[clientId][3] <
+                dataProductSinglePremium[clientId][3]
+              ) {
+                dataMaxSinglePremium[clientId][3] =
+                  dataProductSinglePremium[clientId][3];
+                setMaxSinglePremium(dataMaxSinglePremium);
+              }
+              if (
+                dataMaxAnnualPremium[clientId][0] <
+                dataProductAnnualPremium[clientId][0]
+              ) {
+                dataMaxAnnualPremium[clientId][0] =
+                  dataProductAnnualPremium[clientId][0];
+                setMaxAnnualPremium(dataMaxAnnualPremium);
+              }
+              if (
+                dataMaxAnnualPremium[clientId][3] <
+                dataProductAnnualPremium[clientId][3]
+              ) {
+                dataMaxAnnualPremium[clientId][3] =
+                  dataProductAnnualPremium[clientId][3];
+                setMaxAnnualPremium(dataMaxAnnualPremium);
+              }
+            }
+          }
+        } else {
+          let frequency = product["premiumFrequency"];
+          let clientId = product["nameOfOwner"];
+          let premiumType = product["premiumPaymentType"];
+          let premium = 0;
+          let categoryId = product["categoryId"];
+          if (categoryId != 8 && categoryId != 5) {
+            if (frequency == 4) {
+              premium = product["premium"];
+              dataTotalSinglePremium[clientId][premiumType] -= product["premium"];
+              setTotalSinglePremium(dataTotalSinglePremium);
+  
+              dataProductSinglePremium[clientId][premiumType] -= premium;
+              setProductSinglePremium(dataProductSinglePremium);
+            } else if (frequency == 3) {
+              premium = product["premium"];
+              dataTotalAnnualPremium[clientId][premiumType] -= product["premium"] * 1;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+  
+              dataProductAnnualPremium[clientId][premiumType] -= premium;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else if (frequency == 2) {
+              premium = product["premium"] * 2;
+              dataTotalAnnualPremium[clientId][premiumType] -= product["premium"] * 2;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+  
+              dataProductAnnualPremium[clientId][premiumType] -= premium;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else if (frequency == 1) {
+              premium = product["premium"] * 4;
+              dataTotalAnnualPremium[clientId][premiumType] -= product["premium"] * 4;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+  
+              dataProductAnnualPremium[clientId][premiumType] -= premium;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else {
+              premium = product["premium"] * 12;
+              dataTotalAnnualPremium[clientId][premiumType] -=
+                product["premium"] * 12;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+  
+              dataProductAnnualPremium[clientId][premiumType] -= premium;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            }
+  
+            if (isRider == false) {
+              if (
+                dataMaxSinglePremium[clientId][premiumType] <
+                dataProductSinglePremium[clientId][premiumType]
+              ) {
+                dataMaxSinglePremium[clientId][premiumType] =
+                  dataProductSinglePremium[clientId][premiumType];
+              }
+              if (
+                dataMaxAnnualPremium[clientId][premiumType] <
+                dataProductAnnualPremium[clientId][premiumType]
+              ) {
+                dataMaxAnnualPremium[clientId][premiumType] =
+                  dataProductAnnualPremium[clientId][premiumType];
+              }
+            }
+          } else {
+            let cash =
+              product["premium_for_hospitalization"] !== null
+                ? product["premium_for_hospitalization"]["cash"]
+                : 0;
+            let medisave =
+              product["premium_for_hospitalization"] !== null
+                ? product["premium_for_hospitalization"]["cpfMedisave"]
+                : 0;
+            let premium = cash + medisave;
+            if (frequency == 4) {
+              dataTotalSinglePremium[clientId][0] -= cash;
+              setTotalSinglePremium(dataTotalSinglePremium);
+              dataTotalSinglePremium[clientId][3] -= medisave;
+              setTotalSinglePremium(dataTotalSinglePremium);
+  
+              dataProductSinglePremium[clientId][0] -= cash;
+              setProductSinglePremium(dataProductSinglePremium);
+              dataProductSinglePremium[clientId][3] -= medisave;
+              setProductSinglePremium(dataProductSinglePremium);
+            } else if (frequency == 3) {
+              dataTotalAnnualPremium[clientId][0] -= cash;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+              dataTotalAnnualPremium[clientId][3] -= medisave;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+  
+              dataProductAnnualPremium[clientId][0] -= cash;
+              setProductAnnualPremium(dataProductAnnualPremium);
+              dataProductAnnualPremium[clientId][3] -= medisave;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else if (frequency == 2) {
+              premium = premium * 2;
+              dataTotalAnnualPremium[clientId][0] -= cash * 2;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+              dataTotalAnnualPremium[clientId][3] -= medisave * 2;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+  
+              dataProductAnnualPremium[clientId][0] -= cash * 2;
+              setProductAnnualPremium(dataProductAnnualPremium);
+              dataProductAnnualPremium[clientId][3] -= medisave * 2;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else if (frequency == 1) {
+              premium = premium * 4;
+              dataTotalAnnualPremium[clientId][0] -= cash * 4;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+              dataTotalAnnualPremium[clientId][3] -= medisave * 4;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+  
+              dataProductAnnualPremium[clientId][0] -= cash * 4;
+              setProductAnnualPremium(dataProductAnnualPremium);
+              dataProductAnnualPremium[clientId][3] -= medisave * 4;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            } else {
+              premium = premium * 12;
+              dataTotalAnnualPremium[clientId][0] -= cash * 12;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+              dataTotalAnnualPremium[clientId][3] -= medisave * 12;
+              setTotalAnnualPremium(dataTotalAnnualPremium);
+  
+              dataProductAnnualPremium[clientId][0] -= cash * 12;
+              setProductAnnualPremium(dataProductAnnualPremium);
+              dataProductAnnualPremium[clientId][3] -= medisave * 12;
+              setProductAnnualPremium(dataProductAnnualPremium);
+            }
+  
+            if (isRider == false) {
+              if (
+                dataMaxSinglePremium[clientId][0] <
+                dataProductSinglePremium[clientId][0]
+              ) {
+                dataMaxSinglePremium[clientId][0] =
+                  dataProductSinglePremium[clientId][0];
+                setMaxSinglePremium(dataMaxSinglePremium);
+              }
+              if (
+                dataMaxSinglePremium[clientId][3] <
+                dataProductSinglePremium[clientId][3]
+              ) {
+                dataMaxSinglePremium[clientId][3] =
+                  dataProductSinglePremium[clientId][3];
+                setMaxSinglePremium(dataMaxSinglePremium);
+              }
+              if (
+                dataMaxAnnualPremium[clientId][0] <
+                dataProductAnnualPremium[clientId][0]
+              ) {
+                dataMaxAnnualPremium[clientId][0] =
+                  dataProductAnnualPremium[clientId][0];
+                setMaxAnnualPremium(dataMaxAnnualPremium);
+              }
+              if (
+                dataMaxAnnualPremium[clientId][3] <
+                dataProductAnnualPremium[clientId][3]
+              ) {
+                dataMaxAnnualPremium[clientId][3] =
+                  dataProductAnnualPremium[clientId][3];
+                setMaxAnnualPremium(dataMaxAnnualPremium);
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const calcPremiumForCIS = (product: any) => {
+      let frequency = product["premiumFrequency"];
+      let clientId = product["nameOfOwner"];
+      let premiumType = product["premiumPaymentType"];
+      let premium = 0;
       if (frequency == 4) {
         premium = product["premium"];
         dataTotalSinglePremium[clientId][premiumType] += product["premium"];
         setTotalSinglePremium(dataTotalSinglePremium);
-
-        dataProductSinglePremium[clientId][premiumType] += premium;
-        setProductSinglePremium(dataProductSinglePremium);
+        if (dataMaxSinglePremium[clientId][premiumType] < premium) {
+          dataMaxSinglePremium[clientId][premiumType] = premium;
+          setMaxSinglePremium(dataMaxSinglePremium);
+        }
       } else if (frequency == 3) {
         premium = product["premium"];
         dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
         setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][premiumType] += premium;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+          dataMaxAnnualPremium[clientId][premiumType] = premium;
+          setMaxAnnualPremium(dataMaxAnnualPremium);
+        }
       } else if (frequency == 2) {
         premium = product["premium"] * 2;
         dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
         setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][premiumType] += premium;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+          dataMaxAnnualPremium[clientId][premiumType] = premium;
+          setMaxAnnualPremium(dataMaxAnnualPremium);
+        }
       } else if (frequency == 1) {
         premium = product["premium"] * 4;
         dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
         setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][premiumType] += premium;
-        setProductAnnualPremium(dataProductAnnualPremium);
+        if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+          dataMaxAnnualPremium[clientId][premiumType] = premium;
+          setMaxAnnualPremium(dataMaxAnnualPremium);
+        }
       } else {
         premium = product["premium"] * 12;
-        dataTotalAnnualPremium[clientId][premiumType] +=
-          product["premium"] * 12;
+        dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 12;
         setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][premiumType] += premium;
-        setProductAnnualPremium(dataProductAnnualPremium);
-      }
-
-      if (isRider == false) {
-        if (
-          dataMaxSinglePremium[clientId][premiumType] <
-          dataProductSinglePremium[clientId][premiumType]
-        ) {
-          dataMaxSinglePremium[clientId][premiumType] =
-            dataProductSinglePremium[clientId][premiumType];
-        }
-        if (
-          dataMaxAnnualPremium[clientId][premiumType] <
-          dataProductAnnualPremium[clientId][premiumType]
-        ) {
-          dataMaxAnnualPremium[clientId][premiumType] =
-            dataProductAnnualPremium[clientId][premiumType];
-        }
-      }
-    } else {
-      let cash =
-        product["premium_for_hospitalization"] !== null
-          ? product["premium_for_hospitalization"]["cash"]
-          : 0;
-      let medisave =
-        product["premium_for_hospitalization"] !== null
-          ? product["premium_for_hospitalization"]["cpfMedisave"]
-          : 0;
-      let premium = cash + medisave;
-      if (frequency == 4) {
-        dataTotalSinglePremium[clientId][0] += cash;
-        setTotalSinglePremium(dataTotalSinglePremium);
-        dataTotalSinglePremium[clientId][3] += medisave;
-        setTotalSinglePremium(dataTotalSinglePremium);
-
-        dataProductSinglePremium[clientId][0] += cash;
-        setProductSinglePremium(dataProductSinglePremium);
-        dataProductSinglePremium[clientId][3] += medisave;
-        setProductSinglePremium(dataProductSinglePremium);
-      } else if (frequency == 3) {
-        dataTotalAnnualPremium[clientId][0] += cash;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-        dataTotalAnnualPremium[clientId][3] += medisave;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][0] += cash;
-        setProductAnnualPremium(dataProductAnnualPremium);
-        dataProductAnnualPremium[clientId][3] += medisave;
-        setProductAnnualPremium(dataProductAnnualPremium);
-      } else if (frequency == 2) {
-        premium = premium * 2;
-        dataTotalAnnualPremium[clientId][0] += cash * 2;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-        dataTotalAnnualPremium[clientId][3] += medisave * 2;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][0] += cash * 2;
-        setProductAnnualPremium(dataProductAnnualPremium);
-        dataProductAnnualPremium[clientId][3] += medisave * 2;
-        setProductAnnualPremium(dataProductAnnualPremium);
-      } else if (frequency == 1) {
-        premium = premium * 4;
-        dataTotalAnnualPremium[clientId][0] += cash * 4;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-        dataTotalAnnualPremium[clientId][3] += medisave * 4;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][0] += cash * 4;
-        setProductAnnualPremium(dataProductAnnualPremium);
-        dataProductAnnualPremium[clientId][3] += medisave * 4;
-        setProductAnnualPremium(dataProductAnnualPremium);
-      } else {
-        premium = premium * 12;
-        dataTotalAnnualPremium[clientId][0] += cash * 12;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-        dataTotalAnnualPremium[clientId][3] += medisave * 12;
-        setTotalAnnualPremium(dataTotalAnnualPremium);
-
-        dataProductAnnualPremium[clientId][0] += cash * 12;
-        setProductAnnualPremium(dataProductAnnualPremium);
-        dataProductAnnualPremium[clientId][3] += medisave * 12;
-        setProductAnnualPremium(dataProductAnnualPremium);
-      }
-
-      if (isRider == false) {
-        if (
-          dataMaxSinglePremium[clientId][0] <
-          dataProductSinglePremium[clientId][0]
-        ) {
-          dataMaxSinglePremium[clientId][0] =
-            dataProductSinglePremium[clientId][0];
-          setMaxSinglePremium(dataMaxSinglePremium);
-        }
-        if (
-          dataMaxSinglePremium[clientId][3] <
-          dataProductSinglePremium[clientId][3]
-        ) {
-          dataMaxSinglePremium[clientId][3] =
-            dataProductSinglePremium[clientId][3];
-          setMaxSinglePremium(dataMaxSinglePremium);
-        }
-        if (
-          dataMaxAnnualPremium[clientId][0] <
-          dataProductAnnualPremium[clientId][0]
-        ) {
-          dataMaxAnnualPremium[clientId][0] =
-            dataProductAnnualPremium[clientId][0];
-          setMaxAnnualPremium(dataMaxAnnualPremium);
-        }
-        if (
-          dataMaxAnnualPremium[clientId][3] <
-          dataProductAnnualPremium[clientId][3]
-        ) {
-          dataMaxAnnualPremium[clientId][3] =
-            dataProductAnnualPremium[clientId][3];
+        if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+          dataMaxAnnualPremium[clientId][premiumType] = premium;
           setMaxAnnualPremium(dataMaxAnnualPremium);
         }
       }
-    }
-  };
-
-  const calcPremiumForCIS = (product: any) => {
-    let frequency = product["premiumFrequency"];
-    let clientId = product["nameOfOwner"];
-    let premiumType = product["premiumPaymentType"];
-    let premium = 0;
-    if (frequency == 4) {
-      premium = product["premium"];
-      dataTotalSinglePremium[clientId][premiumType] += product["premium"];
-      setTotalSinglePremium(dataTotalSinglePremium);
-      if (dataMaxSinglePremium[clientId][premiumType] < premium) {
-        dataMaxSinglePremium[clientId][premiumType] = premium;
-        setMaxSinglePremium(dataMaxSinglePremium);
-      }
-    } else if (frequency == 3) {
-      premium = product["premium"];
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
-      setTotalAnnualPremium(dataTotalAnnualPremium);
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] = premium;
-        setMaxAnnualPremium(dataMaxAnnualPremium);
-      }
-    } else if (frequency == 2) {
-      premium = product["premium"] * 2;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
-      setTotalAnnualPremium(dataTotalAnnualPremium);
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] = premium;
-        setMaxAnnualPremium(dataMaxAnnualPremium);
-      }
-    } else if (frequency == 1) {
-      premium = product["premium"] * 4;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
-      setTotalAnnualPremium(dataTotalAnnualPremium);
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] = premium;
-        setMaxAnnualPremium(dataMaxAnnualPremium);
-      }
-    } else {
-      premium = product["premium"] * 12;
-      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 12;
-      setTotalAnnualPremium(dataTotalAnnualPremium);
-      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-        dataMaxAnnualPremium[clientId][premiumType] = premium;
-        setMaxAnnualPremium(dataMaxAnnualPremium);
-      }
-    }
   };
 
   const calcPremiumClientChoice = (product: any, isRider: false) => {
-    // console.log('product', product)
     if (product) {
       if (product["checked"]) {
         let frequency = product["premiumFrequency"];
@@ -1380,6 +1545,482 @@ const AnalysisRecommendation = (props: Props) => {
                 );
               } else if (product.riders[iRider].premiumFrequency == 4) {
                 dataTotalCISILPSinglePremiumChoice[clientId][0] +=
+                  product.riders[iRider].premium;
+                setTotalCISILPSinglePremiumChoice(
+                  dataTotalCISILPSinglePremiumChoice
+                );
+              }
+            }
+          }
+        }
+      } else {
+        let frequency = product["premiumFrequency"];
+        let clientId = product["nameOfOwner"];
+        let premiumType = product["premiumPaymentType"];
+        let premium = 0;
+        let categoryId = product["categoryId"];
+
+        let typeData = product["type"];
+        let recommendType = product["recommedType"];
+
+        // Recomendation
+        // if(categoryId != 8 && categoryId != 5) {
+
+        if (frequency == 4) {
+          premium = product["premium"];
+          dataTotalSinglePremiumChoice[clientId][premiumType] -=
+            product["premium"];
+          setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice);
+          dataProductSinglePremiumChoice[clientId][premiumType] -= premium;
+          setProductSinglePremiumChoice(dataProductSinglePremiumChoice);
+
+          // New amount
+          dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] -=
+            product["premium"];
+          setTotalRecomendationSinglePremiumChoice(
+            dataTotalRecomendationSinglePremiumChoice
+          );
+          dataProductRecomendationSinglePremiumChoice[clientId][premiumType] -=
+            premium;
+          setProductRecomendationSinglePremiumChoice(
+            dataProductRecomendationSinglePremiumChoice
+          );
+        } else if (frequency == 3) {
+          premium = product["premium"];
+          dataTotalAnnualPremiumChoice[clientId][premiumType] -=
+            product["premium"] * 1;
+          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+          dataProductAnnualPremiumChoice[clientId][premiumType] -= premium;
+          setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+
+          // New amount
+          dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] -=
+            product["premium"] * 1;
+          setTotalRecomendationAnnualPremiumChoice(
+            dataTotalRecomendationAnnualPremiumChoice
+          );
+          dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] -=
+            premium;
+          setProductRecomendationAnnualPremiumChoice(
+            dataProductRecomendationAnnualPremiumChoice
+          );
+        } else if (frequency == 2) {
+          premium = product["premium"] * 2;
+          dataTotalAnnualPremiumChoice[clientId][premiumType] -=
+            product["premium"] * 2;
+          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+          dataProductAnnualPremiumChoice[clientId][premiumType] -= premium;
+          setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+
+          // New amount
+          dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] -=
+            product["premium"] * 2;
+          setTotalRecomendationAnnualPremiumChoice(
+            dataTotalRecomendationAnnualPremiumChoice
+          );
+          dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] -=
+            premium;
+          setProductRecomendationAnnualPremiumChoice(
+            dataProductRecomendationAnnualPremiumChoice
+          );
+        } else if (frequency == 1) {
+          premium = product["premium"] * 4;
+          dataTotalAnnualPremiumChoice[clientId][premiumType] -=
+            product["premium"] * 4;
+          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+          dataProductAnnualPremiumChoice[clientId][premiumType] -= premium;
+          setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+
+          // New amount
+          dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] -=
+            product["premium"] * 4;
+          setTotalRecomendationAnnualPremiumChoice(
+            dataTotalRecomendationAnnualPremiumChoice
+          );
+          dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] -=
+            premium;
+          setProductRecomendationAnnualPremiumChoice(
+            dataProductRecomendationAnnualPremiumChoice
+          );
+        } else if (frequency == 0) {
+          premium = product["premium"] * 12;
+          dataTotalAnnualPremiumChoice[clientId][premiumType] -=
+            product["premium"] * 12;
+          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+          dataProductAnnualPremiumChoice[clientId][premiumType] -= premium;
+          setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+
+          // New amount
+          dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] -=
+            product["premium"] * 12;
+          setTotalRecomendationAnnualPremiumChoice(
+            dataTotalRecomendationAnnualPremiumChoice
+          );
+          dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] -=
+            premium;
+          setProductRecomendationAnnualPremiumChoice(
+            dataProductRecomendationAnnualPremiumChoice
+          );
+        }
+
+        if (isRider == false) {
+          if (
+            dataMaxSinglePremium[clientId][premiumType] <
+            dataProductSinglePremiumChoice[clientId][premiumType]
+          ) {
+            dataMaxSinglePremium[clientId][premiumType] =
+              dataProductSinglePremiumChoice[clientId][premiumType];
+            setMaxSinglePremium(dataMaxSinglePremium);
+          }
+          if (
+            dataMaxAnnualPremium[clientId][premiumType] <
+            dataProductAnnualPremiumChoice[clientId][premiumType]
+          ) {
+            dataMaxAnnualPremium[clientId][premiumType] =
+              dataProductAnnualPremiumChoice[clientId][premiumType];
+            setMaxAnnualPremium(dataMaxAnnualPremium);
+          }
+        }
+        //
+        // HOSTPITAL
+        // } else {
+        if (product["premium_for_hospitalization"]) {
+          let cash =
+            product["premium_for_hospitalization"] !== null
+              ? product["premium_for_hospitalization"]["cash"]
+              : 0;
+          let medisave =
+            product["premium_for_hospitalization"] !== null
+              ? product["premium_for_hospitalization"]["cpfMedisave"]
+              : 0;
+          let premiumHost = cash + medisave;
+
+          if (frequency == 4) {
+            dataTotalSinglePremiumChoice[clientId][0] -= cash;
+            setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice);
+            dataTotalSinglePremiumChoice[clientId][3] -= medisave;
+            setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice);
+
+            dataProductSinglePremiumChoice[clientId][0] -= cash;
+            setProductSinglePremiumChoice(dataProductSinglePremiumChoice);
+            dataProductSinglePremiumChoice[clientId][3] -= medisave;
+            setProductSinglePremiumChoice(dataProductSinglePremiumChoice);
+
+            // New amount
+            dataTotalRecomendationSinglePremiumChoice[clientId][0] -= cash;
+            setTotalRecomendationSinglePremiumChoice(
+              dataTotalRecomendationSinglePremiumChoice
+            );
+            dataTotalRecomendationSinglePremiumChoice[clientId][3] -= medisave;
+            setTotalRecomendationSinglePremiumChoice(
+              dataTotalRecomendationSinglePremiumChoice
+            );
+
+            dataProductRecomendationSinglePremiumChoice[clientId][0] -= cash;
+            setProductRecomendationSinglePremiumChoice(
+              dataProductRecomendationSinglePremiumChoice
+            );
+            dataProductRecomendationSinglePremiumChoice[clientId][3] -=
+              medisave;
+            setProductRecomendationSinglePremiumChoice(
+              dataProductRecomendationSinglePremiumChoice
+            );
+          } else if (frequency == 3) {
+            dataTotalAnnualPremiumChoice[clientId][0] -= cash;
+            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+            dataTotalAnnualPremiumChoice[clientId][3] -= medisave;
+            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+
+            dataProductAnnualPremiumChoice[clientId][0] -= cash;
+            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+            dataProductAnnualPremiumChoice[clientId][3] -= medisave;
+            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+
+            // New amount
+
+            dataTotalRecomendationAnnualPremiumChoice[clientId][0] -= cash;
+            setTotalRecomendationAnnualPremiumChoice(
+              dataTotalRecomendationAnnualPremiumChoice
+            );
+            dataTotalRecomendationAnnualPremiumChoice[clientId][3] -= medisave;
+            setTotalRecomendationAnnualPremiumChoice(
+              dataTotalRecomendationAnnualPremiumChoice
+            );
+
+            dataProductRecomendationAnnualPremiumChoice[clientId][0] -= cash;
+            setProductRecomendationAnnualPremiumChoice(
+              dataProductRecomendationAnnualPremiumChoice
+            );
+            dataProductRecomendationAnnualPremiumChoice[clientId][3] -=
+              medisave;
+            setProductRecomendationAnnualPremiumChoice(
+              dataProductRecomendationAnnualPremiumChoice
+            );
+          } else if (frequency == 2) {
+            premiumHost = premiumHost * 2;
+            dataTotalAnnualPremiumChoice[clientId][0] -= cash * 2;
+            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+            dataTotalAnnualPremiumChoice[clientId][3] -= medisave * 2;
+            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+
+            dataProductAnnualPremiumChoice[clientId][0] -= cash * 2;
+            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+            dataProductAnnualPremiumChoice[clientId][3] -= medisave * 2;
+            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+
+            // New amount
+            dataTotalRecomendationAnnualPremiumChoice[clientId][0] -= cash * 2;
+            setTotalRecomendationAnnualPremiumChoice(
+              dataTotalRecomendationAnnualPremiumChoice
+            );
+            dataTotalRecomendationAnnualPremiumChoice[clientId][3] -=
+              medisave * 2;
+            setTotalRecomendationAnnualPremiumChoice(
+              dataTotalRecomendationAnnualPremiumChoice
+            );
+
+            dataProductRecomendationAnnualPremiumChoice[clientId][0] -=
+              cash * 2;
+            setProductRecomendationAnnualPremiumChoice(
+              dataProductRecomendationAnnualPremiumChoice
+            );
+            dataProductRecomendationAnnualPremiumChoice[clientId][3] -=
+              medisave * 2;
+            setProductRecomendationAnnualPremiumChoice(
+              dataProductRecomendationAnnualPremiumChoice
+            );
+          } else if (frequency == 1) {
+            premiumHost = premiumHost * 4;
+            dataTotalAnnualPremiumChoice[clientId][0] -= cash * 4;
+            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+            dataTotalAnnualPremiumChoice[clientId][3] -= medisave * 4;
+            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+
+            dataProductAnnualPremiumChoice[clientId][0] -= cash * 4;
+            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+            dataProductAnnualPremiumChoice[clientId][3] -= medisave * 4;
+            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+
+            // New amount
+            dataTotalRecomendationAnnualPremiumChoice[clientId][0] -= cash * 4;
+            setTotalRecomendationAnnualPremiumChoice(
+              dataTotalRecomendationAnnualPremiumChoice
+            );
+            dataTotalRecomendationAnnualPremiumChoice[clientId][3] -=
+              medisave * 4;
+            setTotalRecomendationAnnualPremiumChoice(
+              dataTotalRecomendationAnnualPremiumChoice
+            );
+
+            dataProductRecomendationAnnualPremiumChoice[clientId][0] -=
+              cash * 4;
+            setProductRecomendationAnnualPremiumChoice(
+              dataProductRecomendationAnnualPremiumChoice
+            );
+            dataProductRecomendationAnnualPremiumChoice[clientId][3] -=
+              medisave * 4;
+            setProductRecomendationAnnualPremiumChoice(
+              dataProductRecomendationAnnualPremiumChoice
+            );
+          } else if (frequency == 0) {
+            premiumHost = premiumHost * 12;
+
+            dataTotalAnnualPremiumChoice[clientId][0] -= cash * 12;
+            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+            dataTotalAnnualPremiumChoice[clientId][3] -= medisave * 12;
+            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+
+            dataProductAnnualPremiumChoice[clientId][0] -= cash * 12;
+            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+            dataProductAnnualPremiumChoice[clientId][3] -= medisave * 12;
+            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
+
+            // Recomendation
+            dataTotalRecomendationAnnualPremiumChoice[clientId][0] -= cash * 12;
+            setTotalRecomendationAnnualPremiumChoice(
+              dataTotalRecomendationAnnualPremiumChoice
+            );
+            dataTotalRecomendationAnnualPremiumChoice[clientId][3] -=
+              medisave * 12;
+            setTotalRecomendationAnnualPremiumChoice(
+              dataTotalRecomendationAnnualPremiumChoice
+            );
+
+            dataProductRecomendationAnnualPremiumChoice[clientId][0] -=
+              cash * 12;
+            setProductRecomendationAnnualPremiumChoice(
+              dataProductRecomendationAnnualPremiumChoice
+            );
+            dataProductRecomendationAnnualPremiumChoice[clientId][3] -=
+              medisave * 12;
+            setProductRecomendationAnnualPremiumChoice(
+              dataProductRecomendationAnnualPremiumChoice
+            );
+          }
+
+          if (isRider == false) {
+            if (
+              dataMaxSinglePremiumChoice[clientId][0] <
+              dataProductSinglePremiumChoice[clientId][0]
+            ) {
+              dataMaxSinglePremiumChoice[clientId][0] =
+                dataProductSinglePremiumChoice[clientId][0];
+              setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice);
+            }
+            if (
+              dataMaxSinglePremiumChoice[clientId][3] <
+              dataProductSinglePremiumChoice[clientId][3]
+            ) {
+              dataMaxSinglePremiumChoice[clientId][3] =
+                dataProductSinglePremiumChoice[clientId][3];
+              setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice);
+            }
+            if (
+              dataMaxAnnualPremiumChoice[clientId][0] <
+              dataProductAnnualPremiumChoice[clientId][0]
+            ) {
+              dataMaxAnnualPremiumChoice[clientId][0] =
+                dataProductAnnualPremiumChoice[clientId][0];
+              setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice);
+            }
+            if (
+              dataMaxAnnualPremiumChoice[clientId][3] <
+              dataProductAnnualPremiumChoice[clientId][3]
+            ) {
+              dataMaxAnnualPremiumChoice[clientId][3] =
+                dataProductAnnualPremiumChoice[clientId][3];
+              setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice);
+            }
+          }
+        }
+
+        // // RIDER RECOMMENDED PRODUCT
+        if (product.riders.length > 0) {
+          for (let iRider = 0; iRider < product.riders.length; iRider++) {
+            if (product.riders[iRider].premiumFrequency == 0) {
+              dataTotalAnnualPremiumChoice[clientId][0] -=
+                product.riders[iRider].premium * 12;
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium * 12;
+              setTotalRecomendationAnnualPremiumChoice(
+                dataTotalRecomendationAnnualPremiumChoice
+              );
+              dataProductRecomendationAnnualPremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium * 12;
+              setProductRecomendationAnnualPremiumChoice(
+                dataProductRecomendationAnnualPremiumChoice
+              );
+            } else if (product.riders[iRider].premiumFrequency == 1) {
+              dataTotalAnnualPremiumChoice[clientId][0] -=
+                product.riders[iRider].premium * 4;
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium * 4;
+              setTotalRecomendationAnnualPremiumChoice(
+                dataTotalRecomendationAnnualPremiumChoice
+              );
+              dataProductRecomendationAnnualPremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium * 4;
+              setProductRecomendationAnnualPremiumChoice(
+                dataProductRecomendationAnnualPremiumChoice
+              );
+            } else if (product.riders[iRider].premiumFrequency == 2) {
+              dataTotalAnnualPremiumChoice[clientId][0] -=
+                product.riders[iRider].premium * 2;
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium * 2;
+              setTotalRecomendationAnnualPremiumChoice(
+                dataTotalRecomendationAnnualPremiumChoice
+              );
+              dataProductRecomendationAnnualPremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium * 2;
+              setProductRecomendationAnnualPremiumChoice(
+                dataProductRecomendationAnnualPremiumChoice
+              );
+            } else if (product.riders[iRider].premiumFrequency == 3) {
+              dataTotalAnnualPremiumChoice[clientId][0] -=
+                product.riders[iRider].premium * 1;
+              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+
+              // New amount
+              dataTotalRecomendationAnnualPremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium * 1;
+              setTotalRecomendationAnnualPremiumChoice(
+                dataTotalRecomendationAnnualPremiumChoice
+              );
+              dataProductRecomendationAnnualPremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium * 1;
+              setProductRecomendationAnnualPremiumChoice(
+                dataProductRecomendationAnnualPremiumChoice
+              );
+            } else if (product.riders[iRider].premiumFrequency == 4) {
+              dataTotalSinglePremiumChoice[clientId][0] -=
+                product.riders[iRider].premium;
+              setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice);
+
+              // New amount
+              dataTotalRecomendationSinglePremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium;
+              setTotalRecomendationSinglePremiumChoice(
+                dataTotalRecomendationSinglePremiumChoice
+              );
+              dataProductRecomendationSinglePremiumChoice[clientId][
+                premiumType
+              ] -= product.riders[iRider].premium;
+              setProductRecomendationSinglePremiumChoice(
+                dataProductRecomendationSinglePremiumChoice
+              );
+            }
+          }
+        }
+
+        // ILP
+        if (typeData == 0 && recommendType == 1) {
+          if (product.riders.length > 0) {
+            for (let iRider = 0; iRider < product.riders.length; iRider++) {
+              if (product.riders[iRider].premiumFrequency == 0) {
+                dataTotalCISILPAnnualPremiumChoice[clientId][0] -=
+                  product.riders[iRider].premium * 12;
+                setTotalCISILPAnnualPremiumChoice(
+                  dataTotalCISILPAnnualPremiumChoice
+                );
+              } else if (product.riders[iRider].premiumFrequency == 1) {
+                dataTotalCISILPAnnualPremiumChoice[clientId][0] -=
+                  product.riders[iRider].premium * 4;
+                setTotalCISILPAnnualPremiumChoice(
+                  dataTotalCISILPAnnualPremiumChoice
+                );
+              } else if (product.riders[iRider].premiumFrequency == 2) {
+                dataTotalCISILPAnnualPremiumChoice[clientId][0] -=
+                  product.riders[iRider].premium * 2;
+                setTotalCISILPAnnualPremiumChoice(
+                  dataTotalCISILPAnnualPremiumChoice
+                );
+              } else if (product.riders[iRider].premiumFrequency == 3) {
+                dataTotalCISILPAnnualPremiumChoice[clientId][0] -=
+                  product.riders[iRider].premium * 1;
+                setTotalCISILPAnnualPremiumChoice(
+                  dataTotalCISILPAnnualPremiumChoice
+                );
+              } else if (product.riders[iRider].premiumFrequency == 4) {
+                dataTotalCISILPSinglePremiumChoice[clientId][0] -=
                   product.riders[iRider].premium;
                 setTotalCISILPSinglePremiumChoice(
                   dataTotalCISILPSinglePremiumChoice
@@ -1977,7 +2618,36 @@ const AnalysisRecommendation = (props: Props) => {
     }
   };
 
+  const getTotalByClientChoice = (type: string, index: number, subIndex: number) => {
+    let res = 0;
+    if (type === 'annual') {
+      getPfrNine.recommendedProduct.map((product: any, i: number) => {
+        // continue
+      });
+    } else {
+
+    }
+    return res;
+  }
+
+  const [clientChoices, setClientChoices] = useState<any>([]);
+
   const handleClientChoice = (e:any, index:number) => {
+    console.log("event: ", e.target.checked)
+    console.log("index: ", index)
+    console.log("recommendedProduct: ", getPfrNine.recommendedProduct);
+    let data = getPfrNine;
+    data.recommendedProduct = data.recommendedProduct.map((tmpRecommendProduct: any, tmpIndex: number) => {
+      if (tmpIndex == index) {
+        return {
+          ...tmpRecommendProduct,
+          checked: e.target.checked
+        }
+      } else {
+        return tmpRecommendProduct;
+      }
+    });
+    setPfrNine(data);
     setPfrNine({
       ...getPfrNine,
       recommendedProduct: getPfrNine.recommendedProduct.map((tmpRecommendProduct: any, tmpIndex: number) => {
@@ -1991,6 +2661,27 @@ const AnalysisRecommendation = (props: Props) => {
         }
       })
     });
+    const product = getPfrNine.recommendedProduct[index];
+    let clientId = product["nameOfOwner"];
+    let premiumType = product["premiumPaymentType"];
+    console.log("client Choices: ", clientChoices);
+    // if (clientChoices.includes(index)) {
+    //   dataTotalAnnualPremium[clientId][premiumType] = 0;
+    //   setTotalAnnualPremium(dataTotalAnnualPremium);
+    //   dataTotalAnnualPremiumChoice[clientId][premiumType] = 0;
+    //   setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
+    // }
+    console.log("totalclient1: ", dataTotalAnnualPremium);
+    calcPremiumClientChoice(product, false);
+    calcPremium(product, false);
+    console.log("totalclient: ", dataTotalAnnualPremium[index]);
+    let tempClientChoices = clientChoices;
+    if (e.target.checked) {
+      tempClientChoices.push(index);
+    } else {
+      tempClientChoices = clientChoices.filter((v:any) => v !== index);
+    }
+    setClientChoices(tempClientChoices);
   };
 
   return  loading ? (
@@ -2334,6 +3025,11 @@ const AnalysisRecommendation = (props: Props) => {
                           : currencyFormat(
                               dataTotalAnnualPremiumChoice[index][0]
                             )) : (0)}
+                        {/* {isNaN(dataTotalAnnualPremiumChoice[index][0])
+                          ? 0
+                          : currencyFormat(
+                            dataTotalAnnualPremiumChoice[index][0]
+                            )} */}
                       </td>
                       <td className="px-2 py-5 text-center">
                         {isNaN(dataTotalSinglePremiumChoice[index][0])
@@ -2811,6 +3507,22 @@ const AnalysisRecommendation = (props: Props) => {
                                     )}
                                   </td>
                                   <td className="px-2 py-5 border border-gray-soft-strong">
+                                    {/* {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[index].checked 
+                                    ? (
+                                      product["premiumFrequency"] == 4 ? (
+                                        <>
+                                          <b>
+                                            {getPremiumFrequencyName(
+                                              product["premiumFrequency"]
+                                            )}
+                                          </b>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <b>Annually</b>
+                                        </>
+                                      )
+                                    ) : ("")} */}
                                     {product["premiumFrequency"] == 4 ? (
                                       <>
                                         <b>
