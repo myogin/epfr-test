@@ -12,7 +12,7 @@ const LoaderPage = () => {
         getLength().map((d, i) => (
           <div
             key={"as" + i}
-            className={`flex flex-row items-center justify-between mb-10 py-5`}
+            className={`flex flex-row gap-4 items-center justify-between mb-10 py-5`}
           >
             <div className="basis-2/3">
               <div className="h-2.5 bg-gray-soft-light rounded-full w-full mb-2.5"></div>
