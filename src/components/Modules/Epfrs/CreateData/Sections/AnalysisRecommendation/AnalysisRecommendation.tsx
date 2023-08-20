@@ -97,7 +97,6 @@ const AnalysisRecommendation = (props: Props) => {
   let sectionCreateEpfrId = useNavigationSection((state)=> state.sectionCreateEpfrId)
 
   const currencyFormat = (num: any) => {
-    console.log("Number: ", num);
     if (num) {
       let number = Number(num);
       return "$" + number.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -2618,24 +2617,12 @@ const AnalysisRecommendation = (props: Props) => {
     }
   };
 
-  const getTotalByClientChoice = (type: string, index: number, subIndex: number) => {
-    let res = 0;
-    if (type === 'annual') {
-      getPfrNine.recommendedProduct.map((product: any, i: number) => {
-        // continue
-      });
-    } else {
-
-    }
-    return res;
-  }
-
   const [clientChoices, setClientChoices] = useState<any>([]);
 
   const handleClientChoice = (e:any, index:number) => {
-    console.log("event: ", e.target.checked)
-    console.log("index: ", index)
-    console.log("recommendedProduct: ", getPfrNine.recommendedProduct);
+  //   console.log("event: ", e.target.checked)
+  //   console.log("index: ", index)
+  //   console.log("recommendedProduct: ", getPfrNine.recommendedProduct);
     let data = getPfrNine;
     data.recommendedProduct = data.recommendedProduct.map((tmpRecommendProduct: any, tmpIndex: number) => {
       if (tmpIndex == index) {
@@ -2662,19 +2649,19 @@ const AnalysisRecommendation = (props: Props) => {
       })
     });
     const product = getPfrNine.recommendedProduct[index];
-    let clientId = product["nameOfOwner"];
-    let premiumType = product["premiumPaymentType"];
-    console.log("client Choices: ", clientChoices);
+    // console.log("client Choices: ", clientChoices);
     // if (clientChoices.includes(index)) {
+    //   let clientId = product["nameOfOwner"];
+    //   let premiumType = product["premiumPaymentType"];
     //   dataTotalAnnualPremium[clientId][premiumType] = 0;
     //   setTotalAnnualPremium(dataTotalAnnualPremium);
     //   dataTotalAnnualPremiumChoice[clientId][premiumType] = 0;
     //   setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
     // }
-    console.log("totalclient1: ", dataTotalAnnualPremium);
+    // console.log("totalclient1: ", dataTotalAnnualPremium);
     calcPremiumClientChoice(product, false);
     calcPremium(product, false);
-    console.log("totalclient: ", dataTotalAnnualPremium[index]);
+    // console.log("totalclient: ", dataTotalAnnualPremium[index]);
     let tempClientChoices = clientChoices;
     if (e.target.checked) {
       tempClientChoices.push(index);
