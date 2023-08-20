@@ -14,6 +14,7 @@ import { siteConfig } from "@/libs/config";
 import { useLoginData } from "@/store/login/logindata";
 import Loading from "@/components/Attributes/Loader/Loading";
 import { resendService } from "@/services/login/loginService";
+import axios from "axios";
 const Verify: Page = () => {
   const [isLoading, setLoading] = useState(false);
   const { push } = useRouter();
@@ -54,20 +55,31 @@ const Verify: Page = () => {
     setLoading(false);
   };
 
+  const testVerify = async(code:number)=>{
+    await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/verify`,{
+      email:userEmail,
+      code:code
+    }).then(res=>{
+      console.log(res);
+      
+    })
+  }
+
   const [resetTime,setResetTime] = useState(180)
   const [intervalId,setIntervalId] = useState<any>(0)
   const resend = async()=>{
     
-   const countInterval= setInterval(()=>{
-      setResetTime(prev=>prev-1)
-
-    }, 1000);
-    setIntervalId(countInterval)
+  
     setLoading(true);
         resendService(userEmail)
         .then((res)=>{
           success("Please check your email for verification code")
           setLoading(false);
+          const countInterval= setInterval(()=>{
+            setResetTime(prev=>prev-1)
+      
+          }, 1000);
+    setIntervalId(countInterval)
 
         })
         .catch(err=>{
@@ -75,8 +87,15 @@ const Verify: Page = () => {
           setLoading(false);
 
         })
-      
   }
+
+  useEffect(()=>{
+    const countInterval= setInterval(()=>{
+      setResetTime(prev=>prev-1)
+
+    }, 1000);
+    setIntervalId(countInterval)
+  },[])
 
   useEffect(()=>{
     if(resetTime==0){
@@ -223,8 +242,7 @@ const Verify: Page = () => {
                   />
                 </div>
               </div>
-              {showResend&&<div className="text-center mb-2 cursor-pointer text-green-deep">
-                
+              <div className="text-center mb-2 cursor-pointer text-green-deep">
                  {intervalId!=0?(
                   <>
                   <span className="text-[#000000]">Resend code in {resetTime}</span>
@@ -234,7 +252,7 @@ const Verify: Page = () => {
                   Resend Code
                 </button>
                  </>)} 
-              </div>}
+              </div>
 
               <ButtonGreenMedium
                 onClick={() => {
@@ -243,6 +261,14 @@ const Verify: Page = () => {
                 className="justify-center w-full"
               >
                 Verify
+              </ButtonGreenMedium>
+              <ButtonGreenMedium
+                onClick={() => {
+                  testVerify(mixInput);
+                }}
+                className="justify-center w-full"
+              >
+                TEST Verify
               </ButtonGreenMedium>
             </div>
           </div>
