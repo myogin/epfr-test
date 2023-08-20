@@ -5,19 +5,13 @@ import { SectionNine } from "@/models/SectionNine";
 
 const initialState: SectionNine = {
   section9: {
-    checkedData: [
-      {
-        id: 0,
-        checked: 0,
-      },
-    ],
+    checkedData: [],
     pfrId: 0,
     overView1: "",
     overView2: "",
     reasonForBenefit: "",
     reasonForRisk: "",
     reasonForDeviation: "",
-
     issues: [],
     deviates: [],
     deviationChanged: false,
@@ -42,6 +36,25 @@ const AnalysisRecommendation = create(
       set(
         produce((draft) => {
           draft.section9[name] = value;
+
+          let res = false;
+          if (draft.section9.overView1!=='' && draft.section9.overView2!=='' && draft.section9.reasonForBenefit!=='' && draft.section9.reasonForRisk!=='' && draft.section9.reasonForDeviation!=='') {
+            res = true;
+          }
+
+          draft.section9.checkedData.map((data: any) => {
+            res = res || Boolean(data['checked']);
+          });
+
+          draft.status = res? 1: 0;
+
+          console.log('set parent name: ', name);
+
+          if (name !== 'editableStatus') {
+            if (get().section9.editableStatus === 1 && get().section9.status === 1) {
+              draft.section9.editableStatus = 2;
+            }
+          }
         })
       ),
   }))

@@ -28,6 +28,7 @@ import {
   getRecommendation,
   getPfr,
   getPfrStep,
+  postPfrSections,
 } from "@/services/pfrService";
 import { useRouter } from "next/router";
 import { usePersonalInformation } from "@/store/epfrPage/createData/personalInformation";
@@ -36,6 +37,7 @@ import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { getLength } from "@/libs/helper";
 import { useAffordability } from "@/store/epfrPage/createData/affordability";
 import LoaderPage from "./components/LoaderPage";
+import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
 
 interface ProductRider {
   feature?: string;
@@ -166,6 +168,51 @@ const AnalysisRecommendation = (props: Props) => {
       )
     );
   };
+
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  // Store data
+  const storeData = async () => {
+    try {
+      setSaveLoading(true); // Set loading before sending API request
+
+      let localData = localStorage.getItem("section9")
+        ? localStorage.getItem("section9")
+        : "";
+
+      let dataFix = {};
+      if (localData) {
+        let data = JSON.parse(localData);
+        dataFix = data;
+      }
+
+      console.log("Data: ", dataFix);
+
+      await postPfrSections(9, JSON.stringify(dataFix));
+
+      setParent("editableStatus", 1);
+
+      setSaveLoading(false); // Stop loading
+    } catch (error) {
+      setSaveLoading(false); // Stop loading in case of error
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (scrollPositionNext === "okSec10") {
+      if (
+        ((section9.editableStatus === 0 || section9.editableStatus === null) && section9.status === 1) ||
+        (section9.editableStatus === 2 && section9.status === 1)
+      ) {
+        console.log("can save now 9");
+        // setSaveLoading(true);
+        storeData();
+      } else {
+        console.log("Your cannot save data 9");
+      }
+    }
+  }, [scrollPositionNext, section9.editableStatus, section9.status]);
 
   let pfrId = usePersonalInformation((state) => state.id);
 
@@ -341,8 +388,6 @@ const AnalysisRecommendation = (props: Props) => {
   // Get Init State Here
   useEffect(() => {
     if (!router.isReady) return;
-
-    localStorage.setItem("section9", JSON.stringify(section9));
     // const pfrId = idPfr;
 
     setTotalAnnualPremium([
@@ -472,7 +517,25 @@ const AnalysisRecommendation = (props: Props) => {
     }
 
     // console.log("section9Res", section9);
-  }, [section9, router.isReady, scrollPositionBottom, scrollPosition, sectionCreateEpfrId]);
+  }, [router.isReady, scrollPositionBottom, scrollPosition, sectionCreateEpfrId]);
+
+  useEffect(() => {
+    localStorage.setItem("section9", JSON.stringify(section9));
+    // validate();
+  }, [section9]);
+
+  const validate = () => {
+    let res = false;
+    if (section9.overView1!=='' && section9.overView2!=='' && section9.reasonForBenefit!=='' && section9.reasonForRisk!=='' && section9.reasonForDeviation!=='') {
+      res = true;
+    }
+
+    section9.checkedData.map((data) => {
+      res = res || Boolean(data['checked']);
+    });
+
+    setParent('status', res?1:0);
+  }
 
   const [loading, setLoading] = useState(false);
 
@@ -520,6 +583,17 @@ const AnalysisRecommendation = (props: Props) => {
             reasonForDeviation = data.answer.reasonForDeviation;
           }
         }
+
+        let tempCheckedData: any = [];
+
+        data.recommendedProduct.map((product: any) => {
+          tempCheckedData.push({
+            id: product['id'],
+            checked: product['checked']
+          })
+        });
+
+        setParent("checkedData", tempCheckedData);
 
         setEditor({
           ...editorData,
@@ -2663,12 +2737,28 @@ const AnalysisRecommendation = (props: Props) => {
     calcPremium(product, false);
     // console.log("totalclient: ", dataTotalAnnualPremium[index]);
     let tempClientChoices = clientChoices;
+    
     if (e.target.checked) {
       tempClientChoices.push(index);
     } else {
       tempClientChoices = clientChoices.filter((v:any) => v !== index);
     }
     setClientChoices(tempClientChoices);
+
+    let tempCheckedData = section9.checkedData.map((tempchecked) => {
+        if (tempchecked['id'] == product['id']) {
+          return {
+            ...tempchecked,
+            checked: e.target.checked? 1: 0
+          }
+        } else {
+          return tempchecked;
+        }
+    });
+    setParent(
+      "checkedData",
+      tempCheckedData
+    );
   };
 
   return  loading ? (
@@ -4676,6 +4766,11 @@ const AnalysisRecommendation = (props: Props) => {
           />
         </RowSingleGrid>
       </SectionCardSingleGrid>
+      {section9.editableStatus === 2 && section9.status === 1 ? (
+        <ButtonFloating onClick={storeData} title="Save section 9" />
+      ) : (
+        ""
+      )}
     </div>
   );
 };
