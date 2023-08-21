@@ -66,6 +66,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     fetchDependantData,
     resetDependantData,
     fetchNeed,
+    fetchChildFund,
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
@@ -1156,6 +1157,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         fetchDefaultCheck(defaultCheck);
       }
 
+      fetchChildFund(childFunds);
+
       maternityOthers.forEach((other: any) => {
         let key = other["key"];
         let clientData = JSON.parse(other["clientData"]);
@@ -1211,8 +1214,6 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       setLoading(false); // Stop loading in case of error
       console.error(error);
     }
-
-    setGlobal("editableStatus", 1);
   };
 
   let pfrLocal = usePfrData((state) => state.pfr);
@@ -1239,6 +1240,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         console.log("Get data Section 7");
       }
     }
+
+    setGlobal("editableStatus", 1);
   }, [scrollPositionBottomPrev]);
 
   useEffect(() => {

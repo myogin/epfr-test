@@ -674,47 +674,94 @@ const SwitchingReplacement = (props: Props) => {
   const router = useRouter();
   let pfrLocal = usePfrData((state) => state.pfr);
 
+  // useEffect(() => {
+  //   // if (scrollPositionBottomSection9 === "Process9" && sectionTenData.id === 0) {
+  //   //   const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+  //     // setPfrId(section1?.state?.id);
+  //   //   setSectionTenData({
+  //   //     ...sectionTenData,
+  //   //     id: section1?.state?.id
+  //   //   });
+  //   // }
+
+  //   if (!router.isReady) return;
+  //   setIsFetched(true);
+  //   // If edit check the ID
+  //   if (router.query.id !== null && router.query.id !== undefined) {
+  //     setPfrId(Number(router.query.id));
+  //     // if (scrollPositionBottomSection9 === "Process9") {
+  //     if (sectionTenData.id != Number(router.query.id)) {
+  //       setSectionTenData({
+  //         ...sectionTenData,
+  //         id: Number(router.query.id),
+  //         status: pfrLocal.section10
+  //       });
+  //       console.log('query editable: ',pfrLocal.editableSection10);
+  //       setEditable(pfrLocal.editableSection10??0);
+  //     }
+  //   }else {
+  //     // if (scrollPositionBottomSection9 === "Process9") {
+  //     const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+  //     setPfrId(Number(section1?.state?.id));
+  //     if (sectionTenData.id != Number(section1?.state?.id)) {
+  //       console.log("section fetching ...", isFetched);
+  //       console.log("section Id: ", sectionTenData.id, " | one Id: ", section1?.state?.id);
+  //       setSectionTenData({
+  //         ...sectionTenData,
+  //         id: Number(section1?.state?.id),
+  //         status: pfrLocal.section10
+  //       });
+  //       // console.log('section one editable: ', pfrLocal.editableSection10);
+  //       // setEditable(pfrLocal.editableSection10??0);
+  //     }
+  //   }
+
+  //   if (scrollPositionBottomSection9 === 'Process9') {
+  //     setEditable(pfrLocal.editableSection11??0);
+  //     fetchData();
+  //   }
+
+  // }, [scrollPositionBottomSection9, router.isReady, router.query.id]);
+
   useEffect(() => {
-    // if (scrollPositionBottomSection9 === "Process9" && sectionTenData.id === 0) {
-    //   const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+    // if (
+    //   scrollPositionBottomSection10 === "Process10" &&
+    //   sectionElevenData.id === 0
+    // ) {
+    //   const section1 = JSON.parse(localStorage.getItem("section1") ?? "{}");
     //   setPfrId(section1?.state?.id);
-    //   setSectionTenData({
-    //     ...sectionTenData,
-    //     id: section1?.state?.id
+    //   setSectionElevenData({
+    //     ...sectionElevenData,
+    //     id: section1?.state?.id,
     //   });
+
+      if (!router.isReady) return;
+      // If edit check the ID
+      // if (router.query.id !== null && router.query.id !== undefined) {
+        if (scrollPositionBottomSection9 === "Process9") {
+        if (sectionTenData.id != Number(router.query.id)) {
+          setSectionTenData({
+            ...sectionTenData,
+            id: Number(router.query.id),
+            status: pfrLocal.section11
+          });
+        }
+      }else {
+        // if (scrollPositionBottomSection9 === "Process9") {
+          const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
+        if (sectionTenData.id != Number(section1?.state?.id)) {
+          setSectionTenData({
+            ...sectionTenData,
+            id: Number(section1?.state?.id),
+            status: pfrLocal.section10
+          });
+        }
+      }
+      if (scrollPositionBottomSection9 == 'Process9') {
+        setEditable(pfrLocal.editableSection11??0);
+        fetchData();
+      }
     // }
-
-    if (!router.isReady) return;
-    // If edit check the ID
-    if (router.query.id !== null && router.query.id !== undefined) {
-      // if (scrollPositionBottomSection9 === "Process9") {
-      if (sectionTenData.id != Number(router.query.id)) {
-        setSectionTenData({
-          ...sectionTenData,
-          id: Number(router.query.id),
-          status: pfrLocal.section10
-        });
-        console.log('query editable: ',pfrLocal.editableSection10);
-        setEditable(pfrLocal.editableSection10??0);
-      }
-    }else {
-      // if (scrollPositionBottomSection9 === "Process9") {
-        const section1 = JSON.parse(localStorage.getItem('section1')?? '{}');
-      if (sectionTenData.id != Number(section1?.state?.id)) {
-        setSectionTenData({
-          ...sectionTenData,
-          id: Number(section1?.state?.id),
-          status: pfrLocal.section10
-        });
-        console.log('section one editable: ', pfrLocal.editableSection10);
-        setEditable(pfrLocal.editableSection10??0);
-      }
-    }
-
-    if (scrollPositionBottomSection9 === 'Process9') {
-      fetchData();
-    }
-
   }, [scrollPositionBottomSection9, router.isReady, router.query.id]);
 
   useEffect(() => {
@@ -733,7 +780,6 @@ const SwitchingReplacement = (props: Props) => {
 
   useEffect(() => {
     if (editable === 1 && sectionTenData.status === 1 && !isFetched) {
-      console.log('editable change2: ', editable);
       setEditable(2);
     }
     const tempStatus = getStatus();

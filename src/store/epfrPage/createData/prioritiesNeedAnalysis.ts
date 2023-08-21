@@ -616,6 +616,7 @@ type Actions = {
   setGlobal: (name: string, value: any) => any;
   fetchDefaultCheck: (data: any) => any;
   fetchMaternityOther: (data: any) => any;
+  fetchChildFund: (data: any) => any;
   fetchClientData: (data: any, i: number) => any;
   resetDependantData: () => any;
   fetchDependantData: (data: any, i: number) => any;
@@ -640,6 +641,12 @@ const prioritiesNeedAnalysis = create(
               if (get().section7.editableStatus === 1 && get().section7.status === 1) {
                 draft.section7.editableStatus = 2;
               }
+            })
+          ),
+          fetchChildFund: (data: any) => 
+          set(
+            produce((draft) => {
+                draft.section7.answer.childFund = data;
             })
           ),
         fetchNeed: (data: any, i: number, type: string) => 
