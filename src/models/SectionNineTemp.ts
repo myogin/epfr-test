@@ -62,4 +62,5 @@ export interface SectionNineTemp {
   dataProductAndRiders: Array<ProductRider>
   dataBenefits: Array<Benefits>
   dataRisks: Array<Risks>
+  payorBudget: any[]
 }

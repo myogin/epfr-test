@@ -67,17 +67,6 @@ const AnalysisRecommendation = (props: Props) => {
     (state) => state.setProduct
   );
 
-  let CISILPProducts = useAnalysisRecommendationTemp(
-    (state) => state.CISILPProducts
-  );
-  let CISProduct = useAnalysisRecommendationTemp((state) => state.CISProduct);
-  let ILPProduct = useAnalysisRecommendationTemp((state) => state.ILPProduct);
-  let groups = useAnalysisRecommendationTemp((state) => state.groups);
-  let recommendedProduct = useAnalysisRecommendationTemp(
-    (state) => state.recommendedProduct
-  );
-  let rowGroups = useAnalysisRecommendationTemp((state) => state.rowGroups);
-
   let clients = usePersonalInformation((state) => state.clientInfo);
 
   let dependants = usePersonalInformation((state) => state.dependant);
@@ -223,7 +212,7 @@ const AnalysisRecommendation = (props: Props) => {
   let getClients = getLength(props.pfrType);
 
   // let payorBudget = useAffordability((state) => state.section8.payorBudget);
-  const [payorBudget, setPayorBudget] = useState<any>([]);
+  // const [payorBudget, setPayorBudget] = useState<any>([]);
 
   const [dataTotalAnnualPremium, setTotalAnnualPremium] = useState<any>([
     [0, 0, 0, 0, 0],
@@ -541,7 +530,8 @@ const AnalysisRecommendation = (props: Props) => {
         setLoading(true); // Set loading before sending API request
 
         await getPfrStep(8, pfrId).then((data: any) => {
-          setPayorBudget(data.payorBudgetsForClients);
+          // setPayorBudget(data.payorBudgetsForClients);
+          fetchGlobalTemp('payorBudget', data.payorBudgetsForClients)
 
           if (data.annualIncome.length > 0) {
             data.annualIncome.map((income: any, index: number) => {
@@ -794,6 +784,18 @@ const AnalysisRecommendation = (props: Props) => {
     }
   };
 
+  let CISILPProducts = useAnalysisRecommendationTemp(
+    (state) => state.CISILPProducts
+  );
+  let CISProduct = useAnalysisRecommendationTemp((state) => state.CISProduct);
+  let payorBudget = useAnalysisRecommendationTemp((state) => state.payorBudget);
+  let ILPProduct = useAnalysisRecommendationTemp((state) => state.ILPProduct);
+  let groups = useAnalysisRecommendationTemp((state) => state.groups);
+  let recommendedProduct = useAnalysisRecommendationTemp(
+    (state) => state.recommendedProduct
+  );
+  let rowGroups = useAnalysisRecommendationTemp((state) => state.rowGroups);
+  
   const getPremiumFrequencyName = (premiumFrequency: any) => {
     switch (Number(premiumFrequency)) {
       case 0:
@@ -2843,13 +2845,13 @@ const AnalysisRecommendation = (props: Props) => {
                             ? 0
                             : recommendedProduct.length > 0 &&
                               !recommendedProduct[index].checked
-                            ? Number(payorBudget[index][0].annual) -
+                            ? currencyFormat(Number(payorBudget[index][0].annual) -
                               dataTotalAnnualPremiumChoice[index][0] +
                               (isNaN(dataTotalAnnualPremiumChoice[index][0])
                                 ? 0
-                                : dataTotalAnnualPremiumChoice[index][0])
-                            : Number(payorBudget[index][0].annual) -
-                              dataTotalAnnualPremiumChoice[index][0]
+                                : dataTotalAnnualPremiumChoice[index][0]))
+                            : currencyFormat(Number(payorBudget[index][0].annual) -
+                              dataTotalAnnualPremiumChoice[index][0])
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">

@@ -105,6 +105,7 @@ const initialState: SectionNineTemp = {
   dataProductAndRiders: [],
   dataBenefits: [],
   dataRisks: [],
+  payorBudget: [],
 };
 
 const analysisRecommendationTemp = create(
