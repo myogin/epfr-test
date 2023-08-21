@@ -6,6 +6,8 @@ import { devtools, persist } from "zustand/middleware";
 type Actions = {
   resetSectionEightTemp: () => any;
   setGlobal: (object: string, indexData: number,  value: any) => any;
+  setProduct: (object: string, indexData: number, name: string, value: any) => any;
+  fetchGlobal: (object : string, params : any) => any;
 };
 
 const initialState: SectionNineTemp = {
@@ -93,7 +95,17 @@ const initialState: SectionNineTemp = {
       client: 2,
       ammount: 0,
     },
-  ]
+  ],
+  CISILPProducts: [],
+  CISProduct: [],
+  ILPProduct: [],
+  groups: [],
+  recommendedProduct: [],
+  rowGroups: [],
+  dataProductAndRiders: [],
+  dataBenefits: [],
+  dataRisks: [],
+  payorBudget: [],
 };
 
 const analysisRecommendationTemp = create(
@@ -101,6 +113,17 @@ const analysisRecommendationTemp = create(
     persist<SectionNineTemp & Actions>(
       (set, get) => ({
         ...initialState,
+        fetchGlobal: (object: string, params: any) => set(
+          produce((draft) => {
+            draft[object] = params
+          })
+        ),
+        setProduct: (object: string, indexData: number, name: string, value: any) =>
+          set(
+            produce((draft) => {
+              draft[object][indexData][name] = value;
+            })
+          ),
         setGlobal: (object: string, indexData: number, value: any) =>
           set(
             produce((draft) => {

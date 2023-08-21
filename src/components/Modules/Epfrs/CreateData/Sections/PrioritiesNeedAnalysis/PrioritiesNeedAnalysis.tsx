@@ -66,6 +66,7 @@ const PrioritiesNeedAnalysis = (props: Props) => {
     fetchDependantData,
     resetDependantData,
     fetchNeed,
+    fetchChildFund,
   } = usePrioritiesNeedAnalysis();
 
   const resTotal = section7.typeClient + section7.totalDependant;
@@ -1071,6 +1072,22 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       });
     }
 
+    let tempStatus = Boolean(status);
+
+    section7.answer.need.client.map((data, i) => {
+      data.map((subData, subI) => {
+        tempStatus = tempStatus || subData;
+      });
+    });
+
+    section7.answer.need.dependant.map((data, i) => {
+      data.map((subData, subI) => {
+        tempStatus = tempStatus || subData;
+      });
+    });
+
+    setGlobal("status", tempStatus? 1: 0);
+
     // localStorage.setItem("section7", JSON.stringify(section7));
   }, [section7.answer, section7.additionalNote]);
 
@@ -1139,6 +1156,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       if (defaultCheck != undefined) {
         fetchDefaultCheck(defaultCheck);
       }
+
+      fetchChildFund(childFunds);
 
       maternityOthers.forEach((other: any) => {
         let key = other["key"];
@@ -1221,6 +1240,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
         console.log("Get data Section 7");
       }
     }
+
+    setGlobal("editableStatus", 1);
   }, [scrollPositionBottomPrev]);
 
   useEffect(() => {
