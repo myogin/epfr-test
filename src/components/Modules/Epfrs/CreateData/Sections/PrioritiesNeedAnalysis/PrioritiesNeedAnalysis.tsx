@@ -1211,6 +1211,8 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       setLoading(false); // Stop loading in case of error
       console.error(error);
     }
+
+    setGlobal("editableStatus", 1);
   };
 
   let pfrLocal = usePfrData((state) => state.pfr);
