@@ -509,7 +509,7 @@ const AnalysisRecommendation = (props: Props) => {
 
     // console.log("section9Res", section9);
   }, [
-    section9,
+    // section9,
     router.isReady,
     scrollPositionBottom,
     scrollPosition,
@@ -2378,8 +2378,8 @@ const AnalysisRecommendation = (props: Props) => {
   // console.log("check Cis ", CISProduct);
   // console.log("check Ilp ", ILPProduct);
   // console.log("check group ", groups);
-  console.log("check recommended product ", recommendedProduct[0].checked);
-  console.log("premium ", recommendedProduct[0].premium);
+  // console.log("check recommended product ", recommendedProduct[0].checked);
+  // console.log("premium ", recommendedProduct[0].premium);
   // console.log("check group ", rowGroups);
   return loading ? (
     <LoaderPage />

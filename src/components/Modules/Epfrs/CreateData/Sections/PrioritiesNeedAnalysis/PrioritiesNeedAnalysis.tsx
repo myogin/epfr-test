@@ -1071,6 +1071,22 @@ const PrioritiesNeedAnalysis = (props: Props) => {
       });
     }
 
+    let tempStatus = Boolean(status);
+
+    section7.answer.need.client.map((data, i) => {
+      data.map((subData, subI) => {
+        tempStatus = tempStatus || subData;
+      });
+    });
+
+    section7.answer.need.dependant.map((data, i) => {
+      data.map((subData, subI) => {
+        tempStatus = tempStatus || subData;
+      });
+    });
+
+    setGlobal("status", tempStatus? 1: 0);
+
     // localStorage.setItem("section7", JSON.stringify(section7));
   }, [section7.answer, section7.additionalNote]);
 
