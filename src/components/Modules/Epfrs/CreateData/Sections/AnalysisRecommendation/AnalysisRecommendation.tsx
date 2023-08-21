@@ -37,46 +37,8 @@ import { usePfrData } from "@/store/epfrPage/createData/pfrData";
 import { getLength } from "@/libs/helper";
 import { useAffordability } from "@/store/epfrPage/createData/affordability";
 import LoaderPage from "./components/LoaderPage";
-import ButtonFloating from "@/components/Forms/Buttons/ButtonFloating";
-
-interface ProductRider {
-  feature?: string;
-  groupId?: number;
-  name?: string;
-  no: number;
-  rowSpan?: number;
-  typeProductCustom?: string;
-}
-
-interface Benefits {
-  benefitId?: number;
-  content?: string;
-  groupId?: number;
-  id: number;
-  no: number;
-  productId: number;
-  productName: number;
-  recommendId: number;
-  riderId: number;
-  rowSpan: number;
-  title?: string;
-  mainProductName?: string;
-}
-
-interface Risks {
-  content?: string;
-  groupId?: number;
-  id: number;
-  no: number;
-  productId: number;
-  productName: number;
-  recommendId: number;
-  riderId: number;
-  riskId: number;
-  rowSpan: number;
-  title?: string;
-  mainProductName?: string;
-}
+import Checkbox from "@/components/Forms/Checkbox";
+import { useAnalysisRecommendationTemp } from "@/store/epfrPage/createData/analysisRecommendationTemp";
 
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
@@ -91,12 +53,38 @@ interface Props {
 const AnalysisRecommendation = (props: Props) => {
   const router = useRouter();
 
-  let { section9, setParent } = useAnalysisRecommendation();
+  let { section9, setParent, setClientChoice } = useAnalysisRecommendation();
   const scrollPositionBottom = useScrollPositionBottom(8);
   const scrollPositionNext = useScrollPosition(10);
   const scrollPosition = useScrollPosition(9);
 
-  let sectionCreateEpfrId = useNavigationSection((state)=> state.sectionCreateEpfrId)
+  let setGlobalTemp = useAnalysisRecommendationTemp((state) => state.setGlobal);
+  let fetchGlobalTemp = useAnalysisRecommendationTemp(
+    (state) => state.fetchGlobal
+  );
+
+  let setProduct = useAnalysisRecommendationTemp(
+    (state) => state.setProduct
+  );
+
+  let CISILPProducts = useAnalysisRecommendationTemp(
+    (state) => state.CISILPProducts
+  );
+  let CISProduct = useAnalysisRecommendationTemp((state) => state.CISProduct);
+  let ILPProduct = useAnalysisRecommendationTemp((state) => state.ILPProduct);
+  let groups = useAnalysisRecommendationTemp((state) => state.groups);
+  let recommendedProduct = useAnalysisRecommendationTemp(
+    (state) => state.recommendedProduct
+  );
+  let rowGroups = useAnalysisRecommendationTemp((state) => state.rowGroups);
+
+  let clients = usePersonalInformation((state) => state.clientInfo);
+
+  let dependants = usePersonalInformation((state) => state.dependant);
+
+  let sectionCreateEpfrId = useNavigationSection(
+    (state) => state.sectionCreateEpfrId
+  );
 
   const currencyFormat = (num: any) => {
     if (num) {
@@ -170,7 +158,6 @@ const AnalysisRecommendation = (props: Props) => {
   };
 
   const [saveLoading, setSaveLoading] = useState(false);
-
   // Store data
   const storeData = async () => {
     try {
@@ -376,18 +363,22 @@ const AnalysisRecommendation = (props: Props) => {
     risk: {},
   });
   const [dataRowsGroup, setRowsGroup] = useState<any>([]);
-  const [dataProductAndRiders, setProductAndRiders] = useState<
-    Array<ProductRider>
-  >([]);
-  const [dataBenefits, setBenefits] = useState<Array<Benefits>>([]);
-  const [dataRisks, setRisks] = useState<Array<Risks>>([]);
+  // const [dataProductAndRiders, setProductAndRiders] = useState<
+  //   Array<ProductRider>
+  // >([]);
+  // const [dataBenefits, setBenefits] = useState<Array<Benefits>>([]);
+  // const [dataRisks, setRisks] = useState<Array<Risks>>([]);
   const [dataOutcome, setOutcome] = useState([0, 0]);
 
   let pfrLocal = usePfrData((state) => state.pfr);
+  let gate9 = usePfrData((state) => state.pfr.gate9);
+  let setPfr = usePfrData((state) => state.setPfr);
 
   // Get Init State Here
   useEffect(() => {
     if (!router.isReady) return;
+
+    localStorage.setItem("section9", JSON.stringify(section9));
     // const pfrId = idPfr;
 
     setTotalAnnualPremium([
@@ -504,258 +495,304 @@ const AnalysisRecommendation = (props: Props) => {
 
     if (
       (router.query.id !== null && router.query.id !== undefined) ||
-      Number(pfrId) > 0 || sectionCreateEpfrId === 200
+      Number(pfrId) > 0
     ) {
-      if (scrollPosition === "okSec9") {
+      if (scrollPositionBottom === "Process8") {
+        console.log("Nge load disini nggak");
         let pfrIdRiil = Number(pfrId) > 0 ? Number(pfrId) : router.query.id;
         setParent("editableStatus", pfrLocal.editableSection9);
         setParent("pfrId", pfrIdRiil);
         setParent("status", pfrLocal.section9);
 
         getSectionData();
+      } else {
+        if (sectionCreateEpfrId === 200) {
+          let pfrIdRiil = Number(pfrId) > 0 ? Number(pfrId) : router.query.id;
+          setParent("editableStatus", pfrLocal.editableSection9);
+          setParent("pfrId", pfrIdRiil);
+          setParent("status", pfrLocal.section9);
+          setPfr("gate9", 0);
+
+          getSectionData();
+        }
       }
     }
 
     // console.log("section9Res", section9);
-  }, [router.isReady, scrollPositionBottom, scrollPosition, sectionCreateEpfrId]);
+  }, [
+    section9,
+    router.isReady,
+    scrollPositionBottom,
+    scrollPosition,
+    sectionCreateEpfrId,
+  ]);
 
   useEffect(() => {
     localStorage.setItem("section9", JSON.stringify(section9));
     // validate();
   }, [section9]);
-
-  const validate = () => {
-    let res = false;
-    if (section9.overView1!=='' && section9.overView2!=='' && section9.reasonForBenefit!=='' && section9.reasonForRisk!=='' && section9.reasonForDeviation!=='') {
-      res = true;
-    }
-
-    section9.checkedData.map((data) => {
-      res = res || Boolean(data['checked']);
-    });
-
-    setParent('status', res?1:0);
-  }
+  // console.log("ini apa ", sectionCreateEpfrId);
 
   const [loading, setLoading] = useState(false);
 
-  const getSectionData =async () => {
+  const getSectionData = async () => {
     try {
-      setLoading(true); // Set loading before sending API request
+      if (gate9 === 0) {
+        setLoading(true); // Set loading before sending API request
 
-      await getPfrStep(8, pfrId).then((data: any) => {
-        setPayorBudget(data["payorBudgetsForClients"]);
-      });
+        await getPfrStep(8, pfrId).then((data: any) => {
+          setPayorBudget(data.payorBudgetsForClients);
 
-      // Section 9
-      await pfrSection(9, pfrId).then((data: any) => {
-
-        console.log("Check Section 9 Data: ", data);
-
-        setPfrNine(data);
-        setRowsGroup(data.rowGroups);
-
-        // Setting the answer Section Nine
-        let overView1 = "";
-        let overView2 = "";
-        let reasonForBenefit = "";
-        let reasonForRisk = "";
-        let reasonForDeviation = "";
-
-        if (data.answer) {
-          if (data.answer.overView1) {
-            overView1 = data.answer.overView1;
-          }
-
-          if (data.answer.overView2) {
-            overView2 = data.answer.overView2;
-          }
-
-          if (data.answer.reasonForBenefit) {
-            reasonForBenefit = data.answer.reasonForBenefit;
-          }
-
-          if (data.answer.reasonForRisk) {
-            reasonForRisk = data.answer.reasonForRisk;
-          }
-
-          if (data.answer.reasonForDeviation) {
-            reasonForDeviation = data.answer.reasonForDeviation;
-          }
-        }
-
-        let tempCheckedData: any = [];
-
-        data.recommendedProduct.map((product: any) => {
-          tempCheckedData.push({
-            id: product['id'],
-            checked: product['checked']
-          })
-        });
-
-        setParent("checkedData", tempCheckedData);
-
-        setEditor({
-          ...editorData,
-          overView1: EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(overView1).contentBlocks,
-              convertFromHTML(overView1).entityMap
-            )
-          ),
-          overView2: EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(overView2).contentBlocks,
-              convertFromHTML(overView2).entityMap
-            )
-          ),
-          reasonForBenefit: EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(reasonForBenefit).contentBlocks,
-              convertFromHTML(reasonForBenefit).entityMap
-            )
-          ),
-          reasonForRisk: EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(reasonForRisk).contentBlocks,
-              convertFromHTML(reasonForRisk).entityMap
-            )
-          ),
-          reasonForDeviation: EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(reasonForDeviation).contentBlocks,
-              convertFromHTML(reasonForDeviation).entityMap
-            )
-          ),
-        });
-
-        setParent("overView1", data.answer ? data.answer.overView1 : "");
-        setParent("overView2", data.answer ? data.answer.overView2 : "");
-        setParent(
-          "reasonForBenefit",
-          data.answer ? data.answer.reasonForBenefit : ""
-        );
-        setParent(
-          "reasonForRisk",
-          data.answer ? data.answer.reasonForRisk : ""
-        );
-        setParent(
-          "reasonForDeviation",
-          data.answer ? data.answer.reasonForDeviation : ""
-        );
-        // End Res Answer
-
-        // Check Client Choice
-        data.recommendedProduct.map((product: any) => {
-          if (product["checked"] == "0") {
-            product["checked"] = false;
-          } else {
-            product["checked"] = true;
-            calcPremiumClientChoice(product, false);
-          }
-
-          let dataName = getPremiumFrequencyName(product.premiumFrequency);
-          if (dataName != undefined) {
-            dataSubPremium[dataName] = product["premium"];
-
-            if (product["checked"] == true) {
-              if (dataResDataTotalPremiumArr[dataName]) {
-                dataResDataTotalPremiumArr[dataName] += product["totPremium"];
-              } else {
-                dataResDataTotalPremiumArr[dataName] = product["totPremium"];
-              }
-            }
-
-            product["riders"].map((rider: any) => {
-              let dataNameRider = getPremiumFrequencyName(
-                rider.premiumFrequency
-              );
-              if (dataNameRider != undefined) {
-                if (rider["checked"] == "0") {
-                  rider["checked"] = false;
-                } else {
-                  rider["checked"] = true;
-                }
-
-                //
-                if (dataSubPremium[dataNameRider]) {
-                  dataSubPremium[dataNameRider] += rider["premium"];
-                } else {
-                  dataSubPremium[dataNameRider] = rider["premium"];
-                }
-
-                if (dataResDataTotalPremiumArr[dataNameRider]) {
-                  dataResDataTotalPremiumArr[dataNameRider] +=
-                    rider["premium"];
-                } else {
-                  dataResDataTotalPremiumArr[dataNameRider] =
-                    rider["premium"];
-                }
-              }
+          if (data.annualIncome.length > 0) {
+            data.annualIncome.map((income: any, index: number) => {
+              setGlobalTemp("annualIncome", index, income.sum);
             });
+          }
 
-            if (product.riders.length > 0) {
-              product["subTotal"] = dataSubPremium;
-            } else {
-              product["subTotal"] = [];
+          if (data.annualExpense.length > 0) {
+            data.annualExpense.map((expense: any, index: number) => {
+              setGlobalTemp("annualExpense", index, expense.sum);
+            });
+          }
+
+          if (data.asset.length > 0) {
+            data.asset.map((asset: any, index: number) => {
+              setGlobalTemp("asset", index, asset.sum);
+            });
+          }
+
+          if (data.loan.length > 0) {
+            data.loan.map((loan: any, index: number) => {
+              setGlobalTemp("loan", index, loan.sum);
+            });
+          }
+
+          if (data.summaryOfCPF.length > 0) {
+            data.summaryOfCPF.map((cpf: any, index: number) => {
+              setGlobalTemp("summaryOfCpfOa", index, cpf.ordinary);
+              setGlobalTemp("summaryOfCpfSa", index, cpf.special);
+              setGlobalTemp("summaryOfCpfMedisave", index, cpf.medisave);
+            });
+          }
+
+          if (data.summaryOfSaving.length > 0) {
+            data.summaryOfSaving.map((saving: any, index: number) => {
+              setGlobalTemp("summaryOfSaving", index, saving.ammount);
+            });
+          }
+
+          if (data.summaryOfSRS.length > 0) {
+            data.summaryOfSRS.map((srs: any, index: number) => {
+              setGlobalTemp("summaryOfSRS", index, srs.ammount);
+            });
+          }
+        });
+
+        // Section 9
+        await pfrSection(9, pfrId).then((data: any) => {
+          console.log("Check Section 9 Data: ", data);
+
+          fetchGlobalTemp("CISILPProducts", data.CISILPProducts);
+          fetchGlobalTemp("CISProduct", data.CISProduct);
+          fetchGlobalTemp("ILPProduct", data.ILPProduct);
+          fetchGlobalTemp("groups", data.groups);
+          fetchGlobalTemp("recommendedProduct", data.recommendedProduct);
+          fetchGlobalTemp("rowGroups", data.rowGroups);
+
+          setPfrNine(data);
+          getProductRiderBenefitRisk(data);
+          setRowsGroup(data.rowGroups);
+
+          // Setting the answer Section Nine
+          let overView1 = "";
+          let overView2 = "";
+          let reasonForBenefit = "";
+          let reasonForRisk = "";
+          let reasonForDeviation = "";
+
+          if (data.answer) {
+            if (data.answer.overView1) {
+              overView1 = data.answer.overView1;
+            }
+
+            if (data.answer.overView2) {
+              overView2 = data.answer.overView2;
+            }
+
+            if (data.answer.reasonForBenefit) {
+              reasonForBenefit = data.answer.reasonForBenefit;
+            }
+
+            if (data.answer.reasonForRisk) {
+              reasonForRisk = data.answer.reasonForRisk;
+            }
+
+            if (data.answer.reasonForDeviation) {
+              reasonForDeviation = data.answer.reasonForDeviation;
             }
           }
+
+          setEditor({
+            ...editorData,
+            overView1: EditorState.createWithContent(
+              ContentState.createFromBlockArray(
+                convertFromHTML(overView1).contentBlocks,
+                convertFromHTML(overView1).entityMap
+              )
+            ),
+            overView2: EditorState.createWithContent(
+              ContentState.createFromBlockArray(
+                convertFromHTML(overView2).contentBlocks,
+                convertFromHTML(overView2).entityMap
+              )
+            ),
+            reasonForBenefit: EditorState.createWithContent(
+              ContentState.createFromBlockArray(
+                convertFromHTML(reasonForBenefit).contentBlocks,
+                convertFromHTML(reasonForBenefit).entityMap
+              )
+            ),
+            reasonForRisk: EditorState.createWithContent(
+              ContentState.createFromBlockArray(
+                convertFromHTML(reasonForRisk).contentBlocks,
+                convertFromHTML(reasonForRisk).entityMap
+              )
+            ),
+            reasonForDeviation: EditorState.createWithContent(
+              ContentState.createFromBlockArray(
+                convertFromHTML(reasonForDeviation).contentBlocks,
+                convertFromHTML(reasonForDeviation).entityMap
+              )
+            ),
+          });
+
+          setParent("overView1", data.answer ? data.answer.overView1 : "");
+          setParent("overView2", data.answer ? data.answer.overView2 : "");
+          setParent(
+            "reasonForBenefit",
+            data.answer ? data.answer.reasonForBenefit : ""
+          );
+          setParent(
+            "reasonForRisk",
+            data.answer ? data.answer.reasonForRisk : ""
+          );
+          setParent(
+            "reasonForDeviation",
+            data.answer ? data.answer.reasonForDeviation : ""
+          );
+          // End Res Answer
+
+          // Check Client Choice
+          data.recommendedProduct.map((product: any) => {
+            if (product["checked"] == "0") {
+              product["checked"] = false;
+            } else {
+              product["checked"] = true;
+              calcPremiumClientChoice(product, false);
+            }
+
+            let dataName = getPremiumFrequencyName(product.premiumFrequency);
+            if (dataName != undefined) {
+              dataSubPremium[dataName] = product["premium"];
+
+              if (product["checked"] == true) {
+                if (dataResDataTotalPremiumArr[dataName]) {
+                  dataResDataTotalPremiumArr[dataName] += product["totPremium"];
+                } else {
+                  dataResDataTotalPremiumArr[dataName] = product["totPremium"];
+                }
+              }
+
+              product["riders"].map((rider: any) => {
+                let dataNameRider = getPremiumFrequencyName(
+                  rider.premiumFrequency
+                );
+                if (dataNameRider != undefined) {
+                  if (rider["checked"] == "0") {
+                    rider["checked"] = false;
+                  } else {
+                    rider["checked"] = true;
+                  }
+
+                  //
+                  if (dataSubPremium[dataNameRider]) {
+                    dataSubPremium[dataNameRider] += rider["premium"];
+                  } else {
+                    dataSubPremium[dataNameRider] = rider["premium"];
+                  }
+
+                  if (dataResDataTotalPremiumArr[dataNameRider]) {
+                    dataResDataTotalPremiumArr[dataNameRider] +=
+                      rider["premium"];
+                  } else {
+                    dataResDataTotalPremiumArr[dataNameRider] =
+                      rider["premium"];
+                  }
+                }
+              });
+
+              if (product.riders.length > 0) {
+                product["subTotal"] = dataSubPremium;
+              } else {
+                product["subTotal"] = [];
+              }
+            }
+          });
+
+          data.ILPProduct.map((product: any, index: any) => {
+            if (product["checked"] == "0") {
+              product["checked"] = false;
+            } else {
+              product["checked"] = true;
+            }
+          });
+
+          data.CISProduct.map((product: any, index: any) => {
+            if (product["checked"] == "0") {
+              product["checked"] = false;
+            } else {
+              product["checked"] = true;
+            }
+          });
+
+          let checker = 0;
+
+          data.CISILPProducts.map((product: any) => {
+            if (product["checked"]) {
+              checker++;
+            }
+
+            if (
+              product["type"] == 1 ||
+              (product["type"] == 0 && product["recommedType"] == 1)
+            ) {
+              calcPremiumForCISClientChoice(product);
+            } else if (product["type"] == 0 && product["recommedType"] == 0) {
+              calcPremiumClientChoice(product, false);
+            }
+          });
+
+          calcPremiumMatrix(data);
+          getGroupRow();
         });
 
-        data.ILPProduct.map((product: any, index: any) => {
-          if (product["checked"] == "0") {
-            product["checked"] = false;
-          } else {
-            product["checked"] = true;
-          }
+        // get whole context
+        const resOutcome: Array<any> = [];
+        await getWholeContext(pfrId).then((dataWhole: any) => {
+          dataWhole.outcomes.map((outcome: any) => {
+            let clientId = outcome["clientType"] - 1;
+            resOutcome[clientId] = outcome["outcome"];
+          });
+          setOutcome(resOutcome);
         });
-
-        data.CISProduct.map((product: any, index: any) => {
-          if (product["checked"] == "0") {
-            product["checked"] = false;
-          } else {
-            product["checked"] = true;
-          }
-        });
-
-        let checker = 0;
-
-        data.CISILPProducts.map((product: any) => {
-          if (product["checked"]) {
-            checker++;
-          }
-
-          if (
-            product["type"] == 1 ||
-            (product["type"] == 0 && product["recommedType"] == 1)
-          ) {
-            calcPremiumForCISClientChoice(product);
-          } else if (product["type"] == 0 && product["recommedType"] == 0) {
-            calcPremiumClientChoice(product, false);
-          }
-        });
-
-        calcPremiumMatrix(data);
-
-        getProductRiderBenefitRisk();
-        getGroupRow();
-      });
-
-      // get whole context
-      const resOutcome: Array<any> = [];
-      await getWholeContext(pfrId).then((dataWhole: any) => {
-        dataWhole.outcomes.map((outcome: any) => {
-          let clientId = outcome["clientType"] - 1;
-          resOutcome[clientId] = outcome["outcome"];
-        });
-        setOutcome(resOutcome);
-      });
-      setLoading(false); // Stop loading
+        setLoading(false); // Stop loading
+        setPfr("gate9", 1);
+      }
     } catch (error) {
       setLoading(false); // Stop loading in case of error
       console.error(error);
     }
-  }
+  };
 
   const getPremiumFrequencyName = (premiumFrequency: any) => {
     switch (Number(premiumFrequency)) {
@@ -772,383 +809,219 @@ const AnalysisRecommendation = (props: Props) => {
     }
   };
 
-  const calcPremium = (product: any, isRider = false) => {
-    if (product) {
-      if (product["checked"]) {
-          let frequency = product["premiumFrequency"];
-          let clientId = product["nameOfOwner"];
-          let premiumType = product["premiumPaymentType"];
-          let premium = 0;
-          let categoryId = product["categoryId"];
-          if (categoryId != 8 && categoryId != 5) {
-            if (frequency == 4) {
-              premium = product["premium"];
-              dataTotalSinglePremium[clientId][premiumType] += product["premium"];
-              setTotalSinglePremium(dataTotalSinglePremium);
-
-              dataProductSinglePremium[clientId][premiumType] += premium;
-              setProductSinglePremium(dataProductSinglePremium);
-            } else if (frequency == 3) {
-              premium = product["premium"];
-              dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-
-              dataProductAnnualPremium[clientId][premiumType] += premium;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else if (frequency == 2) {
-              premium = product["premium"] * 2;
-              dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-
-              dataProductAnnualPremium[clientId][premiumType] += premium;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else if (frequency == 1) {
-              premium = product["premium"] * 4;
-              dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-
-              dataProductAnnualPremium[clientId][premiumType] += premium;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else {
-              premium = product["premium"] * 12;
-              dataTotalAnnualPremium[clientId][premiumType] +=
-                product["premium"] * 12;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-
-              dataProductAnnualPremium[clientId][premiumType] += premium;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            }
-
-            if (isRider == false) {
-              if (
-                dataMaxSinglePremium[clientId][premiumType] <
-                dataProductSinglePremium[clientId][premiumType]
-              ) {
-                dataMaxSinglePremium[clientId][premiumType] =
-                  dataProductSinglePremium[clientId][premiumType];
-              }
-              if (
-                dataMaxAnnualPremium[clientId][premiumType] <
-                dataProductAnnualPremium[clientId][premiumType]
-              ) {
-                dataMaxAnnualPremium[clientId][premiumType] =
-                  dataProductAnnualPremium[clientId][premiumType];
-              }
-            }
-          } else {
-            let cash =
-              product["premium_for_hospitalization"] !== null
-                ? product["premium_for_hospitalization"]["cash"]
-                : 0;
-            let medisave =
-              product["premium_for_hospitalization"] !== null
-                ? product["premium_for_hospitalization"]["cpfMedisave"]
-                : 0;
-            let premium = cash + medisave;
-            if (frequency == 4) {
-              dataTotalSinglePremium[clientId][0] += cash;
-              setTotalSinglePremium(dataTotalSinglePremium);
-              dataTotalSinglePremium[clientId][3] += medisave;
-              setTotalSinglePremium(dataTotalSinglePremium);
-
-              dataProductSinglePremium[clientId][0] += cash;
-              setProductSinglePremium(dataProductSinglePremium);
-              dataProductSinglePremium[clientId][3] += medisave;
-              setProductSinglePremium(dataProductSinglePremium);
-            } else if (frequency == 3) {
-              dataTotalAnnualPremium[clientId][0] += cash;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-              dataTotalAnnualPremium[clientId][3] += medisave;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-
-              dataProductAnnualPremium[clientId][0] += cash;
-              setProductAnnualPremium(dataProductAnnualPremium);
-              dataProductAnnualPremium[clientId][3] += medisave;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else if (frequency == 2) {
-              premium = premium * 2;
-              dataTotalAnnualPremium[clientId][0] += cash * 2;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-              dataTotalAnnualPremium[clientId][3] += medisave * 2;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-
-              dataProductAnnualPremium[clientId][0] += cash * 2;
-              setProductAnnualPremium(dataProductAnnualPremium);
-              dataProductAnnualPremium[clientId][3] += medisave * 2;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else if (frequency == 1) {
-              premium = premium * 4;
-              dataTotalAnnualPremium[clientId][0] += cash * 4;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-              dataTotalAnnualPremium[clientId][3] += medisave * 4;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-
-              dataProductAnnualPremium[clientId][0] += cash * 4;
-              setProductAnnualPremium(dataProductAnnualPremium);
-              dataProductAnnualPremium[clientId][3] += medisave * 4;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else {
-              premium = premium * 12;
-              dataTotalAnnualPremium[clientId][0] += cash * 12;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-              dataTotalAnnualPremium[clientId][3] += medisave * 12;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-
-              dataProductAnnualPremium[clientId][0] += cash * 12;
-              setProductAnnualPremium(dataProductAnnualPremium);
-              dataProductAnnualPremium[clientId][3] += medisave * 12;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            }
-
-            if (isRider == false) {
-              if (
-                dataMaxSinglePremium[clientId][0] <
-                dataProductSinglePremium[clientId][0]
-              ) {
-                dataMaxSinglePremium[clientId][0] =
-                  dataProductSinglePremium[clientId][0];
-                setMaxSinglePremium(dataMaxSinglePremium);
-              }
-              if (
-                dataMaxSinglePremium[clientId][3] <
-                dataProductSinglePremium[clientId][3]
-              ) {
-                dataMaxSinglePremium[clientId][3] =
-                  dataProductSinglePremium[clientId][3];
-                setMaxSinglePremium(dataMaxSinglePremium);
-              }
-              if (
-                dataMaxAnnualPremium[clientId][0] <
-                dataProductAnnualPremium[clientId][0]
-              ) {
-                dataMaxAnnualPremium[clientId][0] =
-                  dataProductAnnualPremium[clientId][0];
-                setMaxAnnualPremium(dataMaxAnnualPremium);
-              }
-              if (
-                dataMaxAnnualPremium[clientId][3] <
-                dataProductAnnualPremium[clientId][3]
-              ) {
-                dataMaxAnnualPremium[clientId][3] =
-                  dataProductAnnualPremium[clientId][3];
-                setMaxAnnualPremium(dataMaxAnnualPremium);
-              }
-            }
-          }
-        } else {
-          let frequency = product["premiumFrequency"];
-          let clientId = product["nameOfOwner"];
-          let premiumType = product["premiumPaymentType"];
-          let premium = 0;
-          let categoryId = product["categoryId"];
-          if (categoryId != 8 && categoryId != 5) {
-            if (frequency == 4) {
-              premium = product["premium"];
-              dataTotalSinglePremium[clientId][premiumType] -= product["premium"];
-              setTotalSinglePremium(dataTotalSinglePremium);
-  
-              dataProductSinglePremium[clientId][premiumType] -= premium;
-              setProductSinglePremium(dataProductSinglePremium);
-            } else if (frequency == 3) {
-              premium = product["premium"];
-              dataTotalAnnualPremium[clientId][premiumType] -= product["premium"] * 1;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-  
-              dataProductAnnualPremium[clientId][premiumType] -= premium;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else if (frequency == 2) {
-              premium = product["premium"] * 2;
-              dataTotalAnnualPremium[clientId][premiumType] -= product["premium"] * 2;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-  
-              dataProductAnnualPremium[clientId][premiumType] -= premium;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else if (frequency == 1) {
-              premium = product["premium"] * 4;
-              dataTotalAnnualPremium[clientId][premiumType] -= product["premium"] * 4;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-  
-              dataProductAnnualPremium[clientId][premiumType] -= premium;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else {
-              premium = product["premium"] * 12;
-              dataTotalAnnualPremium[clientId][premiumType] -=
-                product["premium"] * 12;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-  
-              dataProductAnnualPremium[clientId][premiumType] -= premium;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            }
-  
-            if (isRider == false) {
-              if (
-                dataMaxSinglePremium[clientId][premiumType] <
-                dataProductSinglePremium[clientId][premiumType]
-              ) {
-                dataMaxSinglePremium[clientId][premiumType] =
-                  dataProductSinglePremium[clientId][premiumType];
-              }
-              if (
-                dataMaxAnnualPremium[clientId][premiumType] <
-                dataProductAnnualPremium[clientId][premiumType]
-              ) {
-                dataMaxAnnualPremium[clientId][premiumType] =
-                  dataProductAnnualPremium[clientId][premiumType];
-              }
-            }
-          } else {
-            let cash =
-              product["premium_for_hospitalization"] !== null
-                ? product["premium_for_hospitalization"]["cash"]
-                : 0;
-            let medisave =
-              product["premium_for_hospitalization"] !== null
-                ? product["premium_for_hospitalization"]["cpfMedisave"]
-                : 0;
-            let premium = cash + medisave;
-            if (frequency == 4) {
-              dataTotalSinglePremium[clientId][0] -= cash;
-              setTotalSinglePremium(dataTotalSinglePremium);
-              dataTotalSinglePremium[clientId][3] -= medisave;
-              setTotalSinglePremium(dataTotalSinglePremium);
-  
-              dataProductSinglePremium[clientId][0] -= cash;
-              setProductSinglePremium(dataProductSinglePremium);
-              dataProductSinglePremium[clientId][3] -= medisave;
-              setProductSinglePremium(dataProductSinglePremium);
-            } else if (frequency == 3) {
-              dataTotalAnnualPremium[clientId][0] -= cash;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-              dataTotalAnnualPremium[clientId][3] -= medisave;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-  
-              dataProductAnnualPremium[clientId][0] -= cash;
-              setProductAnnualPremium(dataProductAnnualPremium);
-              dataProductAnnualPremium[clientId][3] -= medisave;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else if (frequency == 2) {
-              premium = premium * 2;
-              dataTotalAnnualPremium[clientId][0] -= cash * 2;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-              dataTotalAnnualPremium[clientId][3] -= medisave * 2;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-  
-              dataProductAnnualPremium[clientId][0] -= cash * 2;
-              setProductAnnualPremium(dataProductAnnualPremium);
-              dataProductAnnualPremium[clientId][3] -= medisave * 2;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else if (frequency == 1) {
-              premium = premium * 4;
-              dataTotalAnnualPremium[clientId][0] -= cash * 4;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-              dataTotalAnnualPremium[clientId][3] -= medisave * 4;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-  
-              dataProductAnnualPremium[clientId][0] -= cash * 4;
-              setProductAnnualPremium(dataProductAnnualPremium);
-              dataProductAnnualPremium[clientId][3] -= medisave * 4;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            } else {
-              premium = premium * 12;
-              dataTotalAnnualPremium[clientId][0] -= cash * 12;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-              dataTotalAnnualPremium[clientId][3] -= medisave * 12;
-              setTotalAnnualPremium(dataTotalAnnualPremium);
-  
-              dataProductAnnualPremium[clientId][0] -= cash * 12;
-              setProductAnnualPremium(dataProductAnnualPremium);
-              dataProductAnnualPremium[clientId][3] -= medisave * 12;
-              setProductAnnualPremium(dataProductAnnualPremium);
-            }
-  
-            if (isRider == false) {
-              if (
-                dataMaxSinglePremium[clientId][0] <
-                dataProductSinglePremium[clientId][0]
-              ) {
-                dataMaxSinglePremium[clientId][0] =
-                  dataProductSinglePremium[clientId][0];
-                setMaxSinglePremium(dataMaxSinglePremium);
-              }
-              if (
-                dataMaxSinglePremium[clientId][3] <
-                dataProductSinglePremium[clientId][3]
-              ) {
-                dataMaxSinglePremium[clientId][3] =
-                  dataProductSinglePremium[clientId][3];
-                setMaxSinglePremium(dataMaxSinglePremium);
-              }
-              if (
-                dataMaxAnnualPremium[clientId][0] <
-                dataProductAnnualPremium[clientId][0]
-              ) {
-                dataMaxAnnualPremium[clientId][0] =
-                  dataProductAnnualPremium[clientId][0];
-                setMaxAnnualPremium(dataMaxAnnualPremium);
-              }
-              if (
-                dataMaxAnnualPremium[clientId][3] <
-                dataProductAnnualPremium[clientId][3]
-              ) {
-                dataMaxAnnualPremium[clientId][3] =
-                  dataProductAnnualPremium[clientId][3];
-                setMaxAnnualPremium(dataMaxAnnualPremium);
-              }
-            }
-          }
-        }
+  const calcPremiumForCIS = (product: any) => {
+    let frequency = product["premiumFrequency"];
+    let clientId = product["nameOfOwner"];
+    let premiumType = product["premiumPaymentType"];
+    let premium = 0;
+    if (frequency == 4) {
+      premium = product["premium"];
+      dataTotalSinglePremium[clientId][premiumType] += product["premium"];
+      setTotalSinglePremium(dataTotalSinglePremium);
+      if (dataMaxSinglePremium[clientId][premiumType] < premium) {
+        dataMaxSinglePremium[clientId][premiumType] = premium;
+        setMaxSinglePremium(dataMaxSinglePremium);
       }
-    };
+    } else if (frequency == 3) {
+      premium = product["premium"];
+      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
+      setTotalAnnualPremium(dataTotalAnnualPremium);
+      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium;
+        setMaxAnnualPremium(dataMaxAnnualPremium);
+      }
+    } else if (frequency == 2) {
+      premium = product["premium"] * 2;
+      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
+      setTotalAnnualPremium(dataTotalAnnualPremium);
+      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium;
+        setMaxAnnualPremium(dataMaxAnnualPremium);
+      }
+    } else if (frequency == 1) {
+      premium = product["premium"] * 4;
+      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
+      setTotalAnnualPremium(dataTotalAnnualPremium);
+      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium;
+        setMaxAnnualPremium(dataMaxAnnualPremium);
+      }
+    } else {
+      premium = product["premium"] * 12;
+      dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 12;
+      setTotalAnnualPremium(dataTotalAnnualPremium);
+      if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
+        dataMaxAnnualPremium[clientId][premiumType] = premium;
+        setMaxAnnualPremium(dataMaxAnnualPremium);
+      }
+    }
+  };
 
-    const calcPremiumForCIS = (product: any) => {
-      let frequency = product["premiumFrequency"];
-      let clientId = product["nameOfOwner"];
-      let premiumType = product["premiumPaymentType"];
-      let premium = 0;
+  const calcPremium = (product: any, isRider = false) => {
+    let frequency = product["premiumFrequency"];
+    let clientId = product["nameOfOwner"];
+    let premiumType = product["premiumPaymentType"];
+    let premium = 0;
+    let categoryId = product["categoryId"];
+    if (categoryId != 8 && categoryId != 5) {
       if (frequency == 4) {
         premium = product["premium"];
         dataTotalSinglePremium[clientId][premiumType] += product["premium"];
         setTotalSinglePremium(dataTotalSinglePremium);
-        if (dataMaxSinglePremium[clientId][premiumType] < premium) {
-          dataMaxSinglePremium[clientId][premiumType] = premium;
-          setMaxSinglePremium(dataMaxSinglePremium);
-        }
+
+        dataProductSinglePremium[clientId][premiumType] += premium;
+        setProductSinglePremium(dataProductSinglePremium);
       } else if (frequency == 3) {
         premium = product["premium"];
         dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 1;
         setTotalAnnualPremium(dataTotalAnnualPremium);
-        if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-          dataMaxAnnualPremium[clientId][premiumType] = premium;
-          setMaxAnnualPremium(dataMaxAnnualPremium);
-        }
+
+        dataProductAnnualPremium[clientId][premiumType] += premium;
+        setProductAnnualPremium(dataProductAnnualPremium);
       } else if (frequency == 2) {
         premium = product["premium"] * 2;
         dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 2;
         setTotalAnnualPremium(dataTotalAnnualPremium);
-        if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-          dataMaxAnnualPremium[clientId][premiumType] = premium;
-          setMaxAnnualPremium(dataMaxAnnualPremium);
-        }
+
+        dataProductAnnualPremium[clientId][premiumType] += premium;
+        setProductAnnualPremium(dataProductAnnualPremium);
       } else if (frequency == 1) {
         premium = product["premium"] * 4;
         dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 4;
         setTotalAnnualPremium(dataTotalAnnualPremium);
-        if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-          dataMaxAnnualPremium[clientId][premiumType] = premium;
-          setMaxAnnualPremium(dataMaxAnnualPremium);
-        }
+
+        dataProductAnnualPremium[clientId][premiumType] += premium;
+        setProductAnnualPremium(dataProductAnnualPremium);
       } else {
         premium = product["premium"] * 12;
-        dataTotalAnnualPremium[clientId][premiumType] += product["premium"] * 12;
+        dataTotalAnnualPremium[clientId][premiumType] +=
+          product["premium"] * 12;
         setTotalAnnualPremium(dataTotalAnnualPremium);
-        if (dataMaxAnnualPremium[clientId][premiumType] < premium) {
-          dataMaxAnnualPremium[clientId][premiumType] = premium;
+
+        dataProductAnnualPremium[clientId][premiumType] += premium;
+        setProductAnnualPremium(dataProductAnnualPremium);
+      }
+
+      if (isRider == false) {
+        if (
+          dataMaxSinglePremium[clientId][premiumType] <
+          dataProductSinglePremium[clientId][premiumType]
+        ) {
+          dataMaxSinglePremium[clientId][premiumType] =
+            dataProductSinglePremium[clientId][premiumType];
+        }
+        if (
+          dataMaxAnnualPremium[clientId][premiumType] <
+          dataProductAnnualPremium[clientId][premiumType]
+        ) {
+          dataMaxAnnualPremium[clientId][premiumType] =
+            dataProductAnnualPremium[clientId][premiumType];
+        }
+      }
+    } else {
+      let cash =
+        product["premium_for_hospitalization"] !== null
+          ? product["premium_for_hospitalization"]["cash"]
+          : 0;
+      let medisave =
+        product["premium_for_hospitalization"] !== null
+          ? product["premium_for_hospitalization"]["cpfMedisave"]
+          : 0;
+      let premium = cash + medisave;
+      if (frequency == 4) {
+        dataTotalSinglePremium[clientId][0] += cash;
+        setTotalSinglePremium(dataTotalSinglePremium);
+        dataTotalSinglePremium[clientId][3] += medisave;
+        setTotalSinglePremium(dataTotalSinglePremium);
+
+        dataProductSinglePremium[clientId][0] += cash;
+        setProductSinglePremium(dataProductSinglePremium);
+        dataProductSinglePremium[clientId][3] += medisave;
+        setProductSinglePremium(dataProductSinglePremium);
+      } else if (frequency == 3) {
+        dataTotalAnnualPremium[clientId][0] += cash;
+        setTotalAnnualPremium(dataTotalAnnualPremium);
+        dataTotalAnnualPremium[clientId][3] += medisave;
+        setTotalAnnualPremium(dataTotalAnnualPremium);
+
+        dataProductAnnualPremium[clientId][0] += cash;
+        setProductAnnualPremium(dataProductAnnualPremium);
+        dataProductAnnualPremium[clientId][3] += medisave;
+        setProductAnnualPremium(dataProductAnnualPremium);
+      } else if (frequency == 2) {
+        premium = premium * 2;
+        dataTotalAnnualPremium[clientId][0] += cash * 2;
+        setTotalAnnualPremium(dataTotalAnnualPremium);
+        dataTotalAnnualPremium[clientId][3] += medisave * 2;
+        setTotalAnnualPremium(dataTotalAnnualPremium);
+
+        dataProductAnnualPremium[clientId][0] += cash * 2;
+        setProductAnnualPremium(dataProductAnnualPremium);
+        dataProductAnnualPremium[clientId][3] += medisave * 2;
+        setProductAnnualPremium(dataProductAnnualPremium);
+      } else if (frequency == 1) {
+        premium = premium * 4;
+        dataTotalAnnualPremium[clientId][0] += cash * 4;
+        setTotalAnnualPremium(dataTotalAnnualPremium);
+        dataTotalAnnualPremium[clientId][3] += medisave * 4;
+        setTotalAnnualPremium(dataTotalAnnualPremium);
+
+        dataProductAnnualPremium[clientId][0] += cash * 4;
+        setProductAnnualPremium(dataProductAnnualPremium);
+        dataProductAnnualPremium[clientId][3] += medisave * 4;
+        setProductAnnualPremium(dataProductAnnualPremium);
+      } else {
+        premium = premium * 12;
+        dataTotalAnnualPremium[clientId][0] += cash * 12;
+        setTotalAnnualPremium(dataTotalAnnualPremium);
+        dataTotalAnnualPremium[clientId][3] += medisave * 12;
+        setTotalAnnualPremium(dataTotalAnnualPremium);
+
+        dataProductAnnualPremium[clientId][0] += cash * 12;
+        setProductAnnualPremium(dataProductAnnualPremium);
+        dataProductAnnualPremium[clientId][3] += medisave * 12;
+        setProductAnnualPremium(dataProductAnnualPremium);
+      }
+
+      if (isRider == false) {
+        if (
+          dataMaxSinglePremium[clientId][0] <
+          dataProductSinglePremium[clientId][0]
+        ) {
+          dataMaxSinglePremium[clientId][0] =
+            dataProductSinglePremium[clientId][0];
+          setMaxSinglePremium(dataMaxSinglePremium);
+        }
+        if (
+          dataMaxSinglePremium[clientId][3] <
+          dataProductSinglePremium[clientId][3]
+        ) {
+          dataMaxSinglePremium[clientId][3] =
+            dataProductSinglePremium[clientId][3];
+          setMaxSinglePremium(dataMaxSinglePremium);
+        }
+        if (
+          dataMaxAnnualPremium[clientId][0] <
+          dataProductAnnualPremium[clientId][0]
+        ) {
+          dataMaxAnnualPremium[clientId][0] =
+            dataProductAnnualPremium[clientId][0];
+          setMaxAnnualPremium(dataMaxAnnualPremium);
+        }
+        if (
+          dataMaxAnnualPremium[clientId][3] <
+          dataProductAnnualPremium[clientId][3]
+        ) {
+          dataMaxAnnualPremium[clientId][3] =
+            dataProductAnnualPremium[clientId][3];
           setMaxAnnualPremium(dataMaxAnnualPremium);
         }
       }
+    }
   };
 
   const calcPremiumClientChoice = (product: any, isRider: false) => {
+    console.log('masuk sini nggak product ', product)
     if (product) {
       if (product["checked"]) {
         let frequency = product["premiumFrequency"];
@@ -1626,482 +1499,6 @@ const AnalysisRecommendation = (props: Props) => {
             }
           }
         }
-      } else {
-        let frequency = product["premiumFrequency"];
-        let clientId = product["nameOfOwner"];
-        let premiumType = product["premiumPaymentType"];
-        let premium = 0;
-        let categoryId = product["categoryId"];
-
-        let typeData = product["type"];
-        let recommendType = product["recommedType"];
-
-        // Recomendation
-        // if(categoryId != 8 && categoryId != 5) {
-
-        if (frequency == 4) {
-          premium = product["premium"];
-          dataTotalSinglePremiumChoice[clientId][premiumType] -=
-            product["premium"];
-          setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice);
-          dataProductSinglePremiumChoice[clientId][premiumType] -= premium;
-          setProductSinglePremiumChoice(dataProductSinglePremiumChoice);
-
-          // New amount
-          dataTotalRecomendationSinglePremiumChoice[clientId][premiumType] -=
-            product["premium"];
-          setTotalRecomendationSinglePremiumChoice(
-            dataTotalRecomendationSinglePremiumChoice
-          );
-          dataProductRecomendationSinglePremiumChoice[clientId][premiumType] -=
-            premium;
-          setProductRecomendationSinglePremiumChoice(
-            dataProductRecomendationSinglePremiumChoice
-          );
-        } else if (frequency == 3) {
-          premium = product["premium"];
-          dataTotalAnnualPremiumChoice[clientId][premiumType] -=
-            product["premium"] * 1;
-          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-          dataProductAnnualPremiumChoice[clientId][premiumType] -= premium;
-          setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-
-          // New amount
-          dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] -=
-            product["premium"] * 1;
-          setTotalRecomendationAnnualPremiumChoice(
-            dataTotalRecomendationAnnualPremiumChoice
-          );
-          dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] -=
-            premium;
-          setProductRecomendationAnnualPremiumChoice(
-            dataProductRecomendationAnnualPremiumChoice
-          );
-        } else if (frequency == 2) {
-          premium = product["premium"] * 2;
-          dataTotalAnnualPremiumChoice[clientId][premiumType] -=
-            product["premium"] * 2;
-          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-          dataProductAnnualPremiumChoice[clientId][premiumType] -= premium;
-          setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-
-          // New amount
-          dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] -=
-            product["premium"] * 2;
-          setTotalRecomendationAnnualPremiumChoice(
-            dataTotalRecomendationAnnualPremiumChoice
-          );
-          dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] -=
-            premium;
-          setProductRecomendationAnnualPremiumChoice(
-            dataProductRecomendationAnnualPremiumChoice
-          );
-        } else if (frequency == 1) {
-          premium = product["premium"] * 4;
-          dataTotalAnnualPremiumChoice[clientId][premiumType] -=
-            product["premium"] * 4;
-          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-          dataProductAnnualPremiumChoice[clientId][premiumType] -= premium;
-          setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-
-          // New amount
-          dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] -=
-            product["premium"] * 4;
-          setTotalRecomendationAnnualPremiumChoice(
-            dataTotalRecomendationAnnualPremiumChoice
-          );
-          dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] -=
-            premium;
-          setProductRecomendationAnnualPremiumChoice(
-            dataProductRecomendationAnnualPremiumChoice
-          );
-        } else if (frequency == 0) {
-          premium = product["premium"] * 12;
-          dataTotalAnnualPremiumChoice[clientId][premiumType] -=
-            product["premium"] * 12;
-          setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-          dataProductAnnualPremiumChoice[clientId][premiumType] -= premium;
-          setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-
-          // New amount
-          dataTotalRecomendationAnnualPremiumChoice[clientId][premiumType] -=
-            product["premium"] * 12;
-          setTotalRecomendationAnnualPremiumChoice(
-            dataTotalRecomendationAnnualPremiumChoice
-          );
-          dataProductRecomendationAnnualPremiumChoice[clientId][premiumType] -=
-            premium;
-          setProductRecomendationAnnualPremiumChoice(
-            dataProductRecomendationAnnualPremiumChoice
-          );
-        }
-
-        if (isRider == false) {
-          if (
-            dataMaxSinglePremium[clientId][premiumType] <
-            dataProductSinglePremiumChoice[clientId][premiumType]
-          ) {
-            dataMaxSinglePremium[clientId][premiumType] =
-              dataProductSinglePremiumChoice[clientId][premiumType];
-            setMaxSinglePremium(dataMaxSinglePremium);
-          }
-          if (
-            dataMaxAnnualPremium[clientId][premiumType] <
-            dataProductAnnualPremiumChoice[clientId][premiumType]
-          ) {
-            dataMaxAnnualPremium[clientId][premiumType] =
-              dataProductAnnualPremiumChoice[clientId][premiumType];
-            setMaxAnnualPremium(dataMaxAnnualPremium);
-          }
-        }
-        //
-        // HOSTPITAL
-        // } else {
-        if (product["premium_for_hospitalization"]) {
-          let cash =
-            product["premium_for_hospitalization"] !== null
-              ? product["premium_for_hospitalization"]["cash"]
-              : 0;
-          let medisave =
-            product["premium_for_hospitalization"] !== null
-              ? product["premium_for_hospitalization"]["cpfMedisave"]
-              : 0;
-          let premiumHost = cash + medisave;
-
-          if (frequency == 4) {
-            dataTotalSinglePremiumChoice[clientId][0] -= cash;
-            setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice);
-            dataTotalSinglePremiumChoice[clientId][3] -= medisave;
-            setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice);
-
-            dataProductSinglePremiumChoice[clientId][0] -= cash;
-            setProductSinglePremiumChoice(dataProductSinglePremiumChoice);
-            dataProductSinglePremiumChoice[clientId][3] -= medisave;
-            setProductSinglePremiumChoice(dataProductSinglePremiumChoice);
-
-            // New amount
-            dataTotalRecomendationSinglePremiumChoice[clientId][0] -= cash;
-            setTotalRecomendationSinglePremiumChoice(
-              dataTotalRecomendationSinglePremiumChoice
-            );
-            dataTotalRecomendationSinglePremiumChoice[clientId][3] -= medisave;
-            setTotalRecomendationSinglePremiumChoice(
-              dataTotalRecomendationSinglePremiumChoice
-            );
-
-            dataProductRecomendationSinglePremiumChoice[clientId][0] -= cash;
-            setProductRecomendationSinglePremiumChoice(
-              dataProductRecomendationSinglePremiumChoice
-            );
-            dataProductRecomendationSinglePremiumChoice[clientId][3] -=
-              medisave;
-            setProductRecomendationSinglePremiumChoice(
-              dataProductRecomendationSinglePremiumChoice
-            );
-          } else if (frequency == 3) {
-            dataTotalAnnualPremiumChoice[clientId][0] -= cash;
-            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-            dataTotalAnnualPremiumChoice[clientId][3] -= medisave;
-            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-
-            dataProductAnnualPremiumChoice[clientId][0] -= cash;
-            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-            dataProductAnnualPremiumChoice[clientId][3] -= medisave;
-            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-
-            // New amount
-
-            dataTotalRecomendationAnnualPremiumChoice[clientId][0] -= cash;
-            setTotalRecomendationAnnualPremiumChoice(
-              dataTotalRecomendationAnnualPremiumChoice
-            );
-            dataTotalRecomendationAnnualPremiumChoice[clientId][3] -= medisave;
-            setTotalRecomendationAnnualPremiumChoice(
-              dataTotalRecomendationAnnualPremiumChoice
-            );
-
-            dataProductRecomendationAnnualPremiumChoice[clientId][0] -= cash;
-            setProductRecomendationAnnualPremiumChoice(
-              dataProductRecomendationAnnualPremiumChoice
-            );
-            dataProductRecomendationAnnualPremiumChoice[clientId][3] -=
-              medisave;
-            setProductRecomendationAnnualPremiumChoice(
-              dataProductRecomendationAnnualPremiumChoice
-            );
-          } else if (frequency == 2) {
-            premiumHost = premiumHost * 2;
-            dataTotalAnnualPremiumChoice[clientId][0] -= cash * 2;
-            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-            dataTotalAnnualPremiumChoice[clientId][3] -= medisave * 2;
-            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-
-            dataProductAnnualPremiumChoice[clientId][0] -= cash * 2;
-            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-            dataProductAnnualPremiumChoice[clientId][3] -= medisave * 2;
-            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-
-            // New amount
-            dataTotalRecomendationAnnualPremiumChoice[clientId][0] -= cash * 2;
-            setTotalRecomendationAnnualPremiumChoice(
-              dataTotalRecomendationAnnualPremiumChoice
-            );
-            dataTotalRecomendationAnnualPremiumChoice[clientId][3] -=
-              medisave * 2;
-            setTotalRecomendationAnnualPremiumChoice(
-              dataTotalRecomendationAnnualPremiumChoice
-            );
-
-            dataProductRecomendationAnnualPremiumChoice[clientId][0] -=
-              cash * 2;
-            setProductRecomendationAnnualPremiumChoice(
-              dataProductRecomendationAnnualPremiumChoice
-            );
-            dataProductRecomendationAnnualPremiumChoice[clientId][3] -=
-              medisave * 2;
-            setProductRecomendationAnnualPremiumChoice(
-              dataProductRecomendationAnnualPremiumChoice
-            );
-          } else if (frequency == 1) {
-            premiumHost = premiumHost * 4;
-            dataTotalAnnualPremiumChoice[clientId][0] -= cash * 4;
-            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-            dataTotalAnnualPremiumChoice[clientId][3] -= medisave * 4;
-            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-
-            dataProductAnnualPremiumChoice[clientId][0] -= cash * 4;
-            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-            dataProductAnnualPremiumChoice[clientId][3] -= medisave * 4;
-            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-
-            // New amount
-            dataTotalRecomendationAnnualPremiumChoice[clientId][0] -= cash * 4;
-            setTotalRecomendationAnnualPremiumChoice(
-              dataTotalRecomendationAnnualPremiumChoice
-            );
-            dataTotalRecomendationAnnualPremiumChoice[clientId][3] -=
-              medisave * 4;
-            setTotalRecomendationAnnualPremiumChoice(
-              dataTotalRecomendationAnnualPremiumChoice
-            );
-
-            dataProductRecomendationAnnualPremiumChoice[clientId][0] -=
-              cash * 4;
-            setProductRecomendationAnnualPremiumChoice(
-              dataProductRecomendationAnnualPremiumChoice
-            );
-            dataProductRecomendationAnnualPremiumChoice[clientId][3] -=
-              medisave * 4;
-            setProductRecomendationAnnualPremiumChoice(
-              dataProductRecomendationAnnualPremiumChoice
-            );
-          } else if (frequency == 0) {
-            premiumHost = premiumHost * 12;
-
-            dataTotalAnnualPremiumChoice[clientId][0] -= cash * 12;
-            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-            dataTotalAnnualPremiumChoice[clientId][3] -= medisave * 12;
-            setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-
-            dataProductAnnualPremiumChoice[clientId][0] -= cash * 12;
-            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-            dataProductAnnualPremiumChoice[clientId][3] -= medisave * 12;
-            setProductAnnualPremiumChoice(dataProductAnnualPremiumChoice);
-
-            // Recomendation
-            dataTotalRecomendationAnnualPremiumChoice[clientId][0] -= cash * 12;
-            setTotalRecomendationAnnualPremiumChoice(
-              dataTotalRecomendationAnnualPremiumChoice
-            );
-            dataTotalRecomendationAnnualPremiumChoice[clientId][3] -=
-              medisave * 12;
-            setTotalRecomendationAnnualPremiumChoice(
-              dataTotalRecomendationAnnualPremiumChoice
-            );
-
-            dataProductRecomendationAnnualPremiumChoice[clientId][0] -=
-              cash * 12;
-            setProductRecomendationAnnualPremiumChoice(
-              dataProductRecomendationAnnualPremiumChoice
-            );
-            dataProductRecomendationAnnualPremiumChoice[clientId][3] -=
-              medisave * 12;
-            setProductRecomendationAnnualPremiumChoice(
-              dataProductRecomendationAnnualPremiumChoice
-            );
-          }
-
-          if (isRider == false) {
-            if (
-              dataMaxSinglePremiumChoice[clientId][0] <
-              dataProductSinglePremiumChoice[clientId][0]
-            ) {
-              dataMaxSinglePremiumChoice[clientId][0] =
-                dataProductSinglePremiumChoice[clientId][0];
-              setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice);
-            }
-            if (
-              dataMaxSinglePremiumChoice[clientId][3] <
-              dataProductSinglePremiumChoice[clientId][3]
-            ) {
-              dataMaxSinglePremiumChoice[clientId][3] =
-                dataProductSinglePremiumChoice[clientId][3];
-              setMaxSinglePremiumChoice(dataMaxSinglePremiumChoice);
-            }
-            if (
-              dataMaxAnnualPremiumChoice[clientId][0] <
-              dataProductAnnualPremiumChoice[clientId][0]
-            ) {
-              dataMaxAnnualPremiumChoice[clientId][0] =
-                dataProductAnnualPremiumChoice[clientId][0];
-              setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice);
-            }
-            if (
-              dataMaxAnnualPremiumChoice[clientId][3] <
-              dataProductAnnualPremiumChoice[clientId][3]
-            ) {
-              dataMaxAnnualPremiumChoice[clientId][3] =
-                dataProductAnnualPremiumChoice[clientId][3];
-              setMaxAnnualPremiumChoice(dataMaxAnnualPremiumChoice);
-            }
-          }
-        }
-
-        // // RIDER RECOMMENDED PRODUCT
-        if (product.riders.length > 0) {
-          for (let iRider = 0; iRider < product.riders.length; iRider++) {
-            if (product.riders[iRider].premiumFrequency == 0) {
-              dataTotalAnnualPremiumChoice[clientId][0] -=
-                product.riders[iRider].premium * 12;
-              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-
-              // New amount
-              dataTotalRecomendationAnnualPremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium * 12;
-              setTotalRecomendationAnnualPremiumChoice(
-                dataTotalRecomendationAnnualPremiumChoice
-              );
-              dataProductRecomendationAnnualPremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium * 12;
-              setProductRecomendationAnnualPremiumChoice(
-                dataProductRecomendationAnnualPremiumChoice
-              );
-            } else if (product.riders[iRider].premiumFrequency == 1) {
-              dataTotalAnnualPremiumChoice[clientId][0] -=
-                product.riders[iRider].premium * 4;
-              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-
-              // New amount
-              dataTotalRecomendationAnnualPremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium * 4;
-              setTotalRecomendationAnnualPremiumChoice(
-                dataTotalRecomendationAnnualPremiumChoice
-              );
-              dataProductRecomendationAnnualPremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium * 4;
-              setProductRecomendationAnnualPremiumChoice(
-                dataProductRecomendationAnnualPremiumChoice
-              );
-            } else if (product.riders[iRider].premiumFrequency == 2) {
-              dataTotalAnnualPremiumChoice[clientId][0] -=
-                product.riders[iRider].premium * 2;
-              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-
-              // New amount
-              dataTotalRecomendationAnnualPremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium * 2;
-              setTotalRecomendationAnnualPremiumChoice(
-                dataTotalRecomendationAnnualPremiumChoice
-              );
-              dataProductRecomendationAnnualPremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium * 2;
-              setProductRecomendationAnnualPremiumChoice(
-                dataProductRecomendationAnnualPremiumChoice
-              );
-            } else if (product.riders[iRider].premiumFrequency == 3) {
-              dataTotalAnnualPremiumChoice[clientId][0] -=
-                product.riders[iRider].premium * 1;
-              setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-
-              // New amount
-              dataTotalRecomendationAnnualPremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium * 1;
-              setTotalRecomendationAnnualPremiumChoice(
-                dataTotalRecomendationAnnualPremiumChoice
-              );
-              dataProductRecomendationAnnualPremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium * 1;
-              setProductRecomendationAnnualPremiumChoice(
-                dataProductRecomendationAnnualPremiumChoice
-              );
-            } else if (product.riders[iRider].premiumFrequency == 4) {
-              dataTotalSinglePremiumChoice[clientId][0] -=
-                product.riders[iRider].premium;
-              setTotalSinglePremiumChoice(dataTotalSinglePremiumChoice);
-
-              // New amount
-              dataTotalRecomendationSinglePremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium;
-              setTotalRecomendationSinglePremiumChoice(
-                dataTotalRecomendationSinglePremiumChoice
-              );
-              dataProductRecomendationSinglePremiumChoice[clientId][
-                premiumType
-              ] -= product.riders[iRider].premium;
-              setProductRecomendationSinglePremiumChoice(
-                dataProductRecomendationSinglePremiumChoice
-              );
-            }
-          }
-        }
-
-        // ILP
-        if (typeData == 0 && recommendType == 1) {
-          if (product.riders.length > 0) {
-            for (let iRider = 0; iRider < product.riders.length; iRider++) {
-              if (product.riders[iRider].premiumFrequency == 0) {
-                dataTotalCISILPAnnualPremiumChoice[clientId][0] -=
-                  product.riders[iRider].premium * 12;
-                setTotalCISILPAnnualPremiumChoice(
-                  dataTotalCISILPAnnualPremiumChoice
-                );
-              } else if (product.riders[iRider].premiumFrequency == 1) {
-                dataTotalCISILPAnnualPremiumChoice[clientId][0] -=
-                  product.riders[iRider].premium * 4;
-                setTotalCISILPAnnualPremiumChoice(
-                  dataTotalCISILPAnnualPremiumChoice
-                );
-              } else if (product.riders[iRider].premiumFrequency == 2) {
-                dataTotalCISILPAnnualPremiumChoice[clientId][0] -=
-                  product.riders[iRider].premium * 2;
-                setTotalCISILPAnnualPremiumChoice(
-                  dataTotalCISILPAnnualPremiumChoice
-                );
-              } else if (product.riders[iRider].premiumFrequency == 3) {
-                dataTotalCISILPAnnualPremiumChoice[clientId][0] -=
-                  product.riders[iRider].premium * 1;
-                setTotalCISILPAnnualPremiumChoice(
-                  dataTotalCISILPAnnualPremiumChoice
-                );
-              } else if (product.riders[iRider].premiumFrequency == 4) {
-                dataTotalCISILPSinglePremiumChoice[clientId][0] -=
-                  product.riders[iRider].premium;
-                setTotalCISILPSinglePremiumChoice(
-                  dataTotalCISILPSinglePremiumChoice
-                );
-              }
-            }
-          }
-        }
       }
     }
   };
@@ -2281,19 +1678,19 @@ const AnalysisRecommendation = (props: Props) => {
     ]);
     let products = getProductsByFilteringGroupId(
       groupId,
-      getPfrNine.recommendedProduct
+      recommendedProduct
     );
     let ILPProducts = getProductsByFilteringGroupId(
       groupId,
-      getPfrNine.ILPProduct
+      ILPProduct
     );
     let CISProducts = getProductsByFilteringGroupId(
       groupId,
-      getPfrNine.CISProduct
+      CISProduct
     );
     let customProducts = getProductsByFilteringGroupId(
       groupId,
-      getPfrNine.CISILPProducts
+      CISILPProducts
     );
 
     products.map((product: any) => {
@@ -2365,9 +1762,9 @@ const AnalysisRecommendation = (props: Props) => {
 
   const getNameFromId = (id: any) => {
     if (id < 2) {
-      return getPfrNine.clients[id]["clientName"];
+      return clients[id]["clientName"];
     } else {
-      return getPfrNine.dependants[id - 2]["name"];
+      return dependants[id - 2]["name"];
     }
   };
 
@@ -2381,7 +1778,7 @@ const AnalysisRecommendation = (props: Props) => {
 
   const getGroupName = (groupId: any) => {
     let name = "";
-    getPfrNine.groups.map((group: any) => {
+    groups.map((group: any) => {
       if (group["id"] == groupId) {
         name = group["name"];
       }
@@ -2389,18 +1786,18 @@ const AnalysisRecommendation = (props: Props) => {
     return name;
   };
 
-  const getProductRiderBenefitRisk = () => {
-    const productAndRiders: Array<any> = [];
-    const benefits: Array<any> = [];
-    const risks: Array<any> = [];
+  const getProductRiderBenefitRisk = (dataRes : any) => {
+    const productAndRiders: any[] = [];
+    const benefits: any[] = [];
+    const risks: any[] = [];
 
     let productNo = 0;
 
     console.log("get recomendeed here");
-    console.log(getPfrNine.recommendedProduct);
+    console.log(dataRes.recommendedProduct);
 
-    if (getPfrNine.recommendedProduct) {
-      getPfrNine.recommendedProduct.map((product: any, i: any) => {
+    if (dataRes.recommendedProduct.length > 0) {
+      dataRes.recommendedProduct.forEach((product: any, i: any) => {
         if (product["product"] != undefined) {
           productAndRiders.push({
             no: productNo,
@@ -2410,59 +1807,73 @@ const AnalysisRecommendation = (props: Props) => {
             feature: product["feature"],
             groupId: product["groupId"],
           });
-          product["benefit"].map((b: any, index: any) => {
+          product["benefit"].forEach((b: any, index: any) => {
             let benefit = b;
 
+            console.log("benefit check ", benefit);
+            let riderBenefitCount = 0;
             if (index == 0) {
-              benefit["no"] = productNo;
-              let riderBenefitCount = 0;
-              product["riders"].map((rider: any) => {
+              product["riders"].forEach((rider: any) => {
                 riderBenefitCount += rider["benefit"].length;
               });
-              benefit["rowSpan"] =
-                product["benefit"].length + riderBenefitCount;
+                
             }
+            
+            console.log("menjadi benefit ",benefit)
 
-            benefit["productName"] = product["product"]["name"];
-            benefit["groupId"] = product["groupId"];
-            benefits.push(benefit);
+            benefits.push({
+              no: productNo,
+              rowSpan: product["benefit"].length + riderBenefitCount,
+              groupId: product["groupId"],
+              productName: product["product"]["name"],
+              benefitId: benefit['benefitId'],
+              content: benefit['content'],
+              id: benefit['id'],
+              title: benefit['title']
+            })
           });
-          product["risk"].map((r: any, index: any) => {
+          product["risk"].forEach((r: any, index: any) => {
             let risk = r;
-
+            let riderRiskCount = 0;
             if (index == 0) {
-              risk["no"] = productNo;
-              let riderRiskCount = 0;
-              product["riders"].map((rider: any) => {
+              product["riders"].forEach((rider: any) => {
                 riderRiskCount += rider["risk"].length;
               });
-              risk["rowSpan"] = product["risk"].length + riderRiskCount;
             }
 
-            risk["productName"] = product["product"]["name"];
-            risk["groupId"] = product["groupId"];
-            risks.push(risk);
+            risks.push({
+              no: productNo,
+              rowSpan: product["risk"].length + riderRiskCount,
+              productName: product["product"]["name"],
+              groupId: product["groupId"],
+              content: risk['content'],
+              title: risk['title'],
+              riskId: risk['riskId'],
+              id: risk['id']
+            });
           });
-          product["riders"].map((rider: any) => {
+          product["riders"].forEach((rider: any) => {
             productAndRiders.push({
               typeProductCustom: "ta",
               name: rider["name"],
               feature: rider["feature"],
               groupId: product["groupId"],
             });
-            rider["benefit"].map((bb: any) => {
+            rider["benefit"].forEach((bb: any) => {
               let benefit = bb;
-              benefit["productName"] = rider["name"];
-              benefit["mainProductName"] = product["product"]["name"];
-              benefit["groupId"] = product["groupId"];
-              benefits.push(benefit);
+              benefits.push({
+                productName: rider["name"],
+                mainProductName: product["product"]["name"],
+                groupId: product["groupId"]
+              });
             });
-            rider["risk"].map((rr: any) => {
+            rider["risk"].forEach((rr: any) => {
               let risk = rr;
-              risk["productName"] = rider["name"];
-              risk["mainProductName"] = product["product"]["name"];
-              risk["groupId"] = product["groupId"];
-              risks.push(risk);
+              risks.push({
+                productName: rider["name"],
+                mainProductName: product["product"]["name"],
+                groupId: product["groupId"]
+              });
             });
           });
           productNo++;
@@ -2470,8 +1881,8 @@ const AnalysisRecommendation = (props: Props) => {
       });
     }
 
-    if (getPfrNine.CISILPProducts) {
-      getPfrNine.CISILPProducts.map((product: any, i: any) => {
+    if (dataRes.CISILPProducts.length > 0) {
+      dataRes.CISILPProducts.map((product: any, i: any) => {
         if (product["type"] == 0 || product["type"] == 2) {
           productAndRiders.push({
             no: productNo,
@@ -2483,34 +1894,52 @@ const AnalysisRecommendation = (props: Props) => {
           });
           product["benefit"].map((b: any, index: any) => {
             let benefit = b;
-
+            
+            let riderBenefitCount = 0;
             if (index == 0) {
-              benefit["no"] = productNo;
-              let riderBenefitCount = 0;
+
               product["riders"].map((rider: any) => {
                 riderBenefitCount += rider["benefit"].length;
               });
-              benefit["rowSpan"] =
-                product["benefit"].length + riderBenefitCount;
+
             }
 
             benefit["productName"] = product["name"];
             benefit["groupId"] = product["groupId"];
             benefits.push(benefit);
+
+            benefits.push({
+              no: productNo,
+              rowSpan: product["benefit"].length + riderBenefitCount,
+              groupId: product["groupId"],
+              productName: product["name"],
+              benefitId: benefit['benefitId'],
+              content: benefit['content'],
+              id: benefit['id'],
+              title: benefit['title']
+            })
+
           });
           product["risk"].map((r: any, index: any) => {
             let risk = r;
+            let riderRiskCount = 0;
             if (index == 0) {
-              risk["no"] = productNo;
-              let riderRiskCount = 0;
               product["riders"].map((rider: any) => {
                 riderRiskCount += rider["risk"].length;
               });
-              risk["rowSpan"] = product["risk"].length + riderRiskCount;
             }
 
-            risk["productName"] = product["name"];
-            risk["groupId"] = product["groupId"];
+            risks.push({
+              no: productNo,
+              rowSpan: product["risk"].length + riderRiskCount,
+              productName: product["name"],
+              groupId: product["groupId"],
+              content: risk['content'],
+              title: risk['title'],
+              riskId: risk['riskId'],
+              id: risk['id']
+            });
+
             risks.push(risk);
           });
           product["riders"].map((rider: any) => {
@@ -2522,17 +1951,20 @@ const AnalysisRecommendation = (props: Props) => {
             });
             rider["benefit"].map((bb: any) => {
               let benefit = bb;
-              benefit["productName"] = rider["name"];
-              benefit["mainProductName"] = product["name"];
-              benefit["groupId"] = product["groupId"];
-              benefits.push(benefit);
+
+              benefits.push({
+                productName: rider["name"],
+                mainProductName: product["name"],
+                groupId: product["groupId"]
+              });
             });
             rider["risk"].map((rr: any) => {
               let risk = rr;
-              risk["productName"] = rider["name"];
-              risk["mainProductName"] = product["name"];
-              risk["groupId"] = product["groupId"];
-              risks.push(risk);
+              risks.push({
+                productName: rider["name"],
+                mainProductName: product["name"],
+                groupId: product["groupId"]
+              });
             });
           });
           productNo++;
@@ -2547,25 +1979,35 @@ const AnalysisRecommendation = (props: Props) => {
           });
           product["cis_benefit"].map((b: any, index: any) => {
             let benefit = b;
-            if (index == 0) {
-              benefit["no"] = productNo;
-              benefit["rowSpan"] = product["cis_benefit"].length;
-            }
 
-            benefit["productName"] = product["cis"]["name"];
-            benefit["groupId"] = product["groupId"];
+            // if (index == 0) {
+            //   benefit["no"] = productNo;
+            //   benefit["rowSpan"] = product["cis_benefit"].length;
+            // }
+
+            benefits.push({
+              no: productNo,
+              rowSpan: product["cis_benefit"].length,
+              groupId: product["groupId"],
+              productName: product["cis"]["name"],
+            })
+
             benefits.push(benefit);
           });
           product["cis_risk"].map((r: any, index: any) => {
             let risk = r;
-            if (index == 0) {
-              risk["no"] = productNo;
-              risk["rowSpan"] = product["cis_risk"].length;
-            }
+            // if (index == 0) {
+            //   risk["no"] = productNo;
+            //   risk["rowSpan"] = product["cis_risk"].length;
+            // }
 
-            risk["productName"] = product["cis"]["name"];
-            risk["groupId"] = product["groupId"];
-            risks.push(risk);
+            risks.push({
+              no: productNo,
+              productName: product["cis"]["name"],
+              rowSpan: product["cis_risk"].length,
+              groupId: product["groupId"]
+            });
+
           });
           productNo++;
         }
@@ -2574,10 +2016,207 @@ const AnalysisRecommendation = (props: Props) => {
     console.log("dapet ni product rider?");
     console.log(productAndRiders);
 
-    setProductAndRiders(productAndRiders);
-    setBenefits(benefits);
-    setRisks(risks);
+    fetchGlobalTemp("dataProductAndRiders", productAndRiders)
+    fetchGlobalTemp("dataBenefits", benefits)
+    fetchGlobalTemp("dataRisks", risks)
+
   };
+
+  let dataProductAndRiders = useAnalysisRecommendationTemp((state) => state.dataProductAndRiders);
+
+  let dataBenefits = useAnalysisRecommendationTemp((state) => state.dataBenefits);
+
+  let dataRisks = useAnalysisRecommendationTemp((state) => state.dataRisks);
+
+  // const getProductRiderBenefitRisk = () => {
+  //   const productAndRiders: Array<any> = [];
+  //   const benefits: Array<any> = [];
+  //   const risks: Array<any> = [];
+
+  //   let productNo = 0;
+
+  //   console.log("get recomendeed here");
+  //   console.log(recommendedProduct);
+
+  //   if (recommendedProduct.length > 0) {
+  //     recommendedProduct.map((product: any, i: any) => {
+  //       if (product["product"] != undefined) {
+  //         productAndRiders.push({
+  //           no: productNo,
+  //           rowSpan: 1 + product["riders"].length,
+  //           typeProductCustom: "ta",
+  //           name: product["name"],
+  //           feature: product["feature"],
+  //           groupId: product["groupId"],
+  //         });
+  //         product["benefit"].map((b: any, index: any) => {
+  //           let benefit = b;
+
+  //           if (index == 0) {
+  //             benefit["no"] = productNo;
+  //             let riderBenefitCount = 0;
+  //             product["riders"].map((rider: any) => {
+  //               riderBenefitCount += rider["benefit"].length;
+  //             });
+  //             benefit["rowSpan"] =
+  //               product["benefit"].length + riderBenefitCount;
+  //           }
+
+  //           benefit["productName"] = product["product"]["name"];
+  //           benefit["groupId"] = product["groupId"];
+  //           benefits.push(benefit);
+  //         });
+  //         product["risk"].map((r: any, index: any) => {
+  //           let risk = r;
+
+  //           if (index == 0) {
+  //             risk["no"] = productNo;
+  //             let riderRiskCount = 0;
+  //             product["riders"].map((rider: any) => {
+  //               riderRiskCount += rider["risk"].length;
+  //             });
+  //             risk["rowSpan"] = product["risk"].length + riderRiskCount;
+  //           }
+
+  //           risk["productName"] = product["product"]["name"];
+  //           risk["groupId"] = product["groupId"];
+  //           risks.push(risk);
+  //         });
+  //         product["riders"].map((rider: any) => {
+  //           productAndRiders.push({
+  //             typeProductCustom: "ta",
+  //             name: rider["name"],
+  //             feature: rider["feature"],
+  //             groupId: product["groupId"],
+  //           });
+  //           rider["benefit"].map((bb: any) => {
+  //             let benefit = bb;
+  //             benefit["productName"] = rider["name"];
+  //             benefit["mainProductName"] = product["product"]["name"];
+  //             benefit["groupId"] = product["groupId"];
+  //             benefits.push(benefit);
+  //           });
+  //           rider["risk"].map((rr: any) => {
+  //             let risk = rr;
+  //             risk["productName"] = rider["name"];
+  //             risk["mainProductName"] = product["product"]["name"];
+  //             risk["groupId"] = product["groupId"];
+  //             risks.push(risk);
+  //           });
+  //         });
+  //         productNo++;
+  //       }
+  //     });
+  //   }
+
+  //   if (CISILPProducts.length > 0) {
+  //     CISILPProducts.map((product: any, i: any) => {
+  //       if (product["type"] == 0 || product["type"] == 2) {
+  //         productAndRiders.push({
+  //           no: productNo,
+  //           rowSpan: 1 + product["riders"].length,
+  //           typeProductCustom: "tb",
+  //           name: product["name"],
+  //           feature: product["feature"],
+  //           groupId: product["groupId"],
+  //         });
+  //         product["benefit"].map((b: any, index: any) => {
+  //           let benefit = b;
+
+  //           if (index == 0) {
+  //             benefit["no"] = productNo;
+  //             let riderBenefitCount = 0;
+  //             product["riders"].map((rider: any) => {
+  //               riderBenefitCount += rider["benefit"].length;
+  //             });
+  //             benefit["rowSpan"] =
+  //               product["benefit"].length + riderBenefitCount;
+  //           }
+
+  //           benefit["productName"] = product["name"];
+  //           benefit["groupId"] = product["groupId"];
+  //           benefits.push(benefit);
+  //         });
+  //         product["risk"].map((r: any, index: any) => {
+  //           let risk = r;
+  //           if (index == 0) {
+  //             risk["no"] = productNo;
+  //             let riderRiskCount = 0;
+  //             product["riders"].map((rider: any) => {
+  //               riderRiskCount += rider["risk"].length;
+  //             });
+  //             risk["rowSpan"] = product["risk"].length + riderRiskCount;
+  //           }
+
+  //           risk["productName"] = product["name"];
+  //           risk["groupId"] = product["groupId"];
+  //           risks.push(risk);
+  //         });
+  //         product["riders"].map((rider: any) => {
+  //           productAndRiders.push({
+  //             typeProductCustom: "tb",
+  //             name: rider["name"],
+  //             feature: rider["feature"],
+  //             groupId: product["groupId"],
+  //           });
+  //           rider["benefit"].map((bb: any) => {
+  //             let benefit = bb;
+  //             benefit["productName"] = rider["name"];
+  //             benefit["mainProductName"] = product["name"];
+  //             benefit["groupId"] = product["groupId"];
+  //             benefits.push(benefit);
+  //           });
+  //           rider["risk"].map((rr: any) => {
+  //             let risk = rr;
+  //             risk["productName"] = rider["name"];
+  //             risk["mainProductName"] = product["name"];
+  //             risk["groupId"] = product["groupId"];
+  //             risks.push(risk);
+  //           });
+  //         });
+  //         productNo++;
+  //       } else {
+  //         productAndRiders.push({
+  //           no: productNo,
+  //           rowSpan: 1,
+  //           typeProductCustom: "tc",
+  //           name: product["cis"]["name"],
+  //           feature: product["cis"]["feature"],
+  //           groupId: product["groupId"],
+  //         });
+  //         product["cis_benefit"].map((b: any, index: any) => {
+  //           let benefit = b;
+  //           if (index == 0) {
+  //             benefit["no"] = productNo;
+  //             benefit["rowSpan"] = product["cis_benefit"].length;
+  //           }
+
+  //           benefit["productName"] = product["cis"]["name"];
+  //           benefit["groupId"] = product["groupId"];
+  //           benefits.push(benefit);
+  //         });
+  //         product["cis_risk"].map((r: any, index: any) => {
+  //           let risk = r;
+  //           if (index == 0) {
+  //             risk["no"] = productNo;
+  //             risk["rowSpan"] = product["cis_risk"].length;
+  //           }
+
+  //           risk["productName"] = product["cis"]["name"];
+  //           risk["groupId"] = product["groupId"];
+  //           risks.push(risk);
+  //         });
+  //         productNo++;
+  //       }
+  //     });
+  //   }
+  //   console.log("dapet ni product rider?");
+  //   console.log(productAndRiders);
+
+  //   setProductAndRiders(productAndRiders);
+  //   setBenefits(benefits);
+  //   setRisks(risks);
+  // };
 
   const getGroupRow = () => {
     setRowOfGroupCell({
@@ -2590,8 +2229,8 @@ const AnalysisRecommendation = (props: Props) => {
       risk: {},
     });
     dataRowOfGroupCell["product"]["length"] = 0;
-    if (getPfrNine.recommendedProduct) {
-      getPfrNine.recommendedProduct.map((product: any) => {
+    if (recommendedProduct.length >0) {
+      recommendedProduct.map((product: any) => {
         if (dataRowOfGroupCell["product"][product["groupId"]] == undefined) {
           dataRowOfGroupCell["product"][product["groupId"]] =
             1 + product["riders"].length;
@@ -2610,8 +2249,8 @@ const AnalysisRecommendation = (props: Props) => {
       });
     }
 
-    if (getPfrNine.CISILPProducts) {
-      getPfrNine.CISILPProducts.map((product: any) => {
+    if (CISILPProducts.length >0) {
+      CISILPProducts.map((product: any) => {
         if (dataRowOfGroupCell["cisilp"][product["groupId"]] == undefined) {
           dataRowOfGroupCell["cisilp"][product["groupId"]] = 0;
         }
@@ -2691,77 +2330,56 @@ const AnalysisRecommendation = (props: Props) => {
     }
   };
 
-  const [clientChoices, setClientChoices] = useState<any>([]);
+  const [indexChoice, setIndexChoice] = useState(0)
 
-  const handleClientChoice = (e:any, index:number) => {
-  //   console.log("event: ", e.target.checked)
-  //   console.log("index: ", index)
-  //   console.log("recommendedProduct: ", getPfrNine.recommendedProduct);
-    let data = getPfrNine;
-    data.recommendedProduct = data.recommendedProduct.map((tmpRecommendProduct: any, tmpIndex: number) => {
-      if (tmpIndex == index) {
-        return {
-          ...tmpRecommendProduct,
-          checked: e.target.checked
-        }
-      } else {
-        return tmpRecommendProduct;
-      }
-    });
-    setPfrNine(data);
-    setPfrNine({
-      ...getPfrNine,
-      recommendedProduct: getPfrNine.recommendedProduct.map((tmpRecommendProduct: any, tmpIndex: number) => {
-        if (tmpIndex == index) {
-          return {
-            ...tmpRecommendProduct,
-            checked: e.target.checked
-          }
-        } else {
-          return tmpRecommendProduct;
-        }
-      })
-    });
-    const product = getPfrNine.recommendedProduct[index];
-    // console.log("client Choices: ", clientChoices);
-    // if (clientChoices.includes(index)) {
-    //   let clientId = product["nameOfOwner"];
-    //   let premiumType = product["premiumPaymentType"];
-    //   dataTotalAnnualPremium[clientId][premiumType] = 0;
-    //   setTotalAnnualPremium(dataTotalAnnualPremium);
-    //   dataTotalAnnualPremiumChoice[clientId][premiumType] = 0;
-    //   setTotalAnnualPremiumChoice(dataTotalAnnualPremiumChoice);
-    // }
-    // console.log("totalclient1: ", dataTotalAnnualPremium);
-    calcPremiumClientChoice(product, false);
-    calcPremium(product, false);
-    // console.log("totalclient: ", dataTotalAnnualPremium[index]);
-    let tempClientChoices = clientChoices;
-    
-    if (e.target.checked) {
-      tempClientChoices.push(index);
-    } else {
-      tempClientChoices = clientChoices.filter((v:any) => v !== index);
+  const handleClientChoice = (e: any, index: number) => {
+    let { name, value, checked } = e.target;
+    console.log("masuk sini index ", index);
+    console.log("masuk sini name ", name);
+    console.log("masuk sini value ", value);
+    console.log("masuk sini checked ", checked);
+
+    setProduct("recommendedProduct", index, "checked", checked)
+    // setPfrNine({
+    //   ...getPfrNine,
+    //   recommendedProduct: getPfrNine.recommendedProduct.map(
+    //     (tmpRecommendProduct: any, tmpIndex: number) => {
+    //       if (tmpIndex == index) {
+    //         return {
+    //           ...tmpRecommendProduct,
+    //           checked: e.target.checked,
+    //         };
+    //       } else {
+    //         return tmpRecommendProduct;
+    //       }
+    //     }
+    //   ),
+    // });
+
+    setIndexChoice(index);
+
+    if (name === "checkedData") {
+      let params = {
+        id: value,
+        checked: checked,
+      };
+      setClientChoice(index, params);
     }
-    setClientChoices(tempClientChoices);
-
-    let tempCheckedData = section9.checkedData.map((tempchecked) => {
-        if (tempchecked['id'] == product['id']) {
-          return {
-            ...tempchecked,
-            checked: e.target.checked? 1: 0
-          }
-        } else {
-          return tempchecked;
-        }
-    });
-    setParent(
-      "checkedData",
-      tempCheckedData
-    );
   };
 
-  return  loading ? (
+  useEffect(() => {
+    calcPremiumClientChoice(recommendedProduct[indexChoice], false)
+  }, [recommendedProduct])
+  
+
+  // console.log("check Cis Ilp ", CISILPProducts);
+  // console.log("check Cis ", CISProduct);
+  // console.log("check Ilp ", ILPProduct);
+  // console.log("check group ", groups);
+  console.log("check recommended product ", recommendedProduct[0].checked);
+  console.log("premium ", recommendedProduct[0].premium);
+  // console.log("check group ", rowGroups);
+  return loading ? (
     <LoaderPage />
   ) : (
     <div
@@ -3097,16 +2715,11 @@ const AnalysisRecommendation = (props: Props) => {
                     <tr key={"sds" + index}>
                       <td className="px-2 py-5">Client {index + 1}</td>
                       <td className="px-2 py-5 text-center">
-                        {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[index].checked? (isNaN(dataTotalAnnualPremiumChoice[index][0])
-                          ? 0
-                          : currencyFormat(
-                              dataTotalAnnualPremiumChoice[index][0]
-                            )) : (0)}
-                        {/* {isNaN(dataTotalAnnualPremiumChoice[index][0])
-                          ? 0
-                          : currencyFormat(
-                            dataTotalAnnualPremiumChoice[index][0]
-                            )} */}
+                        {isNaN(dataTotalAnnualPremiumChoice[index][0])
+                            ? 0
+                            : currencyFormat(
+                                dataTotalAnnualPremiumChoice[index][0]
+                              )}
                       </td>
                       <td className="px-2 py-5 text-center">
                         {isNaN(dataTotalSinglePremiumChoice[index][0])
@@ -3228,15 +2841,15 @@ const AnalysisRecommendation = (props: Props) => {
                                 dataTotalAnnualPremiumChoice[index][0]
                             )
                             ? 0
-                            : Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && !getPfrNine.recommendedProduct[index].checked ?
-                              (Number(payorBudget[index][0].annual) -
-                              dataTotalAnnualPremiumChoice[index][0] + (isNaN(dataTotalAnnualPremiumChoice[index][0])
+                            : recommendedProduct.length > 0 &&
+                              !recommendedProduct[index].checked
+                            ? Number(payorBudget[index][0].annual) -
+                              dataTotalAnnualPremiumChoice[index][0] +
+                              (isNaN(dataTotalAnnualPremiumChoice[index][0])
                                 ? 0
-                                : dataTotalAnnualPremiumChoice[index][0]
-                                )
-                              ) : 
-                              (Number(payorBudget[index][0].annual) -
-                              dataTotalAnnualPremiumChoice[index][0])
+                                : dataTotalAnnualPremiumChoice[index][0])
+                            : Number(payorBudget[index][0].annual) -
+                              dataTotalAnnualPremiumChoice[index][0]
                           : 0}
                       </td>
                       <td className="px-2 py-5 text-center">
@@ -3359,8 +2972,8 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(getPfrNine).length > 0 && getPfrNine?.groups
-                  ? getPfrNine.groups.map((dataGroup: any, index: any) => (
+                {groups.length >0
+                  ? groups.map((dataGroup: any, index: any) => (
                       <tr key={"sas" + index}>
                         <td className="px-2 py-5">{index + 1}</td>
                         <td className="px-2 py-5">{dataGroup.name}</td>
@@ -3369,7 +2982,12 @@ const AnalysisRecommendation = (props: Props) => {
                         </td>
                         <td className="w-1/12 px-2 py-5">
                           <div className="flex w-full gap-2">
-                            <ButtonBox className="text-green-deep" onClick={() => showDetail(dataGroup.name, dataGroup.id)} >
+                            <ButtonBox
+                              className="text-green-deep"
+                              onClick={() =>
+                                showDetail(dataGroup.name, dataGroup.id)
+                              }
+                            >
                               <PencilLineIcon size={14} />
                             </ButtonBox>
                             <ButtonBox className="text-red">
@@ -3424,8 +3042,8 @@ const AnalysisRecommendation = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(getPfrNine).length > 0 && getPfrNine?.recommendedProduct
-                  ? getPfrNine.recommendedProduct.map(
+                {recommendedProduct.length > 0
+                  ? recommendedProduct.map(
                       (product: any, index: any) =>
                         product["product"]["categoryId"] != 8 &&
                         product["product"]["categoryId"] != 5 ? (
@@ -3480,11 +3098,13 @@ const AnalysisRecommendation = (props: Props) => {
                                   id={`custome-checkbox-${index}`}
                                 >
                                   <div className="items-start justify-start gap-4">
-                                    <input
-                                      type="checkbox"
-                                      checked={product.checked}
-                                      onChange={(e) => handleClientChoice(e, index)}
-                                      className="p-2 text-right rounded-md cursor-pointer border-gray-soft-strong text-green-deep focus:ring-green-deep focus:ring-1"
+                                    <Checkbox
+                                      name="checkedData"
+                                      isChecked={product.checked}
+                                      onChange={(e) =>
+                                        handleClientChoice(e, index)
+                                      }
+                                      value={product.id}
                                     />
                                     <span></span>
                                   </div>
@@ -3492,7 +3112,7 @@ const AnalysisRecommendation = (props: Props) => {
                               </td>
                               {index == 0 ||
                               product["groupId"] !=
-                                getPfrNine.recommendedProduct[index - 1][
+                              recommendedProduct[index - 1][
                                   "groupId"
                                 ] ? (
                                 <td
@@ -3562,8 +3182,8 @@ const AnalysisRecommendation = (props: Props) => {
                                   )
                                 )
                               : ""}
-                            {getPfrNine?.recommendedProduct ? (
-                              getPfrNine.recommendedProduct.length != 1 ? (
+                            {recommendedProduct ? (
+                              recommendedProduct.length != 1 ? (
                                 <tr>
                                   <td
                                     className="px-2 py-5 border border-gray-soft-strong"
@@ -3584,22 +3204,6 @@ const AnalysisRecommendation = (props: Props) => {
                                     )}
                                   </td>
                                   <td className="px-2 py-5 border border-gray-soft-strong">
-                                    {/* {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[index].checked 
-                                    ? (
-                                      product["premiumFrequency"] == 4 ? (
-                                        <>
-                                          <b>
-                                            {getPremiumFrequencyName(
-                                              product["premiumFrequency"]
-                                            )}
-                                          </b>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <b>Annually</b>
-                                        </>
-                                      )
-                                    ) : ("")} */}
                                     {product["premiumFrequency"] == 4 ? (
                                       <>
                                         <b>
@@ -3703,7 +3307,7 @@ const AnalysisRecommendation = (props: Props) => {
                               </td>
                               {index == 0 ||
                               product["groupId"] !=
-                                getPfrNine.recommendedProduct[index - 1][
+                              recommendedProduct[index - 1][
                                   "groupId"
                                 ] ? (
                                 <td
@@ -3792,8 +3396,8 @@ const AnalysisRecommendation = (props: Props) => {
                                   )
                                 )
                               : ""}
-                            {getPfrNine?.recommendedProduct ? (
-                              getPfrNine.recommendedProduct.length != 1 ? (
+                            {recommendedProduct ? (
+                              recommendedProduct.length != 1 ? (
                                 <tr>
                                   <td
                                     className="px-2 py-5 border border-gray-soft-strong"
@@ -3849,8 +3453,8 @@ const AnalysisRecommendation = (props: Props) => {
                     <b>Total By Client Choice ($)</b>
                   </td>
                 </tr>
-                {getPfrNine?.clients
-                  ? getPfrNine?.clients.map((dataClient: any, i: any) => (
+                {getClients.length > 0
+                  ? getClients.map((dataClient: any, i: any) => (
                       <tr key={"sass" + i}>
                         <td
                           className="px-2 py-5 border border-gray-soft-strong"
@@ -3859,287 +3463,287 @@ const AnalysisRecommendation = (props: Props) => {
                           <b>Client {i + 1} </b>
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                        {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
-                          0 ? (
-                            <>
-                              <b>
-                                CASH
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                            0 ? (
+                              <>
+                                <b>
+                                  CASH
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
-                          0 ? (
-                            <>
-                              <b>
-                                CASH
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][0] >
+                            0 ? (
+                              <>
+                                <b>
+                                  CASH
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
-                          0 ? (
-                            <>
-                              <b>
-                                CPFOA
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                            0 ? (
+                              <>
+                                <b>
+                                  CPFOA
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
-                          0 ? (
-                            <>
-                              <b>
-                                CPFOA
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][1] >
+                            0 ? (
+                              <>
+                                <b>
+                                  CPFOA
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
-                          0 ? (
-                            <>
-                              <b>
-                                CPFSA
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                            0 ? (
+                              <>
+                                <b>
+                                  CPFSA
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
-                          0 ? (
-                            <>
-                              <b>
-                                CPFSA
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][2] >
+                            0 ? (
+                              <>
+                                <b>
+                                  CPFSA
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
-                          0 ? (
-                            <>
-                              <b>
-                                CPF MEDISAVE
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                            0 ? (
+                              <>
+                                <b>
+                                  CPF MEDISAVE
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
-                          0 ? (
-                            <>
-                              <b>
-                                CPF MEDISAVE
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][3] >
+                            0 ? (
+                              <>
+                                <b>
+                                  CPF MEDISAVE
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
-                          0 ? (
-                            <>
-                              <b>
-                                SRS
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
-                          0 ? (
-                            <>
-                              <b>
-                                SRS
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                            0 ? (
+                              <>
+                                <b>
+                                  SRS
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                          {dataTotalRecomendationSinglePremiumChoice[i][4] >
+                            0 ? (
+                              <>
+                                <b>
+                                  SRS
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                        {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationAnnualPremiumChoice[
-                                    i
-                                  ][0]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationAnnualPremiumChoice[
+                                        i
+                                      ][0]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationSinglePremiumChoice[
-                                    i
-                                  ][0]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][0] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationSinglePremiumChoice[
+                                        i
+                                      ][0]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationAnnualPremiumChoice[
-                                    i
-                                  ][1]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationAnnualPremiumChoice[
+                                        i
+                                      ][1]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationSinglePremiumChoice[
-                                    i
-                                  ][1]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][1] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationSinglePremiumChoice[
+                                        i
+                                      ][1]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationAnnualPremiumChoice[
-                                    i
-                                  ][2]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationAnnualPremiumChoice[
+                                        i
+                                      ][2]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationSinglePremiumChoice[
-                                    i
-                                  ][2]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][2] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationSinglePremiumChoice[
+                                        i
+                                      ][2]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationAnnualPremiumChoice[
-                                    i
-                                  ][3]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationAnnualPremiumChoice[
+                                        i
+                                      ][3]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationSinglePremiumChoice[
-                                    i
-                                  ][3]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][3] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationSinglePremiumChoice[
+                                        i
+                                      ][3]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationAnnualPremiumChoice[
-                                    i
-                                  ][4]
-                                ) : ("")}
-                                <br />
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationAnnualPremiumChoice[
+                                        i
+                                      ][4]
+                                    : ""}
+                                  <br />
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
 
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
-                          0 ? (
-                            <>
-                              <b>
-                                {getPfrNine.recommendedProduct[i].checked ? (
-                                  dataTotalRecomendationSinglePremiumChoice[
-                                    i
-                                  ][4]
-                                ) : ("")}
-                              </b>
-                            </>
-                          ) : (
-                            ""
-                          )) : ("")}
+                          {dataTotalRecomendationSinglePremiumChoice[i][4] >
+                            0 ? (
+                              <>
+                                <b>
+                                  {recommendedProduct[i].checked
+                                    ? dataTotalRecomendationSinglePremiumChoice[
+                                        i
+                                      ][4]
+                                    : ""}
+                                </b>
+                              </>
+                            ) : (
+                              ""
+                            )}
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
-                          {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][0] >
+                          {dataTotalRecomendationAnnualPremiumChoice[i][0] >
                             0 ? (
                               <>
                                 <b>
@@ -4148,9 +3752,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][0] >
+                          {dataTotalRecomendationSinglePremiumChoice[i][0] >
                             0 ? (
                               <>
                                 <b>
@@ -4159,9 +3763,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][1] >
+                          {dataTotalRecomendationAnnualPremiumChoice[i][1] >
                             0 ? (
                               <>
                                 <b>
@@ -4170,9 +3774,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][1] >
+                          {dataTotalRecomendationSinglePremiumChoice[i][1] >
                             0 ? (
                               <>
                                 <b>
@@ -4181,9 +3785,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][2] >
+                          {dataTotalRecomendationAnnualPremiumChoice[i][2] >
                             0 ? (
                               <>
                                 <b>
@@ -4192,9 +3796,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][2] >
+                          {dataTotalRecomendationSinglePremiumChoice[i][2] >
                             0 ? (
                               <>
                                 <b>
@@ -4203,9 +3807,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][3] >
+                          {dataTotalRecomendationAnnualPremiumChoice[i][3] >
                             0 ? (
                               <>
                                 <b>
@@ -4214,9 +3818,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][3] >
+                          {dataTotalRecomendationSinglePremiumChoice[i][3] >
                             0 ? (
                               <>
                                 <b>
@@ -4225,9 +3829,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationAnnualPremiumChoice[i][4] >
+                          {dataTotalRecomendationAnnualPremiumChoice[i][4] >
                             0 ? (
                               <>
                                 <b>
@@ -4236,9 +3840,9 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
 
-                            {Object.keys(getPfrNine).length > 0 && getPfrNine.recommendedProduct.length > 0 && getPfrNine.recommendedProduct[i].checked ? (dataTotalRecomendationSinglePremiumChoice[i][4] >
+                          {dataTotalRecomendationSinglePremiumChoice[i][4] >
                             0 ? (
                               <>
                                 <b>
@@ -4247,7 +3851,7 @@ const AnalysisRecommendation = (props: Props) => {
                               </>
                             ) : (
                               ""
-                            )) : ("")}
+                            )}
                         </td>
                         <td className="px-2 py-5 border border-gray-soft-strong">
                           {getNameFromId(i)}
@@ -4262,7 +3866,7 @@ const AnalysisRecommendation = (props: Props) => {
         </RowSingleGrid>
 
         {/* Ilp Product */}
-        {Object.keys(getPfrNine).length > 0 && getPfrNine.CISILPProducts > 0 ? (
+        {CISILPProducts.length > 0 ? (
           <RowSingleGrid>
             <div className="relative mt-6 overflow-x-auto border rounded-lg shadow-md border-gray-soft-strong">
               <table className="w-full text-sm text-left border divide-y rounded-md divide-gray-soft-strong border-gray-soft-strong border-slate-500">
@@ -4308,8 +3912,8 @@ const AnalysisRecommendation = (props: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.keys(getPfrNine).length > 0 && getPfrNine?.CISILPProducts
-                    ? getPfrNine.CISILPProducts.map((product: any, i: any) => (
+                  {CISILPProducts.length >0
+                    ? CISILPProducts.map((product: any, i: any) => (
                         <Fragment key={"sasd" + i}>
                           <tr>
                             <td
@@ -4321,7 +3925,7 @@ const AnalysisRecommendation = (props: Props) => {
                                     product["riders"].length
                               }
                             >
-                              {getPfrNine.recommendedProduct.length + i + 1}
+                              {recommendedProduct.length + i + 1}
                             </td>
                             <td
                               className="px-2 py-5 border border-gray-soft-strong"
@@ -4478,7 +4082,7 @@ const AnalysisRecommendation = (props: Props) => {
                             </td>
                             {i == 0 ||
                             product["groupId"] !=
-                              getPfrNine.CISILPProducts[i - 1]["groupId"] ? (
+                            CISILPProducts[i - 1]["groupId"] ? (
                               <>
                                 <td
                                   className="px-2 py-5 border border-gray-soft-strong"
@@ -4766,11 +4370,6 @@ const AnalysisRecommendation = (props: Props) => {
           />
         </RowSingleGrid>
       </SectionCardSingleGrid>
-      {section9.editableStatus === 2 && section9.status === 1 ? (
-        <ButtonFloating onClick={storeData} title="Save section 9" />
-      ) : (
-        ""
-      )}
     </div>
   );
 };
