@@ -64,8 +64,8 @@ const SwitchingReplacement = (props: Props) => {
     premium: "0",
     premiumType: 0,
     benefit: "",
-    inceptionDate: "",
-    maturityDate: "",
+    Inception: "",
+    Maturity: "",
   };
 
   const sectionData = {
@@ -84,8 +84,8 @@ const SwitchingReplacement = (props: Props) => {
       premium: 0,
       premiumType: null,
       benefit: null,
-      inceptionDate: null,
-      maturityDate: null,
+      Inception: null,
+      Maturity: null,
     },
     answer5: 0,
     answer6: 0,
@@ -502,8 +502,8 @@ const SwitchingReplacement = (props: Props) => {
                   premiumType : answer['premiumType'],
                   typeMaturity: answer['typeMaturity'],
                   benefit : answer['benefit'],
-                  inceptionDate : answer['inception'],
-                  maturityDate : answer['maturity'],
+                  Inception : answer['inception'],
+                  Maturity : answer['maturity'],
                 },
                 answer5: answer['answer5'],
                 answer6: answer['answer6'],
