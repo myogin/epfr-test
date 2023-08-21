@@ -669,17 +669,15 @@ const RiskProfile = (props: Props) => {
           } else if (userDob >= 65) {
             dob = 0;
           }
-
-          // fetching checkbox answer 1 for user 1 & 2
-          if (i == 0) {
-            let newQ1State = q1State.map((answer: any) => {
-              if (answer.score == dob) {
-                return { ...answer, u1: true };
-              } else {
-                return { ...answer };
-              }
-            });
-            setQ1State(newQ1State);
+          let newQ1State = q1State.map((answer: any) => {
+            if (answer.score == dob) {
+              return { ...answer, u1: true };
+            } else {
+              return { ...answer };
+            }
+          });
+          // fetching checkbox answer 1 for user 1
+          setQ1State(newQ1State);
             // inject to state
             let newAnswers = sectionFive.answers;
             newAnswers[0][1] = dob;
@@ -689,15 +687,16 @@ const RiskProfile = (props: Props) => {
                 answers: newAnswers,
               };
             });
-          } else {
-            let newQ1State = q1State.map((answer: any) => {
+          // fetching checkbox answer 1 for user2
+          if (i >= 0) {
+            let newQ1State2 = newQ1State.map((answer: any) => {
               if (answer.score == dob) {
                 return { ...answer, u2: true };
               } else {
                 return { ...answer };
               }
             });
-            setQ1State(newQ1State);
+            setQ1State(newQ1State2);
             // inject to state
             let newAnswers = sectionFive.answers;
             newAnswers[1][1] = dob;
