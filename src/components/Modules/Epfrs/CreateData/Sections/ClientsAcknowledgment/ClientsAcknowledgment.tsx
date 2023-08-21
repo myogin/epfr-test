@@ -528,6 +528,13 @@ const ClientsAcknowledgment = (props: Props) => {
     if (editable === 1 && sectionElevenData.status === 1 && !isFetched) {
       setEditable(2);
     }
+    const tempStatus = getStatus();
+    if (tempStatus !== sectionElevenData.status) {
+      setSectionElevenData({
+        ...sectionElevenData,
+        status: tempStatus
+      })
+    }
     localStorage.setItem(
       "section11",
       JSON.stringify({
@@ -549,6 +556,108 @@ const ClientsAcknowledgment = (props: Props) => {
   }, [editable]);
 
   let pfrIdSectionOne:any = usePersonalInformation((state) => state.id);
+
+  const checkPart7 = (clientId:number) => {
+    return sectionElevenData.data[clientId][6][0] || sectionElevenData.data[clientId][6][1]
+  }
+
+  const getStatus = () => {
+    sectionElevenData.issues = [];
+
+    sectionElevenData.issues = []
+    let containIssue = [false, false]
+
+    getPfrLength.map((data, i) => {
+      console.log("masuk sini harusnya product count " + productCount[i]);
+
+      if(productCount[i] > 0 && sectionElevenData.data[i][3][0] == false) {
+        containIssue[i] = true
+
+        console.log("masuk sini harusnya" + productCount[i]);
+        console.log("masuk sini harusnya ini apa" + sectionElevenData.data[i][3][0]);
+      }
+      for(let j  = 0 ; j < sub4Options.length ; j ++ ) {
+        if(matrixData[i][j] == true && sectionElevenData.data[i][9][j] == false) {
+
+          console.log("masuk sini harusnya apa ya matrix" + matrixData[i][j]);
+          console.log("masuk sini harusnya ini apa 9 j" + sectionElevenData.data[i][9][j]);
+
+          containIssue[i] = true
+        }
+      }
+
+      if(containIssue[i] == true) {
+        sectionElevenData.issues.push({
+          subsectionId : 4 ,
+          content : "Need to check",
+          clientId : i + 1
+        })
+      }
+
+      if(!checkPart7(i)) {
+        sectionElevenData.issues.push({
+          subsectionId : 7 ,
+          content : "Need to check either accept or not.",
+          clientId : i + 1
+        })
+      }
+
+      if(deviateCount[i] > 0 && !sectionElevenData.data[i][6][1]) {
+        sectionElevenData.issues.push({
+          subsectionId : 7 ,
+          content : "Need to check don't accept.",
+          clientId : i + 1
+        })
+      }
+    });
+
+    if(reasonForAccept() && (sectionElevenData.remark1 == '' || sectionElevenData.remark1 == undefined)) {
+      sectionElevenData.issues.push({
+        subsectionId : 7 ,
+        content : "Required field",
+        clientId : 0
+      })
+    }
+    if(reasonForDontAccept() && (sectionElevenData.remark == '' || sectionElevenData.remark == undefined)) {
+      sectionElevenData.issues.push({
+        subsectionId : 7 ,
+        content : "Required field",
+        clientId : 0
+      })
+    }
+
+    // for(let i = 0 ; i < getPfrLength ; i ++ ) {
+    // getPfrLength.map((data, i) => {
+    //   if(sectionElevenData.data[i]?.answer1.a.answer == 1 && (sectionElevenData.data[i]?.answer1.a.reason == '' || sectionElevenData.data[i]?.answer1.a.reason == undefined)) {
+    //     sectionElevenData.issues.push({
+    //       subsectionId : 1,
+    //       content : "Need to explain the reason",
+    //       clientId : i + 1
+    //     })
+    //   }
+    //   if(sectionElevenData.data[i]?.answer1.b == 1 && (sectionElevenData.data[i]?.answer3 == '' || sectionElevenData.data[i]?.answer3 == undefined)) {
+    //     sectionElevenData.issues.push({
+    //       subsectionId : 3,
+    //       content : "Need to explain the reason",
+    //       clientId : i + 1
+    //     })
+    //   }
+
+    //   if(dataRowCompleted[i]) {
+    //     sectionElevenData.issues.push({
+    //       subsectionId : 3,
+    //       content : "Need to complete point 2 - 10",
+    //       clientId : i + 1
+    //     })
+    //   }
+    // });
+
+    if(sectionElevenData.issues.length == 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 
   const router = useRouter();
   let pfrLocal = usePfrData((state) => state.pfr);
